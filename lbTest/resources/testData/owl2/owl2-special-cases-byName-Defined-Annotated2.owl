@@ -1,0 +1,2072 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE rdf:RDF [
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY owl2lexevs "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#" >
+]>
+
+
+<rdf:RDF xmlns="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#"
+     xml:base="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl"
+     xmlns:dc="http://purl.org/dc/elements/1.1/"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:owl2lexevs="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:obo="http://purl.obolibrary.org/obo/"
+     xmlns:doap="http://usefulinc.com/ns/doap#" 
+     xmlns:foaf="http://xmlns.com/foaf/0.1/"
+     xmlns:oboInOwl="http://www.geneontology.org/formats/oboInOwl#"
+     xmlns:protege="http://protege.stanford.edu/plugins/owl/protege#">
+    <owl:Ontology rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl">
+        <source>nci evs</source>
+        <dc:date>august 8, 2014</dc:date>
+        <owl:versionInfo>0.1.6</owl:versionInfo>
+        <note xml:lang="en">Test of OWL2 constructions for import into LexEVS.  This file contains defines with annotations.</note>
+        <owl:versionIRI rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl/0.1.5"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationLIT -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;AssociationLIT">
+        <term rdf:datatype="&xsd;string">Association</term>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationSTR -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;AssociationSTR">
+        <term rdf:datatype="&xsd;string">Association</term>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationURI -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;AssociationURI">
+        <term rdf:datatype="&xsd;string">Association</term>
+        <rdfs:range rdf:resource="&xsd;anyURI"/>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1 -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;AssociationV1">
+        <term rdf:datatype="&xsd;string">Association</term>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#definition -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;definition"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#note -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;note"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#provenance -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;provenance"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#semanticType -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;semanticType">
+        <semanticType rdf:datatype="&xsd;string">Conceptual</semanticType>
+    </owl:AnnotationProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#source -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;source"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;term"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#term_type -->
+
+    <owl:AnnotationProperty rdf:about="&owl2lexevs;term_type"/>
+    
+
+
+    <!-- http://purl.org/dc/elements/1.1/date -->
+
+    <owl:AnnotationProperty rdf:about="&dc;date"/>
+    
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0010000"><!-- has axiom label -->
+        <rdfs:label xml:lang="en">has axiom label</rdfs:label>
+        <obo:IAO_0000600 xml:lang="en">A URI that is intended to be unique label for an axiom used for tracking change to the ontology. For an axiom expressed in different languages, each expression is given the same URI</obo:IAO_0000600>
+        <obo:IAO_0000117 xml:lang="en">Person:Alan Ruttenberg</obo:IAO_0000117>
+        <obo:IAO_0000119 xml:lang="en">Person:Alan Ruttenberg</obo:IAO_0000119>
+        <obo:IAO_0000111 xml:lang="en">has axiom label</obo:IAO_0000111>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/iao.owl"/>
+    </owl:AnnotationProperty>
+
+
+      <!-- http://purl.obolibrary.org/obo/IAO_0000114 -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000114"><!-- has curation status -->
+        <rdfs:label xml:lang="en">has curation status</rdfs:label>
+        <obo:IAO_0000119 xml:lang="en">OBI_0000281</obo:IAO_0000119>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Alan Ruttenberg</obo:IAO_0000117>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Bill Bug</obo:IAO_0000117>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Melanie Courtot</obo:IAO_0000117>
+        <obo:IAO_0000111 xml:lang="en">has curation status</obo:IAO_0000111>
+    </owl:AnnotationProperty>
+
+        <!-- http://purl.obolibrary.org/obo/IAO_0000412 -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000412"><!-- imported from -->
+        <rdfs:label xml:lang="en">imported from</rdfs:label>
+        <obo:IAO_0000115 xml:lang="en">For external terms/classes, the ontology from which the term was imported</obo:IAO_0000115>
+        <obo:IAO_0000119 xml:lang="en">GROUP:OBI:&lt;http://purl.obolibrary.org/obo/obi></obo:IAO_0000119>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Alan Ruttenberg</obo:IAO_0000117>
+        <obo:IAO_0000117 xml:lang="en">PERSON:Melanie Courtot</obo:IAO_0000117>
+        <obo:IAO_0000111 xml:lang="en">imported from</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000125"/><!-- pending final vetting -->
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/iao.owl"/>
+    </owl:AnnotationProperty>
+
+        <!-- http://purl.obolibrary.org/obo/IAO_0100001 -->
+
+    <owl:AnnotationProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0100001"><!-- term replaced by -->
+        <rdfs:label xml:lang="en">term replaced by</rdfs:label>
+        <obo:IAO_0000115 xml:lang="en">Add as annotation triples in the granting ontology</obo:IAO_0000115>
+        <obo:IAO_0000119 xml:lang="en">Person:Alan Ruttenberg</obo:IAO_0000119>
+        <obo:IAO_0000117 xml:lang="en">Person:Alan Ruttenberg</obo:IAO_0000117>
+        <obo:IAO_0000115 xml:lang="en">Use on obsolete terms, relating the term to another term that can be used as a substitute</obo:IAO_0000115>
+        <obo:IAO_0000111 xml:lang="en">term replaced by</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000125"/><!-- pending final vetting -->
+    </owl:AnnotationProperty>
+    
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#AssociationV1 -->
+
+    <owl:ObjectProperty rdf:about="&owl2lexevs;AssociationV1">
+        <term rdf:datatype="&xsd;string">Association</term>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_expressed_in -->
+
+    <owl:ObjectProperty rdf:about="&owl2lexevs;gene_expressed_in">
+        <term rdf:datatype="&xsd;string">gene expressed in</term>
+    </owl:ObjectProperty>
+    <owl:Axiom>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">gene expressed in</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;gene_expressed_in"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#gene_related_to_disease -->
+
+    <owl:ObjectProperty rdf:about="&owl2lexevs;gene_related_to_disease">
+        <rdfs:domain rdf:resource="&owl2lexevs;C123"/>
+        <rdfs:range rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_finding -->
+
+    <owl:ObjectProperty rdf:about="&owl2lexevs;patient_has_finding">
+        <rdfs:range rdf:resource="&owl2lexevs;Finding"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#patient_has_prognosis -->
+
+    <owl:ObjectProperty rdf:about="&owl2lexevs;patient_has_prognosis">
+        <rdfs:domain rdf:resource="&owl2lexevs;Patient"/>
+        <rdfs:range rdf:resource="&owl2lexevs;Prognosis"/>
+    </owl:ObjectProperty>
+    
+    
+     <!-- http://purl.obolibrary.org/obo/OBI_0000643 -->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+ <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/OBI_0000643"><!-- has grain -->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+     <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">has grain</rdfs:label>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+     <obo:IAO_0000119 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PAPER: Granularity, scale and collectivity: When size does and does not matter, Alan Rector, Jeremy Rogers, Thomas Bittner, Journal of Biomedical Informatics 39 (2006) 333-349</obo:IAO_0000119>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
+     <obo:IAO_0000111 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">has grain</obo:IAO_0000111>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+     <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">the relation of the cells in the finger of the skin to the finger, in which an indeterminate number of grains are parts of the whole by virtue of being grains in a collective that is part of the whole, and in which removing one granular part does not nec- essarily damage or diminish the whole. Ontological Whether there is a fixed, or nearly fixed number of parts - e.g. fingers of the hand, chambers of the heart, or wheels of a car - such that there can be a notion of a single one being missing, or whether, by contrast, the number of parts is indeterminate - e.g., cells in the skin of the hand, red cells in blood, or rubber molecules in the tread of the tire of the wheel of the car.</obo:IAO_0000115>                          
+     <obo:IAO_0000116 xml:lang="en">Discussion in Karslruhe with, among others, Alan Rector, Stefan Schulz, Marijke Keet, Melanie Courtot, and Alan Ruttenberg. Definition take from the definition of granular parthood in the cited paper. Needs work to put into standard form</obo:IAO_0000116>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+     <obo:IAO_0000117 xml:lang="en">PERSON: Alan Ruttenberg</obo:IAO_0000117>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+     <rdfs:subPropertyOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000051"/><!-- has part -->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+     <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000120"/><!-- metadata complete -->                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+ </owl:ObjectProperty>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+                                  
+                                                                                                                                                                                                                                                                                                                                            
+  <!-- http://purl.obolibrary.org/obo/OBI_0000312 -->                                                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                                                                                          
+  <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/OBI_0000312"><!-- is_specified_output_of -->                                                                                                                                                                                              
+      <rdfs:label xml:lang="en">is_specified_output_of</rdfs:label>                                                                                                                                                                                                                                       
+      <obo:IAO_0000117 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON:Bjoern Peters</obo:IAO_0000117>                                                                                                                                                                                      
+      <obo:IAO_0000115 xml:lang="en">A relation between a planned process and a continuant participating in that process. The presence of the continuant at the end of the process is explicitly specified in the objective specification which the process realizes the concretization of.</obo:IAO_0000115>
+      <obo:IAO_0000117 xml:lang="en">Alan Ruttenberg</obo:IAO_0000117>                                                                                                                                                                                                                                    
+      <obo:IAO_0000111 xml:lang="en">is_specified_output_of</obo:IAO_0000111>                                                                                                                                                                                                                             
+      <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000122"/><!-- ready for release -->                                                                                                                                                                                              
+      <rdfs:range rdf:resource="http://purl.obolibrary.org/obo/OBI_0000011"/><!-- planned process -->                                                                                                                                                                                                     
+      <rdfs:subPropertyOf rdf:resource="http://purl.obolibrary.org/obo/RO_0000056"/><!-- participates in -->                                                                                                                                                                                              
+      <obo:IAO_0000412 rdf:resource="http://purl.obolibrary.org/obo/obi.owl"/>                                                                                                                                                                                                                            
+  </owl:ObjectProperty>                                                                                                                                                                                                                                                                                   
+                                                                                                                                                                                                                                                                                                          
+    <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/RO_0000087"><!-- has role -->
+        <rdfs:label xml:lang="en">has role</rdfs:label>
+        <obo:IAO_0000116 xml:lang="en">A bearer can have many roles, and its roles can exist for different periods of time, but none of its roles can exist when the bearer does not exist. A role need not be realized at all the times that the role exists.</obo:IAO_0000116>
+        <obo:IAO_0000115 xml:lang="en">a relation between an independent continuant (the bearer) and a role, in which the role specifically depends on the bearer for its existence</obo:IAO_0000115>
+        <obo:IAO_0000111 xml:lang="en">has role</obo:IAO_0000111>
+        <obo:IAO_0000118 xml:lang="en">has_role</obo:IAO_0000118>
+        <obo:IAO_0000112 xml:lang="en">this person has role this investigator role (more colloquially: this person has this role of investigator)</obo:IAO_0000112>
+        <rdfs:domain rdf:resource="http://purl.obolibrary.org/obo/BFO_0000004"/><!-- independent continuant -->
+        <rdfs:range rdf:resource="http://purl.obolibrary.org/obo/BFO_0000023"/><!-- role -->
+        <rdfs:subPropertyOf rdf:resource="http://purl.obolibrary.org/obo/RO_0000053"/><!-- bearer of -->
+        <owl:inverseOf rdf:resource="http://purl.obolibrary.org/obo/RO_0000081"/><!-- role of -->
+    </owl:ObjectProperty>                                                                                                                                                                                                                                                                                      
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    
+ <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen_Has_Component -->
+
+    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen_Has_Component">
+        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Drugs_and_Chemicals"/>
+        <DEFINITION rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A role used to specify the component agents which are used in a particular chemotherapy regimen or agent combination. The domain and the range for this role are &apos;Chemotherapy Regimen or Agent Combination&apos; and &apos;Drug, Food, Chemical or Biomedical Material&apos;, respectively.</DEFINITION>
+        <Display_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Has Component</Display_Name>
+        <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chemotherapy_Regimen_Has_Component</FULL_SYN>
+        <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chemotherapy_Regimen_Has_Component</Preferred_Name>
+        <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Conceptual Entity</Semantic_Type>
+        <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string">R123</code>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chemotherapy_Regimen_Has_Component</rdfs:label>
+    </owl:ObjectProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen_Has_Component"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#DEFINITION"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A role used to specify the component agents which are used in a particular chemotherapy regimen or agent combination. The domain and the range for this role are &apos;Chemotherapy Regimen or Agent Combination&apos; and &apos;Drug, Food, Chemical or Biomedical Material&apos;, respectively.</owl:annotatedTarget>
+        <Definition_Review_Date rdf:datatype="http://www.w3.org/2001/XMLSchema#string">110217</Definition_Review_Date>
+        <Definition_Reviewer_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Nicole Thomas</Definition_Reviewer_Name>
+        <def-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</def-source>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen_Has_Component"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Chemotherapy_Regimen_Has_Component</owl:annotatedTarget>
+        <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PT</term-group>
+        <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
+    </owl:Axiom>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#has_physical_location -->
+
+    <owl:DatatypeProperty rdf:about="&owl2lexevs;has_physical_location"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#in_organism -->
+
+    <owl:DatatypeProperty rdf:about="&owl2lexevs;in_organism">
+        <definition rdf:datatype="&xsd;string">hello there</definition>
+        <rdfs:range rdf:resource="&xsd;string"/>
+    </owl:DatatypeProperty>
+    <owl:Axiom>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">hello there</owl:annotatedTarget>
+        <provenance rdf:datatype="&xsd;string">somebody said so</provenance>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;in_organism"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#semanticType -->
+
+    <owl:DatatypeProperty rdf:about="&owl2lexevs;semanticType">
+        <semanticType rdf:datatype="&xsd;string">Conceptual</semanticType>
+        <rdfs:range>
+            <rdfs:Datatype>
+                <owl:oneOf>
+                    <rdf:Description>
+                        <rdf:type rdf:resource="&rdf;List"/>
+                        <rdf:first>Anatomic</rdf:first>
+                        <rdf:rest>
+                            <rdf:Description>
+                                <rdf:type rdf:resource="&rdf;List"/>
+                                <rdf:first>Conceptual</rdf:first>
+                                <rdf:rest>
+                                    <rdf:Description>
+                                        <rdf:type rdf:resource="&rdf;List"/>
+                                        <rdf:first>Disease</rdf:first>
+                                        <rdf:rest>
+                                            <rdf:Description>
+                                                <rdf:type rdf:resource="&rdf;List"/>
+                                                <rdf:first>Gene</rdf:first>
+                                                <rdf:rest>
+                                                    <rdf:Description>
+                                                        <rdf:type rdf:resource="&rdf;List"/>
+                                                        <rdf:first>Organism</rdf:first>
+                                                        <rdf:rest rdf:resource="&rdf;nil"/>
+                                                    </rdf:Description>
+                                                </rdf:rest>
+                                            </rdf:Description>
+                                        </rdf:rest>
+                                    </rdf:Description>
+                                </rdf:rest>
+                            </rdf:Description>
+                        </rdf:rest>
+                    </rdf:Description>
+                </owl:oneOf>
+            </rdfs:Datatype>
+        </rdfs:range>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#BRaf -->
+
+    <owl:Class rdf:about="&owl2lexevs;BRaf">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass to external class</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;BRaf"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Brca1 -->
+
+    <owl:Class rdf:about="&owl2lexevs;Brca1">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                                <owl:hasValue>homo sapiens</owl:hasValue>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on intersection of datatype and object restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Brca1"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                                <owl:hasValue>homo sapiens</owl:hasValue>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C123 -->
+
+    <owl:Class rdf:about="&owl2lexevs;C123">
+        <rdfs:label>Gene</rdfs:label>
+        <definition rdf:datatype="&xsd;string">The fundamental unit of heredity.</definition>
+        <term>gene</term>
+        <owl:disjointUnionOf rdf:parseType="Collection">
+            <rdf:Description rdf:about="&owl2lexevs;BRaf"/>
+            <rdf:Description rdf:about="&owl2lexevs;Erbb2"/>
+            <rdf:Description rdf:about="&owl2lexevs;Mefv"/>
+            <rdf:Description rdf:about="&owl2lexevs;Ras"/>
+            <rdf:Description rdf:about="&owl2lexevs;SHH"/>
+            <rdf:Description rdf:about="&owl2lexevs;SOS"/>
+            <rdf:Description rdf:about="&owl2lexevs;actin"/>
+            <rdf:Description rdf:about="&owl2lexevs;k-Ras"/>
+        </owl:disjointUnionOf>
+    </owl:Class>
+    <owl:Axiom>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <source rdf:datatype="&xsd;string">Wikipedia</source>
+        <owl:annotatedTarget>gene</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;C123"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">Encyclopedia</source>
+        <provenance rdf:datatype="&xsd;string">Gregor Mendel</provenance>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">The fundamental unit of heredity.</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;C123"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">all genes are disjoint.  splicing variants are not considered individual genes.</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;C123"/>
+        <owl:annotatedProperty rdf:resource="&owl;disjointUnionOf"/>
+        <owl:annotatedTarget rdf:parseType="Collection">
+            <rdf:Description rdf:about="&owl2lexevs;BRaf"/>
+            <rdf:Description rdf:about="&owl2lexevs;Erbb2"/>
+            <rdf:Description rdf:about="&owl2lexevs;Mefv"/>
+            <rdf:Description rdf:about="&owl2lexevs;Ras"/>
+            <rdf:Description rdf:about="&owl2lexevs;SHH"/>
+            <rdf:Description rdf:about="&owl2lexevs;SOS"/>
+            <rdf:Description rdf:about="&owl2lexevs;actin"/>
+            <rdf:Description rdf:about="&owl2lexevs;k-Ras"/>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#CancerPatient -->
+
+    <owl:Class rdf:about="&owl2lexevs;CancerPatient">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;SickPatient"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on role group subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;CancerPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;SickPatient"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                                    </owl:Restriction>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                        <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Cold -->
+
+    <owl:Class rdf:about="&owl2lexevs;Cold">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Disease"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Disease -->
+
+    <owl:Class rdf:about="&owl2lexevs;Disease">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <term>disease</term>
+        <definition>any entity that impacts the health of a patient.</definition>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedTarget>disease</owl:annotatedTarget>
+        <term_type>pt</term_type>
+        <source>nci</source>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget>any entity that impacts the health of a patient.</owl:annotatedTarget>
+        <source>nih</source>
+        <provenance>joe blow via lily librarian</provenance>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Disease"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#DiseasesDisordersFindings -->
+
+    <owl:Class rdf:about="&owl2lexevs;DiseasesDisordersFindings">
+        <owl:disjointWith rdf:resource="&owl2lexevs;Person"/>
+        <definition>any entitie categorized as a disease, a disorder, or a finding.</definition>
+        <term>diseases, disorders, and findings</term>
+    </owl:Class>
+    <owl:Axiom>
+        <source>ctep</source>
+        <owl:annotatedTarget>any entitie categorized as a disease, a disorder, or a finding.</owl:annotatedTarget>
+        <provenance>pers. comm.</provenance>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <source>nci</source>
+        <owl:annotatedTarget>diseases, disorders, and findings</owl:annotatedTarget>
+        <term_type>sy</term_type>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note>treat disorders as always disjoint with people.</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&owl;disjointWith"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#EpithelialCell -->
+
+    <owl:Class rdf:about="&owl2lexevs;EpithelialCell">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <term>epithelial cell</term>
+        <definition>a cell located in an epithelial surface.</definition>
+    </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">caDSR</source>
+        <term_type>pt</term_type>
+        <owl:annotatedTarget>epithelial cell</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;EpithelialCell"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">an isa relation to an external entity.</definition>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;EpithelialCell"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <provenance rdf:datatype="&xsd;string">NLM</provenance>
+        <source>nci</source>
+        <owl:annotatedTarget>a cell located in an epithelial surface.</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;EpithelialCell"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Erbb2 -->
+
+    <owl:Class rdf:about="&owl2lexevs;Erbb2">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass to external class</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Erbb2"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                        <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Finding -->
+
+    <owl:Class rdf:about="&owl2lexevs;Finding">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
+                    <owl:Class>
+                        <owl:oneOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="&owl2lexevs;Fever"/>
+                            <rdf:Description rdf:about="&owl2lexevs;ShallowBreathing"/>
+                            <rdf:Description rdf:about="&owl2lexevs;PaleSkin"/>
+                        </owl:oneOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <semanticType rdf:datatype="&xsd;string">Disease</semanticType>
+    </owl:Class>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
+        <note rdf:datatype="&xsd;string">the extension of the class</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Finding"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
+                    <owl:Class>
+                        <owl:oneOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="&owl2lexevs;Fever"/>
+                            <rdf:Description rdf:about="&owl2lexevs;ShallowBreathing"/>
+                            <rdf:Description rdf:about="&owl2lexevs;PaleSkin"/>
+                        </owl:oneOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround -->
+
+    <owl:Class rdf:about="&owl2lexevs;HappyPatientDrivingAround">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
+        <AssociationURI rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationURI>
+        <AssociationSTR rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</AssociationSTR>
+        <AssociationLIT>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</AssociationLIT>
+        <AssociationV1 rdf:resource="&owl2lexevs;PrognosisGood"/>
+        <AssociationURI rdf:resource="&owl2lexevs;PrognosisGood"/>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationLIT.</note>
+        <owl:annotatedTarget>http://ncicb.nci.nih.gov/xml/owl/evs/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationURI.</note>
+        <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationURI of a class (rdf:resource).</note>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationSTR.</note>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationSTR"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround -->
+
+    <owl:Class rdf:about="&owl2lexevs;HappyPatientWalkingAround">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Patient"/>
+        <AssociationURI rdf:datatype="&xsd;anyURI">http://purl.obolibrary.org/obo/CL_0000148</AssociationURI>
+        <AssociationSTR rdf:datatype="&xsd;string">http://purl.obolibrary.org/obo/CL_0000148</AssociationSTR>
+        <AssociationLIT>http://purl.obolibrary.org/obo/cl_0000148</AssociationLIT>
+        <AssociationURI rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+        <AssociationV1 rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationURI of external class (rdf:resource)</note>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationURI of external.</note>
+        <owl:annotatedTarget rdf:datatype="&xsd;anyURI">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationURI"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationSTR of external.</note>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">http://purl.obolibrary.org/obo/CL_0000148</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationSTR"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationLIT of external.</note>
+        <owl:annotatedTarget>http://purl.obolibrary.org/obo/cl_0000148</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationLIT"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HealthyPatient -->
+
+    <owl:Class rdf:about="&owl2lexevs;HealthyPatient">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="&owl2lexevs;SickPatient"/>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">definitely you are healthy if you are not sick.</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HealthyPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
+                    <owl:Class>
+                        <owl:complementOf rdf:resource="&owl2lexevs;SickPatient"/>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Mefv -->
+
+    <owl:Class rdf:about="&owl2lexevs;Mefv">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                        <owl:hasValue rdf:resource="&owl2lexevs;Fever"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on object restriction value subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Mefv"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                        <owl:hasValue rdf:resource="&owl2lexevs;Fever"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient -->
+
+    <owl:Class rdf:about="&owl2lexevs;MildlySickCancerPatient">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on intersection of object restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;MildlySickCancerPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
+                    <owl:Class>
+                        <owl:intersectionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorBenign"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisGood"/>
+                            </owl:Restriction>
+                        </owl:intersectionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickPatient -->
+
+    <owl:Class rdf:about="&owl2lexevs;MildlySickPatient">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;SickPatient"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#NeoplasticDisease -->
+
+    <owl:Class rdf:about="&owl2lexevs;NeoplasticDisease">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Disease"/>
+        <semanticType rdf:datatype="&xsd;string">Disease</semanticType>
+    </owl:Class>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#OncogeneTim -->
+
+    <owl:Class rdf:about="&owl2lexevs;OncogeneTim">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                        <owl:hasValue rdf:datatype="&xsd;integer">12345</owl:hasValue>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on datatype restriction value subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;OncogeneTim"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                        <owl:hasValue rdf:datatype="&xsd;integer">12345</owl:hasValue>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Patient -->
+
+    <owl:Class rdf:about="&owl2lexevs;Patient">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Person"/>
+        <semanticType rdf:datatype="&xsd;string">Organism</semanticType>
+    </owl:Class>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">a role taken by a person on a health care provider visit.</definition>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Patient"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PatientWithCold -->
+
+    <owl:Class rdf:about="&owl2lexevs;PatientWithCold">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;MildlySickPatient"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                <owl:someValuesFrom rdf:resource="&owl2lexevs;Cold"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Person -->
+
+    <owl:Class rdf:about="&owl2lexevs;Person">
+        <definition rdf:datatype="&xsd;string">Any human being.</definition>
+        <term rdf:datatype="&xsd;string">Human</term>
+        <term rdf:datatype="&xsd;string">Person</term>
+    </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">Person</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">Any human being.</owl:annotatedTarget>
+        <source rdf:datatype="&xsd;string">common knowledge</source>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">Human</owl:annotatedTarget>
+        <source rdf:datatype="&xsd;string">LOC</source>
+        <term_type rdf:datatype="&xsd;string">SY</term_type>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <note>treat disorders as always disjoint with people.</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;DiseasesDisordersFindings"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;Person"/>
+        <owl:annotatedProperty rdf:resource="&owl;disjointWith"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PersonRole -->
+
+    <owl:Class rdf:about="&owl2lexevs;PersonRole">
+        <definition rdf:datatype="&xsd;string">Any role adopted by a person.</definition>
+        <term rdf:datatype="&xsd;string">Personal Role</term>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">Any role adopted by a person.</owl:annotatedTarget>
+        <provenance rdf:datatype="&xsd;string">JQ Public</provenance>
+        <source rdf:datatype="&xsd;string">ONC</source>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;PersonRole"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">Personal Role</owl:annotatedTarget>
+        <term_type rdf:datatype="&xsd;string">SY</term_type>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;PersonRole"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Prognosis -->
+
+    <owl:Class rdf:about="&owl2lexevs;Prognosis">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="&owl2lexevs;PrognosisBad"/>
+                            <rdf:Description rdf:about="&owl2lexevs;PrognosisGood"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <semanticType rdf:datatype="&xsd;string">Disease</semanticType>
+    </owl:Class>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">One of the three entities in the parent covering partition.</definition>
+        <note rdf:datatype="&xsd;string">essentially the sum of subclasses</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Prognosis"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;DiseasesDisordersFindings"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="&owl2lexevs;PrognosisBad"/>
+                            <rdf:Description rdf:about="&owl2lexevs;PrognosisGood"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisBad -->
+
+    <owl:Class rdf:about="&owl2lexevs;PrognosisBad">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Prognosis"/>
+    </owl:Class>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">One of the two entities in the parent undeclared covering partition.</definition>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;Prognosis"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;PrognosisBad"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood -->
+
+    <owl:Class rdf:about="&owl2lexevs;PrognosisGood">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;Prognosis"/>
+    </owl:Class>
+    <owl:Axiom>
+        <definition rdf:datatype="&xsd;string">One of the two entities in the parent undeclared covering partition.</definition>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;Prognosis"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;PrognosisGood"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Ras -->
+
+    <owl:Class rdf:about="&owl2lexevs;Ras">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                        <owl:someValuesFrom rdf:resource="&xsd;positiveInteger"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on datatype restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Ras"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                        <owl:someValuesFrom rdf:resource="&xsd;positiveInteger"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SHH -->
+
+    <owl:Class rdf:about="&owl2lexevs;SHH">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                        <owl:allValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;SHH"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                        <owl:allValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SOS -->
+
+    <owl:Class rdf:about="&owl2lexevs;SOS">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on object restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;SOS"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;gene_related_to_disease"/>
+                        <owl:someValuesFrom rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#SickPatient -->
+
+    <owl:Class rdf:about="&owl2lexevs;SickPatient">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="&owl2lexevs;CancerPatient"/>
+                            <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
+                            <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">essentially the sum of subclasses</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;SickPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Patient"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <rdf:Description rdf:about="&owl2lexevs;CancerPatient"/>
+                            <rdf:Description rdf:about="&owl2lexevs;MildlySickPatient"/>
+                            <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TotalPerson -->
+
+    <owl:Class rdf:about="&owl2lexevs;TotalPerson">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Person"/>
+                    <rdf:Description rdf:about="&owl2lexevs;PersonRole"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">in real life, probably a union.</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;TotalPerson"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;Person"/>
+                    <rdf:Description rdf:about="&owl2lexevs;PersonRole"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorBenign -->
+
+    <owl:Class rdf:about="&owl2lexevs;TumorBenign">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#TumorMalignant -->
+
+    <owl:Class rdf:about="&owl2lexevs;TumorMalignant">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;NeoplasticDisease"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
+
+    <owl:Class rdf:about="&owl2lexevs;VerySickCancerPatient">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                            </owl:Restriction>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on union of object restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;VerySickPatient"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;TumorMalignant"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_prognosis"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;PrognosisBad"/>
+                            </owl:Restriction>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickPatient -->
+
+    <owl:Class rdf:about="&owl2lexevs;VerySickPatient">
+        <rdfs:subClassOf rdf:resource="&owl2lexevs;SickPatient"/>
+    </owl:Class>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#actin -->
+
+    <owl:Class rdf:about="&owl2lexevs;actin">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                                <owl:hasValue>all organisms</owl:hasValue>
+                            </owl:Restriction>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on union of datatype and object restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;actin"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Class>
+                        <owl:unionOf rdf:parseType="Collection">
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;gene_expressed_in"/>
+                                <owl:someValuesFrom rdf:resource="&owl2lexevs;EpithelialCell"/>
+                            </owl:Restriction>
+                            <owl:Restriction>
+                                <owl:onProperty rdf:resource="&owl2lexevs;in_organism"/>
+                                <owl:hasValue>all organisms</owl:hasValue>
+                            </owl:Restriction>
+                        </owl:unionOf>
+                    </owl:Class>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#k-Ras -->
+
+    <owl:Class rdf:about="&owl2lexevs;k-Ras">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                        <owl:allValuesFrom rdf:resource="&xsd;positiveInteger"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+    </owl:Class>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">test of annotation on datatype restriction subclass</note>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;k-Ras"/>
+        <owl:annotatedProperty rdf:resource="&owl;equivalentClass"/>
+        <owl:annotatedTarget>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="&owl2lexevs;C123"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="&owl2lexevs;has_physical_location"/>
+                        <owl:allValuesFrom rdf:resource="&xsd;positiveInteger"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:annotatedTarget>
+    </owl:Axiom>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/CL_0000000 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/CL_0000000">
+        <rdfs:label>Cell</rdfs:label>
+        <definition>external class from the cl.</definition>
+    </owl:Class>
+    <owl:Axiom>
+        <source>cl</source>
+        <provenance>lily librarian</provenance>
+        <owl:annotatedTarget>external class from the cl.</owl:annotatedTarget>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;definition"/>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/CL_0000148 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/CL_0000148">
+        <rdfs:label>melanocyte</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+    </owl:Class>
+    
+        <!-- http://www.w3.org/2002/07/owl#Nothing -->
+
+    <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Nothing">
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Nothing"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#Thing -->
+
+    <owl:Class rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+    
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000182 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/BFO_0000182"><!-- history -->
+        <rdfs:label xml:lang="en">history</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000015"/><!-- process -->
+        <obo:BFO_0000179>history</obo:BFO_0000179>
+        <obo:BFO_0000180>History</obo:BFO_0000180>
+        <obo:IAO_0000600 xml:lang="en">A history is a process that is the sum of the totality of processes taking place in the spatiotemporal region occupied by a material entity or site, including processes on the surface of the entity or within the cavities to which it serves as host. (axiom label in BFO2 Reference: [138-001])</obo:IAO_0000600>
+        <obo:IAO_0000111 xml:lang="en">history</obo:IAO_0000111>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/bfo.owl"/>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">A history is a process. (axiom label in BFO2 Reference: [138-001])</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000182"/><!-- history -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000600"/><!-- elucidation -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/138-001"/>
+    </owl:Axiom>
+    
+    <!-- http://purl.obolibrary.org/obo/OBI_0100061 -->                                                                                                                                                                                                                                                                                                                                                          
+                                                                                                                                                                                                                                                                                                                                                                                                             
+    <!-- http://purl.obolibrary.org/obo/OBI_0100061 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/OBI_0100061"><!-- primary cultured cell population -->
+        <rdfs:label xml:lang="en">primary cultured cell population</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/OBI_0100060"/><!-- cultured cell population -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000643"/><!-- has grain -->
+                <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000001"/><!-- primary cultured cell -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000643"/><!-- has grain -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000001"/><!-- primary cultured cell -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000312"/><!-- is_specified_output_of -->
+                <owl:onClass rdf:resource="http://purl.obolibrary.org/obo/OBI_0600037"/><!-- cell culture splitting -->
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A cultured cell population comprised of cells expanded directly from living tissue prior to being passaged.
+
+</obo:IAO_0000115>
+        <obo:IAO_0000119 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON:Matthew Brush</obo:IAO_0000119>
+        <obo:IAO_0000117 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON:Matthew Brush</obo:IAO_0000117>
+        <obo:IAO_0000112 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Spleen cells put directly into culture;  Cold storage of biopsies from wild endangered native Chilean species in field conditions and subsequent isolation of primary culture cell lines. In Vitro Cell Dev Biol Anim. 2008 Jul 2. PMID: 18594934</obo:IAO_0000112>
+        <obo:IAO_0000112 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cells that have been isolated from some organismal source, expanded in culture, but not undergone a complete passaging (ie are still in culture, or have been lifted from culture and frozen in aliquots for future use)</obo:IAO_0000112>
+        <obo:IAO_0000118 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">primary cell culture</obo:IAO_0000118>
+        <obo:IAO_0000118 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">primary cell culture sample</obo:IAO_0000118>
+        <obo:IAO_0000116>2013-6-5 MHB: This OBI class was formerly called 'primary cell culture', but label changed and definition updated following CLO alignment work.  Previous definition: 'a primary cell culture is a cell culture where the cells derive from a fresh tissue source.'</obo:IAO_0000116>
+        <obo:IAO_0000111 xml:lang="en">primary cultured cell population</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000120"/><!-- metadata complete -->
+    </owl:Class>
+    <owl:Axiom>
+        <obo:IAO_0000116>consider if we really want to be so strict here . . . ie maybe we we say that they have not been output from an 'establishing cell line' process, but in some cases a passage or two may be allowed for a primary culture.  the establishing of a line requires some  procedss that attains a degree of homogeneity in the culture.</obo:IAO_0000116>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/OBI_0100061"/><!-- primary cultured cell population -->
+        <owl:annotatedProperty rdf:resource="http://www.w3.org/2000/01/rdf-schema#subClassOf"/>
+        <owl:annotatedTarget>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000312"/><!-- is_specified_output_of -->
+                <owl:onClass rdf:resource="http://purl.obolibrary.org/obo/OBI_0600037"/><!-- cell culture splitting -->
+                <owl:qualifiedCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">0</owl:qualifiedCardinality>
+            </owl:Restriction>
+        </owl:annotatedTarget>
+    </owl:Axiom>                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                              
+      <!-- http://purl.obolibrary.org/obo/CL_0000001 -->                                                                                                                                                                                                                                                                                                                    
+                                                                                                                                                                                                                                                                                                                                                                       
+ <owl:Class rdf:about="http://purl.obolibrary.org/obo/CL_0000001"><!-- primary cultured cell -->                                                                                                                                                                                                                                                                       
+     <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">primary cultured cell</rdfs:label>                                                                                                                                                                                                                                                             
+     <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/CL_0000010"/><!-- cultured cell -->                                                                                                                                                                                                                                                                 
+     <rdfs:subClassOf>                                                                                                                                                                                                                                                                                                                                                 
+         <owl:Class>                                                                                                                                                                                                                                                                                                                                                   
+             <owl:complementOf>                                                                                                                                                                                                                                                                                                                                        
+                 <owl:Restriction>                                                                                                                                                                                                                                                                                                                                     
+                     <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000312"/><!-- is_specified_output_of -->                                                                                                                                                                                                                                        
+                     <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0600037"/><!-- cell culture splitting -->                                                                                                                                                                                                                                    
+                 </owl:Restriction>                                                                                                                                                                                                                                                                                                                                    
+             </owl:complementOf>                                                                                                                                                                                                                                                                                                                                       
+         </owl:Class>                                                                                                                                                                                                                                                                                                                                                  
+     </rdfs:subClassOf>                                                                                                                                                                                                                                                                                                                                                
+     <rdfs:subClassOf>                                                                                                                                                                                                                                                                                                                                                 
+         <owl:Class>                                                                                                                                                                                                                                                                                                                                                   
+             <owl:complementOf>                                                                                                                                                                                                                                                                                                                                        
+                 <owl:Restriction>                                                                                                                                                                                                                                                                                                                                     
+                     <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0001000"/><!-- derives from -->                                                                                                                                                                                                                                                   
+                     <owl:someValuesFrom>                                                                                                                                                                                                                                                                                                                              
+                         <owl:Class>                                                                                                                                                                                                                                                                                                                                   
+                             <owl:intersectionOf rdf:parseType="Collection">                                                                                                                                                                                                                                                                                           
+                                 <rdf:Description rdf:about="http://purl.obolibrary.org/obo/CL_0000010"/><!-- cultured cell -->                                                                                                                                                                                                                                        
+                                 <owl:Restriction>                                                                                                                                                                                                                                                                                                                     
+                                     <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000312"/><!-- is_specified_output_of -->                                                                                                                                                                                                                        
+                                     <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0600037"/><!-- cell culture splitting -->                                                                                                                                                                                                                    
+                                 </owl:Restriction>                                                                                                                                                                                                                                                                                                                    
+                             </owl:intersectionOf>                                                                                                                                                                                                                                                                                                                     
+                         </owl:Class>                                                                                                                                                                                                                                                                                                                                  
+                     </owl:someValuesFrom>                                                                                                                                                                                                                                                                                                                             
+                 </owl:Restriction>                                                                                                                                                                                                                                                                                                                                    
+             </owl:complementOf>                                                                                                                                                                                                                                                                                                                                       
+         </owl:Class>                                                                                                                                                                                                                                                                                                                                                  
+     </rdfs:subClassOf>                                                                                                                                                                                                                                                                                                                                                
+     <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A cultured cell that is freshly isolated from a organismal source, or derives in culture from such a cell prior to the culture being passaged.</obo:IAO_0000115>                                                                                                                          
+     <obo:IAO_0000111 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">primary cultured cell</obo:IAO_0000111>                                                                                                                                                                                                                                                   
+     <obo:IAO_0000412 rdf:resource="http://purl.obolibrary.org/obo/cl.owl"/>                                                                                                                                                                                                                                                                                           
+ </owl:Class>                                                                                                                                                                                                                                                                                                                                                          
+         
+
+      
+      
+          <!-- http://purl.obolibrary.org/obo/OBI_0100063 -->                                                                                                                                                                              
+                                                                                                                                                                                                                                     
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/OBI_0100063"><!-- cultured clonal cell population -->                                                                                                                       
+        <rdfs:label xml:lang="en">cultured clonal cell population</rdfs:label>                                                                                                                                                       
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/OBI_0100060"/><!-- cultured cell population -->                                                                                                                
+        <obo:IAO_0000119 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GROUP: OBI Biomaterial Branch</obo:IAO_0000119>                                                                                                      
+        <obo:IAO_0000117 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON: Susanna Sansone</obo:IAO_0000117>                                                                                                            
+        <obo:IAO_0000117 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON:Matthew Brush</obo:IAO_0000117>                                                                                                               
+        <obo:IAO_0000115 xml:lang="en">A cultured cell population comprised of cells which can all be traced back to a single ancestor cell, and which therefore can be treated as identical.</obo:IAO_0000115>                      
+        <obo:IAO_0000118>clonal cell culture sample</obo:IAO_0000118>                                                                                                                                                                
+        <obo:IAO_0000112 xml:lang="en">cell cut                                                                                                                                                                                      
+Stem cell functions assessed in clonal culture. Soc Gen Physiol Ser. 1988;43:39-45. Review. PMID: 3077557</obo:IAO_0000112>                                                                                                          
+        <obo:IAO_0000111 xml:lang="en">cultured clonal cell population</obo:IAO_0000111>                                                                                                                                             
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000120"/><!-- metadata complete -->                                                                                                                       
+    </owl:Class>                                                                                                                                                                                                                     
+                                                                                                                                                                                                                                     
+    <!-- http://purl.obolibrary.org/obo/OBI_0100060 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/OBI_0100060"><!-- cultured cell population -->
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cultured cell population</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/OBI_0000047"/><!-- processed material -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000643"/><!-- has grain -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000010"/><!-- cultured cell -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000643"/><!-- has grain -->
+                <owl:allValuesFrom rdf:resource="http://purl.obolibrary.org/obo/CL_0000010"/><!-- cultured cell -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0000312"/><!-- is_specified_output_of -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0600024"/><!-- maintaining cell culture -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A processed material comprised of a collection of cultured cells that has been continuously maintained together in culture and shares a common propagation history.</obo:IAO_0000115>
+        <obo:IAO_0000117 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON:Matthew Brush</obo:IAO_0000117>
+        <obo:IAO_0000119 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON:Matthew Brush</obo:IAO_0000119>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">The extent of a 'cultured cell population' is restricted only in that all cell members must share a propagation history (ie be derived through a common lineage of passages from an initial culture). In being defined in this way, this class can be used to refer to the populations that researchers actually use in the practice of science - ie are the inputs to culturing, experimentation, and sharing. The cells in such populations will be a relatively uniform population as they have experienced similar selective pressures due to their continuous co-propagation. And this population will also have a single passage number, again owing to their common passaging history. Cultured cell populations represent only a collection of cells (ie do not include media, culture dishes, etc), and include populations of cultured unicellular organisms or cultured multicellular organism cells. They can exist under active culture, stored in a quiescent state for future use, or applied experimentally.</rdfs:comment>
+        <obo:IAO_0000111 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cultured cell population</obo:IAO_0000111>
+        <obo:IAO_0000112>A cultured cell population applied in an experiment: "293 cells expressing TrkA were serum-starved for 18 hours and then neurotrophins were added for 10 min before cell harvest."  (Lee, Ramee, et al. "Regulation of cell survival by secreted proneurotrophins." Science 294.5548 (2001): 1945-1948).
+
+A cultured cell population maintained in vitro: "Rat cortical neurons from 15 day embryos are grown in dissociated cell culture and maintained in vitro for 8–12 weeks" (Dichter, Marc A. "Rat cortical neurons in cell culture: culture methods, cell morphology, electrophysiology, and synapse formation." Brain Research 149.2 (1978): 279-293).</obo:IAO_0000112>
+        <obo:IAO_0000118>cell culture sample</obo:IAO_0000118>
+        <obo:IAO_0000116 xml:lang="en">2013-6-5 MHB: This OBI class was formerly called 'cell culture', but label changed and definition updated following CLO alignment efforts in spring 2013, during which the intent of this class was clarified to refer to portions of a culture or line rather than a complete cell culture or line.</obo:IAO_0000116>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000120"/><!-- metadata complete -->
+    </owl:Class>
+
+
+    <!-- http://purl.obolibrary.org/obo/CHEBI_15956 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/CHEBI_15956"><!-- biotin -->
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">biotin</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/REO_0000280"/><!-- molecular label -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/RO_0000087"/><!-- has role -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/REO_0000171"/><!-- molecular label role -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">An organic heterobicyclic compound that consists of 2-oxohexahydro-1H-thieno[3,4-d]imidazole having a valeric acid substituent attached to the tetrahydrothiophene ring. The parent of the class of biotins.</obo:IAO_0000115>
+        <obo:IAO_0000111 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">biotin</obo:IAO_0000111>
+        <obo:IAO_0000412 rdf:resource="http://purl.obolibrary.org/obo/chebi.owl"/>
+    </owl:Class>
+
+        <!-- http://purl.obolibrary.org/obo/REO_0000171 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/REO_0000171"><!-- molecular label role -->
+        <rdfs:label xml:lang="en">molecular label role</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000023"/><!-- role -->
+        <obo:IAO_0000118>molecular tracer role</obo:IAO_0000118>
+        <obo:IAO_0000119>OBI developer call, 3-12-12</obo:IAO_0000119>
+        <obo:IAO_0000115>a reagent role inhering in a molecular entity intended to associate with some molecular target to serve as a proxy for the presence, abundance, or location of this target in a detection of molecular label assay.</obo:IAO_0000115>
+        <obo:IAO_0000116>MHB (9-29-13): 'molecular label role' imported from the Reagent Ontology and replaced OBI:OBI_0000140 (label role)</obo:IAO_0000116>
+        <obo:IAO_0000111 xml:lang="en">molecular label role</obo:IAO_0000111>
+        <obo:IAO_0000412 rdf:resource="http://purl.obolibrary.org/obo/reo.owl"/>
+    </owl:Class>
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000001 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/BFO_0000001"><!-- entity -->
+        <rdfs:label xml:lang="en">entity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://www.w3.org/2002/07/owl#Thing"/>
+        <owl:disjointWith rdf:resource="http://www.geneontology.org/formats/oboInOwl#ObsoleteClass"/><!-- Obsolete Class -->
+        <obo:IAO_0000600 xml:lang="en">An entity is anything that exists or has existed or will exist. (axiom label in BFO2 Reference: [001-001])</obo:IAO_0000600>
+        <obo:IAO_0000116 xml:lang="en">BFO 2 Reference: In all areas of empirical inquiry we encounter general terms of two sorts. First are general terms which refer to universals or types:animaltuberculosissurgical procedurediseaseSecond, are general terms used to refer to groups of entities which instantiate a given universal but do not correspond to the extension of any subuniversal of that universal because there is nothing intrinsic to the entities in question by virtue of which they – and only they – are counted as belonging to the given group. Examples are: animal purchased by the Emperortuberculosis diagnosed on a Wednesdaysurgical procedure performed on a patient from Stockholmperson identified as candidate for clinical trial #2056-555person who is signatory of Form 656-PPVpainting by Leonardo da VinciSuch terms, which represent what are called ‘specializations’ in [81</obo:IAO_0000116>
+        <obo:BFO_0000180>Entity</obo:BFO_0000180>
+        <obo:IAO_0000112 xml:lang="en">Verdi’s Requiem</obo:IAO_0000112>
+        <obo:BFO_0000179>entity</obo:BFO_0000179>
+        <obo:IAO_0000116 xml:lang="en">Entity doesn't have a closure axiom because the subclasses don't necessarily exhaust all possibilites. For example Werner Ceusters 'portions of reality' include 4 sorts, entities (as BFO construes them), universals, configurations, and relations. It is an open question as to whether entities as construed in BFO will at some point also include these other portions of reality. See, for example, 'How to track absolutely everything' at http://www.referent-tracking.com/_RTU/papers/CeustersICbookRevised.pdf</obo:IAO_0000116>
+        <obo:IAO_0000112 xml:lang="en">Julius Caesar</obo:IAO_0000112>
+        <obo:IAO_0000111 xml:lang="en">entity</obo:IAO_0000111>
+        <obo:IAO_0000112 xml:lang="en">the Second World War</obo:IAO_0000112>
+        <obo:IAO_0000112 xml:lang="en">your body mass index</obo:IAO_0000112>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/bfo.owl"/>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">An entity is anything that exists or has existed or will exist. (axiom label in BFO2 Reference: [001-001])</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000001"/><!-- entity -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000600"/><!-- elucidation -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/001-001"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <rdfs:comment>per discussion with Barry Smith</rdfs:comment>
+        <owl:annotatedTarget xml:lang="en">Entity doesn't have a closure axiom because the subclasses don't necessarily exhaust all possibilites. For example Werner Ceusters 'portions of reality' include 4 sorts, entities (as BFO construes them), universals, configurations, and relations. It is an open question as to whether entities as construed in BFO will at some point also include these other portions of reality. See, for example, 'How to track absolutely everything' at http://www.referent-tracking.com/_RTU/papers/CeustersICbookRevised.pdf</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000001"/><!-- entity -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000116"/><!-- editor note -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/0000004"/>
+        <rdfs:seeAlso rdf:resource="http://www.referent-tracking.com/_RTU/papers/CeustersICbookRevised.pdf"/>
+    </owl:Axiom>
+    
+
+
+
+        <!-- http://purl.obolibrary.org/obo/BFO_0000002 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/BFO_0000002"><!-- continuant -->
+        <rdfs:label xml:lang="en">continuant</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000001"/><!-- entity -->
+        <owl:disjointWith rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/><!-- occurrent -->
+        <obo:IAO_0000602>(forall (x y) (if (and (Continuant x) (exists (t) (hasContinuantPartOfAt y x t))) (Continuant y))) // axiom label in BFO2 CLIF: [126-001] </obo:IAO_0000602>
+        <obo:IAO_0000115 xml:lang="en">An entity that exists in full at any time in which it exists at all, persists through time while maintaining its identity and has no temporal parts.</obo:IAO_0000115>
+        <obo:IAO_0000116 xml:lang="en">BFO 2 Reference: Continuant entities are entities which can be sliced to yield parts only along the spatial dimension, yielding for example the parts of your table which we call its legs, its top, its nails. ‘My desk stretches from the window to the door. It has spatial parts, and can be sliced (in space) in two. With respect to time, however, a thing is a continuant.’ [60, p. 240</obo:IAO_0000116>
+        <obo:IAO_0000116 xml:lang="en">Continuant doesn't have a closure axiom because the subclasses don't necessarily exhaust all possibilites. For example, in an expansion involving bringing in some of Ceuster's other portions of reality, questions are raised as to whether universals are continuants</obo:IAO_0000116>
+        <obo:BFO_0000179>continuant</obo:BFO_0000179>
+        <obo:BFO_0000180>Continuant</obo:BFO_0000180>
+        <obo:IAO_0000602>(forall (x y) (if (and (Continuant x) (exists (t) (continuantPartOfAt y x t))) (Continuant y))) // axiom label in BFO2 CLIF: [009-002] </obo:IAO_0000602>
+        <obo:IAO_0000602>(forall (x) (if (Continuant x) (Entity x))) // axiom label in BFO2 CLIF: [008-002] </obo:IAO_0000602>
+        <obo:IAO_0000602>(forall (x) (if (Material Entity x) (exists (t) (and (TemporalRegion t) (existsAt x t))))) // axiom label in BFO2 CLIF: [011-002] </obo:IAO_0000602>
+        <obo:IAO_0000600 xml:lang="en">A continuant is an entity that persists, endures, or continues to exist through time while maintaining its identity. (axiom label in BFO2 Reference: [008-002])</obo:IAO_0000600>
+        <obo:IAO_0000111 xml:lang="en">continuant</obo:IAO_0000111>
+        <obo:IAO_0000601 xml:lang="en">if b is a continuant and if, for some t, c has_continuant_part b at t, then c is a continuant. (axiom label in BFO2 Reference: [126-001])</obo:IAO_0000601>
+        <obo:IAO_0000601 xml:lang="en">if b is a continuant and if, for some t, cis continuant_part of b at t, then c is a continuant. (axiom label in BFO2 Reference: [009-002])</obo:IAO_0000601>
+        <obo:IAO_0000601 xml:lang="en">if b is a material entity, then there is some temporal interval (referred to below as a one-dimensional temporal region) during which b exists. (axiom label in BFO2 Reference: [011-002])</obo:IAO_0000601>
+        <rdfs:isDefinedBy rdf:resource="http://purl.obolibrary.org/obo/bfo.owl"/>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedTarget>(forall (x) (if (Material Entity x) (exists (t) (and (TemporalRegion t) (existsAt x t))))) // axiom label in BFO2 CLIF: [011-002] </owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000602"/><!-- has associated axiom(fol) -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/011-002"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget>(forall (x y) (if (and (Continuant x) (exists (t) (continuantPartOfAt y x t))) (Continuant y))) // axiom label in BFO2 CLIF: [009-002] </owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000602"/><!-- has associated axiom(fol) -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/009-002"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">A continuant is an entity that persists, endures, or continues to exist through time while maintaining its identity. (axiom label in BFO2 Reference: [008-002])</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000600"/><!-- elucidation -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/008-002"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">Continuant doesn't have a closure axiom because the subclasses don't necessarily exhaust all possibilites. For example, in an expansion involving bringing in some of Ceuster's other portions of reality, questions are raised as to whether universals are continuants</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000116"/><!-- editor note -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/0000007"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">if b is a material entity, then there is some temporal interval (referred to below as a one-dimensional temporal region) during which b exists. (axiom label in BFO2 Reference: [011-002])</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000601"/><!-- has associated axiom(nl) -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/011-002"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget>(forall (x) (if (Continuant x) (Entity x))) // axiom label in BFO2 CLIF: [008-002] </owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000602"/><!-- has associated axiom(fol) -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/008-002"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget>(forall (x y) (if (and (Continuant x) (exists (t) (hasContinuantPartOfAt y x t))) (Continuant y))) // axiom label in BFO2 CLIF: [126-001] </owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000602"/><!-- has associated axiom(fol) -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/126-001"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">if b is a continuant and if, for some t, c has_continuant_part b at t, then c is a continuant. (axiom label in BFO2 Reference: [126-001])</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000601"/><!-- has associated axiom(nl) -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/126-001"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedTarget xml:lang="en">if b is a continuant and if, for some t, cis continuant_part of b at t, then c is a continuant. (axiom label in BFO2 Reference: [009-002])</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/BFO_0000002"/><!-- continuant -->
+        <owl:annotatedProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000601"/><!-- has associated axiom(nl) -->
+        <obo:IAO_0010000 rdf:resource="http://purl.obolibrary.org/obo/bfo/axiom/009-002"/>
+    </owl:Axiom>
+
+
+    
+    <!-- http://purl.obolibrary.org/obo/IAO_0000033 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/IAO_0000033"><!-- directive information entity -->
+        <rdfs:label xml:lang="en">directive information entity</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/IAO_0000030"/><!-- information content entity -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000136"/><!-- is about -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/BFO_0000017"/><!-- realizable entity -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000116 xml:lang="en">2009-03-16: provenance: a term realizable information entity was proposed for OBI (OBI_0000337) , edited by the PlanAndPlannedProcess branch. Original definition was  "is the specification of a process that can be concretized and realized by an actor" with alternative term  "instruction".It has been subsequently moved to IAO where the objective for which the original term was defined was satisfied with the definitionof this, different, term.</obo:IAO_0000116>
+        <obo:IAO_0000116 xml:lang="en">2013-05-30 Alan Ruttenberg: What differentiates a directive information entity from an information concretization is that it can have concretizations that are either qualities or realizable entities. The concretizations that are realizable entities are created when an individual chooses to take up the direction, i.e. has the intention to (try to) realize it.</obo:IAO_0000116>
+        <obo:IAO_0000116 xml:lang="en">8/6/2009 Alan Ruttenberg: Changed label from "information entity about a realizable" after discussions at ICBO</obo:IAO_0000116>
+        <obo:IAO_0000115 xml:lang="en">An information content entity whose concretizations indicate to their bearer how to realize them in a process.</obo:IAO_0000115>
+        <obo:IAO_0000117 xml:lang="en">PERSON: Alan Ruttenberg</obo:IAO_0000117>
+        <obo:IAO_0000117 xml:lang="en">PERSON: Bjoern Peters</obo:IAO_0000117>
+        <obo:IAO_0000116 xml:lang="en">Werner pushed back on calling it realizable information entity as it isn't realizable. However this name isn't right either. An example would be a recipe. The realizable entity would be a plan, but the information entity isn't about the plan, it, once concretized, *is* the plan. -Alan</obo:IAO_0000116>
+        <obo:IAO_0000111 xml:lang="en">directive information entity</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000122"/><!-- ready for release -->
+    </owl:Class>
+
+       <!-- http://purl.obolibrary.org/obo/OBI_0500000 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/OBI_0500000"><!-- study design -->
+        <rdfs:label xml:lang="en">study design</rdfs:label>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/IAO_0000104"/><!-- plan specification -->
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/BFO_0000051"/><!-- has part -->
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0000272"/><!-- protocol -->
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000115 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">A plan specification comprised of protocols (which may specify how and what kinds of data will be gathered) that are executed as part of an investigation and is realized during a study design execution.</obo:IAO_0000115>
+        <obo:IAO_0000116 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Editor note: there is at least an implicit restriction on the kind of data transformations that can be done based on the measured data available.</obo:IAO_0000116>
+        <obo:IAO_0000117 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PERSON: Chris Stoeckert</obo:IAO_0000117>
+        <obo:IAO_0000112 xml:lang="en">a matched pairs study design describes criteria by which subjects are identified as pairs which then undergo the same protocols, and the data generated is analyzed by comparing the differences between the paired subjects, which constitute the results of the executed study design.</obo:IAO_0000112>
+        <obo:IAO_0000118 xml:lang="en">experimental design</obo:IAO_0000118>
+        <obo:IAO_0000232 xml:lang="en">rediscussed at length (MC/JF/BP). 12/9/08). The definition was clarified to differentiate it from protocol.</obo:IAO_0000232>
+        <obo:IAO_0000111 xml:lang="en">study design</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000122"/><!-- ready for release -->
+        <obo:IAO_0000412 rdf:resource="http://purl.obolibrary.org/obo/obi.owl"/>
+    </owl:Class>
+
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Infectious_Disorder"/>
+        <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</FULL_SYN>
+        <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</Preferred_Name>
+        <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLScheme#string">Disease of Syndrome</Semantic_Type>
+        <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C128366</code>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Clinical_Infection"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</owl:annotatedTarget>
+        <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PT</term-group>
+        <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
+    </owl:Axiom>
+    
+         <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Cisplatin_Doxorubicin-Hydrochloride-Liposome_Mitomycin -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Cisplatin_Doxorubicin-Hydrochloride-Liposome_Mitomycin">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Non-Current_Chemotherapy_Regimen_or_Association"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen_Has_Component"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Cisplatin"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen_Has_Component"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Doxorubicin_Hydrochloride_Liposome"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Chemotherapy_Regimen_Has_Component"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Mitomycin_C"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <FULL_SYN rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cisplatin/Doxorubicin Hydrochloride Liposome/Mitomycin</FULL_SYN>
+        <Legacy_Concept_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cisplatin_Doxorubicin-Hydrochloride-Liposome_Mitomycin</Legacy_Concept_Name>
+        <NCI_META_CUI rdf:datatype="http://www.w3.org/2001/XMLSchema#string">CL448594</NCI_META_CUI>
+        <Preferred_Name rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cisplatin/Doxorubicin Hydrochloride Liposome/Mitomycin</Preferred_Name>
+        <Semantic_Type rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Therapeutic or Preventive Procedure</Semantic_Type>
+        <code rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C37468</code>
+        <rdfs:label rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cisplatin/Doxorubicin Hydrochloride Liposome/Mitomycin</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Cisplatin_Doxorubicin-Hydrochloride-Liposome_Mitomycin"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#FULL_SYN"/>
+        <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cisplatin/Doxorubicin Hydrochloride Liposome/Mitomycin</owl:annotatedTarget>
+        <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PT</term-group>
+        <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
+    </owl:Axiom>
+    
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Fever -->
+
+    <owl:NamedIndividual rdf:about="&owl2lexevs;Fever">
+        <rdf:type rdf:resource="&owl2lexevs;Finding"/>
+        <term rdf:datatype="&xsd;string">High Temperature</term>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">High Temperature</owl:annotatedTarget>
+        <term_type rdf:datatype="&xsd;string">SY</term_type>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;Fever"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientDrivingAround -->
+
+    <owl:NamedIndividual rdf:about="&owl2lexevs;HappyPatientDrivingAround">
+        <AssociationV1 rdf:resource="&owl2lexevs;PrognosisGood"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationV1 of a class.</note>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationV1"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientDrivingAround"/>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
+    </owl:Axiom>
+    
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround -->
+
+    <owl:NamedIndividual rdf:about="&owl2lexevs;HappyPatientWalkingAround">
+        <AssociationV1 rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+    </owl:NamedIndividual>
+    <owl:Axiom>
+        <note rdf:datatype="&xsd;string">annotation on an AssociationV! of external.class (rdf:resource).</note>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;AssociationV1"/>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;HappyPatientWalkingAround"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000148"/>
+    </owl:Axiom>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PaleSkin -->
+
+    <owl:NamedIndividual rdf:about="&owl2lexevs;PaleSkin">
+        <rdf:type rdf:resource="&owl2lexevs;Finding"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#PrognosisGood -->
+
+    <owl:NamedIndividual rdf:about="&owl2lexevs;PrognosisGood"/>
+    
+
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ShallowBreathing -->
+
+    <owl:NamedIndividual rdf:about="&owl2lexevs;ShallowBreathing">
+        <rdf:type rdf:resource="&owl2lexevs;Finding"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/CL_0000148 -->
+
+    <owl:NamedIndividual rdf:about="http://purl.obolibrary.org/obo/CL_0000148"/>
+    
+    <!-- http://purl.obolibrary.org/obo/IAO_0000122 -->
+
+    <owl:Thing rdf:about="http://purl.obolibrary.org/obo/IAO_0000122"><!-- ready for release -->
+        <rdf:type rdf:resource="http://purl.obolibrary.org/obo/IAO_0000078"/><!-- curation status specification -->
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+        <rdfs:label xml:lang="en">ready for release</rdfs:label>
+        <obo:IAO_0000115 xml:lang="en">Class has undergone final review, is ready for use, and will be included in the next release. Any class lacking "ready_for_release" should be considered likely to change place in hierarchy, have its definition refined, or be obsoleted in the next release.  Those classes deemed "ready_for_release" will also derived from a chain of ancestor classes that are also "ready_for_release."</obo:IAO_0000115>
+        <obo:IAO_0000111 xml:lang="en">ready for release</obo:IAO_0000111>
+    </owl:Thing>
+
+        <!-- http://purl.obolibrary.org/obo/obi.owl -->
+
+    <owl:NamedIndividual rdf:about="http://purl.obolibrary.org/obo/obi.owl"/>
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Axiom>
+        <provenance>joe blow</provenance>
+        <note>gci testing</note>
+        <source>nci</source>
+        <owl:annotatedTarget rdf:resource="&owl2lexevs;SickPatient"/>
+        <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+        <owl:annotatedSource>
+            <owl:Restriction>
+                <rdfs:subClassOf rdf:resource="&owl2lexevs;SickPatient"/>
+                <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
+                <owl:someValuesFrom rdf:resource="&owl2lexevs;Finding"/>
+            </owl:Restriction>
+        </owl:annotatedSource>
+    </owl:Axiom>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 3.5.0) http://owlapi.sourceforge.net -->
+

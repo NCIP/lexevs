@@ -26,20 +26,29 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
+import org.LexGrid.LexBIG.admin.Util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
+import org.lexgrid.loader.ResolvedValueSetDefinitionLoaderImpl;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
@@ -192,15 +201,27 @@ public class LoadTestDataTest {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
-		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, null);
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "PRODUCTION", "12.03test");
 
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(3000);
 		}
 		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+		
+		AbsoluteCodingSchemeVersionReference ref = loader.getCodingSchemeReferences()[0];
+		lbsm.activateCodingSchemeVersion(ref);
+		
+		lbsm.setVersionTag(ref, "PRODUCTION");
+		
+		RegistryEntry entry = LexEvsServiceLocator.getInstance()
+				.getRegistry().getAllRegistryEntriesOfTypeURIAndVersion(Registry.ResourceType.CODING_SCHEME, 
+						ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()).get(0);
+		
+		assertTrue(entry != null);
+		assertTrue(entry.getTag() != null);
+		assertTrue(entry.getTag().equals("PRODUCTION"));
+		assertTrue(entry.getResourceVersion().equals("12.03test"));
 
 	}
 
@@ -211,7 +232,7 @@ public class LoadTestDataTest {
 		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
-		loader.load(new URI("SRITEST:AUTO:AllDomesticButGMWithlt250charName"), null, null, null);
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGMWithlt250charName"), null, null, null, null);
 
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(3000);
@@ -235,6 +256,62 @@ public class LoadTestDataTest {
 	public void testLoadOWLValueSetDef() throws Exception {
 		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VSD_OWL2Annotations.xml", true);
 	}
+	
+	@Test
+	@Order(11)
+	public void testLoadEmptyValueSetDef() throws Exception {
+		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VDForEmptyResolution.xml", true);
+	}
+	
+	@Test
+	@Order(12)
+	public void testChildNodeValueSetDef() throws Exception {
+		getValueSetDefService().loadValueSetDefinition("resources/testData/valueDomain/VDForOneChild.xml", true);
+	}
+	
+	@Test
+	@Order(13)
+	public void testloadEmptyResolvedValueSet() throws URISyntaxException, Exception{
+		
+	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+	ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+    	AbsoluteCodingSchemeVersionReferenceList csVersionList = new AbsoluteCodingSchemeVersionReferenceList(); 
+    	AbsoluteCodingSchemeVersionReference vRef = Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
+    	csVersionList.addAbsoluteCodingSchemeVersionReference(vRef);
+
+		loader.load(new URI("SCOTTEST:No.Node.ValueSet"), null, csVersionList, "PRODUCTION", "1.0");
+
+    	Util.displayLoaderStatus(loader);
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(2000);
+		}
+        assertTrue(loader.getStatus().getState().equals(ProcessState.FAILED));
+        assertTrue(loader.getStatus().getErrorsLogged().booleanValue());
+        getValueSetDefService().removeValueSetDefinition(new URI("SCOTTEST:No.Node.ValueSet"));
+        
+     }
+	
+	@Test
+	@Order(14)
+	public void testloadOneChildResolvedValueSet() throws URISyntaxException, Exception{
+		
+	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+	ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+	AbsoluteCodingSchemeVersionReferenceList csVersionList = new AbsoluteCodingSchemeVersionReferenceList(); 
+	AbsoluteCodingSchemeVersionReference vRef = Constructors.createAbsoluteCodingSchemeVersionReference("urn:oid:11.11.0.1", "1.0");
+	csVersionList.addAbsoluteCodingSchemeVersionReference(vRef);
+
+		loader.load(new URI("XTEST:One.Node.ValueSet"), null, csVersionList, "devel", "1.0");;
+
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(3000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+        
+     }
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
@@ -249,4 +326,6 @@ public class LoadTestDataTest {
 		}
 		return pls_;
 	}
+	
+
 }

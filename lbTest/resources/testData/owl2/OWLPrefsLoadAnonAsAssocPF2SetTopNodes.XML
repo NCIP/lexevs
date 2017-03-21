@@ -3,7 +3,25 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences
   http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd">
-    <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
- <ProcessComplexProps>true</ProcessComplexProps>
+  <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
   <StrictOWLImplementation>false</StrictOWLImplementation>
+  <PrioritizedPresentationNames>
+  <name>editor preferred term</name>
+  <name>IAO_0000111</name>
+  <name>alternative term</name>
+  <name>IAO_0000118</name>
+  <name>OBO foundry unique label</name>
+  <name>IAO_0000589</name>
+  <name>rdfs:Label</name>
+  <name>label</name>
+  <name>FULL_SYN</name>
+  <name>ISA alternative term</name>
+  <name>OBI_0001847</name>
+  <name>NIAID GSCID-BRC alternative term</name>
+  <name>OBI_0001886</name>
+  <name>IEDB alternative term</name>
+  <name>OBI_9991118</name>
+  <name>FGED alternative term</name>
+  <name>OBI_9991119</name>
+  </PrioritizedPresentationNames>
 </OWLLoaderPreferences>

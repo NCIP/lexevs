@@ -23,12 +23,19 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.prefs.Preferences;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
+import org.LexGrid.LexBIG.DataModel.Collections.MetadataPropertyList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.MetadataProperty;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -40,6 +47,7 @@ import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceMetadata;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.gui.codeSet.CodeSet;
@@ -323,6 +331,10 @@ public class LB_GUI {
 
 		cslp.setupColumns(codeSystemsTV_.getTable());
 		codeSystemsTV_.setInput("");
+		
+		// set initial column to sort on
+        codeSystemsTV_.getTable().setSortColumn(codeSystemsTV_.getTable().getColumn(0));
+        codeSystemsTV_.getTable().setSortDirection(SWT.UP);
 
 		codeSystemsTV_
 				.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -1148,7 +1160,6 @@ public class LB_GUI {
                     cns = null;
                     cng = (CodedNodeGraph) codeSets.get(selection[0]);
                 }
-                System.out.println("LgExport button pressed.");
                 
                 AbsoluteCodingSchemeVersionReference acsvr = getSelectedCodeSystem();
                 org.LexGrid.LexBIG.Impl.exporters.LexGridExport exporter;
@@ -1846,28 +1857,35 @@ public class LB_GUI {
             loadItem_.setMenu(loadMenu);
             
 		    try {
-                for(final ExtensionDescription extension : 
-                    lbs_.getServiceManager(null).getExtensionRegistry().getLoadExtensions().getExtensionDescription()){
-                    if(extension.getName() != "ResolvedValueSetDefinitionLoader"){
-                    MenuItem loadItem = new MenuItem(loadMenu, SWT.NONE);
-                    loadItem.setText(extension.getName() + " - " + extension.getDescription());
-                    loadItem.addSelectionListener(new SelectionListener() {
+		    	
+		    	ExtensionDescription[] extensionsSorted = 
+		    			sortNames (lbs_.getServiceManager(null).getExtensionRegistry().getLoadExtensions());
 
-                        public void widgetSelected(SelectionEvent arg0) {
-                            Loader loader;
-                            try {
-                                loader = lbs_.getServiceManager(null).getLoader(extension.getName());
-                            } catch (LBException e) {
-                                throw new RuntimeException(e);
+		    	for (int i = 0; i < extensionsSorted.length; i++) {
+    	            
+    	            final ExtensionDescription extension = extensionsSorted[i];
+
+    	            if(extension.getName() != "ResolvedValueSetDefinitionLoader"){
+                        MenuItem loadItem = new MenuItem(loadMenu, SWT.NONE);
+                        loadItem.setText(extension.getName() + " - " + extension.getDescription());
+                                                
+                        loadItem.addSelectionListener(new SelectionListener() {
+    
+                            public void widgetSelected(SelectionEvent arg0) {
+                                Loader loader;
+                                try {
+                                    loader = lbs_.getServiceManager(null).getLoader(extension.getName());
+                                } catch (LBException e) {
+                                    throw new RuntimeException(e);
+                                }
+                                new LoaderExtensionShell(LB_GUI.this, loader);
                             }
-                            new LoaderExtensionShell(LB_GUI.this, loader);
-                        }
-
-                        public void widgetDefaultSelected(SelectionEvent arg0) {
-                            // not used
-                        }
-
-                    });
+    
+                            public void widgetDefaultSelected(SelectionEvent arg0) {
+                                // not used
+                            }
+    
+                        });
                     }
                 }
                     MenuItem loadRVSItem = new MenuItem(loadMenu, SWT.NONE);
@@ -2078,11 +2096,33 @@ public class LB_GUI {
 	private void displayCodeSystemDetails() throws LBException {
 		CodingSchemeVersionOrTag csvt = new CodingSchemeVersionOrTag();
 		csvt.setVersion(getSelectedCodeSystem().getCodingSchemeVersion());
+		CodeSystemUserMetaData metadata = getCodeSystemMetaData();
 		new CodeSystemDetails(this.shell_, this, getLbs().resolveCodingScheme(
-				getSelectedCodeSystem().getCodingSchemeURN(), csvt));
+				getSelectedCodeSystem().getCodingSchemeURN(), csvt), metadata.toString());
 	}
 
-	private void resolveCodeSet() throws LBException {
+	private CodeSystemUserMetaData getCodeSystemMetaData() throws LBException {
+	    Map<String, String> map = new HashMap<String, String>();
+        LexBIGServiceMetadata smd = getLbs().getServiceMetadata();
+        smd.restrictToCodingScheme(getSelectedCodeSystem());
+        MetadataPropertyList list = null;
+        try{
+        list = smd.resolve();
+        }
+        catch(Exception e){
+            // We don't want the lack of a meta data 
+            // index to blow up the coding scheme
+            // details along with it.
+            return new CodeSystemUserMetaData(map);
+        }
+        MetadataProperty[] properties =list.getMetadataProperty();
+        for(MetadataProperty prop : properties){
+            map.put(prop.getName(), prop.getValue());
+        }
+        return new CodeSystemUserMetaData(map);
+    }
+
+    private void resolveCodeSet() throws LBException {
 		CodedNodeSet cnsData = (CodedNodeSet) getSelectedCodeSet();
 		org.LexGrid.LexBIG.LexBIGService.CodedNodeSet cns = cnsData
 				.getRealCodedNodeSet(getLbs());
@@ -2128,7 +2168,40 @@ public class LB_GUI {
 				cngData.resolveDepth, cngData.maxToReturn, cngData.graphFocus);
 	}
 
+	private ExtensionDescription[] sortNames(ExtensionDescriptionList descriptions) {
+		
+		ArrayList<ExtensionDescription> extensionList = new ArrayList<ExtensionDescription>();
+		
+		for(final ExtensionDescription extension : descriptions.getExtensionDescription()){
+			 if(extension.getName() != "ResolvedValueSetDefinitionLoader"){
+				 extensionList.add(extension);
+			 }
+		}
+		
+		ExtensionDescription[] extensionArray = 
+				extensionList.toArray(new ExtensionDescription[extensionList.size()]);
+		Arrays.sort(extensionArray, ExtensionDescriptionNameComparator);
+		return extensionArray;	
+	}
+	
+	
     public boolean isAdminEnabled() {
         return isAdminEnabled;
     }
+    
+
+    private static Comparator<ExtensionDescription> ExtensionDescriptionNameComparator = new Comparator<ExtensionDescription>() {
+
+    	// Comparator to compare  ExtensionDescription names and sort them alphabetically - ascending.
+    	
+        public int compare(ExtensionDescription desc1, ExtensionDescription desc2) {
+
+          String description1 = desc1.getName().toUpperCase();
+          String description2 = desc2.getName().toUpperCase();
+
+          //ascending order
+          return description1.compareTo(description2);
+        }
+
+    };
 }
