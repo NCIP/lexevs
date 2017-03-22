@@ -792,6 +792,7 @@
 	
 	<bean id="luceneSearchIndexService" class="org.lexevs.dao.index.service.search.LuceneSearchIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
+		<property name="entityIndexer" ref="commonIndexLoaderCodeIndexer"/>
 		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 	</bean>
 	

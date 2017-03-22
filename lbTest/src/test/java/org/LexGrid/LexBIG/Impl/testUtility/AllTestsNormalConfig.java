@@ -189,6 +189,7 @@ import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexes
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateMultipleIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsRemoveTest;
+import org.lexevs.dao.index.operation.ManifestLoadWithAssociationTest;
 import org.lexevs.dao.index.operation.SameSessionLoadandQueryTest;
 import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
@@ -202,6 +203,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2Unanno
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCaseSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
@@ -266,6 +268,7 @@ public class AllTestsNormalConfig {
         owl2LoaderSuite.addTestSuite(NewOWL2UnannotatedSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2PrimitivesSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2PrimitivesUnannotatedSnippetTestIT.class);
+        owl2LoaderSuite.addTestSuite(OWL2SpecialCaseSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2UnitTests.class);
         mainSuite.addTest(owl2LoaderSuite);
         
@@ -510,6 +513,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
         mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
         // $JUnit-END$
 
         return mainSuite;

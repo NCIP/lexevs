@@ -24,10 +24,8 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceManagerImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.admin.Util;
@@ -49,7 +47,9 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  *   -u, URN uniquely identifying the ValueSet Definition
  *   -l, &lt;id&gt; List of coding scheme versions to use for the resolution
  *       in format "csuri1::version1, csuri2::version2"
- *   -csVersionTag Tag to use for resolution, eg: development, production"    
+ *   -csSourceTag, Resolves against scheme bearing this tag, eg: development, production" 
+ *   -vsTag, User defined Tag to apply to the resulting resolved value set scheme  
+ *   -vsVersion, Optional user defined version that can be applied to the resolved value set scheme
  * 
  * Note: If the URN and version values are unspecified, a
  * list of available coding schemes will be presented for
@@ -57,7 +57,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
  *  org.lexgrid.valuesets.admin.LoadResolvedValueSetDefinition
- *    -u &quot;Automobiles:valuesetDefinitionURI&quot; -l &quot;Automobiles::version1, GM::version2&quot; -csVersionTag &quot;production&quot
+ *    -u &quot;Automobiles:valuesetDefinitionURI&quot; -l &quot;Automobiles::version1, GM::version2&quot; -csSourceTag &quot;production&quot -vsTag &quot;PRODUCTION&quot -vsVersion &quot;MyVSVersion&quot
  * </pre>
  * 
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
@@ -92,7 +92,7 @@ public class LoadResolvedValueSetDefinition {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
             Util.displayCommandOptions("LoadResolvedValueSetDefinition", options,
-                    "LoadResolvedValueSetDefinition -u \"Automobiles:valuesetDefinitionURI\" -l \"Automobiles::version1, GM::version2\" -csVersionTag \"production\" ", e);
+                    "LoadResolvedValueSetDefinition -u \"Automobiles:valuesetDefinitionURI\" -l \"Automobiles::version1, GM::version2\" -csVersionTag \"production\", vsTag \"PRODUCTION\"", e);
             Util.displayMessage(Util.getPromptForSchemeHelp());
             return;
         }
@@ -100,7 +100,9 @@ public class LoadResolvedValueSetDefinition {
         // Interpret provided values ...
         String urn = cl.getOptionValue("u");
         String csList = cl.getOptionValue("l");
-        String csVersionTag = cl.getOptionValue("csVersionTag");
+        String csSourceTag = cl.getOptionValue("csSourceTag");
+        String vsTag = cl.getOptionValue("vsTag");
+        String vsVersion = cl.getOptionValue("vsVersion");
         activate = cl.hasOption("a");
 
         // Find in list of valueset definitions  ...
@@ -117,7 +119,7 @@ public class LoadResolvedValueSetDefinition {
         }
         AbsoluteCodingSchemeVersionReferenceList acsvl= getCodingSchemeVersions(csList);
        
-        load(urn, acsvl, null, csVersionTag);
+        load(urn, acsvl, null, csSourceTag, vsTag, vsVersion);
     }
 
     
@@ -142,10 +144,10 @@ public class LoadResolvedValueSetDefinition {
     }
 
     protected void load(String valueSetDefinitionURI, AbsoluteCodingSchemeVersionReferenceList csVersionList, String valueSetDefinitionRevisionId,
-            String  csVersionTag) throws Exception {
+            String  csVersionTag, String vsTag, String vsVersion) throws Exception {
     	//ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader(ResolvedValueSetDefinitionLoader.NAME);
     	ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
-    	loader.load(new URI(valueSetDefinitionURI), valueSetDefinitionRevisionId, csVersionList, csVersionTag);
+    	loader.load(new URI(valueSetDefinitionURI), valueSetDefinitionRevisionId, csVersionList, csVersionTag, vsVersion);
     	Util.displayLoaderStatus(loader);
 		while (loader.getStatus().getEndTime() == null) {
 			Thread.sleep(2000);
@@ -158,6 +160,15 @@ public class LoadResolvedValueSetDefinition {
                 lbsm.activateCodingSchemeVersion(ref);
                 Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                         + ref.getCodingSchemeVersion());
+            }
+        }
+        if(vsTag != null){
+            AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+            for (int i = 0; i < refs.length; i++) {
+                AbsoluteCodingSchemeVersionReference ref = refs[i];
+                lbsm.setVersionTag(ref, vsTag);
+                Util.displayTaggedMessage("Scheme tagged>> " + ref.getCodingSchemeURN() + " Version>> "
+                        + ref.getCodingSchemeVersion() + "tag>> " + vsTag);
             }
         }
      }
@@ -187,7 +198,15 @@ public class LoadResolvedValueSetDefinition {
         o.setRequired(false);
         options.addOption(o);
 
-        o = new Option("csVersionTag", "csVersionTag", false, "Coding Scheme version tag to use");
+        o = new Option("csSourceTag", "csSourceTag", false, "Coding Scheme tag to use");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("vsTag", "vsTag", true, "Tag for target resolved value set scheme");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("vsVersion", "vsVersion", true, "Tag for target resolved value set scheme");
         o.setRequired(false);
         options.addOption(o);
 
