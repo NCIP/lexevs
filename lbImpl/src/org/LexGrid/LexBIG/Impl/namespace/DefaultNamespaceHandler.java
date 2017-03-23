@@ -45,6 +45,15 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
 
     private static final long serialVersionUID = 7565547967975571009L;
     
+    private LexEvsServiceLocator serviceLocator;
+    
+    public DefaultNamespaceHandler(){
+        this(LexEvsServiceLocator.getInstance());
+    }
+    
+    protected DefaultNamespaceHandler(LexEvsServiceLocator instance) {
+       serviceLocator = instance;
+    }
     @Override
     @CacheMethod
     public String getCodingSchemeNameForNamespace(String codingSchemeUri, String version, String namespace)
@@ -82,7 +91,9 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
         
         if(sns == null || 
                 StringUtils.isBlank(sns.getEquivalentCodingScheme()) ||
-                namespace.equals(cs.getCodingSchemeName())){
+                namespace.equals(cs.getCodingSchemeName())                
+                || sns.getEquivalentCodingScheme().equals(cs.getCodingSchemeName())
+                ){
             return Constructors.createAbsoluteCodingSchemeVersionReference(codingSchemeUri, version);
         }
         String uri;
@@ -93,7 +104,7 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
             uri = scs.getUri();
         } else {
             try {
-                uri = LexEvsServiceLocator.getInstance().
+                uri = serviceLocator.
                     getSystemResourceService().getUriForUserCodingSchemeName(sns.getEquivalentCodingScheme(), null);
             } catch (Exception e) {
                 LoggerFactory.getLogger().info("The Equivalent Coding Scheme:" + sns.getEquivalentCodingScheme() + " was not found in the system.");
@@ -101,7 +112,7 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
             }
         }
         
-        Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+        Registry registry = serviceLocator.getRegistry();
         
         List<RegistryEntry> entries = registry.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, uri);
         
@@ -130,7 +141,7 @@ public class DefaultNamespaceHandler implements NamespaceHandler {
     
     private CodingScheme getCodingScheme(String uri, String version) {
         CodingSchemeService service = 
-            LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
+            serviceLocator.getDatabaseServiceManager().getCodingSchemeService();
         
         return service.getCodingSchemeByUriAndVersion(uri, version);  
     }
