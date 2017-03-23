@@ -2238,23 +2238,29 @@ public class OwlApi2LG {
         Set<OWLAnnotationAssertionAxiom> assertions = ontology.getAnnotationAssertionAxioms(owlProp.getIRI());
         AssociationWrapper assocWrap = new AssociationWrapper();
         if(!assertions.isEmpty()){
-        for(OWLAnnotationAssertionAxiom ax : assertions){
-            Property prop = new Property();
-            prop.setPropertyName(ax.getProperty().getIRI().getFragment());
-            //If not a literal -- don't try to add it as a property.
-            if(ax.getValue() instanceof IRI){
-                continue;
+            for(OWLAnnotationAssertionAxiom ax : assertions){
+                Property prop = new Property();
+                prop.setPropertyName(ax.getProperty().getIRI().getFragment());
+                //If not a literal -- don't try to add it as a property.
+                if(ax.getValue() instanceof IRI){
+                    continue;
+                }
+                OWLLiteral literal = (OWLLiteral) ax.getValue();
+                prop.setValue(Constructors.createText(literal.getLiteral()));
+                assocWrap.addProperty(prop);
             }
-            OWLLiteral literal = (OWLLiteral) ax.getValue();
-            prop.setValue(Constructors.createText(literal.getLiteral()));
-            assocWrap.addProperty(prop);
-        }
         }
         String propertyName = getLocalName(owlProp);
         assocWrap.setEntityCode(propertyName);
         String label = resolveLabel(owlProp);
         assocWrap.setAssociationName(label);
-        assocWrap.setForwardName(getAssociationLabel(label, true));
+        
+        String forwardName = getAssociationLabel(label, true);
+        assocWrap.setForwardName(forwardName);
+        
+        // set the description to be the same as the forward name
+        assocWrap.setEntityDescription(forwardName);
+        
         String nameSpace = getNameSpace(owlProp);
         assocWrap.setEntityCodeNamespace(nameSpace);
         assocWrap = assocManager.addAssociation(lgRelationsContainer_Assoc, assocWrap);
