@@ -18,6 +18,7 @@
  */
 package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.custom.concepts.EntityFactory;
 import org.LexGrid.relations.AssociationEntity;
@@ -73,6 +74,12 @@ public class AssociationWrapper {
     
     public void setForwardName(String forwardName) {
         ae.setForwardName(forwardName);
+    }
+    
+    public void setEntityDescription(String description) {
+        EntityDescription ed = new EntityDescription();
+        ed.setContent(description);
+        ae.setEntityDescription(ed);
     }
     
     public void setReverseName(String reverseName) {
