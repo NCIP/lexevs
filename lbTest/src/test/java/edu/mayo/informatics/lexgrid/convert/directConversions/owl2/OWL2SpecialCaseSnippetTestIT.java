@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -21,6 +22,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.apache.commons.lang.StringUtils;
@@ -482,6 +484,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 				.iterateResolvedConceptReference();
 		assertTrue(validateTarget("C117743", itr));
 	}
+		
 	
 	@Test
 	public void testAnnotationPropAsProperty() throws LBInvocationException, LBParameterException{
@@ -532,8 +535,30 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			assertTrue(prop.getSource().length > 0);
 			assertTrue(prop.getSource()[0].getContent().equals("CDISC"));
 		}
-		}	
+		}
 	}
+		
+		@Test
+		public void testDefSourceAsSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set = set.restrictToCodes(Constructors.createConceptReferenceList("C117743"));
+			ResolvedConceptReferenceList rcrlist = set.resolveToList(null, null, null, -1);
+			Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			ResolvedConceptReference rcr = itr.next();
+			assertTrue(rcr.getEntity().getDefinition().length > 0);
+			for(Definition def :rcr.getEntity().getDefinition()){
+				if(def.getValue().getContent().equals("Terminology relevant to the test codes that describe findings from ophthalmic examinations.")){
+				assertTrue(def.getSource().length > 0);
+				assertTrue(def.getSource()[0].getContent().equals("CDISC"));
+			}
+			}
+		}
+	
 	
 	
 
