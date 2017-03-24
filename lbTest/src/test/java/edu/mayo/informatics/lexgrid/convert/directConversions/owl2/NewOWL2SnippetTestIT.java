@@ -155,6 +155,16 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertFalse(validateProperty("AssociationURI", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
 	}
 	
+	@Test 
+	public void testPropertyForAnnotationPropertyAssociationDescription()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationURI"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();		
+		assertTrue(rcr.getEntityDescription().getContent().equals("AssociationURI"));
+	}
+	
 	@Test
 	public void testPropertyForAnnotationPropertyAssociationLIT()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("HappyPatientWalkingAround"));
@@ -989,6 +999,5 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
 		assertTrue(validateQualifier("PlainLiteral", "homo sapiens", itr1));
 	}
-	
 
 }

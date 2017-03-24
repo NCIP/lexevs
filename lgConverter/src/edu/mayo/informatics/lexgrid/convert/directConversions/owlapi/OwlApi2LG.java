@@ -222,7 +222,7 @@ public class OwlApi2LG {
     final static OWLDataFactory factory = manager.getOWLDataFactory();
 
     private static final Object PROPERTY_SOURCE = "term-source";
-
+    private static final Object DEFINITION_SOURCE = "def-source";
     private static final Object REPRESENTATIONAL_FORM = "term-group";
     
     /**
@@ -1516,6 +1516,14 @@ public class OwlApi2LG {
                  continue;
                 }
             }
+            
+            //Do the same for Definition sources
+            if(lgProp instanceof Definition && isSource(annotationName)){
+                Source source = new Source();
+                source.setContent(annotationValue);
+                sources.add(source);
+                continue;
+            }
                 
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
@@ -1539,7 +1547,7 @@ public class OwlApi2LG {
 
     private boolean isSource(String annotationValue) {
         // TODO Auto-generated method stub
-        return annotationValue.equals(PROPERTY_SOURCE);
+        return annotationValue.equals(PROPERTY_SOURCE ) || annotationValue.equals(DEFINITION_SOURCE);
     }
 
     private boolean isRepresentationalForm(String annotationValue) {
@@ -2238,23 +2246,29 @@ public class OwlApi2LG {
         Set<OWLAnnotationAssertionAxiom> assertions = ontology.getAnnotationAssertionAxioms(owlProp.getIRI());
         AssociationWrapper assocWrap = new AssociationWrapper();
         if(!assertions.isEmpty()){
-        for(OWLAnnotationAssertionAxiom ax : assertions){
-            Property prop = new Property();
-            prop.setPropertyName(ax.getProperty().getIRI().getFragment());
-            //If not a literal -- don't try to add it as a property.
-            if(ax.getValue() instanceof IRI){
-                continue;
+            for(OWLAnnotationAssertionAxiom ax : assertions){
+                Property prop = new Property();
+                prop.setPropertyName(ax.getProperty().getIRI().getFragment());
+                //If not a literal -- don't try to add it as a property.
+                if(ax.getValue() instanceof IRI){
+                    continue;
+                }
+                OWLLiteral literal = (OWLLiteral) ax.getValue();
+                prop.setValue(Constructors.createText(literal.getLiteral()));
+                assocWrap.addProperty(prop);
             }
-            OWLLiteral literal = (OWLLiteral) ax.getValue();
-            prop.setValue(Constructors.createText(literal.getLiteral()));
-            assocWrap.addProperty(prop);
-        }
         }
         String propertyName = getLocalName(owlProp);
         assocWrap.setEntityCode(propertyName);
         String label = resolveLabel(owlProp);
         assocWrap.setAssociationName(label);
-        assocWrap.setForwardName(getAssociationLabel(label, true));
+        
+        String forwardName = getAssociationLabel(label, true);
+        assocWrap.setForwardName(forwardName);
+        
+        // set the description to be the same as the forward name
+        assocWrap.setEntityDescription(forwardName);
+        
         String nameSpace = getNameSpace(owlProp);
         assocWrap.setEntityCodeNamespace(nameSpace);
         assocWrap = assocManager.addAssociation(lgRelationsContainer_Assoc, assocWrap);
