@@ -1,7 +1,5 @@
 package org.LexGrid.LexBIG.Impl.namespace;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +19,9 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.service.SystemResourceService;
 import org.mockito.Mockito;
 
-public class DefaultNamespaceHandlerTest {
+import junit.framework.TestCase;
+
+public class DefaultNamespaceHandlerTest extends TestCase {
 	
 	String uri = "urn:oid:11.11.0.1";
 	String ver1 = "1.0";

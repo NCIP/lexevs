@@ -182,6 +182,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandlerTest;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
@@ -331,6 +332,10 @@ public class AllTestsNormalConfig {
         TestSuite comparatorSuite = new TestSuite("Comparator Tests");
         comparatorSuite.addTestSuite(ResultComparatorTest.class);
         mainSuite.addTest(comparatorSuite);
+        
+        TestSuite namespaceSuite = new TestSuite("Namespace Tests");
+        namespaceSuite.addTestSuite(DefaultNamespaceHandlerTest.class);
+        mainSuite.addTest(namespaceSuite);
       
         TestSuite codedNodeSetSuite = new TestSuite("CodedNodeSet Tests");
         codedNodeSetSuite.addTestSuite(ResolveTest.class);
