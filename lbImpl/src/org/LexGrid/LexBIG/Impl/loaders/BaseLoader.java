@@ -380,7 +380,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             } catch (Exception e) {
                 status_.setState(ProcessState.FAILED);
                 md_.fatal("Failed while running the conversion", e);
-                getLogger().warn("Load failed: " + e.getCause());
+                getLogger().warn("Load failed: " + (e.getCause() != null?e.getCause():e.getMessage()));
             } finally {
                 if (status_.getState() == null || 
                         (
