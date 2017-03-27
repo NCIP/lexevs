@@ -123,7 +123,7 @@ public abstract class AbstractLazyLoadableCodeToReturn extends CodeToReturn {
         this.setNamespace(
                 doc.get(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE));
         this.setEntityTypes(
-                doc.getValues("entityType"));
+                doc.getValues("type"));
         isHydrated = true;       
     }
     
