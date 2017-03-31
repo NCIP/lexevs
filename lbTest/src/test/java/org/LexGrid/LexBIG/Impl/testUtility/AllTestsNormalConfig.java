@@ -183,6 +183,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandlerTest;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
@@ -332,6 +333,10 @@ public class AllTestsNormalConfig {
         TestSuite comparatorSuite = new TestSuite("Comparator Tests");
         comparatorSuite.addTestSuite(ResultComparatorTest.class);
         mainSuite.addTest(comparatorSuite);
+        
+        TestSuite namespaceSuite = new TestSuite("Namespace Tests");
+        namespaceSuite.addTestSuite(DefaultNamespaceHandlerTest.class);
+        mainSuite.addTest(namespaceSuite);
       
         TestSuite codedNodeSetSuite = new TestSuite("CodedNodeSet Tests");
         codedNodeSetSuite.addTestSuite(ResolveTest.class);
@@ -425,7 +430,7 @@ public class AllTestsNormalConfig {
 //
         mainSuite.addTest(functionalTests);
 
-        if(System.getProperty(TREE_TESTS_ENV) != null) {
+//        if(System.getProperty(TREE_TESTS_ENV) != null) {
             TestSuite treeTests = new TestSuite("tree extension tests");
             treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
             treeTests.addTestSuite(LexEvsTreeNodeTest.class);
@@ -436,7 +441,7 @@ public class AllTestsNormalConfig {
             treeTests.addTestSuite(TestGetTree.class);
 
             mainSuite.addTest(treeTests);
-        }
+//        }
         
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
