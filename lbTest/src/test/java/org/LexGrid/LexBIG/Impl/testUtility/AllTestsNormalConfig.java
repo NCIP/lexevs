@@ -430,7 +430,7 @@ public class AllTestsNormalConfig {
 //
         mainSuite.addTest(functionalTests);
 
-        if(System.getProperty(TREE_TESTS_ENV) != null) {
+//        if(System.getProperty(TREE_TESTS_ENV) != null) {
             TestSuite treeTests = new TestSuite("tree extension tests");
             treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
             treeTests.addTestSuite(LexEvsTreeNodeTest.class);
@@ -441,7 +441,7 @@ public class AllTestsNormalConfig {
             treeTests.addTestSuite(TestGetTree.class);
 
             mainSuite.addTest(treeTests);
-        }
+//        }
         
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
