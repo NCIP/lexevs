@@ -22,11 +22,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -38,6 +38,8 @@ import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
+
+import junit.framework.TestCase;
 
 /**
  * This test removes the terminologies loaded by the JUnit tests.
@@ -182,22 +184,51 @@ public class CleanUpTest extends TestCase {
     	remove_rvs.remove(acsvrl, true);
     }
     
-    @Test 
-    public void testRemoveResolvedAllButGM() throws Exception {
-        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
-        AbsoluteCodingSchemeVersionReference acsvr = Constructors.
+    @Test
+    public void testRemoveResolvedAllButGM() throws LBParameterException, LBInvocationException, LBException{
+    	LexBIGServiceManager lbsm = null;
+    	AbsoluteCodingSchemeVersionReference acsvr = null;
+    
+         lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+         acsvr = Constructors.
     			createAbsoluteCodingSchemeVersionReference("SRITEST:AUTO:AllDomesticButGM", "12.03test");
-        lbsm.deactivateCodingSchemeVersion(acsvr , null);
-    	lbsm.removeCodingSchemeVersion(acsvr);
+
+         try{
+        	 lbsm.deactivateCodingSchemeVersion(acsvr , null);  
+        	 fail("LBParameterException should be thrown");
+         }
+         catch(LBParameterException e){
+        	 assertEquals(e.getMessage(), "Could not find Resource:SRITEST:AUTO:AllDomesticButGM, 12.03test");
+         }
+         try{
+        	 lbsm.removeCodingSchemeVersion(acsvr);
+          	 fail("RuntimeException should be thrown");
+         }
+         catch(RuntimeException e){
+        	 assertEquals(e.getMessage(), "No CodingScheme Entry for URI: SRITEST:AUTO:AllDomesticButGM, Version: 12.03test");
+         }
     }
     
     @Test 
-    public void testRemoveXTest() throws Exception {
-        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+    public void testRemoveXTest() throws LBException{
+
+    	LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
     	AbsoluteCodingSchemeVersionReference acsvr = Constructors.
     			createAbsoluteCodingSchemeVersionReference("XTEST:One.Node.ValueSet", "1.0");
-    	        lbsm.deactivateCodingSchemeVersion(acsvr , null);
-    	    	lbsm.removeCodingSchemeVersion(acsvr);
+    	try {
+    		lbsm.deactivateCodingSchemeVersion(acsvr , null);
+    		fail("LBParameterException should be thrown");
+    	}
+    	catch(LBParameterException e){
+    		assertEquals(e.getMessage(), "Could not find Resource:XTEST:One.Node.ValueSet, 1.0");
+    	}
+    	try{
+    		lbsm.removeCodingSchemeVersion(acsvr);
+    		fail("RuntimeException should be thrown");
+    	}
+    	catch(RuntimeException e){
+    		assertEquals(e.getMessage(), "No CodingScheme Entry for URI: XTEST:One.Node.ValueSet, Version: 1.0");
+    	}
     }
         
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){

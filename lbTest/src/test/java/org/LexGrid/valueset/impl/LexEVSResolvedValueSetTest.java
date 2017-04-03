@@ -57,6 +57,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	public void testListAllResolvedValueSets() throws Exception {
 		List<CodingScheme> list = service.listAllResolvedValueSets();
 		assertTrue(list.size() > 0);
+		assertTrue(list.size() == 3);
 		CodingScheme scheme = list.get(0);
 		
 		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
