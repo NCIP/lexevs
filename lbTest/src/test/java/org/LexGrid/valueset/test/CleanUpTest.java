@@ -31,13 +31,16 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
+import org.springframework.core.annotation.Order;
 
 import junit.framework.TestCase;
 
@@ -47,11 +50,13 @@ import junit.framework.TestCase;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+@RunWith(OrderingTestRunner.class)
 public class CleanUpTest extends TestCase {
     
 	private LexEVSValueSetDefinitionServices vds_;
 	private LexEVSPickListDefinitionServices pls_;
 	
+	@Order(0)
 	public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -63,6 +68,7 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 	
+	@Order(1)
 	public void testRemoveAutombilesV2() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
         
@@ -74,6 +80,7 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 	
+	@Order(2)
 	public void testRemoveGermanMadeParts() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -85,6 +92,7 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 
+	@Order(3)
     public void testRemoveObo() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -96,6 +104,7 @@ public class CleanUpTest extends TestCase {
 
     }
     
+	@Order(4)
     public void testRemoveOWL2() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -108,6 +117,7 @@ public class CleanUpTest extends TestCase {
     }
     
     @Test
+	@Order(5)
 	public void testRemoveAllTestValueSetDefs() throws LBException, URISyntaxException {
 		List<String> uris = getValueSetDefService().listValueSetDefinitions(null);
 		assertTrue(uris.size() > 0);
@@ -131,6 +141,7 @@ public class CleanUpTest extends TestCase {
 	}
 	
 	@Test
+	@Order(6)
 	public void testRemovePickList() {
 		try {
 			getPickListService().removePickList("SRITEST:AUTO:DomesticAutoMakers");
@@ -151,6 +162,7 @@ public class CleanUpTest extends TestCase {
 	}
 	
 	@Test
+	@Order(7)
 	public void testRemoveAllTestPickLists() throws LBException {
 		List<String> pickListIds = getPickListService().listPickListIds();
 		for (String pickListId : pickListIds)
@@ -171,6 +183,7 @@ public class CleanUpTest extends TestCase {
 	}
 	
     @Test 
+	@Order(8)
     public void testRemoveResolvedValueSet() throws Exception {
     	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
     	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
@@ -178,6 +191,7 @@ public class CleanUpTest extends TestCase {
     }
     
     @Test 
+	@Order(9)
     public void testRemoveResolvedValueSe2t() throws Exception {
     	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
     	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.1");
@@ -185,6 +199,7 @@ public class CleanUpTest extends TestCase {
     }
     
     @Test
+	@Order(10)
     public void testRemoveResolvedAllButGM() throws LBParameterException, LBInvocationException, LBException{
     	LexBIGServiceManager lbsm = null;
     	AbsoluteCodingSchemeVersionReference acsvr = null;
@@ -210,6 +225,7 @@ public class CleanUpTest extends TestCase {
     }
     
     @Test 
+	@Order(11)
     public void testRemoveXTest() throws LBException{
 
     	LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
