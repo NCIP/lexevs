@@ -6,6 +6,6 @@ REM   -l, The list of resolved value sets to remove, separated by comma. format 
 REM   -f,--force Force de-activation and removal without confirmation.
 REM 
 REM
-REM Example: RemoveResolvedValueSet  -l \"resolvedValueSetUri1::version1, resolvedValueSetUri2::version2\" -f
+REM Example: RemoveResolvedValueSet  -l \"source.coding.scheme.uri::version1, second.source.uri::version2\" -f
 REM
 java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexgrid.valuesets.admin.RemoveResolvedValueSet %*

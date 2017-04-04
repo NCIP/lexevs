@@ -95,7 +95,7 @@ public class RemoveResolvedValueSet {
 			Util.displayCommandOptions(
 					"RemoveResolvedValueSet",
 					options,
-					"RemoveResolvedValueSet  -l \"resolved-value-set1::version1, resolved-value-set2::version2\" -f ",
+					"RemoveResolvedValueSet  -l \"source.coding.scheme.uri::version1, second.source.uri::version2\" -f ",
 					e);
 			Util.displayMessage(Util.getPromptForSchemeHelp());
 			return;
