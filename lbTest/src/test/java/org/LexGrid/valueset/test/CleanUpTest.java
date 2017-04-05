@@ -38,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
+import org.lexgrid.valuesets.admin.RemoveVSResolvedFromCodingSchemes;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.springframework.core.annotation.Order;
@@ -56,6 +57,7 @@ public class CleanUpTest extends TestCase {
 	private LexEVSValueSetDefinitionServices vds_;
 	private LexEVSPickListDefinitionServices pls_;
 	
+	@Test
 	@Order(0)
 	public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
@@ -68,6 +70,7 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 	
+	@Test
 	@Order(1)
 	public void testRemoveAutombilesV2() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
@@ -80,6 +83,7 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 	
+	@Test
 	@Order(2)
 	public void testRemoveGermanMadeParts() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
@@ -92,6 +96,7 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 
+	@Test
 	@Order(3)
     public void testRemoveObo() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
@@ -104,6 +109,7 @@ public class CleanUpTest extends TestCase {
 
     }
     
+	@Test
 	@Order(4)
     public void testRemoveOWL2() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
@@ -185,7 +191,7 @@ public class CleanUpTest extends TestCase {
     @Test 
 	@Order(8)
     public void testRemoveResolvedValueSet() throws Exception {
-    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
+    	RemoveVSResolvedFromCodingSchemes remove_rvs= new RemoveVSResolvedFromCodingSchemes();
     	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
     	remove_rvs.remove(acsvrl, true);
     }
@@ -193,7 +199,7 @@ public class CleanUpTest extends TestCase {
     @Test 
 	@Order(9)
     public void testRemoveResolvedValueSe2t() throws Exception {
-    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
+    	RemoveVSResolvedFromCodingSchemes remove_rvs= new RemoveVSResolvedFromCodingSchemes();
     	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.1");
     	remove_rvs.remove(acsvrl, true);
     }
