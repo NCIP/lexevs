@@ -629,7 +629,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
         assertTrue(csvr == null);
         
         csvr = getValueSetDefinitionService().isEntityInValueSet("Focus", new URI("Automobiles"), new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, LBConstants.KnownTags.PRODUCTION.toString());
-        assertTrue(csvr == null);
+        assertTrue(csvr != null);
 	}
 
 	@Test
