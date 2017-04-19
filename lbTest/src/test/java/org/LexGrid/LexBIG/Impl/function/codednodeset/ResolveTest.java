@@ -320,4 +320,48 @@ public class ResolveTest extends BaseCodedNodeSetTest {
         
         assertTrue(ref.getEntity().getDefinition().length == 1);
     }
+    
+    public void testResolveEntityTypes() throws LBException{
+    	CodedNodeSet nodes = lbs.getNodeSet(AUTO_SCHEME, null, null);
+    	nodes = nodes.restrictToCodes(Constructors.createConceptReferenceList("005"));
+        ResolvedConceptReferencesIterator itr = nodes.resolve(null, null, null);
+
+        ResolvedConceptReference ref = itr.next();
+        
+        assertTrue(ref.getEntityType().length > 0);
+        assertTrue(ref.getEntityType(0).equals("concept"));
+    }
+    
+    public void testResolveEntityTypeConcepts() throws LBException{
+    	CodedNodeSet nodes = lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
+    	nodes = nodes.restrictToCodes(Constructors.createConceptReferenceList("005"));
+        ResolvedConceptReferencesIterator itr = nodes.resolve(null, null, null);
+
+        ResolvedConceptReference ref = itr.next();
+        
+        assertTrue(ref.getEntityType().length > 0);
+        assertTrue(ref.getEntityType(0).equals("concept"));
+    }
+    
+    public void testResolveEntityTypeValueDomain() throws LBException{
+    	CodedNodeSet nodes = lbs.getNodeSet(AUTO_SCHEME, null, null);
+    	nodes = nodes.restrictToCodes(Constructors.createConceptReferenceList("VD005"));
+        ResolvedConceptReferencesIterator itr = nodes.resolve(null, null, null);
+
+        ResolvedConceptReference ref = itr.next();
+        
+        assertTrue(ref.getEntityType().length > 0);
+        assertTrue(ref.getEntityType(0).equals("valueDomain"));
+    }
+    
+    public void testResolveEntityTypeAssociation() throws LBException{
+    	CodedNodeSet nodes = lbs.getNodeSet(AUTO_SCHEME, null, null);
+    	nodes = nodes.restrictToCodes(Constructors.createConceptReferenceList("AssocEntity"));
+        ResolvedConceptReferencesIterator itr = nodes.resolve(null, null, null);
+
+        ResolvedConceptReference ref = itr.next();
+        
+        assertTrue(ref.getEntityType().length > 0);
+        assertTrue(ref.getEntityType(0).equals("association"));
+    }
 }
