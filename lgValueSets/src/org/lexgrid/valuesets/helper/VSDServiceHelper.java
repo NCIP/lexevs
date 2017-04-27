@@ -541,6 +541,7 @@ public class VSDServiceHelper {
 				String tagVersion = rm_.getInternalVersionStringForTag(csURI,
 						versionTag);
 				if (!StringUtils.isEmpty(tagVersion)){
+					refVersions.put(csURI, tagVersion);
 					return Constructors
 							.createAbsoluteCodingSchemeVersionReference(csURI,
 									tagVersion);
