@@ -192,6 +192,7 @@ import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTes
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateMultipleIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsRemoveTest;
 import org.lexevs.dao.index.operation.ManifestLoadWithAssociationTest;
+import org.lexevs.dao.index.operation.OrphanedIndexTest;
 import org.lexevs.dao.index.operation.SameSessionLoadandQueryTest;
 import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
@@ -521,6 +522,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
         // $JUnit-END$
 
         return mainSuite;
