@@ -1,13 +1,13 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.Extensions.Load.SourceAssertedValueSetLoader;
+import org.LexGrid.LexBIG.Extensions.Load.SourceAssertedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.concepts.Entity;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
-public class SourceAssertedValueSetLoaderImpl extends BaseLoader implements SourceAssertedValueSetLoader {
+public class SourceAssertedValueSetLoaderImpl extends BaseLoader implements SourceAssertedValueSetDefinitionLoader {
 
 
     /**
@@ -16,7 +16,7 @@ public class SourceAssertedValueSetLoaderImpl extends BaseLoader implements Sour
     private static final long serialVersionUID = 1817759866573084934L;
 
     @Override
-    public void load(String vsAssociationName) throws Exception {
+    public void load(String vsAssociationName, String codingSchemeName, String codingSchemeVersion, boolean targetToSource) throws Exception {
         // TODO Auto-generated method stub
 
     }
@@ -29,7 +29,7 @@ public class SourceAssertedValueSetLoaderImpl extends BaseLoader implements Sour
 
     @Override
     protected URNVersionPair[] doLoad() throws Exception {
-        // TODO Auto-generated method stub
+   
         return null;
     }
 
