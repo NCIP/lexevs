@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
@@ -40,7 +41,7 @@ public class EntityToVSDTransFormerTest {
 	}
 	
 	@Test
-	public void entityToValueSetTransformTest(){
+	public void entityToValueSetTransformTest() throws LBParameterException{
 		transformer = new EntityToVSDTransformer(null);
 		Entity entity = new Entity();
 		Property prop = new Property();
@@ -49,8 +50,15 @@ public class EntityToVSDTransFormerTest {
 		text.setContent("CDISC");
 		prop.setValue(text);
 		entity.getPropertyAsReference().add(prop);
-		List<ValueSetDefinition> list = transformer.transformEntityToValueSetDefinition(entity, null);
+		List<ValueSetDefinition> list = transformer.transformEntityToValueSetDefinitions(entity, null);
 		assertNotNull(list);
+	}
+	
+	@Test
+	public void getProductionVersionForCodingSchemeURI() throws LBParameterException{
+		transformer = new EntityToVSDTransformer(null);
+		String version = transformer.getProductionVersionForCodingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+		assertNotNull(version);
 	}
 	
 	
