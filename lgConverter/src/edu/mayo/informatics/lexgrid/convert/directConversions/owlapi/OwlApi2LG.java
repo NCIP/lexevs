@@ -1651,7 +1651,8 @@ public class OwlApi2LG {
         lgClass.setEntityCodeNamespace(nameSpace);
 
         EntityDescription ed = new EntityDescription();
-        ed.setContent(renderer.render(owlClassExp));
+        String desc = renderer.render(owlClassExp).replace("\n", " ").replaceAll("\r", " ");
+        ed.setContent(desc);
         lgClass.setEntityDescription(ed);
 
         int lgPropNum = 0;
