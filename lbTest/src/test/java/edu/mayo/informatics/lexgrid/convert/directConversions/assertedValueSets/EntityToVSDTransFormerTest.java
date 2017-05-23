@@ -34,27 +34,27 @@ public class EntityToVSDTransFormerTest {
 	public void setUp(){
 		service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
 				getCodedNodeGraphService();
-		transformer = new EntityToVSDTransformer(null, null, null, null);
+		transformer = new EntityToVSDTransformer(null, null, null, null, ASSOCIATION_NAME);
 	}
 
-	@Test
-	public void getPredicateGuidForValueSetRelationTest() {
-		transformer = new EntityToVSDTransformer(null, null, null, null);
-		String guid = transformer.getPredicateGuidForValueSetRelation(ASSOCIATION_NAME, CODING_SCHEME_URI, VERSION);
-		assertEquals(guid, "37456035");
-	}
+//	@Test
+//	public void getPredicateGuidForValueSetRelationTest() {
+//		
+//		String guid = transformer.getPredicateGuidForValueSetRelation(ASSOCIATION_NAME, CODING_SCHEME_URI, VERSION);
+//		assertEquals(guid, "37456035");
+//	}
 	
-	@Test
-	public void getgetEntityByCodeAndNamespaceTest(){
-		transformer = new EntityToVSDTransformer(null, null, null, null);
-		Entity entity = transformer.getEntityByCodeAndNamespace(
-				CODING_SCHEME_URI, VERSION, "C12434", "Thesaurus");
-		assertNotNull(entity);
-	}
+//	@Test
+//	public void getgetEntityByCodeAndNamespaceTest(){
+//		
+//		Entity entity = transformer.getEntityByCodeAndNamespace(
+//				CODING_SCHEME_URI, VERSION, "C12434", "Thesaurus");
+//		assertNotNull(entity);
+//	}
 	
 	@Test
 	public void entityToValueSetTransformTest() throws LBParameterException{
-		transformer = new EntityToVSDTransformer(null, null, null, null);
+		
 		Entity entity = new Entity();
 		Property prop = new Property();
 		prop.setPropertyName("Contributing_Source");
@@ -68,7 +68,7 @@ public class EntityToVSDTransFormerTest {
 	
 	@Test
 	public void getProductionVersionForCodingSchemeURI() throws LBParameterException{
-		transformer = new EntityToVSDTransformer(null, null, null, null);
+		
 		String version = transformer.getProductionVersionForCodingSchemeURI(CODING_SCHEME_URI);
 		assertNotNull(version);
 	}
@@ -116,7 +116,7 @@ public class EntityToVSDTransFormerTest {
 	@Test
     public void createUriTest(){
 		String uri = transformer.createUri("http://evs.nci.nih.gov/valueset/", "CDISC", "C12345");
-		assertTrue(uri.equals("http://evs.nci.nih.gov/valueset/CDISC/C12345"));
+		assertEquals(uri,"http://evs.nci.nih.gov/valueset/CDISC/C12345");
 		String test = transformer.createUri("http://evs.nci.nih.gov/valueset/", null, "C12345");
 		assertTrue(test.equals("http://evs.nci.nih.gov/valueset/C12345"));
     }
@@ -142,7 +142,7 @@ public class EntityToVSDTransFormerTest {
 		Entity entity = new Entity();
 		entity.setEntityCode("C123");
 		entity.setEntityCodeNamespace(CODING_SCHEME);
-		EntityReference ref = transformer.initEntityReference(entity);
+		EntityReference ref = transformer.initEntityReference(entity, ASSOCIATION_NAME);
 		assertTrue(ref.getEntityCode().equals("C123"));
 		assertTrue(ref.getEntityCodeNamespace().equals(CODING_SCHEME));
 		assertTrue(ref.getLeafOnly());
@@ -150,8 +150,5 @@ public class EntityToVSDTransFormerTest {
 		assertTrue(ref.getTargetToSource());
 		assertTrue(ref.getTransitiveClosure());
     }
-
-	
-	
 
 }

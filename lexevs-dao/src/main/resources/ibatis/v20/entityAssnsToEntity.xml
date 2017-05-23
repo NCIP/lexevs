@@ -1288,6 +1288,19 @@
 			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 	</select>
 	
+	<select id="getDistinctTargets" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" 
+		resultMap="nodeResult">
+		SELECT DISTINCT
+			targetEntityCode AS entityCode,
+			targetEntityCodeNamespace AS entityCodeNamespace
+		FROM 
+			$prefix$entityAssnsToEntity
+		WHERE
+			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+	</select>
+	
 	<select id="getTargetsOfSource" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
 		remapResults="true" 

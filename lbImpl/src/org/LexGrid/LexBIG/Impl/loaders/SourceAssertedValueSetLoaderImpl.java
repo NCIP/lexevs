@@ -8,12 +8,18 @@ import org.LexGrid.concepts.Entity;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
 public class SourceAssertedValueSetLoaderImpl extends BaseLoader implements SourceAssertedValueSetDefinitionLoader {
-
+    
 
     /**
      * 
      */
     private static final long serialVersionUID = 1817759866573084934L;
+
+    
+//    public void init(String associationName, String codingSchemeName, String codingSchemeVersion, boolean targetToSource) throws LBParameterException{
+//        csUri = resourceService.getInternalCodingSchemeNameForUserCodingSchemeName(codingSchemeName, codingSchemeVersion);
+//        guid = getPredicateGuidForValueSetRelation(associationName, codingSchemeVersion, codingSchemeVersion);
+//    }
 
     @Override
     public void load(String vsAssociationName, String codingSchemeName, String codingSchemeVersion, boolean targetToSource) throws Exception {
@@ -35,14 +41,20 @@ public class SourceAssertedValueSetLoaderImpl extends BaseLoader implements Sour
 
     @Override
     protected OptionHolder declareAllowedOptions(OptionHolder holder) {
-        // TODO Auto-generated method stub
-        return null;
+        return holder;
     }
 
     @Override
-    protected ExtensionDescription buildExtensionDescription() {
-        // TODO Auto-generated method stub
-        return null;
+    protected ExtensionDescription buildExtensionDescription(){
+        ExtensionDescription temp = new ExtensionDescription();
+        temp.setExtensionBaseClass(SourceAssertedValueSetLoaderImpl.class.getInterfaces()[0].getName());
+        temp.setExtensionClass(SourceAssertedValueSetLoaderImpl.class.getName());
+        temp.setDescription(DESCRIPTION);
+        temp.setName(NAME);
+
+        return temp;
     }
+    
+
 
 }

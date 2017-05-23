@@ -33,54 +33,31 @@ import java.util.stream.Collectors;
 
 public class EntityToVSDTransformer {
     private static final Object PRODUCTION = "PRODUCTION";
-    private CodedNodeGraphService codedNodeGraphDao;
-    private EntityService entityService;
-    private CodingSchemeService csService;
-    private SystemResourceService resourceService;
     private Registry registry;
     private String SOURCE_NAME = "Contributing_Source";
     private String baseURI = null;
     private String codingSchemeURI;
+    private String association;
      
     private LgMessageDirectorIF messages_;
     private String codingSchemeVersion;
     private String owner;
     
-   public EntityToVSDTransformer(String baseURI, String codingSchemeUri, String codingSchemeVersion, String owner){
-       codedNodeGraphDao = LexEvsServiceLocator.getInstance().
-               getDatabaseServiceManager().getCodedNodeGraphService();
-       entityService = LexEvsServiceLocator.getInstance().
-               getDatabaseServiceManager().getEntityService();
-       csService = LexEvsServiceLocator.getInstance().
-               getDatabaseServiceManager().getCodingSchemeService();
-       resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
+   public EntityToVSDTransformer(String baseURI, String codingSchemeUri, 
+           String codingSchemeVersion, String owner, String definingAssociation){
        registry = LexEvsServiceLocator.getInstance().getRegistry();
        this.baseURI = baseURI;
        this.codingSchemeURI = codingSchemeUri;
        this.codingSchemeVersion = codingSchemeVersion;
        this.owner = owner;
+       this.association = definingAssociation;
        
    }
     
-    protected String getPredicateGuidForValueSetRelation(String associationName, String codingSchemeUri,
-            String codingSchemeVersion){
-        List<String> list = new ArrayList<String>();
-        list.add(associationName);
-        List<String> uids = codedNodeGraphDao.getAssociationPredicateUidsForNames(
-                codingSchemeUri, codingSchemeVersion, null, list);
-        if( uids == null || uids.size() < 1){
-            throw new RuntimeException("No association is asserted for :" 
-        + associationName + " in " + codingSchemeUri + ":" + codingSchemeVersion);
-        }
-        return uids.get(0);
-    }
+
     
  
-    
-    protected Entity getEntityByCodeAndNamespace(String codingSchemeUri, String version, String code, String namespace){
-        Entity entity = entityService.getEntity(codingSchemeUri, version, code, namespace);
-        return entity;
-    }
+
     
     //Entity with more than one source will be processed into more than one definition
     //Assumption is that this source representation is always a flat list of values
@@ -95,7 +72,7 @@ public class EntityToVSDTransformer {
                "1", owner);
        DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
        Mappings mappings = new Mappings();
-       EntityReference ref = initEntityReference(entity);
+       EntityReference ref = initEntityReference(entity, this.association );
        entry.setEntityReference(ref);
        def.addDefinitionEntry(entry);
        mappings.addSupportedNamespace(createSupportedNamespace(entity.getEntityCodeNamespace(), 
@@ -179,7 +156,7 @@ public class EntityToVSDTransformer {
     }
     
     protected String createUri(String base, String source, String code){
-       return base + "/" + source != null?source + "/":"" + code;
+       return base + (source != null?source + "/":"") + code;
     }
     
     protected ValueSetDefinition initValueSetDefintion(String namespace, boolean isActive, 
@@ -199,13 +176,14 @@ public class EntityToVSDTransformer {
         return entry;
     }
     
-    protected EntityReference initEntityReference(Entity entity){
+    protected EntityReference initEntityReference(Entity entity, String associationName){
         EntityReference ref = new EntityReference();
         ref.setLeafOnly(true);
         ref.setTargetToSource(true);
         ref.setTransitiveClosure(true);
         ref.setEntityCode(entity.getEntityCode());
         ref.setEntityCodeNamespace(entity.getEntityCodeNamespace());
+        ref.setReferenceAssociation(associationName);
         return ref;
     }
 
