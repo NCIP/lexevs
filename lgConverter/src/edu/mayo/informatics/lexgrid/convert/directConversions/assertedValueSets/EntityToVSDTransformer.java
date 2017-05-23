@@ -1,7 +1,11 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.commonTypes.Property;
@@ -16,20 +20,9 @@ import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
-import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
-import org.lexevs.system.service.SystemResourceService;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 public class EntityToVSDTransformer {
     private static final Object PRODUCTION = "PRODUCTION";
@@ -65,11 +58,12 @@ public class EntityToVSDTransformer {
        //String uri = resourceService.getUriForUserCodingSchemeName(entity.getEntityCodeNamespace(), null);
        final String source = getDefaultSourceIfNull(sourceName);
        List<Property> props = entity.getPropertyAsReference();
-       List<Property> list = props.stream().filter(x -> x.getPropertyName().equals(source)).collect(Collectors.toList());
+
        List<ValueSetDefinition> defs = new ArrayList<ValueSetDefinition>();
        HashMap<String, String> definedSources = new HashMap<String, String>();
        ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, 
                "1", owner);
+       def.setValueSetDefinitionName(entity.getEntityDescription().getContent());
        DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
        Mappings mappings = new Mappings();
        EntityReference ref = initEntityReference(entity, this.association );
@@ -79,12 +73,15 @@ public class EntityToVSDTransformer {
                codingSchemeURI));
        mappings.addSupportedCodingScheme(createSupportedCodingScheme(entity.getEntityCodeNamespace(), 
                codingSchemeURI));
-      for(Property p: list){
-          if(p.getPropertyName().equals(sourceName)){
-              definedSources.put(p.getValue().getContent(), "PlaceHolder");
-              mappings.addSupportedSource(createSupportedSource(entity.getEntityCodeNamespace(), 
-                      codingSchemeURI));
-          }     
+       List<Property> list = props.stream().filter(x -> x.getPropertyName().equals(source)).collect(Collectors.toList());
+       
+       for(Property p : list){
+           definedSources.put(p.getValue().getContent(), "PlaceHolder");
+           mappings.addSupportedSource(createSupportedSource(entity.getEntityCodeNamespace(), 
+                   codingSchemeURI));
+       }
+      for(Property p: props){
+
           if(p.getPropertyName().equals("Semantic_Type")){
             def.setConceptDomain(p.getValue().getContent());
             mappings.addSupportedConceptDomain(createSupportedConceptDomain(p.getValue().getContent(), 
@@ -99,15 +96,32 @@ public class EntityToVSDTransformer {
               }
           }
       }
-      definedSources.forEach((x,y) -> defs.add(createVSDefinitionBySource(def,x,y)));
-
+      def.setMappings(mappings);
+      definedSources.forEach((x,y) -> defs.add(createVSDefinitionBySource(def,x,y))); 
+      if(definedSources.size() > 1 || definedSources.size() == 0 || !definedSources.containsValue(owner)){
+      defs.add(createDefaultDefIfMoreThanOneSouce(def, entity));
+      }
        return defs;
     }
+
+    private ValueSetDefinition createDefaultDefIfMoreThanOneSouce( ValueSetDefinition def, Entity entity) {
+        ValueSetDefinition newDef = def;
+        newDef.setValueSetDefinitionURI(createUri(baseURI,null,entity.getEntityCode()));
+        newDef.setEntityDescription(entity.getEntityDescription());
+        newDef.getMappings().addSupportedSource(createSupportedSource(owner, codingSchemeURI));
+        return newDef;
+    }
+
+
+
+
+
 
     private ValueSetDefinition createVSDefinitionBySource(ValueSetDefinition def, String source, String definition) {
        ValueSetDefinition newDef = def;
        newDef.setValueSetDefinitionURI(createUri(baseURI, source, def.getDefinitionEntry(0).getEntityReference().getEntityCode()));
        newDef.setEntityDescription(Constructors.createEntityDescription(definition));
+       newDef.getMappings().addSupportedSource(createSupportedSource(source, codingSchemeURI));
         return newDef;
     }
 

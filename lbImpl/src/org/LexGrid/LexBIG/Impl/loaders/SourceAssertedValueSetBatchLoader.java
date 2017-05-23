@@ -32,8 +32,7 @@ public class SourceAssertedValueSetBatchLoader {
     private EntityToVSDTransformer transformer;
     private ValueSetDefinitionService valueSetDefinitionService;
     
-    
-    
+
     
     public SourceAssertedValueSetBatchLoader(String codingScheme, String version, 
             String associationName, boolean targetToSource, String baseUri, String owner) throws LBParameterException{
@@ -50,8 +49,13 @@ public class SourceAssertedValueSetBatchLoader {
         this.codingSchemeVersion = version;
         this.associationName = associationName;
         this.targetToSource = targetToSource;
-        this.transformer = new EntityToVSDTransformer(baseUri, codingScheme, version, owner, associationName);
+        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, version, owner, associationName);
     }
+    
+    public void run(String sourceName) throws LBException{
+        processEntitiesToCodingScheme(getEntitiesForAssociation(associationName, codingSchemeUri, codingSchemeVersion), sourceName);
+    }
+    
     
     
     protected List<Node> getEntitiesForAssociation(String association, String codingSchemeUri,String version){
@@ -90,14 +94,16 @@ public class SourceAssertedValueSetBatchLoader {
     }
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
+      try {
+        new SourceAssertedValueSetBatchLoader("NCI_Thesaurus", "17.02d", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI").run("Contributing_Source");
+    } catch (LBParameterException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    } catch (LBException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
     }
 
-
-    public void register() {
-        // TODO Auto-generated method stub
-        
     }
 
 }
