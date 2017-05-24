@@ -55,18 +55,13 @@ public class EntityToVSDTransformer {
     //Entity with more than one source will be processed into more than one definition
     //Assumption is that this source representation is always a flat list of values
     public List<ValueSetDefinition> transformEntityToValueSetDefinitions(Entity entity, String sourceName) throws LBParameterException{
-       //String uri = resourceService.getUriForUserCodingSchemeName(entity.getEntityCodeNamespace(), null);
-       final String source = getDefaultSourceIfNull(sourceName);
+      
+        final String source = getDefaultSourceIfNull(sourceName);
         List<Property> props = entity.getPropertyAsReference();
 
        List<ValueSetDefinition> defs = new ArrayList<ValueSetDefinition>();
        HashMap<String, String> definedSources = new HashMap<String, String>();
        List<Property> sourcelist = getPropertiesForPropertyName(props, source);
-//       sourcelist.stream().filter(s -> getPropertyQualifierValueForSource(
-//               s.getPropertyQualifierAsReference()).equals(s.getValue().getContent())).map(
-//                       s -> definedSources.put(s.getValue().getContent(), getPropertyQualifierValueForSource(
-//                               s.getPropertyQualifierAsReference()))
-//       );
        
        sourcelist.stream().forEach(s -> definedSources.put(s.getValue().getContent(), 
                getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()) != null?

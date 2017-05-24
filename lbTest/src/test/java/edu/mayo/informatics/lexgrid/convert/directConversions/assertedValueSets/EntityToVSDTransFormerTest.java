@@ -1,6 +1,8 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,6 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedNamespace;
-import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -23,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.registry.model.RegistryEntry;
 
 public class EntityToVSDTransFormerTest {
 	CodedNodeGraphService service;
@@ -40,20 +40,6 @@ public class EntityToVSDTransFormerTest {
 		transformer = new EntityToVSDTransformer(null, null, null, null, ASSOCIATION_NAME);
 	}
 
-//	@Test
-//	public void getPredicateGuidForValueSetRelationTest() {
-//		
-//		String guid = transformer.getPredicateGuidForValueSetRelation(ASSOCIATION_NAME, CODING_SCHEME_URI, VERSION);
-//		assertEquals(guid, "37456035");
-//	}
-	
-//	@Test
-//	public void getgetEntityByCodeAndNamespaceTest(){
-//		
-//		Entity entity = transformer.getEntityByCodeAndNamespace(
-//				CODING_SCHEME_URI, VERSION, "C12434", "Thesaurus");
-//		assertNotNull(entity);
-//	}
 	
 	@Test
 	public void entityToValueSetTransformTest() throws LBParameterException{

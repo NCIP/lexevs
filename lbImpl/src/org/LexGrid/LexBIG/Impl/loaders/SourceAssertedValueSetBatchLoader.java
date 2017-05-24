@@ -22,7 +22,6 @@ public class SourceAssertedValueSetBatchLoader {
     
     private CodedNodeGraphService codedNodeGraphDao;
     private EntityService entityService;
-    private CodingSchemeService csService;
     private SystemResourceService resourceService;
     private Registry registry;
     private String codingSchemeUri;
@@ -40,8 +39,6 @@ public class SourceAssertedValueSetBatchLoader {
                 getDatabaseServiceManager().getCodedNodeGraphService();
         entityService = LexEvsServiceLocator.getInstance().
                 getDatabaseServiceManager().getEntityService();
-        csService = LexEvsServiceLocator.getInstance().
-                getDatabaseServiceManager().getCodingSchemeService();
         resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         registry = LexEvsServiceLocator.getInstance().getRegistry();
         this.codingSchemeUri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
