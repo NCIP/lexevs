@@ -2,10 +2,13 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedCodingScheme;
@@ -149,6 +152,16 @@ public class EntityToVSDTransFormerTest {
 		assertTrue(ref.getReferenceAssociation().equals(ASSOCIATION_NAME));
 		assertTrue(ref.getTargetToSource());
 		assertTrue(ref.getTransitiveClosure());
+    }
+	
+	@Test
+	   public void getPropertyQualifierValueForSourceTest(){
+			PropertyQualifier q = new PropertyQualifier();
+			q.setPropertyQualifierName("source");
+			q.setValue(Constructors.createText("CDISC"));
+			List<PropertyQualifier> list = new ArrayList<PropertyQualifier>();
+			list.add(q);
+		    assertEquals(transformer.getPropertyQualifierValueForSource(list), "CDISC");
     }
 
 }

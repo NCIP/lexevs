@@ -57,72 +57,68 @@ public class EntityToVSDTransformer {
     public List<ValueSetDefinition> transformEntityToValueSetDefinitions(Entity entity, String sourceName) throws LBParameterException{
        //String uri = resourceService.getUriForUserCodingSchemeName(entity.getEntityCodeNamespace(), null);
        final String source = getDefaultSourceIfNull(sourceName);
-       List<Property> props = entity.getPropertyAsReference();
+        List<Property> props = entity.getPropertyAsReference();
 
        List<ValueSetDefinition> defs = new ArrayList<ValueSetDefinition>();
        HashMap<String, String> definedSources = new HashMap<String, String>();
-       ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, 
-               "1", owner);
-       def.setValueSetDefinitionName(entity.getEntityDescription().getContent());
-       DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
-       Mappings mappings = new Mappings();
-       EntityReference ref = initEntityReference(entity, this.association );
-       entry.setEntityReference(ref);
-       def.addDefinitionEntry(entry);
-       mappings.addSupportedNamespace(createSupportedNamespace(entity.getEntityCodeNamespace(), 
-               codingSchemeURI));
-       mappings.addSupportedCodingScheme(createSupportedCodingScheme(entity.getEntityCodeNamespace(), 
-               codingSchemeURI));
-       List<Property> list = props.stream().filter(x -> x.getPropertyName().equals(source)).collect(Collectors.toList());
+       List<Property> sourcelist = getPropertiesForPropertyName(props, source);
+//       sourcelist.stream().filter(s -> getPropertyQualifierValueForSource(
+//               s.getPropertyQualifierAsReference()).equals(s.getValue().getContent())).map(
+//                       s -> definedSources.put(s.getValue().getContent(), getPropertyQualifierValueForSource(
+//                               s.getPropertyQualifierAsReference()))
+//       );
        
-       for(Property p : list){
-           definedSources.put(p.getValue().getContent(), "PlaceHolder");
-           mappings.addSupportedSource(createSupportedSource(entity.getEntityCodeNamespace(), 
-                   codingSchemeURI));
-       }
-      for(Property p: props){
-
-          if(p.getPropertyName().equals("Semantic_Type")){
-            def.setConceptDomain(p.getValue().getContent());
-            mappings.addSupportedConceptDomain(createSupportedConceptDomain(p.getValue().getContent(), 
-                    codingSchemeURI));
-          }
-          if(p.getPropertyName().equals("ALT_DEFINITION")){
-              for(PropertyQualifier pq: p.getPropertyQualifier()){
-                  if(pq.getPropertyQualifierName().equals("source"))
-                      if(definedSources.containsKey(pq.getValue().getContent())){
-                         definedSources.replace(pq.getValue().getContent(), "PlaceHolder", p.getValue().getContent());
-                      }
-              }
-          }
-      }
-      def.setMappings(mappings);
-      definedSources.forEach((x,y) -> defs.add(createVSDefinitionBySource(def,x,y))); 
+       sourcelist.stream().forEach(s -> definedSources.put(s.getValue().getContent(), 
+               getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()) != null?
+                       getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()): 
+                           entity.getEntityDescription().getContent()));
+       
+      definedSources.forEach((x,y) -> defs.add(tranformEntityToValueSet(entity,x,y,definedSources))); 
       if(definedSources.size() > 1 || definedSources.size() == 0 || !definedSources.containsValue(owner)){
-      defs.add(createDefaultDefIfMoreThanOneSouce(def, entity));
+      defs.add(tranformEntityToValueSet(entity, owner, entity.getEntityDescription().getContent(), definedSources));
       }
        return defs;
     }
 
-    private ValueSetDefinition createDefaultDefIfMoreThanOneSouce( ValueSetDefinition def, Entity entity) {
-        ValueSetDefinition newDef = def;
-        newDef.setValueSetDefinitionURI(createUri(baseURI,null,entity.getEntityCode()));
-        newDef.setEntityDescription(entity.getEntityDescription());
-        newDef.getMappings().addSupportedSource(createSupportedSource(owner, codingSchemeURI));
-        return newDef;
+    
+    private ValueSetDefinition tranformEntityToValueSet(Entity entity, String sourceName, String definition,
+            HashMap<String, String> definedSources) {
+        List<Property> props = entity.getPropertyAsReference();
+        final String source = getDefaultSourceIfNull(sourceName);
+        ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, "1", owner);
+        def.setValueSetDefinitionName(entity.getEntityDescription().getContent());
+        DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
+        Mappings mappings = new Mappings();
+        EntityReference ref = initEntityReference(entity, this.association);
+        entry.setEntityReference(ref);
+        def.addDefinitionEntry(entry);
+        mappings.addSupportedNamespace(createSupportedNamespace(entity.getEntityCodeNamespace(), codingSchemeURI));
+        mappings.addSupportedCodingScheme(
+                createSupportedCodingScheme(entity.getEntityCodeNamespace(), codingSchemeURI));
+        def.setMappings(mappings);
+
+        String conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).findFirst().get()
+                .getValue().getContent();
+        def.setConceptDomain(conceptDomain);
+        def.getMappings().addSupportedConceptDomain(createSupportedConceptDomain(conceptDomain, codingSchemeURI));
+
+        def.setValueSetDefinitionURI(
+                createUri(baseURI, source, def.getDefinitionEntry(0).getEntityReference().getEntityCode()));
+        def.setEntityDescription(Constructors.createEntityDescription(definition));
+        def.getMappings().addSupportedSource(createSupportedSource(source, codingSchemeURI));
+        return def;
     }
-
-
-
-
-
-
-    private ValueSetDefinition createVSDefinitionBySource(ValueSetDefinition def, String source, String definition) {
-       ValueSetDefinition newDef = def;
-       newDef.setValueSetDefinitionURI(createUri(baseURI, source, def.getDefinitionEntry(0).getEntityReference().getEntityCode()));
-       newDef.setEntityDescription(Constructors.createEntityDescription(definition));
-       newDef.getMappings().addSupportedSource(createSupportedSource(source, codingSchemeURI));
-        return newDef;
+    
+    protected List<Property> getPropertiesForPropertyName(List<Property> props, String  name){
+        return props.stream().filter(x -> x.getPropertyName().equals(name)).collect(Collectors.toList());
+    }
+    
+    protected String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
+        PropertyQualifier propq = null;
+        if(quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().isPresent()){
+            return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().get().getValue().getContent();
+        }
+        return null;
     }
 
     protected SupportedCodingScheme createSupportedCodingScheme(String codingScheme, String uri) {
