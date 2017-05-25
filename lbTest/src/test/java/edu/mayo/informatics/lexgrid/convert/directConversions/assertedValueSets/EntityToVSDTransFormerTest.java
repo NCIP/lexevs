@@ -1,14 +1,11 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Text;
@@ -22,29 +19,28 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.Before;
 import org.junit.Test;
-import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
-import org.lexevs.locator.LexEvsServiceLocator;
 
-public class EntityToVSDTransFormerTest {
-	CodedNodeGraphService service;
+import junit.framework.TestCase;
+
+public class EntityToVSDTransFormerTest extends TestCase{
 	EntityToVSDTransformer transformer;
-	public static final String CODING_SCHEME_URI = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
-	public static final String CODING_SCHEME = "NCI_Thesaurus";
-	public static final String VERSION = "17.02d";
+	public static final String CODING_SCHEME_URI = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl";
+	public static final String CODING_SCHEME = "owl2lexevs";
+	public static final String VERSION = "0.1.5";
 	public static final String ASSOCIATION_NAME = "Concept_In_Subset";
 	
 	@Before
 	public void setUp(){
-		service = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().
-				getCodedNodeGraphService();
 		transformer = new EntityToVSDTransformer(null, null, null, null, ASSOCIATION_NAME);
 	}
 
 	
 	@Test
-	public void entityToValueSetTransformTest() throws LBParameterException{
+	public void testentityToValueSetTransform() throws LBParameterException{
 		
 		Entity entity = new Entity();
+		EntityDescription ed = Constructors.createEntityDescription("TestDescription");
+		entity.setEntityDescription(ed);
 		Property prop = new Property();
 		prop.setPropertyName("Contributing_Source");
 		Text text = new Text();
@@ -56,14 +52,13 @@ public class EntityToVSDTransFormerTest {
 	}
 	
 	@Test
-	public void getProductionVersionForCodingSchemeURI() throws LBParameterException{
-		
+	public void testGetProductionVersionForCodingSchemeURI() throws LBParameterException{		
 		String version = transformer.getProductionVersionForCodingSchemeURI(CODING_SCHEME_URI);
 		assertNotNull(version);
 	}
 	
 	@Test
-    public void createSupportedCodingSchemeTest(){
+    public void testCreateSupportedCodingScheme(){
 		SupportedCodingScheme scheme = transformer.createSupportedCodingScheme(CODING_SCHEME, CODING_SCHEME_URI);
 		assertTrue(scheme.getLocalId().equals(CODING_SCHEME));
 		assertTrue(scheme.getContent().equals(CODING_SCHEME));
@@ -71,7 +66,7 @@ public class EntityToVSDTransFormerTest {
     }
 
 	@Test
-    public void createSupportedNamespaceTest(){
+    public void testCreateSupportedNamespace(){
 		SupportedNamespace namespace = transformer.createSupportedNamespace(CODING_SCHEME, CODING_SCHEME_URI);
 		assertTrue(namespace.getLocalId().equals(CODING_SCHEME));
 		assertTrue(namespace.getContent().equals(CODING_SCHEME));
@@ -79,7 +74,7 @@ public class EntityToVSDTransFormerTest {
     }
 
 	@Test
-    public void createSupportedConceptDomainTest(){
+    public void testCreateSupportedConceptDomain(){
 		SupportedConceptDomain cd = transformer.createSupportedConceptDomain("Intellectual Product", CODING_SCHEME_URI);
 		assertTrue(cd.getLocalId().equals("Intellectual Product"));
 		assertTrue(cd.getContent().equals("Intellectual Product"));
@@ -87,7 +82,7 @@ public class EntityToVSDTransFormerTest {
     }
 	
 	@Test
-    public void createSupportedSourceTest(){
+    public void testCreateSupportedSource(){
 		SupportedConceptDomain cd = transformer.createSupportedConceptDomain("CDISC", CODING_SCHEME_URI);
 		assertTrue(cd.getLocalId().equals("CDISC"));
 		assertTrue(cd.getContent().equals("CDISC"));
@@ -95,7 +90,7 @@ public class EntityToVSDTransFormerTest {
     }
  
 	@Test
-    public void getDefaultSourceIfNullTest(){
+    public void testGetDefaultSourceIfNull(){
 		String source = transformer.getDefaultSourceIfNull(null);
 		assertTrue(source.equals("Contributing_Source"));
 		String test = transformer.getDefaultSourceIfNull("testSource");
@@ -103,7 +98,7 @@ public class EntityToVSDTransFormerTest {
     }
     
 	@Test
-    public void createUriTest(){
+    public void testCreateUri(){
 		String uri = transformer.createUri("http://evs.nci.nih.gov/valueset/", "CDISC", "C12345");
 		assertEquals(uri,"http://evs.nci.nih.gov/valueset/CDISC/C12345");
 		String test = transformer.createUri("http://evs.nci.nih.gov/valueset/", null, "C12345");
@@ -111,7 +106,7 @@ public class EntityToVSDTransFormerTest {
     }
     
 	@Test
-    public void initValueSetDefintionTest(){
+    public void testInitValueSetDefintion(){
 		ValueSetDefinition def = transformer.initValueSetDefintion(CODING_SCHEME, true, "1", "NCI");
 		assertTrue(def.getDefaultCodingScheme().equals(CODING_SCHEME));
 		assertTrue(def.getIsActive());
@@ -120,14 +115,17 @@ public class EntityToVSDTransFormerTest {
     }
     
 	@Test
-    public void initDefinitionEntryTest(){
+    public void testInitDefinitionEntry(){
 		DefinitionEntry entry = transformer.initDefinitionEntry(0, DefinitionOperator.OR);
 		assertTrue(entry.getRuleOrder() == 0);
 		assertTrue(entry.getOperator().equals(DefinitionOperator.OR));
+		long l = entry.getRuleOrder();
+		assertEquals(l, 0L);
+		assertEquals(entry.getStatus(), "1");
     }
     
 	@Test
-    public void initEntityReferenceTest(){
+    public void testInitEntityReference(){
 		Entity entity = new Entity();
 		entity.setEntityCode("C123");
 		entity.setEntityCodeNamespace(CODING_SCHEME);
@@ -141,7 +139,7 @@ public class EntityToVSDTransFormerTest {
     }
 	
 	@Test
-	   public void getPropertyQualifierValueForSourceTest(){
+	   public void testGetPropertyQualifierValueForSource(){
 			PropertyQualifier q = new PropertyQualifier();
 			q.setPropertyQualifierName("source");
 			q.setValue(Constructors.createText("CDISC"));

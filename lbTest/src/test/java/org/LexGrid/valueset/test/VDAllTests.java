@@ -26,6 +26,8 @@ import org.LexGrid.valueset.impl.LexEVSPickListServicesImplTest;
 import org.LexGrid.valueset.impl.LexEVSResolvedValueSetTest;
 import org.LexGrid.valueset.impl.LexEVSValueSetDefServicesImplTest;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
+
 /**
  * Main test suite to test Value Set and Pick List Definition.
  * 
@@ -39,6 +41,7 @@ public class VDAllTests {
 		//$JUnit-BEGIN$
 		suite.addTest(AllTestsNormalConfig.orderedSuite(LoadTestDataTest.class));
 		suite.addTestSuite(LexEVSValueSetDefServicesImplTest.class);
+		suite.addTestSuite(EntityToVSDTransFormerTest.class);
 		suite.addTestSuite(LexEVSPickListServicesImplTest.class);
 		suite.addTestSuite(LexEVSResolvedValueSetTest.class);
 		suite.addTestSuite(CleanUpTest.class);

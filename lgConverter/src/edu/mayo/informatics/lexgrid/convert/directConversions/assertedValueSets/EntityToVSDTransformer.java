@@ -24,7 +24,9 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
-public class EntityToVSDTransformer {
+import junit.framework.TestCase;
+
+public class EntityToVSDTransformer{
     private static final Object PRODUCTION = "PRODUCTION";
     private Registry registry;
     private String SOURCE_NAME = "Contributing_Source";
@@ -92,8 +94,11 @@ public class EntityToVSDTransformer {
                 createSupportedCodingScheme(entity.getEntityCodeNamespace(), codingSchemeURI));
         def.setMappings(mappings);
 
-        String conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).findFirst().get()
-                .getValue().getContent();
+        String conceptDomain = null;
+                        if(props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).findFirst().isPresent()){
+                            conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).
+                                    findFirst().get().getValue().getContent();
+                        }
         def.setConceptDomain(conceptDomain);
         def.getMappings().addSupportedConceptDomain(createSupportedConceptDomain(conceptDomain, codingSchemeURI));
 
@@ -109,7 +114,6 @@ public class EntityToVSDTransformer {
     }
     
     protected String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
-        PropertyQualifier propq = null;
         if(quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().isPresent()){
             return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().get().getValue().getContent();
         }
@@ -178,6 +182,8 @@ public class EntityToVSDTransformer {
         DefinitionEntry entry = new DefinitionEntry();
         entry.setRuleOrder(0L);
         entry.setOperator(DefinitionOperator.OR);
+        entry.setIsActive(true);
+        entry.setStatus("1");
         return entry;
     }
     

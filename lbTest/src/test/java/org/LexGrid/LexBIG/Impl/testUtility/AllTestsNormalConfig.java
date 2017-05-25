@@ -194,6 +194,7 @@ import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsRemoveTest;
 import org.lexevs.dao.index.operation.ManifestLoadWithAssociationTest;
 import org.lexevs.dao.index.operation.OrphanedIndexTest;
 import org.lexevs.dao.index.operation.SameSessionLoadandQueryTest;
+import org.lexevs.dao.index.operation.SourceAssertedVSLoadTest;
 import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.WhiteSpaceLowerCaseAnalyzerTest;
@@ -522,6 +523,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
         //*******Always run this last, it breaks a lot of things that are created in ServiceHolder 
         mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
         // $JUnit-END$
