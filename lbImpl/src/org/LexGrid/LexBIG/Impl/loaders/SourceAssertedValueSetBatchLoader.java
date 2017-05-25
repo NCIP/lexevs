@@ -9,11 +9,9 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.registry.service.Registry;
 import org.lexevs.system.service.SystemResourceService;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransformer;
@@ -23,7 +21,6 @@ public class SourceAssertedValueSetBatchLoader {
     private CodedNodeGraphService codedNodeGraphDao;
     private EntityService entityService;
     private SystemResourceService resourceService;
-    private Registry registry;
     private String codingSchemeUri;
     private String codingSchemeVersion;
     private String associationName;
@@ -40,7 +37,6 @@ public class SourceAssertedValueSetBatchLoader {
         entityService = LexEvsServiceLocator.getInstance().
                 getDatabaseServiceManager().getEntityService();
         resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-        registry = LexEvsServiceLocator.getInstance().getRegistry();
         this.codingSchemeUri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
         valueSetDefinitionService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
         this.codingSchemeVersion = version;
