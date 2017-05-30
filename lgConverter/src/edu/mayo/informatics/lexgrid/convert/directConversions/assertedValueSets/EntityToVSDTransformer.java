@@ -70,16 +70,15 @@ public class EntityToVSDTransformer{
                        getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()): 
                            entity.getEntityDescription().getContent()));
        
-      definedSources.forEach((x,y) -> defs.add(tranformEntityToValueSet(entity,x,y,definedSources))); 
+      definedSources.forEach((x,y) -> defs.add(tranformEntityToValueSet(entity,x,y))); 
       if(definedSources.size() > 1 || definedSources.size() == 0 || !definedSources.containsValue(owner)){
-      defs.add(tranformEntityToValueSet(entity, owner, entity.getEntityDescription().getContent(), definedSources));
+      defs.add(tranformEntityToValueSet(entity, owner, entity.getEntityDescription().getContent()));
       }
        return defs;
     }
 
     
-    private ValueSetDefinition tranformEntityToValueSet(Entity entity, String sourceName, String definition,
-            HashMap<String, String> definedSources) {
+    private ValueSetDefinition tranformEntityToValueSet(Entity entity, String sourceName, String definition) {
         List<Property> props = entity.getPropertyAsReference();
         final String source = getDefaultSourceIfNull(sourceName);
         ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, "1", owner);

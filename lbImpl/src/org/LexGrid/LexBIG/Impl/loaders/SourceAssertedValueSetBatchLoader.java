@@ -46,7 +46,7 @@ public class SourceAssertedValueSetBatchLoader {
     }
     
     public void run(String sourceName) throws LBException{
-        processEntitiesToCodingScheme(getEntitiesForAssociation(associationName, codingSchemeUri, codingSchemeVersion), sourceName);
+        processEntitiesToDefinition(getEntitiesForAssociation(associationName, codingSchemeUri, codingSchemeVersion), sourceName);
     }
     
     
@@ -75,7 +75,7 @@ public class SourceAssertedValueSetBatchLoader {
         return entity;
     }
     
-    public void processEntitiesToCodingScheme(List<Node> nodes, String sourceName) throws LBException{
+    public void processEntitiesToDefinition(List<Node> nodes, String sourceName) throws LBException{
        for(Node n: nodes){
            Entity e = getEntityByCodeAndNamespace(codingSchemeUri, 
                    codingSchemeVersion, n.getEntityCode(), n.getEntityCodeNamespace());
