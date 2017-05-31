@@ -8,6 +8,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.junit.Before;
 import org.junit.Test;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -83,6 +84,99 @@ public class OWL2UnitTests extends TestCase {
 		assertTrue(list.size() > 4);
 		assertTrue(list.contains("editor preferred term~editor preferred label"));
 		
+	}
+	@Test
+	public void testProcessFormattedExpression() throws OWLOntologyCreationException{
+
+		OwlApi2LG api = new OwlApi2LG(null, null, null, 1, null);
+		String formattedExpression = "This has a\n return followed by a space";		
+		String result = api.processEquivalentClassExp(formattedExpression);
+		assertEquals(result, "This has a return followed by a space");
+		
+		String fexAlternateOne = "This has a\r return followed by a space";	
+		String resultOne = api.processEquivalentClassExp(fexAlternateOne);
+		assertEquals(resultOne, "This has a return followed by a space");
+		
+		String fexAlternateTwo = "This has a\r\n return followed by a space";	
+		String resultTwo= api.processEquivalentClassExp(fexAlternateTwo);
+		assertEquals(resultTwo, "This has a return followed by a space");
+		
+		String fexAlternateNoSpace = "This has a\nreturn with no space";	
+		String resultNoSpace= api.processEquivalentClassExp(fexAlternateNoSpace);
+		assertEquals(resultNoSpace, "This has a return with no space");
+		
+		String fexAlternateNoSpaceOne = "This has a\rreturn with no space";	
+		String resultNoSpaceOne = api.processEquivalentClassExp(fexAlternateNoSpaceOne);
+		assertEquals(resultNoSpaceOne, "This has a return with no space");
+		
+		String fexAlternateNoSpaceTwo = "This has a\r\nreturn with no space";	
+		String resultNoSpaceTwo = api.processEquivalentClassExp(fexAlternateNoSpaceTwo);
+		assertEquals(resultNoSpaceTwo, "This has a return with no space");
+		
+		String formattedExpressionTwoReturns = "This has a\n return followed\n by a space";		
+		String result2Returns = api.processEquivalentClassExp(formattedExpressionTwoReturns);
+		assertEquals(result2Returns, "This has a return followed by a space");
+		
+		String fexAlternateOne2Ret = "This has a\r return followed by\r a space";	
+		String resultOne2Ret = api.processEquivalentClassExp(fexAlternateOne2Ret);
+		assertEquals(resultOne2Ret, "This has a return followed by a space");
+		
+		String fexAlternateTwo2Ret = "This has a\r\n return followed\r\n by a space";	
+		String resultTwo2Ret= api.processEquivalentClassExp(fexAlternateTwo2Ret);
+		assertEquals(resultTwo2Ret, "This has a return followed by a space");
+		
+		String fexAlternateNoSpace2Ret = "This has a\nreturn with\nno space";	
+		String resultNoSpace2Ret= api.processEquivalentClassExp(fexAlternateNoSpace2Ret);
+		assertEquals(resultNoSpace2Ret, "This has a return with no space");
+		
+		String fexAlternateNoSpaceOne2Ret = "This has a\rreturn with\rno space";	
+		String resultNoSpaceOne2Ret = api.processEquivalentClassExp(fexAlternateNoSpaceOne2Ret);
+		assertEquals(resultNoSpaceOne2Ret, "This has a return with no space");
+		
+		String fexAlternateNoSpaceTwo2Ret = "This has a\r\nreturn with\r\nno space";	
+		String resultNoSpaceTwo2Ret = api.processEquivalentClassExp(fexAlternateNoSpaceTwo2Ret);
+		assertEquals(resultNoSpaceTwo2Ret, "This has a return with no space");
+		
+		String formattedExpressionPreSpace = "This has a \nreturn preceeded by a space";		
+		String resultPreSpace = api.processEquivalentClassExp(formattedExpressionPreSpace);
+		assertEquals(resultPreSpace, "This has a return preceeded by a space");
+		
+		String fexAlternateOnePreSpace = "This has a \rreturn preceeded by a space";	
+		String resultOnePreSpace = api.processEquivalentClassExp(fexAlternateOnePreSpace);
+		assertEquals(resultOnePreSpace, "This has a return preceeded by a space");
+		
+		String fexAlternateTwoPreSpace = "This has a \r\nreturn preceeded by a space";	
+		String resultTwoPreSpace = api.processEquivalentClassExp(fexAlternateTwoPreSpace);
+		assertEquals(resultTwoPreSpace, "This has a return preceeded by a space");
+		
+		String spex = "This has a lot      of   spaces";
+		String spex1 = api.processEquivalentClassExp(spex);
+		assertEquals(spex1, "This has a lot of spaces");
+		
+		String spex2 = "This has less   of those  spaces";
+		String spex3 = api.processEquivalentClassExp(spex2);
+		assertEquals(spex3, "This has less of those spaces");
+		
+	}
+	
+	@Test
+	public void test(){
+		String fex = "This has a\r\nreturn with no space";
+		String fex1 =fex.replaceAll("\n "," ");
+		System.out.println(fex1);
+		String fex2 = fex1.replaceAll("\r ", " ");
+		System.out.println(fex2);
+		String fex3 = fex2.replaceAll("\n"," ");
+		System.out.println(fex3);
+		String fex4 = fex3.replaceAll("\r", " ");
+		System.out.println(fex4);
+		String fex5 = fex4.replaceAll("\r\n ", " ");
+		System.out.println(fex5);
+		String fex6 = fex5.replace("\r\n", " ");
+		System.out.println(fex6);
+		String spex = "This has a lot      of   spaces";
+		String spex1 = spex.replaceAll("( +)", " ");
+		System.out.println(spex1);
 	}
 
 }

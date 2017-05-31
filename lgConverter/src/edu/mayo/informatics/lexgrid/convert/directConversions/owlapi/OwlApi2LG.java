@@ -1651,8 +1651,10 @@ public class OwlApi2LG {
         lgClass.setEntityCodeNamespace(nameSpace);
 
         EntityDescription ed = new EntityDescription();
-        String desc = renderer.render(owlClassExp).replace("\n", " ").replaceAll("\r", " ");
-        ed.setContent(desc);
+        String desc =  renderer.render(owlClassExp);
+              
+        String cleanedDesc = processEquivalentClassExp(desc);
+        ed.setContent(cleanedDesc);
         lgClass.setEntityDescription(ed);
 
         int lgPropNum = 0;
@@ -1717,6 +1719,13 @@ public class OwlApi2LG {
 
         // Return the lg class name
         return code;
+    }
+
+    protected String processEquivalentClassExp(String formattedExpression) {
+       return formattedExpression.
+               replaceAll("\n"," ").
+               replaceAll("\r"," ").
+               replaceAll(" +", " ");
     }
 
     //Resolve the complement of restriction as an association
