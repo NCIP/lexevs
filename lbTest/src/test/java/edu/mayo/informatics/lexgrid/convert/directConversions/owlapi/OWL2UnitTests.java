@@ -158,25 +158,5 @@ public class OWL2UnitTests extends TestCase {
 		assertEquals(spex3, "This has less of those spaces");
 		
 	}
-	
-	@Test
-	public void test(){
-		String fex = "This has a\r\nreturn with no space";
-		String fex1 =fex.replaceAll("\n "," ");
-		System.out.println(fex1);
-		String fex2 = fex1.replaceAll("\r ", " ");
-		System.out.println(fex2);
-		String fex3 = fex2.replaceAll("\n"," ");
-		System.out.println(fex3);
-		String fex4 = fex3.replaceAll("\r", " ");
-		System.out.println(fex4);
-		String fex5 = fex4.replaceAll("\r\n ", " ");
-		System.out.println(fex5);
-		String fex6 = fex5.replace("\r\n", " ");
-		System.out.println(fex6);
-		String spex = "This has a lot      of   spaces";
-		String spex1 = spex.replaceAll("( +)", " ");
-		System.out.println(spex1);
-	}
 
 }
