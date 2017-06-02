@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
@@ -25,6 +26,9 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedContext;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedSource;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -37,9 +41,11 @@ public class EntityToRVSTransformer {
     private String vsVersion;
     
     final private String codingSchemeUri;
+    final private String codingSchemeName;
     final private String csVersion;
     final private String association;
     final private AbsoluteCodingSchemeVersionReference ref;
+    final private SupportedCodingScheme supportedScheme;
     
     private LexBIGService svc;
     private String baseUri;
@@ -51,37 +57,44 @@ public class EntityToRVSTransformer {
 
     public EntityToRVSTransformer( 
             String association,
-            String codingScheme,
+            String codingSchemeUri,
+            String codingSchemeName,
             String csVersion, 
             AbsoluteCodingSchemeVersionReference ref, 
             LexBIGService svc,
             String baseURI, 
-            String owner) {
+            String owner,
+            SupportedCodingScheme suppScheme) {
         this.association = association;
-        this.codingSchemeUri = codingScheme;
+        this.codingSchemeUri = codingSchemeUri;
+        this.codingSchemeName= codingSchemeName;
         this.csVersion = csVersion;
         this.ref = ref;
         vsdService = locator.getDatabaseServiceManager().getValueSetDefinitionService();
         this.svc = svc;
         this.baseUri = baseURI;
         this.owner = owner;
+        this.supportedScheme = suppScheme;
     }
 
     public EntityToRVSTransformer(
             String association,
-            String codingScheme,
+            String codingSchemeUri,
+            String codingSchemeName,
             String csVersion, 
             String vsVersion, 
             AbsoluteCodingSchemeVersionReference ref, 
             LexBIGService svc,
             String baseURI,
             String owner,
+            SupportedCodingScheme suppScheme,
             URI valueSetDefinitionURI,
             String valueSetDefinitionRevisionId) {
         this.association = association;
         this.valueSetDefinitionURI = valueSetDefinitionURI;
         this.valueSetDefinitionRevisionId = valueSetDefinitionRevisionId;
-        this.codingSchemeUri = codingScheme;
+        this.codingSchemeUri = codingSchemeUri;
+        this.codingSchemeName = codingSchemeName;
         this.csVersion = csVersion;
         this.vsVersion = vsVersion;
         this.ref = ref;
@@ -89,6 +102,7 @@ public class EntityToRVSTransformer {
         this.svc = svc;
         this.baseUri = baseURI;
         this.owner = owner;
+        this.supportedScheme = suppScheme;
     }
 
     //Entity with more than one source will be processed into more than one definition
@@ -173,7 +187,37 @@ public class EntityToRVSTransformer {
     }
 
     private Mappings createMappings(Entity entity) {
-        // TODO Auto-generated method stub
+        Mappings mappings = new Mappings();
+        SupportedNamespace nmsp = new SupportedNamespace();
+        nmsp.setContent(entity.getEntityCodeNamespace());
+        nmsp.setEquivalentCodingScheme(codingSchemeName);
+        SupportedCodingScheme scheme = supportedScheme;
+        SupportedContext context = new SupportedContext();
+        for(SupportedSource source : getSupportedSources(entity)){
+            mappings.addSupportedSource(source);
+        }
+        mappings.addSupportedNamespace(nmsp);
+        mappings.addSupportedCodingScheme(scheme);
+        mappings.addSupportedContext(context);
+        return mappings;
+    }
+
+    private List<SupportedSource> getSupportedSources(Entity entity) {
+        List<SupportedSource> sources = new ArrayList<SupportedSource>();
+        List<Property> props = entity.getPropertyAsReference();
+        //props.stream().filter(p -> 
+        for(Property p: props){
+        p.getPropertyQualifierAsReference().stream().
+        filter(pq -> pq.getPropertyQualifierName().equals("source")).
+        map(PropertyQualifier::getValue).forEach(qual -> sources.add(getSupportedSource(qual)));
+        }
+        return sources;
+    }
+
+    private SupportedSource getSupportedSource(Text qual) {
+       SupportedSource source = new SupportedSource();
+       source.setContent(qual.getContent());
+       source.setLocalId(qual.getContent());
         return null;
     }
 
