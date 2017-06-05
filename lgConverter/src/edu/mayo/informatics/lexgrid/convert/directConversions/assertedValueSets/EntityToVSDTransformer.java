@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 
 public class EntityToVSDTransformer{
     private static final Object PRODUCTION = "PRODUCTION";
+    private static final String DEFAULT_SOURCE = "NCI";
     private Registry registry;
     private String SOURCE_NAME = "Contributing_Source";
     private String baseURI = null;
@@ -71,16 +72,16 @@ public class EntityToVSDTransformer{
                            entity.getEntityDescription().getContent()));
        
       definedSources.forEach((x,y) -> defs.add(tranformEntityToValueSet(entity,x,y))); 
-      if(definedSources.size() > 1 || definedSources.size() == 0 || !definedSources.containsValue(owner)){
-      defs.add(tranformEntityToValueSet(entity, owner, entity.getEntityDescription().getContent()));
+      if(definedSources.size() == 0){
+      defs.add(tranformEntityToValueSet(entity, null, entity.getEntityDescription().getContent()));
       }
        return defs;
     }
 
     
-    private ValueSetDefinition tranformEntityToValueSet(Entity entity, String sourceName, String definition) {
+    private ValueSetDefinition tranformEntityToValueSet(Entity entity, String source, String definition) {
         List<Property> props = entity.getPropertyAsReference();
-        final String source = getDefaultSourceIfNull(sourceName);
+        //final String source = getDefaultSourceIfNull(sourceName);
         ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, "1", owner);
         def.setValueSetDefinitionName(entity.getEntityDescription().getContent());
         DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
@@ -104,7 +105,9 @@ public class EntityToVSDTransformer{
         def.setValueSetDefinitionURI(
                 createUri(baseURI, source, def.getDefinitionEntry(0).getEntityReference().getEntityCode()));
         def.setEntityDescription(Constructors.createEntityDescription(definition));
+        if(source != null){
         def.getMappings().addSupportedSource(createSupportedSource(source, codingSchemeURI));
+        }
         return def;
     }
     
