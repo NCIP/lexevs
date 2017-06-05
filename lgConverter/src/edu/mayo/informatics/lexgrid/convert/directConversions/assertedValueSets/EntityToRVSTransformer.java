@@ -36,6 +36,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 public class EntityToRVSTransformer {
     private static final String SOURCE_NAME = "Contributing_Source";
+    private static final String DEFAULT_SOURCE = "NCI";
     private URI valueSetDefinitionURI;
     private String valueSetDefinitionRevisionId;
     private String vsVersion;
@@ -125,11 +126,12 @@ public class EntityToRVSTransformer {
         try {
             schemes.add(transform(entity,x,y,vsEntities));
         } catch (LBException e) {
-            throw new RuntimeException("", e);
+            throw new RuntimeException("Source Asserted Resovled Value Set Load Failed", e);
         }
     }); 
-      if(definedSources.size() > 1 || definedSources.size() == 0 || !definedSources.containsValue(owner)){
-      schemes.add(transform(entity, owner, entity.getEntityDescription().getContent(), vsEntities));
+      //No source has been declared. This must belong to the default source. 
+      if(definedSources.size() == 0 || !definedSources.containsValue(DEFAULT_SOURCE)){
+      schemes.add(transform(entity, "", entity.getEntityDescription().getContent(), vsEntities));
       }
        return schemes;
     }
@@ -161,7 +163,7 @@ public class EntityToRVSTransformer {
         //init properties
         cs.setProperties(new org.LexGrid.commonTypes.Properties());
         Source lexSource = new Source();
-        lexSource.setContent(source);
+        lexSource.setContent(source.equals("")?DEFAULT_SOURCE:source);
         cs.setSource(new Source[]{lexSource});
         cs.setStatus(entity.getStatus());
 
@@ -282,7 +284,7 @@ public class EntityToRVSTransformer {
     }
     
     protected String createUri(String base, String source, String code){
-        return base + (source != null?source + "/":"") + code;
+        return base + (!source.equals("") || source != null ?source + "/":"") + code;
      }
     
     protected List<Property> getPropertiesForPropertyName(List<Property> props, String  name){

@@ -45,7 +45,4 @@ public interface SourceAssertedVStoCodingSchemeLoader  extends Loader {
 	public void validate(URI valueSetDefinitionURI, int validationLevel) throws Exception;
 
 
-
-	
-
 }

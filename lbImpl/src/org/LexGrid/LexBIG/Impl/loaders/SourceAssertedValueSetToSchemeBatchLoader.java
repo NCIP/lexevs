@@ -126,25 +126,11 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
                defaultInstance().getServiceManager(null).activateCodingSchemeVersion(ref);
                LexBIGServiceImpl.
                defaultInstance().getServiceManager(null).setVersionTag(ref, "PRODUCTION");
-//               uriToCodingSchemeNameMap.put(s.getCodingSchemeURI(), s.getCodingSchemeName());
            }
        }
-//       indexResolvedValueSetCodingSchemes();
     }
     
-//    private void indexResolvedValueSetCodingSchemes(){
-//        uriToCodingSchemeNameMap.forEach((x,y) -> indexUsingMap(x,y));
-//    }
-//
-//    private void indexUsingMap(String x, String y) {
-//        ProcessRunner loader = new IndexLoaderImpl();
-//        AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(x, y);
-//        try {
-//            loader.runProcess(ref, null);
-//        } catch (LBParameterException e) {
-//               System.out.println("Indexing failed for value set coding scheme " + y + ":" + x);
-//        }
-//    }
+
 
     public static void main(String[] args) {
       try {
