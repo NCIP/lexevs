@@ -26,6 +26,7 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedContext;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
@@ -130,8 +131,8 @@ public class EntityToRVSTransformer {
         }
     }); 
       //No source has been declared. This must belong to the default source. 
-      if(definedSources.size() == 0 || !definedSources.containsValue(DEFAULT_SOURCE)){
-      schemes.add(transform(entity, "", entity.getEntityDescription().getContent(), vsEntities));
+      if(definedSources.size() == 0){
+      schemes.add(transform(entity, null, entity.getEntityDescription().getContent(), vsEntities));
       }
        return schemes;
     }
@@ -163,7 +164,7 @@ public class EntityToRVSTransformer {
         //init properties
         cs.setProperties(new org.LexGrid.commonTypes.Properties());
         Source lexSource = new Source();
-        lexSource.setContent(source.equals("")?DEFAULT_SOURCE:source);
+        lexSource.setContent(source == null?DEFAULT_SOURCE:source);
         cs.setSource(new Source[]{lexSource});
         cs.setStatus(entity.getStatus());
 
@@ -193,14 +194,15 @@ public class EntityToRVSTransformer {
         SupportedNamespace nmsp = new SupportedNamespace();
         nmsp.setContent(entity.getEntityCodeNamespace());
         nmsp.setEquivalentCodingScheme(codingSchemeName);
+        nmsp.setLocalId(entity.getEntityCodeNamespace());
         SupportedCodingScheme scheme = supportedScheme;
-        SupportedContext context = new SupportedContext();
+        SupportedConceptDomain domain = getSupportedConceptDomain(entity);
         for(SupportedSource source : getSupportedSources(entity)){
             mappings.addSupportedSource(source);
         }
         mappings.addSupportedNamespace(nmsp);
         mappings.addSupportedCodingScheme(scheme);
-        mappings.addSupportedContext(context);
+        mappings.addSupportedConceptDomain(domain);
         return mappings;
     }
 
@@ -270,21 +272,12 @@ public class EntityToRVSTransformer {
         return pq;
     }
 
-    private String getSupportedCodingSchemeNameForURI(CodingScheme cs, String URI) {
-        for (SupportedCodingScheme scs : cs.getMappings().getSupportedCodingScheme()) {
-            if (scs.getUri().equals(URI)) {
-                return scs.getLocalId();
-            }
-        }
-        return null;
-    }
-
     protected String getDefaultSourceIfNull(String sourceName) {
         return sourceName == null?SOURCE_NAME: sourceName;
     }
     
     protected String createUri(String base, String source, String code){
-        return base + (!source.equals("") || source != null ?source + "/":"") + code;
+        return base + (source != null ?source + "/":"") + code;
      }
     
     protected List<Property> getPropertiesForPropertyName(List<Property> props, String  name){
@@ -296,6 +289,25 @@ public class EntityToRVSTransformer {
             return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().get().getValue().getContent();
         }
         return null;
+    }
+    
+    protected SupportedConceptDomain getSupportedConceptDomain(Entity entity){
+        List<Property> props = entity.getPropertyAsReference();
+        String conceptDomain = null;
+        if(props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).findFirst().isPresent()){
+            conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).
+                    findFirst().get().getValue().getContent();
+        }
+        
+       return createSupportedConceptDomain(conceptDomain, codingSchemeUri);
+    }
+
+    private SupportedConceptDomain createSupportedConceptDomain(String conceptDomain, String codingSchemeUri) {
+            SupportedConceptDomain domain = new SupportedConceptDomain();
+            domain.setContent(conceptDomain);
+            domain.setLocalId(conceptDomain);
+            domain.setUri(codingSchemeUri);
+             return domain;  
     }
     
 

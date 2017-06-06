@@ -23,6 +23,8 @@ import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.ResourceManager;
+import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.lexevs.system.service.SystemResourceService;
 
 import com.hp.hpl.jena.sparql.util.Loader;
@@ -31,7 +33,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransformer;
 
 public class SourceAssertedValueSetToSchemeBatchLoader {
-    
+    private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
     private CodedNodeGraphService codedNodeGraphDao;
     private EntityService entityService;
     private CodingSchemeService csService;
@@ -43,7 +45,6 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
     private String associationName;
     private boolean targetToSource;
     private EntityToRVSTransformer transformer;
-    private ValueSetDefinitionService valueSetDefinitionService;
     private LgMessageDirectorIF messages;
     
 
@@ -56,7 +57,6 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
                 getDatabaseServiceManager().getEntityService();
         resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         this.codingSchemeUri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
-        valueSetDefinitionService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
         csService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         lbsvc = LexBIGServiceImpl.defaultInstance();
 
@@ -81,8 +81,10 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
                 codingSchemeUri, codingSchemeName, version, ref , lbsvc, baseUri, owner, supCS);
     }
     
-    public void run(String sourceName) throws LBException{
+    public void run(String sourceName) throws LBException, InterruptedException{
+        synchronized (service) {
         processEntitiesToCodingScheme(getEntitiesForAssociation(associationName, codingSchemeUri, codingSchemeVersion), sourceName);
+        }
     }
     
     
@@ -111,23 +113,42 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
         return entity;
     }
     
-    public void processEntitiesToCodingScheme(List<Node> nodes, String sourceName) throws LBException{
-       for(Node n: nodes){
-           Entity e = getEntityByCodeAndNamespace(codingSchemeUri, 
-                   codingSchemeVersion, n.getEntityCode(), n.getEntityCodeNamespace());
-           List<CodingScheme> schemes = transformer.transformEntityToCodingSchemes(e, sourceName);
-           SourceAssertedVStoCodingSchemeLoader loader = (SourceAssertedVStoCodingSchemeLoader) LexBIGServiceImpl.
-                   defaultInstance().getServiceManager(null).getLoader("SourceAssertedVStoCodingSchemeLoader");
-           for(CodingScheme s : schemes){
-               loader.load(s);
-               AbsoluteCodingSchemeVersionReference ref = Constructors.
-                       createAbsoluteCodingSchemeVersionReference(s.getCodingSchemeURI(),s.getRepresentsVersion());
-               LexBIGServiceImpl.
-               defaultInstance().getServiceManager(null).activateCodingSchemeVersion(ref);
-               LexBIGServiceImpl.
-               defaultInstance().getServiceManager(null).setVersionTag(ref, "PRODUCTION");
-           }
-       }
+    public void processEntitiesToCodingScheme(List<Node> nodes, String sourceName) throws LBException, InterruptedException {
+        for (Node n : nodes) {
+            Entity e = getEntityByCodeAndNamespace(codingSchemeUri, codingSchemeVersion, n.getEntityCode(),
+                    n.getEntityCodeNamespace());
+            List<CodingScheme> schemes = transformer.transformEntityToCodingSchemes(e, sourceName);
+
+            for (CodingScheme s : schemes) {
+
+                    SourceAssertedVStoCodingSchemeLoader loader = (SourceAssertedVStoCodingSchemeLoader) LexBIGServiceImpl
+                            .defaultInstance().getServiceManager(null)
+                            .getLoader("SourceAssertedVStoCodingSchemeLoader");
+                    loader.load(s);
+                    AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(
+                            s.getCodingSchemeURI(), s.getRepresentsVersion());
+                    // LexBIGServiceImpl.
+                    // defaultInstance().getServiceManager(null).activateCodingSchemeVersion(ref);
+                    // LexBIGServiceImpl.
+                    // defaultInstance().getServiceManager(null).setVersionTag(ref,
+                    // "PRODUCTION");
+                    
+                   // Util.displayLoaderStatus(loader);
+                    while(loader.getStatus().getEndTime() == null){
+                        Thread.sleep(2000);
+                    }               
+                    if(!loader.getStatus().getErrorsLogged()){
+                    LexBIGServiceImpl.defaultInstance().getServiceManager(null).activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+                    LexBIGServiceImpl.defaultInstance().getServiceManager(null).setVersionTag(loader.getCodingSchemeReferences()[0],"PRODUCTION");
+                    System.out.println("Loaded and activiated resolved value set scheme for: " + s.getCodingSchemeURI() + " :" +
+                    s.getCodingSchemeName());
+                    }
+                    else{
+                    System.out.println("Error loading value set: " + s.getCodingSchemeURI() + " :" +
+                           s.getCodingSchemeName());   
+                    }
+                }
+        }
     }
     
 
@@ -139,6 +160,9 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
         // TODO Auto-generated catch block
         e.printStackTrace();
     } catch (LBException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
     }

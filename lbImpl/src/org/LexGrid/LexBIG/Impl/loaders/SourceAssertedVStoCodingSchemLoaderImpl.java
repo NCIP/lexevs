@@ -38,18 +38,19 @@ SourceAssertedVStoCodingSchemeLoader {
 	 * 
 	 */
 	private static final long serialVersionUID = 4792994226238454359L;
-	private String codingScheme; 
+
     private CodingScheme scheme;
 
 	@Override
 	    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
+//	        holder.getBooleanOption(ASYNC_OPTION).setOptionValue(false);
 	        return holder;
 	    }
 
 	    @Override
 	    protected URNVersionPair[] doLoad() throws Exception {
 	        this.persistCodingSchemeToDatabase(scheme);	        
-	        return this.constructVersionPairsFromCodingSchemes(codingScheme);
+	        return this.constructVersionPairsFromCodingSchemes(scheme);
 	    }
 
 	    @Override
@@ -72,7 +73,7 @@ SourceAssertedVStoCodingSchemeLoader {
 		public void load(CodingScheme scheme){
 		this.scheme = scheme;
 	    try {
-            this.load(new URI("noop"));
+            this.load(new URI(scheme.getCodingSchemeURI()));
         } catch (URISyntaxException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
