@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.association.model.Node;
@@ -12,7 +13,10 @@ import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService;
+
+import com.sun.xml.internal.bind.marshaller.Messages;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransformer;
 
@@ -27,6 +31,7 @@ public class SourceAssertedValueSetBatchLoader {
     private boolean targetToSource;
     private EntityToVSDTransformer transformer;
     private ValueSetDefinitionService valueSetDefinitionService;
+    private LgMessageDirectorIF messages_;
     
 
     
@@ -43,10 +48,16 @@ public class SourceAssertedValueSetBatchLoader {
         this.associationName = associationName;
         this.targetToSource = targetToSource;
         this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, version, owner, associationName);
+        messages_ = LoggerFactory.getLogger();
     }
     
-    public void run(String sourceName) throws LBException{
-        processEntitiesToDefinition(getEntitiesForAssociation(associationName, codingSchemeUri, codingSchemeVersion), sourceName);
+    public void run(String sourceName){
+        try {
+            processEntitiesToDefinition(getEntitiesForAssociation(associationName, codingSchemeUri, codingSchemeVersion), sourceName);
+        } catch (LBException e) {
+            messages_.fatal("Processing of entity to coding scheme Failed: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
     
     
@@ -63,6 +74,8 @@ public class SourceAssertedValueSetBatchLoader {
         List<String> uids = codedNodeGraphDao.getAssociationPredicateUidsForNames(
                 codingSchemeUri, codingSchemeVersion, null, list);
         if( uids == null || uids.size() < 1){
+            messages_.fatal("No association is asserted for :" 
+        + associationName + " in " + codingSchemeUri + ":" + codingSchemeVersion);
             throw new RuntimeException("No association is asserted for :" 
         + associationName + " in " + codingSchemeUri + ":" + codingSchemeVersion);
         }
@@ -90,10 +103,6 @@ public class SourceAssertedValueSetBatchLoader {
       try {
         new SourceAssertedValueSetBatchLoader("NCI_Thesaurus", "17.02d", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI").run("Contributing_Source");
     } catch (LBParameterException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    } catch (LBException e) {
-        // TODO Auto-generated catch block
         e.printStackTrace();
     }
 

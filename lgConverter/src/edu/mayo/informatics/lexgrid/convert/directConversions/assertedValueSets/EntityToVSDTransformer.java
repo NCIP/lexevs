@@ -21,6 +21,7 @@ import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
@@ -47,6 +48,7 @@ public class EntityToVSDTransformer{
        this.codingSchemeVersion = codingSchemeVersion;
        this.owner = owner;
        this.association = definingAssociation;
+       messages_ = LoggerFactory.getLogger();
        
    }
     
