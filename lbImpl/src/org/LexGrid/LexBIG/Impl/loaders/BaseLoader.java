@@ -122,6 +122,14 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     protected boolean inUse = false;
     private CachingMessageDirectorIF md_;
+    public CachingMessageDirectorIF getMd_() {
+        return md_;
+    }
+
+    public void setMd_(CachingMessageDirectorIF md_) {
+        this.md_ = md_;
+    }
+
     private LoadStatus status_;
     
     private OptionHolder options_;
@@ -179,7 +187,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
      * Inits the supplement options. These need to be Lazy-initialized because
      * they may interfere with LexEVS startup of Extensions.
      */
-    private void initLazyInitializedOptions() {
+    protected void initLazyInitializedOptions() {
 
         if(!hasSupplementOptionsBeenInitialized) {
             StringOption supplementOption;

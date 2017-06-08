@@ -122,13 +122,6 @@ public class ResourceManager implements SystemResourceService {
     /** The sql server interfaces_. */
     private Hashtable<String, SQLInterface> sqlServerInterfaces_;
 
-    // This maps low level jdbc connection information to the connection pool
-    // that accesses
-    // this particular databases (multiple SQLInterfaces can use the same base
-    // interface)
-    //private Hashtable<String, SQLInterfaceBase> sqlServerBaseInterfaces_;
-    //private SQLInterfaceBase sib;
-
     // this maps indexId's to the IndexInterface that accesses them.
     /** The index interfaces_. */
     private Hashtable<String, IndexInterface> indexInterfaces_;
@@ -156,13 +149,6 @@ public class ResourceManager implements SystemResourceService {
     // away oldest unused items.
     /** The cache_. */
     private Map cache_;
-
-    // This thread handles future deactivations
-    /** The deactivator thread_. */
-    private Thread deactivatorThread_;
-    
-    /** The fdt_. */
-    private FutureDeactivatorThread fdt_;
 
     // Properties object that I was launched with (need to keep incase reinit is
     // called)
@@ -213,13 +199,7 @@ public class ResourceManager implements SystemResourceService {
 
             // stop the deactivator thread in the old resource manager
             ResourceManager oldRM = resourceManager_;
-            oldRM.fdt_.continueRunning = false;
-            oldRM.deactivatorThread_.interrupt();
 
-
-
-            oldRM.fdt_ = null;
-            oldRM.deactivatorThread_ = null;
             //force the finalize (to make sure the db connections get closed)
             oldRM.finalize();
             oldRM = null;
@@ -315,11 +295,11 @@ public class ResourceManager implements SystemResourceService {
         }
       
         // Start up a thread to handle scheduled deactivations
-        fdt_ = new FutureDeactivatorThread();
-        deactivatorThread_ = new Thread(fdt_);
-        // This allows the JVM to exit while this thread is still active.
-        deactivatorThread_.setDaemon(true);
-        deactivatorThread_.start();
+//        fdt_ = new FutureDeactivatorThread();
+//        setDeactivatorThread_(new Thread(fdt_));
+//        // This allows the JVM to exit while this thread is still active.
+//        getDeactivatorThread_().setDaemon(true);
+//        getDeactivatorThread_().start();
     }
 
 
@@ -1265,8 +1245,6 @@ public class ResourceManager implements SystemResourceService {
             r.deactivate(entry);
         } else {
             r.setDeactivateDate(codingScheme, date);
-            // let the deactivator thread know that it should update its info.
-            deactivatorThread_.interrupt();
         }
     }
 
@@ -1319,80 +1297,6 @@ public class ResourceManager implements SystemResourceService {
         getRegistry().updateVersion(codingScheme, newVersion);
         cache_.clear(); // TODO [Performance] it would be nice to not have to
                         // clear the entire cache because of this.
-    }
-
-    /**
-     * The Class FutureDeactivatorThread.
-     * 
-     * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
-     */
-    public class FutureDeactivatorThread implements Runnable {
-        
-        /** The continue running. */
-    	volatile boolean continueRunning = true;
-
-        /* (non-Javadoc)
-         * @see java.lang.Runnable#run()
-         */
-        public void run() {
-            // first number doesn't really matter - want the loop to run once so
-            // we find out
-            // when the first real deactivation needs to happen.
-            long sleepFor = 0;
-            while (continueRunning) {
-
-                try {
-                    if (sleepFor > 0) {
-                        Thread.sleep(sleepFor);
-                    }
-                } catch (InterruptedException e) {
-                    // I've been woken up - see if anything needs deactivation,
-                    // and
-                    // recalculate how long to sleep.
-                    if (!continueRunning) {
-                        return;
-                    }
-                }
-
-                try {
-                    long currentTime = System.currentTimeMillis();
-                    long timeOfNextClosestDeactivation = 0;
-                    // see if anything needs to be deactivated.
-
-                    DBEntry[] entries = getRegistry().getDBEntries();
-                    for (int i = 0; i < entries.length; i++) {
-                        if (entries[i].deactiveDate > 0 && entries[i].deactiveDate <= currentTime
-                                && entries[i].status.equals(CodingSchemeVersionStatus.ACTIVE.toString())) {
-                            getLogger().info(
-                                    "Deactivating coding scheme (according to schedule) " + entries[i].urn + " : "
-                                            + entries[i].version);
-                            getRegistry().deactivate(entries[i]);
-                        }
-                        // if it is marked for deactivation, and its active, and
-                        // its deactivation time is
-                        // sooner than the next deactivation time, set the time.
-                        else if (entries[i].deactiveDate > 0
-                                && entries[i].status.equals(CodingSchemeVersionStatus.ACTIVE.toString())
-                                && (entries[i].deactiveDate < timeOfNextClosestDeactivation || timeOfNextClosestDeactivation == 0))
-
-                        {
-                            timeOfNextClosestDeactivation = entries[i].deactiveDate;
-                        }
-                    }
-
-                    if (timeOfNextClosestDeactivation > 0) {
-                        sleepFor = timeOfNextClosestDeactivation - currentTime;
-                    } else {
-                        // set it to 30 minutes (arbitrary selection)
-                        sleepFor = 30 * 60 * 1000;
-                    }
-                } catch (Exception e) {
-                    getLogger().error("Something failed while running the future deactivate thread", e);
-                    // sleep for 1 minute, then try again.
-                    sleepFor = 1 * 60 * 1000;
-                }
-            }
-        }
     }
 
 /**
@@ -1727,8 +1631,6 @@ private String constructJdbcUrlForDeprecatedMultiDbMode(String url, String dbNam
 			resourceManager_.shutdown();
 		}
 		resourceManager_ = null;
-		
-		this.fdt_.continueRunning = false;
-		this.deactivatorThread_.interrupt();
 	}
+
 }

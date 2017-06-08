@@ -1,8 +1,11 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
+import java.lang.Thread.State;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -121,19 +124,10 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
 
             for (CodingScheme s : schemes) {
 
-                    SourceAssertedVStoCodingSchemeLoader loader = (SourceAssertedVStoCodingSchemeLoader) LexBIGServiceImpl
+                    SourceAssertedVStoCodingSchemLoaderImpl loader = (SourceAssertedVStoCodingSchemLoaderImpl) LexBIGServiceImpl
                             .defaultInstance().getServiceManager(null)
                             .getLoader("SourceAssertedVStoCodingSchemeLoader");
                     loader.load(s);
-                    AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(
-                            s.getCodingSchemeURI(), s.getRepresentsVersion());
-                    // LexBIGServiceImpl.
-                    // defaultInstance().getServiceManager(null).activateCodingSchemeVersion(ref);
-                    // LexBIGServiceImpl.
-                    // defaultInstance().getServiceManager(null).setVersionTag(ref,
-                    // "PRODUCTION");
-                    
-                   // Util.displayLoaderStatus(loader);
                     while(loader.getStatus().getEndTime() == null){
                         Thread.sleep(2000);
                     }               
@@ -142,6 +136,12 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
                     LexBIGServiceImpl.defaultInstance().getServiceManager(null).setVersionTag(loader.getCodingSchemeReferences()[0],"PRODUCTION");
                     System.out.println("Loaded and activiated resolved value set scheme for: " + s.getCodingSchemeURI() + " :" +
                     s.getCodingSchemeName());
+                    if(loader.getConversion().getState().equals(State.TERMINATED)){
+                        Thread deadThread = loader.getConversion();
+                        loader.setConversion(null);
+                        deadThread.interrupt();
+                        loader = null;
+                        }
                     }
                     else{
                     System.out.println("Error loading value set: " + s.getCodingSchemeURI() + " :" +
