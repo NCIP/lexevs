@@ -59,6 +59,8 @@ public void testResourceManagerThreadInitialization(){
 	boolean memberThreadExists = Arrays.asList(mgr.getClass().getDeclaredFields()).stream().
 	 filter(x -> x.getName().equals("deactivatorThread_")).findFirst().isPresent();
 	assertFalse(memberThreadExists);
+	boolean runnableClassExists = Arrays.asList(mgr.getClass().getDeclaredClasses()).stream().filter(x -> x.getName().equals("FutureDeactivatorThread")).findFirst().isPresent();
+	assertFalse(runnableClassExists);
 }
 
     class TestResourceManagerPut extends TestRunnable {
