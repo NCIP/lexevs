@@ -21,7 +21,10 @@ package org.LexGrid.LexBIG.Impl.bugs;
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
+import java.util.Arrays;
+
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.aspectj.util.Reflection;
 import org.lexevs.system.ResourceManager;
 
 public class GForge21567 extends LexBIGServiceTestCase {
@@ -50,6 +53,13 @@ public void testThreadSafeResourceManagerCache() throws Throwable {
 
         runner.runTestRunnables();
     }
+
+public void testResourceManagerThreadInitialization(){
+	ResourceManager mgr = new ResourceManager();
+	boolean memberThreadExists = Arrays.asList(mgr.getClass().getDeclaredFields()).stream().
+	 filter(x -> x.getName().equals("deactivatorThread_")).findFirst().isPresent();
+	assertFalse(memberThreadExists);
+}
 
     class TestResourceManagerPut extends TestRunnable {
         private int count;
