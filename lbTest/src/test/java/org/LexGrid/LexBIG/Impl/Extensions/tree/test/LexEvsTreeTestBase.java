@@ -18,6 +18,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 public class LexEvsTreeTestBase extends TestCase{
@@ -43,7 +44,7 @@ public class LexEvsTreeTestBase extends TestCase{
 	
 	@Before
 	public void setUp() throws Exception{
-		ac = new FileSystemXmlApplicationContext("file:src/test/java/org/LexGrid/LexBIG/Impl/Extensions/tree/test/treeServiceContext.xml");
+		ac = new ClassPathXmlApplicationContext("treeServiceContext.xml");
 		pathToRootTreeServiceImpl = (PathToRootTreeServiceImpl) ac.getBean("pathToRootTreeServiceImpl");
 		getChildrenSqlBuilder = (GetChildrenSqlBuilder) ac.getBean("getChildrenSqlBuilder");
 //		iterator = new PagingChildNodeIterator(lexEvsTreeDao, "Automobiles", null, "A0001", null, Direction.FORWARD, hierarchyAssocNames, 5);
@@ -58,10 +59,6 @@ public class LexEvsTreeTestBase extends TestCase{
 		//
 	}
 	
-	@Test
-	public void testSetUp() throws Exception {
-		//
-	}
 
 	
 	public boolean containsCode(List<LexEvsTreeNode> list, String code){

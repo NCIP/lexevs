@@ -57,11 +57,6 @@ import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
  * list of available coding schemes will be presented for
  * user selection.
  * 
- * Example: java -Xmx512m -cp lgRuntime.jar
- *  org.lexgrid.valuesets.admin.RemoveResolvedValueSet
- *    -l &quot;urn:oid:11.11.0.1::version1, GM_URI::version2&quot; -f
- * </pre>
- * 
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
  */
 @LgAdminFunction
@@ -148,28 +143,6 @@ public class RemoveResolvedValueSet {
 			}
 		}
 		return acsvl;
-	}
-
-	public void remove(
-			AbsoluteCodingSchemeVersionReferenceList csVersionList,
-			boolean force) throws Exception {		
-		boolean foundToRemove = false;
-		LexEVSResolvedValueSetService resolved_vs_service = new LexEVSResolvedValueSetServiceImpl();
-		for (CodingScheme cs : resolved_vs_service.listAllResolvedValueSets()) {
-			AbsoluteCodingSchemeVersionReferenceList acsvl = resolved_vs_service
-					.getListOfCodingSchemeVersionsUsedInResolution(cs);
-			if (matches(csVersionList, acsvl)) {
-				AbsoluteCodingSchemeVersionReference remove_acst = Constructors
-						.createAbsoluteCodingSchemeVersionReference(
-								cs.getCodingSchemeURI(),
-								cs.getRepresentsVersion());
-				foundToRemove = true;
-				remove(remove_acst, force);
-			}
-		}
-		
-		if (!foundToRemove)
-			Util.displayTaggedMessage("Could not find Resolved valueset(s) coding scheme to remove.");
 	}
 
 	boolean matchesWithResolvedVS(AbsoluteCodingSchemeVersionReferenceList containedList,

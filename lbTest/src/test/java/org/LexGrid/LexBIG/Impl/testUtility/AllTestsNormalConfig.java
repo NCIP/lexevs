@@ -182,6 +182,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandlerTest;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
@@ -189,6 +190,7 @@ import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexes
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateMultipleIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsRemoveTest;
+import org.lexevs.dao.index.operation.ManifestLoadWithAssociationTest;
 import org.lexevs.dao.index.operation.SameSessionLoadandQueryTest;
 import org.lexevs.dao.indexer.lucene.analyzers.SnowballAnalyzerTest;
 import org.lexevs.dao.indexer.lucene.analyzers.StringAnalyzerTest;
@@ -202,6 +204,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2Unanno
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCaseSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
@@ -266,6 +269,7 @@ public class AllTestsNormalConfig {
         owl2LoaderSuite.addTestSuite(NewOWL2UnannotatedSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2PrimitivesSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2PrimitivesUnannotatedSnippetTestIT.class);
+        owl2LoaderSuite.addTestSuite(OWL2SpecialCaseSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2UnitTests.class);
         mainSuite.addTest(owl2LoaderSuite);
         
@@ -328,6 +332,10 @@ public class AllTestsNormalConfig {
         TestSuite comparatorSuite = new TestSuite("Comparator Tests");
         comparatorSuite.addTestSuite(ResultComparatorTest.class);
         mainSuite.addTest(comparatorSuite);
+        
+        TestSuite namespaceSuite = new TestSuite("Namespace Tests");
+        namespaceSuite.addTestSuite(DefaultNamespaceHandlerTest.class);
+        mainSuite.addTest(namespaceSuite);
       
         TestSuite codedNodeSetSuite = new TestSuite("CodedNodeSet Tests");
         codedNodeSetSuite.addTestSuite(ResolveTest.class);
@@ -421,7 +429,7 @@ public class AllTestsNormalConfig {
 //
         mainSuite.addTest(functionalTests);
 
-        if(System.getProperty(TREE_TESTS_ENV) != null) {
+//        if(System.getProperty(TREE_TESTS_ENV) != null) {
             TestSuite treeTests = new TestSuite("tree extension tests");
             treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
             treeTests.addTestSuite(LexEvsTreeNodeTest.class);
@@ -431,7 +439,7 @@ public class AllTestsNormalConfig {
             treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
 
             mainSuite.addTest(treeTests);
-        }
+//        }
         
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
@@ -510,6 +518,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
         mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
         // $JUnit-END$
 
         return mainSuite;

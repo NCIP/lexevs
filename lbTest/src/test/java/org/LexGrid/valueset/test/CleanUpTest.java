@@ -22,21 +22,28 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
+import org.lexgrid.valuesets.admin.RemoveVSResolvedFromCodingSchemes;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
+import org.springframework.core.annotation.Order;
+
+import junit.framework.TestCase;
 
 /**
  * This test removes the terminologies loaded by the JUnit tests.
@@ -44,11 +51,14 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * @author <A HREF="mailto:dwarkanath.sridhar@mayo.edu">Sridhar Dwarkanath</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
+@RunWith(OrderingTestRunner.class)
 public class CleanUpTest extends TestCase {
     
 	private LexEVSValueSetDefinitionServices vds_;
 	private LexEVSPickListDefinitionServices pls_;
 	
+	@Test
+	@Order(0)
 	public void testRemoveAutombiles() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -60,6 +70,8 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 	
+	@Test
+	@Order(1)
 	public void testRemoveAutombilesV2() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
         
@@ -71,6 +83,8 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 	
+	@Test
+	@Order(2)
 	public void testRemoveGermanMadeParts() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -82,6 +96,8 @@ public class CleanUpTest extends TestCase {
         lbsm.removeCodingSchemeVersion(a);
     }
 
+	@Test
+	@Order(3)
     public void testRemoveObo() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -93,6 +109,8 @@ public class CleanUpTest extends TestCase {
 
     }
     
+	@Test
+	@Order(4)
     public void testRemoveOWL2() throws LBException {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
@@ -105,13 +123,15 @@ public class CleanUpTest extends TestCase {
     }
     
     @Test
+	@Order(5)
 	public void testRemoveAllTestValueSetDefs() throws LBException, URISyntaxException {
 		List<String> uris = getValueSetDefService().listValueSetDefinitions(null);
 		assertTrue(uris.size() > 0);
 		
 		for (String uri : uris)
 		{
-			if (uri.startsWith("SRITEST:") || uri.startsWith("OWL2LEXEVS:"))
+			if (uri.startsWith("SRITEST:") || uri.startsWith("OWL2LEXEVS:") 
+					|| uri.startsWith("XTEST:"))
 				getValueSetDefService().removeValueSetDefinition(new URI(uri));
 		}
 		
@@ -120,12 +140,14 @@ public class CleanUpTest extends TestCase {
 		
 		for (String uri : uris)
 		{
-			if (uri.toString().startsWith("SRITEST:") || uri.toString().startsWith("OWL2LEXEVS:"))
+			if (uri.toString().startsWith("SRITEST:") || uri.toString().startsWith("OWL2LEXEVS:")
+					|| uri.startsWith("XTEST:"))
 				assertFalse("Not all test value domains were deleted.",true);
 		}
 	}
 	
 	@Test
+	@Order(6)
 	public void testRemovePickList() {
 		try {
 			getPickListService().removePickList("SRITEST:AUTO:DomesticAutoMakers");
@@ -146,6 +168,7 @@ public class CleanUpTest extends TestCase {
 	}
 	
 	@Test
+	@Order(7)
 	public void testRemoveAllTestPickLists() throws LBException {
 		List<String> pickListIds = getPickListService().listPickListIds();
 		for (String pickListId : pickListIds)
@@ -166,10 +189,68 @@ public class CleanUpTest extends TestCase {
 	}
 	
     @Test 
+	@Order(8)
     public void testRemoveResolvedValueSet() throws Exception {
-    	RemoveResolvedValueSet remove_rvs= new RemoveResolvedValueSet();
+    	RemoveVSResolvedFromCodingSchemes remove_rvs= new RemoveVSResolvedFromCodingSchemes();
     	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.0");
     	remove_rvs.remove(acsvrl, true);
+    }
+    
+    @Test 
+	@Order(9)
+    public void testRemoveResolvedValueSe2t() throws Exception {
+    	RemoveVSResolvedFromCodingSchemes remove_rvs= new RemoveVSResolvedFromCodingSchemes();
+    	AbsoluteCodingSchemeVersionReferenceList acsvrl= remove_rvs.getCodingSchemeVersions("urn:oid:11.11.0.1::1.1");
+    	remove_rvs.remove(acsvrl, true);
+    }
+    
+    @Test
+	@Order(10)
+    public void testRemoveResolvedAllButGM() throws LBParameterException, LBInvocationException, LBException{
+    	LexBIGServiceManager lbsm = null;
+    	AbsoluteCodingSchemeVersionReference acsvr = null;
+    
+         lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+         acsvr = Constructors.
+    			createAbsoluteCodingSchemeVersionReference("SRITEST:AUTO:AllDomesticButGM", "12.03test");
+
+         try{
+        	 lbsm.deactivateCodingSchemeVersion(acsvr , null);  
+        	 fail("LBParameterException should be thrown");
+         }
+         catch(LBParameterException e){
+        	 assertEquals(e.getMessage(), "Could not find Resource:SRITEST:AUTO:AllDomesticButGM, 12.03test");
+         }
+         try{
+        	 lbsm.removeCodingSchemeVersion(acsvr);
+          	 fail("RuntimeException should be thrown");
+         }
+         catch(RuntimeException e){
+        	 assertEquals(e.getMessage(), "No CodingScheme Entry for URI: SRITEST:AUTO:AllDomesticButGM, Version: 12.03test");
+         }
+    }
+    
+    @Test 
+	@Order(11)
+    public void testRemoveXTest() throws LBException{
+
+    	LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+    	AbsoluteCodingSchemeVersionReference acsvr = Constructors.
+    			createAbsoluteCodingSchemeVersionReference("XTEST:One.Node.ValueSet", "1.0");
+    	try {
+    		lbsm.deactivateCodingSchemeVersion(acsvr , null);
+    		fail("LBParameterException should be thrown");
+    	}
+    	catch(LBParameterException e){
+    		assertEquals(e.getMessage(), "Could not find Resource:XTEST:One.Node.ValueSet, 1.0");
+    	}
+    	try{
+    		lbsm.removeCodingSchemeVersion(acsvr);
+    		fail("RuntimeException should be thrown");
+    	}
+    	catch(RuntimeException e){
+    		assertEquals(e.getMessage(), "No CodingScheme Entry for URI: XTEST:One.Node.ValueSet, Version: 1.0");
+    	}
     }
         
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){

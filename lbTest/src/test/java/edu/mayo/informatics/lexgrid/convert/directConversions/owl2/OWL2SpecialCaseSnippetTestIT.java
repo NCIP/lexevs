@@ -1,9 +1,12 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
+import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -17,9 +20,22 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.concepts.Definition;
+import org.LexGrid.concepts.Presentation;
+import org.LexGrid.naming.SupportedHierarchy;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.IRI;
+import org.semanticweb.owlapi.model.OWLAnnotationProperty;
+import org.semanticweb.owlapi.model.OWLEntity;
+import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
+
+import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OwlApi2LG;
 
 public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 
@@ -28,7 +44,40 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		super.setUp();
 		
 	}
-		
+	
+	@Test
+	public void testLoadofLabelsWhenPreferredSourceHasEmptyValue() throws LBInvocationException, LBParameterException{
+
+		String[] stringList = {"OBI_0000699"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+				
+		assertTrue(rcr.getEntity().getEntityDescription().getContent().equals("survival assessment"));;
+		assertTrue(rcr.getEntity().getPresentationCount() > 2);
+		List<Presentation> presentations = rcr.getEntity().getPresentationAsReference();
+		Boolean hasEmptyPresentation = false;
+		boolean hasLabel = false;
+		boolean hasEditorTerm = false;
+		for(Presentation p: presentations){
+			if(p.getPropertyName().equals("OBI_9991118") && StringUtils.isBlank(p.getValue().getContent())){
+				hasEmptyPresentation = true;
+			}
+			if(p.getPropertyName().equals("editor preferred term") && p.getValue().getContent().equals("survival assessment") ){
+				hasEditorTerm = true;
+			}
+			if(p.getPropertyName().equals("label") && p.getValue().getContent().equals("survival assessment") ){
+				hasLabel = true;
+			}
+		}
+		assertTrue(hasEmptyPresentation);
+		assertTrue(hasLabel);
+		assertTrue(hasEditorTerm);
+	}
+
 
 	@Test
 	public void testRestrictOnSubClassOfToProperty() 
@@ -40,6 +89,41 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			true, true, 1, 1, null, null, null, null, -1);
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
 	assertTrue(validateTarget("Cold", itr));
+	}
+	
+	@Test
+	public void testLoadOfAssociationURIAsResource() 
+			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("AssociationURIAsResource"), null);
+	ResolvedConceptReferenceList list = cng.resolveAsList(
+			Constructors.createConceptReference("HappyPatientDrivingAround", 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+			true, true, 1, 1, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(validateTarget("PrognosisGood", itr));
+	}
+	
+	@Test
+	public void testNoLoadOfAssociationV1AsResource() 
+			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+	cng = cng.restrictToAssociations(Constructors.createNameAndValueList("InvalidAssociationV1AsResource"), null);
+	ResolvedConceptReferenceList list = cng.resolveAsList(
+			Constructors.createConceptReference("HappyPatientDrivingAround", 
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
+			true, true, 1, 1, null, null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertFalse(validateTarget("PrognosisGood", itr));
+	}
+	
+	@Test
+	public void testRestrictOnAssociationLoadedByCodeFromByName() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.6");	
+    CodedNodeGraph specialGraph = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag, null);
+	specialGraph = specialGraph.restrictToAssociations(Constructors.createNameAndValueList("Chemotherapy_Regimen_Has_Component"), null);
+	ResolvedConceptReferenceList list = specialGraph.resolveAsList(null, true, false, 1, 1, null, null, null, null, -1);
+	assertTrue(list.getResolvedConceptReferenceCount() > 0);
 	}
 	
 	
@@ -59,6 +143,18 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		}
 	}
 	fail();
+	}
+	
+	@Test
+	public void testdataTypeWithCorrectBuiltinLoads() 
+			throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("Clinical_Infection"));
+	ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+	assertTrue(itr.hasNext());
 	}
 	
 	@Test
@@ -336,5 +432,135 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 				.iterateResolvedConceptReference();
 		assertTrue(validateTarget("obi.owl", itr));
 	}
+	
+	@Test
+	public void testLoadTransitivePropertiesAsHierarchies() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodingScheme scheme = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+		List<SupportedHierarchy> hrchy = scheme.getMappings().getSupportedHierarchyAsReference();
+		boolean exists = false;
+		for(SupportedHierarchy sh :hrchy){
+			if(sh.getLocalId().equals("Anatomic_Structure_Has_Location")){
+				exists = true;
+			}
+		}
+		assertTrue(exists);
+	}
+	
+	@Test
+	public void testLoadValidOWL2ComplexPropsOff() throws LBInvocationException, LBParameterException{
+		String[] stringList = {"C61410"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+		for(Property prop :rcr.getEntity().getAllProperties()){
+			if(prop.getPropertyName().equals("Term_Browser_Value_Set_Description")){
+				assertNotNull(prop.getValue());
+			}
+		}
+		
+	}
+	
+	@Test
+	public void testAnnotationPropAsAssociation() throws LBException{
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeGraph newCng = lbs.getNodeGraph(
+				LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN,
+				versionOrTag, null);
+		newCng = newCng.restrictToAssociations(
+				Constructors.createNameAndValueList("Concept_In_Subset"),
+				null);
+		ResolvedConceptReferenceList list = newCng.resolveAsList(Constructors
+				.createConceptReference("C37927",
+						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN),
+				true, true, 10, 10, null, null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list
+				.iterateResolvedConceptReference();
+		assertTrue(validateTarget("C117743", itr));
+	}
+		
+	
+	@Test
+	public void testAnnotationPropAsProperty() throws LBInvocationException, LBParameterException{
+		String[] stringList = {"C37927"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+		for(Property prop :rcr.getEntity().getAllProperties()){
+			if(prop.getPropertyName().equals("Concept_In_Subset")){
+				fail();
+			}
+		}		
+	}
+	
+	@Test
+	public void testPopulateRepresentationalForm() throws LBInvocationException, LBParameterException{
+		String[] stringList = {"C117743"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+		assertTrue(rcr.getEntity().getPresentation().length > 0);
+		for(Presentation prop :rcr.getEntity().getPresentation()){
+			if(prop.getValue().getContent().equals("OETESTCD")){
+			assertTrue(prop.getRepresentationalForm() != null);
+			assertTrue(prop.getRepresentationalForm().equals("PT"));
+		}
+		}
+	}
+	
+	@Test
+	public void testPopulateSource() throws LBInvocationException, LBParameterException{
+		String[] stringList = {"C117743"};
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
+		ResolvedConceptReferenceList rcrlist = cns.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();
+		assertTrue(rcr.getEntity().getPresentation().length > 0);
+		for(Presentation prop :rcr.getEntity().getPresentation()){
+			if(prop.getValue().getContent().equals("OETESTCD")){
+			assertTrue(prop.getSource().length > 0);
+			assertTrue(prop.getSource()[0].getContent().equals("CDISC"));
+		}
+		}
+	}
+		
+		@Test
+		public void testDefSourceAsSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set = set.restrictToCodes(Constructors.createConceptReferenceList("C117743"));
+			ResolvedConceptReferenceList rcrlist = set.resolveToList(null, null, null, -1);
+			Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			ResolvedConceptReference rcr = itr.next();
+			assertTrue(rcr.getEntity().getDefinition().length > 0);
+			for(Definition def :rcr.getEntity().getDefinition()){
+				if(def.getValue().getContent().equals("Terminology relevant to the test codes that describe findings from ophthalmic examinations.")){
+				assertTrue(def.getSource().length > 0);
+				assertTrue(def.getSource()[0].getContent().equals("CDISC"));
+			}
+			}
+		}
+	
+	
+	
+
 
 }

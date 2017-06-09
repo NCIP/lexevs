@@ -94,10 +94,10 @@
            debug="true" 
            optimize="false" 
            deprecation="true" 
-           target="1.7" 
+           target="1.8" 
            verbose="false" 
            fork="false" 
-           source="1.7">
+           source="1.8">
       <src>
         <pathelement location="${build.srcDir}"/>
       </src>
@@ -122,10 +122,10 @@
            debug="true" 
            optimize="false" 
            deprecation="true" 
-           target="1.7" 
+           target="1.8" 
            verbose="false" 
            fork="false" 
-           source="1.7">
+           source="1.8">
       <src>
         <pathelement location="${build.testDir}"/>
       </src>
@@ -278,7 +278,7 @@
 	   		<mapping conf="system" scope="system"/>
 	   	</ivy:makepom>
 
-		<ivy:publish resolver="informatics" forcedeliver="true" overwrite="true">
+		<ivy:publish resolver="ncimvn" forcedeliver="true" overwrite="true">
 		   <artifacts pattern="${build.dir}/[artifact]-[revision](-[classifier]).[ext]" />
 		</ivy:publish>
 	</target>

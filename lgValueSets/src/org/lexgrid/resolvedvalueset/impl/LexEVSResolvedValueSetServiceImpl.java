@@ -40,20 +40,9 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
 		LexBIGService lbs= getLexBIGService();
 		List<CodingScheme> resolvedValueSetList= new ArrayList<CodingScheme>();
-
-		List<CodingSchemeRendering> candidateRenderingList= new ArrayList<CodingSchemeRendering>();
 		CodingSchemeRenderingList schemes = lbs.getSupportedCodingSchemes();
-        for (CodingSchemeRendering csr:  schemes.getCodingSchemeRendering()) {
-        	CodingSchemeSummary css= csr.getCodingSchemeSummary();
-        	String version = css.getRepresentsVersion();
-        	//Resolved ValueSet versions are generated as 32 hex value of its MD5
-        	if (version.length()==32) {
-        		candidateRenderingList.add(csr);
-        	}
-        	
-        }
         
-        for (CodingSchemeRendering csr: candidateRenderingList) {
+        for (CodingSchemeRendering csr: schemes.getCodingSchemeRendering()) {
         	CodingScheme cs= getResolvedCodingScheme(csr);
         	if (isResolvedValueSetCodingScheme(cs) ) {
         	    resolvedValueSetList.add(cs);

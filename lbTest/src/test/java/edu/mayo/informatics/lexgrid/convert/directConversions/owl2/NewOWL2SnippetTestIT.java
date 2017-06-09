@@ -5,9 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
+import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
+import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -16,6 +20,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.AnonymousOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.commonTypes.Property;
@@ -152,7 +157,17 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		ResolvedConceptReference rcr = itr.next();		
-		assertTrue(validateProperty("AssociationURI", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
+		assertFalse(validateProperty("AssociationURI", "http://purl.obolibrary.org/obo/CL_0000148", rcr));
+	}
+	
+	@Test 
+	public void testPropertyForAnnotationPropertyAssociationDescription()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("AssociationURI"));
+		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference rcr = itr.next();		
+		assertTrue(rcr.getEntityDescription().getContent().equals("AssociationURI"));
 	}
 	
 	@Test
@@ -274,6 +289,27 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		ResolvedConceptReferencesIterator itr = cns.resolve(null, null, null);
 		assertNotNull(itr);
 		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testAnonEntityForBadFormating()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("equivalentClass"), null);
+		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("Brca1", null), true, false, 1, 1, null, null, null, null, 10);
+		assertFalse(list.getResolvedConceptReferenceCount() < 1);
+		ResolvedConceptReference ref = list.getResolvedConceptReference(0);
+		assertNotNull(ref.getSourceOf());
+		AssociationList assocs = ref.getSourceOf();
+		for(Association as: assocs.getAssociation()){
+			AssociatedConceptList asList = as.getAssociatedConcepts();
+			for(AssociatedConcept ac : asList.getAssociatedConcept()){
+				if(ac.getEntityDescription().getContent().contains("\n") || 
+						ac.getEntityDescription().getContent().contains("\r")){
+					fail();
+				}
+			}
+		}
+		String desc = ref.getEntityDescription().getContent();
+		System.out.println(desc);
 	}
 	
 	
@@ -989,6 +1025,5 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
 		assertTrue(validateQualifier("PlainLiteral", "homo sapiens", itr1));
 	}
-	
 
 }
