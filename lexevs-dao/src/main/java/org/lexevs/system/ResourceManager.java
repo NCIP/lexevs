@@ -294,12 +294,6 @@ public class ResourceManager implements SystemResourceService {
             }
         }
       
-        // Start up a thread to handle scheduled deactivations
-//        fdt_ = new FutureDeactivatorThread();
-//        setDeactivatorThread_(new Thread(fdt_));
-//        // This allows the JVM to exit while this thread is still active.
-//        getDeactivatorThread_().setDaemon(true);
-//        getDeactivatorThread_().start();
     }
 
 

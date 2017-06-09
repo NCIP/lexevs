@@ -21,22 +21,15 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Date;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
-import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.SourceAssertedVStoCodingSchemeLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
-import org.LexGrid.LexBIG.Impl.loaders.BaseLoader.DoConversion;
 import org.LexGrid.codingSchemes.CodingScheme;
 
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
-import sun.misc.SharedSecrets;
 
 public class SourceAssertedVStoCodingSchemLoaderImpl extends BaseLoader implements
 SourceAssertedVStoCodingSchemeLoader {
@@ -47,7 +40,6 @@ SourceAssertedVStoCodingSchemeLoader {
 	private static final long serialVersionUID = 4792994226238454359L;
 
     private CodingScheme scheme;
-    private volatile Thread conversion;
 
 	@Override
 	    protected OptionHolder declareAllowedOptions(OptionHolder holder) {
@@ -91,51 +83,6 @@ SourceAssertedVStoCodingSchemeLoader {
 	    public OntologyFormat getOntologyFormat() {
 	        return OntologyFormat.RESOLVEDVALUESET;
 	    }
-	    
-	    @Override
-	    public void load(URI uri){
-	        initLazyInitializedOptions();
-	        
-	        this.setResourceUri(uri);
-	        try {
-	            boolean async = this.getOptions().getBooleanOption(ASYNC_OPTION).getOptionValue();
-	            if(doesOptionExist(this.getOptions().getURIOptions(), MANIFEST_FILE_OPTION)){
-	                this.setCodingSchemeManifestURI(this.getOptions().getURIOption(MANIFEST_FILE_OPTION).getOptionValue());
-	            } 
-	            if(doesOptionExist(this.getOptions().getURIOptions(), LOADER_PREFERENCE_FILE_OPTION)){
-	                this.setLoaderPreferences(this.getOptions().getURIOption(LOADER_PREFERENCE_FILE_OPTION).getOptionValue());
-	            }
-	            this.baseLoad(async);
-	        } catch (LBException e) {
-	            throw new RuntimeException(e);
-	        }
-	    }
-	    
-	    @Override
-	    public void baseLoad(boolean async){
-	        setStatus(new LoadStatus());
-
-	        getStatus().setState(ProcessState.PROCESSING);
-	        getStatus().setStartTime(new Date(System.currentTimeMillis()));
-	        setMd_(createCachingMessageDirectorIF());
-
-	        if (async) {
-	            this.conversion = new Thread(new DoConversion());
-	            conversion.start();
-	        } else {
-	            new DoConversion().run();
-	        }
-	    }
-
-        @Override
-        public Thread getConversion() {
-            return conversion;
-        }
-
-	    
-        public void setConversion(Thread conversion) {
-            this.conversion = conversion;
-        }
 
 
 }

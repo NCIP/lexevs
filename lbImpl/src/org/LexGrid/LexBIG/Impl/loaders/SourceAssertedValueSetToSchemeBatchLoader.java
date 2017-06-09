@@ -2,10 +2,7 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.lang.Thread.State;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -15,31 +12,22 @@ import org.LexGrid.LexBIG.Extensions.Load.SourceAssertedVStoCodingSchemeLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedCodingScheme;
-import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.entity.EntityService;
-import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.LexEvsResourceManagingService;
 import org.lexevs.system.service.SystemResourceService;
 
-import com.hp.hpl.jena.sparql.util.Loader;
-
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToRVSTransformer;
-import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransformer;
 
 public class SourceAssertedValueSetToSchemeBatchLoader {
     private LexEvsResourceManagingService service = new LexEvsResourceManagingService();
     private CodedNodeGraphService codedNodeGraphDao;
     private EntityService entityService;
-    private CodingSchemeService csService;
     private SystemResourceService resourceService;
     private LexBIGService lbsvc;
     private String codingSchemeName;
@@ -48,7 +36,6 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
     private String associationName;
     private boolean targetToSource;
     private EntityToRVSTransformer transformer;
-    private LgMessageDirectorIF messages;
     
 
     
@@ -60,7 +47,6 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
                 getDatabaseServiceManager().getEntityService();
         resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
         this.codingSchemeUri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
-        csService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodingSchemeService();
         lbsvc = LexBIGServiceImpl.defaultInstance();
 
         this.codingSchemeVersion = version;
@@ -124,7 +110,7 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
 
             for (CodingScheme s : schemes) {
 
-                    SourceAssertedVStoCodingSchemLoaderImpl loader = (SourceAssertedVStoCodingSchemLoaderImpl) LexBIGServiceImpl
+                    SourceAssertedVStoCodingSchemeLoader loader = (SourceAssertedVStoCodingSchemeLoader) LexBIGServiceImpl
                             .defaultInstance().getServiceManager(null)
                             .getLoader("SourceAssertedVStoCodingSchemeLoader");
                     loader.load(s);
@@ -136,12 +122,6 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
                     LexBIGServiceImpl.defaultInstance().getServiceManager(null).setVersionTag(loader.getCodingSchemeReferences()[0],"PRODUCTION");
                     System.out.println("Loaded and activiated resolved value set scheme for: " + s.getCodingSchemeURI() + " :" +
                     s.getCodingSchemeName());
-                    if(loader.getConversion().getState().equals(State.TERMINATED)){
-                        Thread deadThread = loader.getConversion();
-                        loader.setConversion(null);
-                        deadThread.interrupt();
-                        loader = null;
-                        }
                     }
                     else{
                     System.out.println("Error loading value set: " + s.getCodingSchemeURI() + " :" +

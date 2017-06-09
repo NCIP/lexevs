@@ -38,7 +38,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 public class EntityToRVSTransformer {
     private static final String SOURCE_NAME = "Contributing_Source";
     private static final String DEFAULT_SOURCE = "NCI";
-    private static final Object DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
+//    private static final Object DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
     private URI valueSetDefinitionURI;
     private String valueSetDefinitionRevisionId;
     private String vsVersion;

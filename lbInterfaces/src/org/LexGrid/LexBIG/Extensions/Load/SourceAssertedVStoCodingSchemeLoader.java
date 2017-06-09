@@ -43,7 +43,5 @@ public interface SourceAssertedVStoCodingSchemeLoader  extends Loader {
   
 	public void load(CodingScheme scheme);
 	public void validate(URI valueSetDefinitionURI, int validationLevel) throws Exception;
-	public Thread getConversion();
-
 
 }
