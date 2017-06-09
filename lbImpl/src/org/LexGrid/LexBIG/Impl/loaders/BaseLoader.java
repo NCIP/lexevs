@@ -122,7 +122,6 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
 
     protected boolean inUse = false;
     private CachingMessageDirectorIF md_;
-
     private LoadStatus status_;
     
     private OptionHolder options_;
