@@ -295,6 +295,35 @@
         <P384>NCI</P384>
     </owl:Axiom>
     
+        <!-- Publish_Value_Set -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P372">
+        <rdfs:label>Publish_Value_Set</rdfs:label>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Publish_Value_Set-enum"/>
+        <NHC0>P372</NHC0>
+        <P106>Conceptual Entity</P106>
+        <P108>Publish_Value_Set</P108>
+        <P90>Publish_Value_Set</P90>
+        <P95>This property will be used internally, and scrubbed before publication to the ftp and browser.</P95>
+        <P97>Indicates whether or not a value set is ready for publication in the browser.</P97>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P372"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Publish_Value_Set</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P372"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>Indicates whether or not a value set is ready for publication in the browser.</owl:annotatedTarget>
+        <P378>NCI</P378>
+        <P379>Elizabeth Hahn-Dantona</P379>
+        <P380>160413</P380>
+    </owl:Axiom>
+    
+    
        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Term_Browser_Value_Set_Description -->
 
     <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P376">
@@ -2261,6 +2290,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <NHC0>C54453</NHC0>
         <P106>Intellectual Product</P106>
         <P108>Structured Product Labeling Color Terminology</P108>
+        <P366>Labeling_Color_Terminology</P366>
+        <P372>Yes</P372>
         <P322>FDA</P322>
         <P90>SPL Color Terminology</P90>
         <P90>Structured Product Labeling Color Terminology</P90>

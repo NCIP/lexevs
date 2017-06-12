@@ -58,7 +58,7 @@ public class SourceAssertedVSLoadTest {
 	public void testResolveValueSetDefinitionFromOWL2() throws LBException, URISyntaxException {
 		
 		ValueSetDefinition def = LexEVSValueSetDefinitionServicesImpl.defaultInstance().
-				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/NCI/C54453"), null);
+				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C54453"), null);
 		
 		assertNotNull(def);
 		assertEquals(def.getConceptDomain(), "Intellectual Product");
@@ -69,7 +69,7 @@ public class SourceAssertedVSLoadTest {
 		long l = def.getDefinitionEntry(0).getRuleOrder();
 		assertEquals(l, 0L);
 		assertEquals(def.getDefinitionEntry(0).getStatus(), "1");
-		assertEquals(def.getValueSetDefinitionURI(), "http://evs.nci.nih.gov/valueset/NCI/C54453");
+		assertEquals(def.getValueSetDefinitionURI(), "http://evs.nci.nih.gov/valueset/FDA/C54453");
 		assertEquals(def.getValueSetDefinitionName(), "Structured Product Labeling Color Terminology");
 		assertEquals(def.getDefinitionEntry(0).getEntityReference().getEntityCode(), "C54453");
 		assertEquals(def.getDefinitionEntry(0).getEntityReference().getEntityCodeNamespace(), "owl2lexevs");
