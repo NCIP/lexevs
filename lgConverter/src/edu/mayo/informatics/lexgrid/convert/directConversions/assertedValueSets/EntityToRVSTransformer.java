@@ -38,7 +38,6 @@ import org.lexevs.locator.LexEvsServiceLocator;
 public class EntityToRVSTransformer {
     private static final String SOURCE_NAME = "Contributing_Source";
     private static final String DEFAULT_SOURCE = "NCI";
-    private static final Object DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
     private URI valueSetDefinitionURI;
     private String valueSetDefinitionRevisionId;
     private String vsVersion;
@@ -116,7 +115,7 @@ public class EntityToRVSTransformer {
         List<Property> props = entity.getPropertyAsReference();
 
        List<CodingScheme> schemes = new ArrayList<CodingScheme>();
-       if(!isPublishableValueSet(entity)){
+       if(!AssertedValueSetServices.isPublishableValueSet(entity)){
            return schemes;
        }
        HashMap<String, String> definedSources = new HashMap<String, String>();
@@ -141,17 +140,7 @@ public class EntityToRVSTransformer {
        return schemes;
     }
 
-    private boolean isPublishableValueSet(Entity entity) {
-     if(entity.getPropertyAsReference().stream().filter(x -> x.
-                getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME)).findFirst().isPresent()){
-        String publish =  entity.getPropertyAsReference().stream().filter(x -> x.
-                 getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME)).findFirst().get().getValue().getContent();
-       if(publish.equalsIgnoreCase("yes")){
-           return true;
-       }
-    }
-        return false;
-    }
+
 
     public CodingScheme transform(Entity entity, String source, String description,  Entities entities)
             throws LBException {
@@ -185,17 +174,17 @@ public class EntityToRVSTransformer {
         cs.setStatus(entity.getStatus());
 
         Property prop = new Property();
-        prop.setPropertyType(AssertedValueSetDefinitionServices.GENERIC);
-        prop.setPropertyName(AssertedValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION);
+        prop.setPropertyType(AssertedValueSetServices.GENERIC);
+        prop.setPropertyName(AssertedValueSetServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION);
         Text txt = new Text();
         txt.setContent(ref.getCodingSchemeURN());
         prop.setValue(txt);
-        PropertyQualifier pq = createPropertyQualifier(AssertedValueSetDefinitionServices.VERSION,
+        PropertyQualifier pq = createPropertyQualifier(AssertedValueSetServices.VERSION,
                 ref.getCodingSchemeVersion());
         prop.getPropertyQualifierAsReference().add(pq);
         String csSourceName = getCodingSchemeName(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
         if (csSourceName != null) {
-            PropertyQualifier pQual = createPropertyQualifier(AssertedValueSetDefinitionServices.CS_NAME, csSourceName);
+            PropertyQualifier pQual = createPropertyQualifier(AssertedValueSetServices.CS_NAME, csSourceName);
             prop.getPropertyQualifierAsReference().add(pQual);
         }
         cs.getProperties().addProperty(prop);
@@ -225,7 +214,6 @@ public class EntityToRVSTransformer {
     private List<SupportedSource> getSupportedSources(Entity entity) {
         List<SupportedSource> sources = new ArrayList<SupportedSource>();
         List<Property> props = entity.getPropertyAsReference();
-        //props.stream().filter(p -> 
         for(Property p: props){
         p.getPropertyQualifierAsReference().stream().
         filter(pq -> pq.getPropertyQualifierName().equals("source")).

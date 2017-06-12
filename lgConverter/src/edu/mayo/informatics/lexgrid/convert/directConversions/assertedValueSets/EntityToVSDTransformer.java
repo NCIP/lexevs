@@ -25,7 +25,6 @@ import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
-import junit.framework.TestCase;
 
 public class EntityToVSDTransformer{
     private static final Object PRODUCTION = "PRODUCTION";
@@ -61,10 +60,14 @@ public class EntityToVSDTransformer{
     //Assumption is that this source representation is always a flat list of values
     public List<ValueSetDefinition> transformEntityToValueSetDefinitions(Entity entity, String sourceName) throws LBParameterException{
       
-        final String source = getDefaultSourceIfNull(sourceName);
-        List<Property> props = entity.getPropertyAsReference();
-
+       final String source = getDefaultSourceIfNull(sourceName);
+     
        List<ValueSetDefinition> defs = new ArrayList<ValueSetDefinition>();
+       if(!AssertedValueSetServices.isPublishableValueSet(entity)){
+           return defs;
+       }
+       
+       List<Property> props = entity.getPropertyAsReference();
        HashMap<String, String> definedSources = new HashMap<String, String>();
        List<Property> sourcelist = getPropertiesForPropertyName(props, source);
        
