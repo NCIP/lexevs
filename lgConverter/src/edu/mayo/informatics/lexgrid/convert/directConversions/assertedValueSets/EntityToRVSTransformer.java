@@ -38,6 +38,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 public class EntityToRVSTransformer {
     private static final String SOURCE_NAME = "Contributing_Source";
     private static final String DEFAULT_SOURCE = "NCI";
+//    private static final Object DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
     private URI valueSetDefinitionURI;
     private String valueSetDefinitionRevisionId;
     private String vsVersion;
@@ -115,6 +116,9 @@ public class EntityToRVSTransformer {
         List<Property> props = entity.getPropertyAsReference();
 
        List<CodingScheme> schemes = new ArrayList<CodingScheme>();
+//       if(!isPublishableValueSet(entity)){
+//           return schemes;
+//       }
        HashMap<String, String> definedSources = new HashMap<String, String>();
        List<Property> sourcelist = getPropertiesForPropertyName(props, source);
        
@@ -127,7 +131,7 @@ public class EntityToRVSTransformer {
         try {
             schemes.add(transform(entity,x,y,vsEntities));
         } catch (LBException e) {
-            throw new RuntimeException("Source Asserted Resovled Value Set Load Failed", e);
+            throw new RuntimeException("Source Asserted Resolved Value Set Load Failed", e);
         }
     }); 
       //No source has been declared. This must belong to the default source. 
@@ -136,6 +140,18 @@ public class EntityToRVSTransformer {
       }
        return schemes;
     }
+
+//    private boolean isPublishableValueSet(Entity entity) {
+//     if(entity.getPropertyAsReference().stream().filter(x -> x.
+//                getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME)).findFirst().isPresent()){
+//        String publish =  entity.getPropertyAsReference().stream().filter(x -> x.
+//                 getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME)).findFirst().get().getValue().getContent();
+//       if(publish.equalsIgnoreCase("yes")){
+//           return true;
+//       }
+//    }
+//        return false;
+//    }
 
     public CodingScheme transform(Entity entity, String source, String description,  Entities entities)
             throws LBException {
