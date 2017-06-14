@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -484,6 +485,21 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
        
 
     }     
+    
+    public void testHierarchyForMultipleAssociations() throws LBException {
+
+            LexBIGService svc = ServiceHolder.instance().getLexBIGService();
+            LexBIGServiceConvenienceMethods lbscm = (LexBIGServiceConvenienceMethods) svc
+                        .getGenericExtension("LexBIGServiceConvenienceMethods");
+            
+                AssociationList list = lbscm.getHierarchyLevelNext("Automobiles", Constructors.createCodingSchemeVersionOrTagFromVersion("1.0"),
+                        null, "C0001", false, null);
+                assertNotNull(list);
+                assertTrue(list.getAssociationCount() > 0);
+                assertTrue(list.getAssociation()[0].getAssociationName()
+                		.equalsIgnoreCase("hasSubtype"));
+
+    }
     
     
     int findMatchingConcept(String code, ConceptReferenceList crl) {
