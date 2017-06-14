@@ -33,6 +33,8 @@
 			uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
 		<lgNaming:supportedAssociation localId="uses"
 			uri="urn:oid:11.11.0.1">uses</lgNaming:supportedAssociation>
+		<lgNaming:supportedAssociation localId="is_a"
+			uri="urn:oid:11.11.0.1">is_a</lgNaming:supportedAssociation>	
 		<lgNaming:supportedAssociation localId="A1"
 			uri="http://A1.org" entityCode="AssocEntity" entityCodeNamespace="Automobiles"
 			codingScheme="Automobiles">A1</lgNaming:supportedAssociation>
