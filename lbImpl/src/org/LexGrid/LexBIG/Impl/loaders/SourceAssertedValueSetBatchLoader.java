@@ -16,8 +16,6 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.system.service.SystemResourceService;
 
-import com.sun.xml.internal.bind.marshaller.Messages;
-
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransformer;
 
 public class SourceAssertedValueSetBatchLoader {
