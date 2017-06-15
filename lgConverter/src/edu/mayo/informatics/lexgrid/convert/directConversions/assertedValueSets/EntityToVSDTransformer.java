@@ -100,7 +100,7 @@ public class EntityToVSDTransformer{
         def.setMappings(mappings);
 
         String conceptDomain = null;
-                        if(props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).findFirst().isPresent()){
+                        if(props.stream().anyMatch(x -> x.getPropertyName().equals("Semantic_Type"))){
                             conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).
                                     findFirst().get().getValue().getContent();
                         }
@@ -121,7 +121,7 @@ public class EntityToVSDTransformer{
     }
     
     protected String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
-        if(quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().isPresent()){
+        if(quals.stream().anyMatch(pq -> pq.getPropertyQualifierName().equals("source"))){
             return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().get().getValue().getContent();
         }
         return null;

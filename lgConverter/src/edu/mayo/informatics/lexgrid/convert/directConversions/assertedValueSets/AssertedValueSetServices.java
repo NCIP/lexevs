@@ -9,8 +9,10 @@ public class AssertedValueSetServices {
     public static String GENERIC= "generic";
     public static String CS_NAME= "codingSchemeName";
     
-    private static final String DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
-    private static final String DEFAULT_DO_PUBLISH_VALUE = "yes";
+    public static final String DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
+    public static final String DEFAULT_DO_PUBLISH_VALUE = "yes";
+    public static final String BROWSER_VS_DEFINITION = "Term_Browser_Value_Set_Description";
+    public static final String DEFINITION = "DEFINITION";
     
     public static boolean isPublishableValueSet(Entity entity) {
         if(entity.getPropertyAsReference().stream().filter(x -> x.
@@ -24,6 +26,26 @@ public class AssertedValueSetServices {
            return false;
        }
     
+    public static String getValueSetDefinition(Entity entity){
+
+        boolean isPresent = entity.getPropertyAsReference().stream().anyMatch(x -> 
+        x.getPropertyName().equals(BROWSER_VS_DEFINITION));
+        
+        boolean isDefinition = entity.getPropertyAsReference().stream().anyMatch(x -> 
+        x.getPropertyName().equals(DEFINITION));
+        
+        if(isPresent){
+            return entity.getPropertyAsReference().stream().filter(x -> x.
+                    getPropertyName().equals(BROWSER_VS_DEFINITION)).findFirst().get().getValue().getContent();
+        }
+        else if(isDefinition){
+            return entity.getPropertyAsReference().stream().filter(x -> 
+            x.getPropertyName().equals(DEFINITION)).findFirst().get().getValue().getContent();
+        }
+        else{
+        return entity.getEntityDescription().getContent();
+        }
+    }
     
     
     
