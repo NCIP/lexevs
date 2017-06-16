@@ -35,6 +35,7 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
     private String codingSchemeVersion;
     private String associationName;
     private boolean targetToSource;
+
     private EntityToRVSTransformer transformer;
     
 
@@ -134,7 +135,18 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
                     }
                 }
         }
+
     }
+        
+        public boolean isTargetToSource() {
+            return targetToSource;
+        }
+
+        public void setTargetToSource(boolean targetToSource) {
+            this.targetToSource = targetToSource;
+        }
+
+
     
 
 

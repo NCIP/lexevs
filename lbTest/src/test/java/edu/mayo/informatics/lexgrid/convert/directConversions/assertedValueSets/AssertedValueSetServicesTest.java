@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedConceptDomain;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,6 +24,8 @@ public class AssertedValueSetServicesTest extends TestCase {
 	Entity entityHasConceptDomain;
 	public static final String CODING_SCHEME_URI = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl";
 	private static final String SEMANTIC_TYPE = "Semantic_Type";
+	public static final String CODING_SCHEME = "owl2lexevs";
+	private static final String EQUIV_CODING_SCHEME = "Thesaurus";
 	
 	@Before
 	public void setUP(){
@@ -77,5 +82,48 @@ public class AssertedValueSetServicesTest extends TestCase {
 		String conceptDomain = AssertedValueSetServices.getConceptDomainValueFromEntityProperty(entityHasConceptDomain, SEMANTIC_TYPE);
 		assertEquals(conceptDomain, "Intellectual Product");
 	}
+	
+	
+	@Test
+    public void testCreateSupportedCodingScheme(){
+		SupportedCodingScheme scheme = AssertedValueSetServices.createSupportedCodingScheme(CODING_SCHEME, CODING_SCHEME_URI);
+		assertTrue(scheme.getLocalId().equals(CODING_SCHEME));
+		assertTrue(scheme.getContent().equals(CODING_SCHEME));
+		assertTrue(scheme.getUri().equals(CODING_SCHEME_URI));
+    }
+
+	@Test
+    public void testCreateSupportedNamespace(){
+		SupportedNamespace namespace = AssertedValueSetServices.createSupportedNamespace(CODING_SCHEME, EQUIV_CODING_SCHEME, CODING_SCHEME_URI);
+		assertTrue(namespace.getLocalId().equals(CODING_SCHEME));
+		assertTrue(namespace.getContent().equals(CODING_SCHEME));
+		assertEquals(namespace.getEquivalentCodingScheme(), EQUIV_CODING_SCHEME);
+		assertTrue(namespace.getUri().equals(CODING_SCHEME_URI));
+    }
+	
+	@Test
+    public void testCreateSupportedSource(){
+		SupportedSource cd = AssertedValueSetServices.createSupportedSource("CDISC", CODING_SCHEME_URI);
+		assertTrue(cd.getLocalId().equals("CDISC"));
+		assertTrue(cd.getContent().equals("CDISC"));
+		assertTrue(cd.getUri().equals(CODING_SCHEME_URI));
+    }
+	
+	 
+		@Test
+	    public void testGetDefaultSourceIfNull(){
+			String source = AssertedValueSetServices.getDefaultSourceIfNull(null);
+			assertTrue(source.equals("Contributing_Source"));
+			String test = AssertedValueSetServices.getDefaultSourceIfNull("testSource");
+			assertTrue(test.equals("testSource"));
+	    }
+	    
+		@Test
+	    public void testCreateUri(){
+			String uri = AssertedValueSetServices.createUri("http://evs.nci.nih.gov/valueset/", "CDISC", "C12345");
+			assertEquals(uri,"http://evs.nci.nih.gov/valueset/CDISC/C12345");
+			String test = AssertedValueSetServices.createUri("http://evs.nci.nih.gov/valueset/", null, "C12345");
+			assertTrue(test.equals("http://evs.nci.nih.gov/valueset/C12345"));
+	    }
 
 }

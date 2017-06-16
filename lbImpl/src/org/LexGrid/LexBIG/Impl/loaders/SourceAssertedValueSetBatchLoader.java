@@ -25,6 +25,7 @@ public class SourceAssertedValueSetBatchLoader {
     private SystemResourceService resourceService;
     private String codingSchemeUri;
     private String codingSchemeVersion;
+    private String codingSchemeName;
     private String associationName;
     private boolean targetToSource;
     private EntityToVSDTransformer transformer;
@@ -50,7 +51,7 @@ public class SourceAssertedValueSetBatchLoader {
         this.codingSchemeVersion = version;
         this.associationName = associationName;
         this.targetToSource = targetToSource;
-        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, version, owner, associationName, conceptDomainIndicator);
+        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, codingSchemeName, version, owner, associationName, conceptDomainIndicator);
         messages_ = LoggerFactory.getLogger();
     }
     

@@ -203,6 +203,7 @@ import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToRVSTransformerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
@@ -217,8 +218,6 @@ import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
 
 
 public class AllTestsNormalConfig {
-
-    private static final java.lang.String TREE_TESTS_ENV = "TREE_TESTS";
 
     public static Test suite() throws Exception {
         TestSuite mainSuite = new TestSuite("LexBIG validation tests");
@@ -354,9 +353,6 @@ public class AllTestsNormalConfig {
         codedNodeSetSuite.addTestSuite(RestrictToMatchingPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(RestrictToPropertiesTest.class);
         codedNodeSetSuite.addTestSuite(MultipeRestrictionsTest.class);
-        
-        
-        
         codedNodeSetSuite.addTestSuite(ResolveMappingCodedNodeSetTest.class);
         codedNodeSetSuite.addTestSuite(ExtensionCodedNodeSetTest.class);
         mainSuite.addTest(codedNodeSetSuite);
@@ -431,9 +427,7 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestOWLLoaderPreferences.class);
         functionalTests.addTestSuite(TestSameCodeDifferentNamespace.class);
         functionalTests.addTestSuite(TestPasswordEncryption.class);
-//
         mainSuite.addTest(functionalTests);
-
 
         TestSuite treeTests = new TestSuite("tree extension tests");
         treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
@@ -444,14 +438,7 @@ public class AllTestsNormalConfig {
         treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
         treeTests.addTestSuite(TestGetTree.class);
         mainSuite.addTest(treeTests);
-        
-        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
-        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
-        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
-        
-        
-
-        
+  
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);
         bugTests.addTest(orderedSuite(GForge19650.class));
@@ -531,6 +518,10 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
+        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
+        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
+        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
+        assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
         //*******Always run this last, it breaks a lot of things that are created in ServiceHolder 
         mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
         // $JUnit-END$
