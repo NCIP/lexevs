@@ -27,18 +27,17 @@ public class SourceAssertedValueSetDefinitionLauncher {
     private String owner="NCI";
     
     @Option(name="-s", aliases={"--sourceName"}, usage="Gives the name of the property to resolve the source value against") 
-    private String source;
+    private String sourceName;
 
+    @Option(name="-cd", aliases={"--conceptDomainName"}, usage="Gives the name of the property to resolve the concept domain value against") 
+    private String conceptDomainName = "Semantic_Type";
     
     
     
 
     public static void main(String[] args) {
         try {
-            SourceAssertedValueSetDefinitionLauncher launcher = new SourceAssertedValueSetDefinitionLauncher();
-            CmdLineParser parser = new CmdLineParser(launcher);
-            parser.parseArgument(args);    
-            new SourceAssertedValueSetDefinitionLauncher().run();
+            new SourceAssertedValueSetDefinitionLauncher().run(args);
         } catch (LBParameterException e) {
             e.printStackTrace();
         } catch (CmdLineException e) {
@@ -47,8 +46,10 @@ public class SourceAssertedValueSetDefinitionLauncher {
 
     }
     
-    public void run() throws LBParameterException{
-        new SourceAssertedValueSetBatchLoader(codingScheme, version, association, target, uri, owner).run(source);
+    public void run(String[] args) throws LBParameterException, CmdLineException{
+        CmdLineParser parser = new CmdLineParser(this);
+        parser.parseArgument(args);    
+        new SourceAssertedValueSetBatchLoader(codingScheme, version, association, target, uri, owner, conceptDomainName).run(sourceName);
     }
 
 }

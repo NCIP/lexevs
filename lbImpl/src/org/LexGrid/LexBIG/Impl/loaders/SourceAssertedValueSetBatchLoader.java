@@ -33,8 +33,13 @@ public class SourceAssertedValueSetBatchLoader {
     
 
     
-    public SourceAssertedValueSetBatchLoader(String codingScheme, String version, 
-            String associationName, boolean targetToSource, String baseUri, String owner) throws LBParameterException{
+    public SourceAssertedValueSetBatchLoader(String codingScheme, 
+            String version, 
+            String associationName, 
+            boolean targetToSource, 
+            String baseUri, 
+            String owner,
+            String conceptDomainIndicator) throws LBParameterException{
         codedNodeGraphDao = LexEvsServiceLocator.getInstance().
                 getDatabaseServiceManager().getCodedNodeGraphService();
         entityService = LexEvsServiceLocator.getInstance().
@@ -45,7 +50,7 @@ public class SourceAssertedValueSetBatchLoader {
         this.codingSchemeVersion = version;
         this.associationName = associationName;
         this.targetToSource = targetToSource;
-        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, version, owner, associationName);
+        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, version, owner, associationName, conceptDomainIndicator);
         messages_ = LoggerFactory.getLogger();
     }
     
@@ -99,7 +104,7 @@ public class SourceAssertedValueSetBatchLoader {
 
     public static void main(String[] args) {
       try {
-        new SourceAssertedValueSetBatchLoader("NCI_Thesaurus", "17.02d", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI").run("Contributing_Source");
+        new SourceAssertedValueSetBatchLoader("NCI_Thesaurus", "17.02d", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI", "Semantic_Type").run("Contributing_Source");
     } catch (LBParameterException e) {
         e.printStackTrace();
     }

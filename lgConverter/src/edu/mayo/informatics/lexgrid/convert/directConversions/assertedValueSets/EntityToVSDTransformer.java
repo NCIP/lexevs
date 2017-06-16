@@ -38,9 +38,14 @@ public class EntityToVSDTransformer{
     private LgMessageDirectorIF messages_;
     private String codingSchemeVersion;
     private String owner;
+    private String conceptDomainPropertyName = "Semantic_Type";
     
-   public EntityToVSDTransformer(String baseURI, String codingSchemeUri, 
-           String codingSchemeVersion, String owner, String definingAssociation){
+   public EntityToVSDTransformer(String baseURI, 
+           String codingSchemeUri, 
+           String codingSchemeVersion, 
+           String owner, 
+           String definingAssociation,
+           String conceptDomainIndicator){
        registry = LexEvsServiceLocator.getInstance().getRegistry();
        this.baseURI = baseURI;
        this.codingSchemeURI = codingSchemeUri;
@@ -48,13 +53,9 @@ public class EntityToVSDTransformer{
        this.owner = owner;
        this.association = definingAssociation;
        messages_ = LoggerFactory.getLogger();
+       conceptDomainPropertyName = conceptDomainIndicator;
        
    }
-    
-
-    
- 
-
     
     //Entity with more than one source will be processed into more than one definition
     //Assumption is that this source representation is always a flat list of values
@@ -99,13 +100,9 @@ public class EntityToVSDTransformer{
                 createSupportedCodingScheme(entity.getEntityCodeNamespace(), codingSchemeURI));
         def.setMappings(mappings);
 
-        String conceptDomain = null;
-                        if(props.stream().anyMatch(x -> x.getPropertyName().equals("Semantic_Type"))){
-                            conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).
-                                    findFirst().get().getValue().getContent();
-                        }
+        String conceptDomain = AssertedValueSetServices.getConceptDomainValueFromEntityProperty(entity, conceptDomainPropertyName);
         def.setConceptDomain(conceptDomain);
-        def.getMappings().addSupportedConceptDomain(createSupportedConceptDomain(conceptDomain, codingSchemeURI));
+        def.getMappings().addSupportedConceptDomain(AssertedValueSetServices.createSupportedConceptDomain(conceptDomain, codingSchemeURI));
 
         def.setValueSetDefinitionURI(
                 createUri(baseURI, source, def.getDefinitionEntry(0).getEntityReference().getEntityCode()));
@@ -145,13 +142,13 @@ public class EntityToVSDTransformer{
         return nmsp;
     }
 
-    protected SupportedConceptDomain createSupportedConceptDomain(String content, String uri) {
-       SupportedConceptDomain domain = new SupportedConceptDomain();
-       domain.setContent(content);
-       domain.setLocalId(content);
-       domain.setUri(uri);
-        return domain;
-    }
+//    protected SupportedConceptDomain createSupportedConceptDomain(String content, String uri) {
+//       SupportedConceptDomain domain = new SupportedConceptDomain();
+//       domain.setContent(content);
+//       domain.setLocalId(content);
+//       domain.setUri(uri);
+//        return domain;
+//    }
  
     protected String getDefaultSourceIfNull(String sourceName) {
         return sourceName == null?SOURCE_NAME: sourceName;

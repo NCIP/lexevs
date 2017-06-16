@@ -202,6 +202,8 @@ import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorT
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
@@ -432,18 +434,23 @@ public class AllTestsNormalConfig {
 //
         mainSuite.addTest(functionalTests);
 
-//        if(System.getProperty(TREE_TESTS_ENV) != null) {
-            TestSuite treeTests = new TestSuite("tree extension tests");
-            treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
-            treeTests.addTestSuite(LexEvsTreeNodeTest.class);
-            treeTests.addTestSuite(LexEvsTreeTest.class);
-            treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
-            treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
-            treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
-            treeTests.addTestSuite(TestGetTree.class);
 
-            mainSuite.addTest(treeTests);
-//        }
+        TestSuite treeTests = new TestSuite("tree extension tests");
+        treeTests.addTestSuite(PagingChildNodeIteratorTest.class);
+        treeTests.addTestSuite(LexEvsTreeNodeTest.class);
+        treeTests.addTestSuite(LexEvsTreeTest.class);
+        treeTests.addTestSuite(MultipleNamspaceErrorLEXEVS_598_Test.class);
+        treeTests.addTestSuite(PathToRootTreeServiceImplTest.class);
+        treeTests.addTestSuite(LexEvsTreeNodeJsonNameSpaceTest.class);
+        treeTests.addTestSuite(TestGetTree.class);
+        mainSuite.addTest(treeTests);
+        
+        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
+        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
+        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
+        
+        
+
         
         TestSuite bugTests = new TestSuite("Bug Regression Tests");
         bugTests.addTestSuite(TestBugFixes.class);

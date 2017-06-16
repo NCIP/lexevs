@@ -53,6 +53,7 @@ public class EntityToRVSTransformer {
 
     private ValueSetDefinitionService vsdService;
     private String owner;
+    private String propertyName;
 
     public EntityToRVSTransformer( 
             String association,
@@ -63,7 +64,8 @@ public class EntityToRVSTransformer {
             LexBIGService svc,
             String baseURI, 
             String owner,
-            SupportedCodingScheme suppScheme) {
+            SupportedCodingScheme suppScheme,
+            String conceptDomainIndicator) {
         this.association = association;
         this.codingSchemeUri = codingSchemeUri;
         this.codingSchemeName= codingSchemeName;
@@ -74,6 +76,7 @@ public class EntityToRVSTransformer {
         this.baseUri = baseURI;
         this.owner = owner;
         this.supportedScheme = suppScheme;
+        this.propertyName = conceptDomainIndicator;
     }
 
     public EntityToRVSTransformer(
@@ -198,7 +201,7 @@ public class EntityToRVSTransformer {
         nmsp.setEquivalentCodingScheme(codingSchemeName);
         nmsp.setLocalId(entity.getEntityCodeNamespace());
         SupportedCodingScheme scheme = supportedScheme;
-        SupportedConceptDomain domain = getSupportedConceptDomain(entity);
+        SupportedConceptDomain domain = AssertedValueSetServices.getSupportedConceptDomain(entity, propertyName, codingSchemeUri);
         for(SupportedSource source : getSupportedSources(entity)){
             mappings.addSupportedSource(source);
         }
@@ -292,24 +295,24 @@ public class EntityToRVSTransformer {
         return null;
     }
     
-    protected SupportedConceptDomain getSupportedConceptDomain(Entity entity){
-        List<Property> props = entity.getPropertyAsReference();
-        String conceptDomain = null;
-        if(props.stream().anyMatch(x -> x.getPropertyName().equals("Semantic_Type"))){
-            conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).
-                    findFirst().get().getValue().getContent();
-        }
-        
-       return createSupportedConceptDomain(conceptDomain, codingSchemeUri);
-    }
-
-    private SupportedConceptDomain createSupportedConceptDomain(String conceptDomain, String codingSchemeUri) {
-            SupportedConceptDomain domain = new SupportedConceptDomain();
-            domain.setContent(conceptDomain);
-            domain.setLocalId(conceptDomain);
-            domain.setUri(codingSchemeUri);
-             return domain;  
-    }
-    
+//    protected SupportedConceptDomain getSupportedConceptDomain(Entity entity){
+//        List<Property> props = entity.getPropertyAsReference();
+//        String conceptDomain = null;
+//        if(props.stream().anyMatch(x -> x.getPropertyName().equals("Semantic_Type"))){
+//            conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).
+//                    findFirst().get().getValue().getContent();
+//        }
+//        
+//       return createSupportedConceptDomain(conceptDomain, codingSchemeUri);
+//    }
+//
+//    private SupportedConceptDomain createSupportedConceptDomain(String conceptDomain, String codingSchemeUri) {
+//            SupportedConceptDomain domain = new SupportedConceptDomain();
+//            domain.setContent(conceptDomain);
+//            domain.setLocalId(conceptDomain);
+//            domain.setUri(codingSchemeUri);
+//             return domain;  
+//    }
+//    
 
 }
