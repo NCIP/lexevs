@@ -58,7 +58,7 @@ public class EntityToVSDTransformer{
        final String source = AssertedValueSetServices.getDefaultSourceIfNull(sourceName);
      
        List<ValueSetDefinition> defs = new ArrayList<ValueSetDefinition>();
-       if(!AssertedValueSetServices.isPublishableValueSet(entity)){
+       if(!AssertedValueSetServices.isPublishableValueSet(entity, false)){
            return defs;
        }
        

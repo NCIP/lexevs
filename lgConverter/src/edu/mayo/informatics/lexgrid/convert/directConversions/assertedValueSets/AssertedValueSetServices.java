@@ -27,7 +27,7 @@ public class AssertedValueSetServices {
     public static final String SOURCE_NAME = "Contributing_Source";
     public static final String SOURCE = "source";
     
-    public static boolean isPublishableValueSet(Entity entity) {
+    public static boolean isPublishableValueSet(Entity entity, boolean force) {
         if(entity.getPropertyAsReference().stream().filter(x -> x.
                    getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME)).findFirst().isPresent()){
            String publish =  entity.getPropertyAsReference().stream().filter(x -> x.
@@ -36,7 +36,7 @@ public class AssertedValueSetServices {
               return true;
           }
        }
-           return false;
+           return force;
        }
     
     public static String getValueSetDefinition(Entity entity){

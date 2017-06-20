@@ -57,7 +57,7 @@ public class AssertedValueSetServicesTest extends TestCase {
 	
 	@Test
 	public void testIsPublishableValueSet(){
-		assertTrue(AssertedValueSetServices.isPublishableValueSet(entityHasPubValue));
+		assertTrue(AssertedValueSetServices.isPublishableValueSet(entityHasPubValue, false));
 	}
 
 	@Test

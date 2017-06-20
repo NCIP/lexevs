@@ -76,7 +76,7 @@ public class EntityToRVSTransformer {
         List<Property> props = entity.getPropertyAsReference();
 
         List<CodingScheme> schemes = new ArrayList<CodingScheme>();
-        if (!AssertedValueSetServices.isPublishableValueSet(entity)) {
+        if (!AssertedValueSetServices.isPublishableValueSet(entity, false)) {
             return schemes;
         }
         HashMap<String, String> definedSources = new HashMap<String, String>();
