@@ -49,7 +49,7 @@ public class SourceAssertedVSLoadTest {
 	        
 	        SourceAssertedValueSetBatchLoader vsdbatchLoader = 
 	        		new SourceAssertedValueSetBatchLoader("owl2lexevs", 
-	        				"0.1.5", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI");
+	        				"0.1.5", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI", "Semantic_Type");
 	        vsdbatchLoader.run("Contributing_Source");
 	  
 	}

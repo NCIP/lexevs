@@ -13,6 +13,7 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -31,7 +32,7 @@ public class EntityToVSDTransFormerTest extends TestCase{
 	
 	@Before
 	public void setUp(){
-		transformer = new EntityToVSDTransformer(null, null, null, null, ASSOCIATION_NAME);
+		transformer = new EntityToVSDTransformer(null, null, null, null, null, ASSOCIATION_NAME, null);
 	}
 
 	
@@ -57,54 +58,6 @@ public class EntityToVSDTransFormerTest extends TestCase{
 		assertNotNull(version);
 	}
 	
-	@Test
-    public void testCreateSupportedCodingScheme(){
-		SupportedCodingScheme scheme = transformer.createSupportedCodingScheme(CODING_SCHEME, CODING_SCHEME_URI);
-		assertTrue(scheme.getLocalId().equals(CODING_SCHEME));
-		assertTrue(scheme.getContent().equals(CODING_SCHEME));
-		assertTrue(scheme.getUri().equals(CODING_SCHEME_URI));
-    }
-
-	@Test
-    public void testCreateSupportedNamespace(){
-		SupportedNamespace namespace = transformer.createSupportedNamespace(CODING_SCHEME, CODING_SCHEME_URI);
-		assertTrue(namespace.getLocalId().equals(CODING_SCHEME));
-		assertTrue(namespace.getContent().equals(CODING_SCHEME));
-		assertTrue(namespace.getUri().equals(CODING_SCHEME_URI));
-    }
-
-	@Test
-    public void testCreateSupportedConceptDomain(){
-		SupportedConceptDomain cd = transformer.createSupportedConceptDomain("Intellectual Product", CODING_SCHEME_URI);
-		assertTrue(cd.getLocalId().equals("Intellectual Product"));
-		assertTrue(cd.getContent().equals("Intellectual Product"));
-		assertTrue(cd.getUri().equals(CODING_SCHEME_URI));
-    }
-	
-	@Test
-    public void testCreateSupportedSource(){
-		SupportedConceptDomain cd = transformer.createSupportedConceptDomain("CDISC", CODING_SCHEME_URI);
-		assertTrue(cd.getLocalId().equals("CDISC"));
-		assertTrue(cd.getContent().equals("CDISC"));
-		assertTrue(cd.getUri().equals(CODING_SCHEME_URI));
-    }
- 
-	@Test
-    public void testGetDefaultSourceIfNull(){
-		String source = transformer.getDefaultSourceIfNull(null);
-		assertTrue(source.equals("Contributing_Source"));
-		String test = transformer.getDefaultSourceIfNull("testSource");
-		assertTrue(test.equals("testSource"));
-    }
-    
-	@Test
-    public void testCreateUri(){
-		String uri = transformer.createUri("http://evs.nci.nih.gov/valueset/", "CDISC", "C12345");
-		assertEquals(uri,"http://evs.nci.nih.gov/valueset/CDISC/C12345");
-		String test = transformer.createUri("http://evs.nci.nih.gov/valueset/", null, "C12345");
-		assertTrue(test.equals("http://evs.nci.nih.gov/valueset/C12345"));
-    }
-    
 	@Test
     public void testInitValueSetDefintion(){
 		ValueSetDefinition def = transformer.initValueSetDefintion(CODING_SCHEME, true, "1", "NCI");

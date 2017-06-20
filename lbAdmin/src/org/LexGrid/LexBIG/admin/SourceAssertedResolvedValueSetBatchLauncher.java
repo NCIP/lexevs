@@ -3,6 +3,8 @@ package org.LexGrid.LexBIG.admin;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader;
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 public class SourceAssertedResolvedValueSetBatchLauncher {
@@ -28,23 +30,26 @@ public class SourceAssertedResolvedValueSetBatchLauncher {
     @Option(name="-s", aliases={"--sourceName"}, usage="Gives the name of the property to resolve the source value against") 
     private String source = "Contributing_Source";
 
-    
+    @Option(name="-cd", aliases={"--conceptDomainName"}, usage="Gives the name of the property to resolve the concept domain value against") 
+    private String conceptDomainIndicator = "Semantic_Type";
     
     
 
 
     public static void main(String[] args) {
        try {
-        new SourceAssertedResolvedValueSetBatchLauncher().run();
-    } catch (LBException | InterruptedException e) {
+        new SourceAssertedResolvedValueSetBatchLauncher().run(args);
+    } catch (LBException | InterruptedException | CmdLineException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
     }
 
     }
     
-    public void run() throws LBParameterException, LBException, InterruptedException{
-        new SourceAssertedValueSetToSchemeBatchLoader(codingScheme, version, association, target, uri, owner).run(source);
+    public void run(String[] args) throws LBParameterException, LBException, InterruptedException, CmdLineException{
+        CmdLineParser parser = new CmdLineParser(this);
+        parser.parseArgument(args);    
+        new SourceAssertedValueSetToSchemeBatchLoader(codingScheme, version, association, target, uri, owner, conceptDomainIndicator).run(source);
     }
 
 }

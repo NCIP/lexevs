@@ -12,10 +12,6 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
-import org.LexGrid.naming.SupportedCodingScheme;
-import org.LexGrid.naming.SupportedConceptDomain;
-import org.LexGrid.naming.SupportedNamespace;
-import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
@@ -25,65 +21,65 @@ import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
 
-import junit.framework.TestCase;
 
 public class EntityToVSDTransformer{
     private static final Object PRODUCTION = "PRODUCTION";
-    private static final String DEFAULT_SOURCE = "NCI";
+    private static final String DEFAULT_SOURCE = "source";
     private Registry registry;
-    private String SOURCE_NAME = "Contributing_Source";
     private String baseURI = null;
     private String codingSchemeURI;
+    private String codingSchemeName;
     private String association;
-     
     private LgMessageDirectorIF messages_;
-    private String codingSchemeVersion;
     private String owner;
+    private String conceptDomainPropertyName = "Semantic_Type";
     
-   public EntityToVSDTransformer(String baseURI, String codingSchemeUri, 
-           String codingSchemeVersion, String owner, String definingAssociation){
+   public EntityToVSDTransformer(String baseURI, 
+           String codingSchemeUri, 
+           String codingSchemeVersion, 
+           String codingSchemeName,
+           String owner, 
+           String definingAssociation,
+           String conceptDomainIndicator){
        registry = LexEvsServiceLocator.getInstance().getRegistry();
        this.baseURI = baseURI;
        this.codingSchemeURI = codingSchemeUri;
-       this.codingSchemeVersion = codingSchemeVersion;
        this.owner = owner;
        this.association = definingAssociation;
        messages_ = LoggerFactory.getLogger();
+       conceptDomainPropertyName = conceptDomainIndicator;
        
    }
-    
-
-    
- 
-
     
     //Entity with more than one source will be processed into more than one definition
     //Assumption is that this source representation is always a flat list of values
     public List<ValueSetDefinition> transformEntityToValueSetDefinitions(Entity entity, String sourceName) throws LBParameterException{
       
-        final String source = getDefaultSourceIfNull(sourceName);
-        List<Property> props = entity.getPropertyAsReference();
-
+       final String source = AssertedValueSetServices.getDefaultSourceIfNull(sourceName);
+     
        List<ValueSetDefinition> defs = new ArrayList<ValueSetDefinition>();
+       if(!AssertedValueSetServices.isPublishableValueSet(entity, false)){
+           return defs;
+       }
+       
+       List<Property> props = entity.getPropertyAsReference();
        HashMap<String, String> definedSources = new HashMap<String, String>();
        List<Property> sourcelist = getPropertiesForPropertyName(props, source);
        
        sourcelist.stream().forEach(s -> definedSources.put(s.getValue().getContent(), 
                getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()) != null?
                        getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()): 
-                           entity.getEntityDescription().getContent()));
+                           AssertedValueSetServices.getValueSetDefinition(entity)));
        
       definedSources.forEach((x,y) -> defs.add(tranformEntityToValueSet(entity,x,y))); 
       if(definedSources.size() == 0){
-      defs.add(tranformEntityToValueSet(entity, null, entity.getEntityDescription().getContent()));
+      defs.add(tranformEntityToValueSet(entity, null, AssertedValueSetServices.getValueSetDefinition(entity)));
       }
        return defs;
     }
 
     
     private ValueSetDefinition tranformEntityToValueSet(Entity entity, String source, String definition) {
-        List<Property> props = entity.getPropertyAsReference();
-        //final String source = getDefaultSourceIfNull(sourceName);
         ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, "1", owner);
         def.setValueSetDefinitionName(entity.getEntityDescription().getContent());
         DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
@@ -91,24 +87,20 @@ public class EntityToVSDTransformer{
         EntityReference ref = initEntityReference(entity, this.association);
         entry.setEntityReference(ref);
         def.addDefinitionEntry(entry);
-        mappings.addSupportedNamespace(createSupportedNamespace(entity.getEntityCodeNamespace(), codingSchemeURI));
+        mappings.addSupportedNamespace(AssertedValueSetServices.createSupportedNamespace(entity.getEntityCodeNamespace(), codingSchemeName, codingSchemeURI));
         mappings.addSupportedCodingScheme(
-                createSupportedCodingScheme(entity.getEntityCodeNamespace(), codingSchemeURI));
+                AssertedValueSetServices.createSupportedCodingScheme(entity.getEntityCodeNamespace(), codingSchemeURI));
         def.setMappings(mappings);
 
-        String conceptDomain = null;
-                        if(props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).findFirst().isPresent()){
-                            conceptDomain = props.stream().filter(x -> x.getPropertyName().equals("Semantic_Type")).
-                                    findFirst().get().getValue().getContent();
-                        }
+        String conceptDomain = AssertedValueSetServices.getConceptDomainValueFromEntityProperty(entity, conceptDomainPropertyName);
         def.setConceptDomain(conceptDomain);
-        def.getMappings().addSupportedConceptDomain(createSupportedConceptDomain(conceptDomain, codingSchemeURI));
+        def.getMappings().addSupportedConceptDomain(AssertedValueSetServices.createSupportedConceptDomain(conceptDomain, codingSchemeURI));
 
         def.setValueSetDefinitionURI(
-                createUri(baseURI, source, def.getDefinitionEntry(0).getEntityReference().getEntityCode()));
+                AssertedValueSetServices.createUri(baseURI, source, def.getDefinitionEntry(0).getEntityReference().getEntityCode()));
         def.setEntityDescription(Constructors.createEntityDescription(definition));
         if(source != null){
-        def.getMappings().addSupportedSource(createSupportedSource(source, codingSchemeURI));
+        def.getMappings().addSupportedSource(AssertedValueSetServices.createSupportedSource(source, codingSchemeURI));
         }
         return def;
     }
@@ -118,58 +110,16 @@ public class EntityToVSDTransformer{
     }
     
     protected String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
-        if(quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().isPresent()){
-            return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals("source")).findFirst().get().getValue().getContent();
+        if(quals.stream().anyMatch(pq -> pq.getPropertyQualifierName().equals(DEFAULT_SOURCE))){
+            return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals(DEFAULT_SOURCE)).findFirst().get().getValue().getContent();
         }
         return null;
-    }
-
-    protected SupportedCodingScheme createSupportedCodingScheme(String codingScheme, String uri) {
-        SupportedCodingScheme scheme = new SupportedCodingScheme();
-        scheme.setContent(codingScheme);
-        scheme.setLocalId(codingScheme);
-        scheme.setIsImported(true);
-        scheme.setUri(uri);
-        return scheme;
-    }
-
-    protected SupportedNamespace createSupportedNamespace(String entityCodeNamespace, String uri) {
-        SupportedNamespace nmsp = new SupportedNamespace();
-        nmsp.setContent(entityCodeNamespace);
-        nmsp.setLocalId(entityCodeNamespace);
-        nmsp.setUri(uri);
-        nmsp.setEquivalentCodingScheme(entityCodeNamespace);
-        return nmsp;
-    }
-
-    protected SupportedConceptDomain createSupportedConceptDomain(String content, String uri) {
-       SupportedConceptDomain domain = new SupportedConceptDomain();
-       domain.setContent(content);
-       domain.setLocalId(content);
-       domain.setUri(uri);
-        return domain;
-    }
- 
-    protected String getDefaultSourceIfNull(String sourceName) {
-        return sourceName == null?SOURCE_NAME: sourceName;
-    }
-    
-    protected SupportedSource createSupportedSource(String source, String uri){
-        SupportedSource newSource = new SupportedSource();
-        newSource.setLocalId(source);
-        newSource.setContent(source);
-        newSource.setUri(uri);
-        return newSource;
     }
     
     protected String getProductionVersionForCodingSchemeURI(String uri) throws LBParameterException{
         List<RegistryEntry> entries =  registry.getEntriesForUri(uri);
         return entries.stream().filter(x -> x.getTag().equals(PRODUCTION)).
                 findFirst().get().getResourceVersion();
-    }
-    
-    protected String createUri(String base, String source, String code){
-       return base + (source != null?source + "/":"") + code;
     }
     
     protected ValueSetDefinition initValueSetDefintion(String namespace, boolean isActive, 
