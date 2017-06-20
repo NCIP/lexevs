@@ -69,11 +69,11 @@ public class EntityToVSDTransformer{
        sourcelist.stream().forEach(s -> definedSources.put(s.getValue().getContent(), 
                getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()) != null?
                        getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()): 
-                           entity.getEntityDescription().getContent()));
+                           AssertedValueSetServices.getValueSetDefinition(entity)));
        
       definedSources.forEach((x,y) -> defs.add(tranformEntityToValueSet(entity,x,y))); 
       if(definedSources.size() == 0){
-      defs.add(tranformEntityToValueSet(entity, null, entity.getEntityDescription().getContent()));
+      defs.add(tranformEntityToValueSet(entity, null, AssertedValueSetServices.getValueSetDefinition(entity)));
       }
        return defs;
     }
