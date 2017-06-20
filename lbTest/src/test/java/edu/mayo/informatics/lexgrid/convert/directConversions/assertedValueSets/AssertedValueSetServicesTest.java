@@ -28,7 +28,7 @@ public class AssertedValueSetServicesTest extends TestCase {
 	private static final String EQUIV_CODING_SCHEME = "Thesaurus";
 	
 	@Before
-	public void setUP(){
+	public void setUp(){
 		entityHasPubValue = new Entity();
 		entityHasPubValue.setProperty(new ArrayList<Property>());
 		Property prop = new Property();
