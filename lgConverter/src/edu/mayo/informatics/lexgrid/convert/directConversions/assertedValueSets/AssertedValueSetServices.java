@@ -28,8 +28,8 @@ public class AssertedValueSetServices {
     public static final String SOURCE = "source";
     
     public static boolean isPublishableValueSet(Entity entity, boolean force) {
-        if(entity.getPropertyAsReference().stream().filter(x -> x.
-                   getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME)).findFirst().isPresent()){
+        if(entity.getPropertyAsReference().stream().anyMatch(x -> x.
+                   getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME))){
            String publish =  entity.getPropertyAsReference().stream().filter(x -> x.
                     getPropertyName().equals(DEFAULT_DO_PUBLISH_NAME)).findFirst().get().getValue().getContent();
           if(publish.equalsIgnoreCase(DEFAULT_DO_PUBLISH_VALUE)){
