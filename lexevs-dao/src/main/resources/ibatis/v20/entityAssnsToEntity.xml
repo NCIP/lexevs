@@ -133,6 +133,13 @@
 		<result property="effectiveDate" column="effectiveDate" />
 		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
+	
+	<resultMap id="valueSetHierarchyRootNodeResolution" class="org.lexevs.dao.database.access.association.model.VSHierarchyNode" groupBy="description">
+		<result property="entityCode" column="sourceEntityCode" />
+		<result property="namespace" column="sourceEntityCodeNamespace" />
+		<result property="description" column="description" />
+		<result property="source" column="source" />
+	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
@@ -1321,10 +1328,12 @@
 	<select id="getValueSetHierarchySourcesOfTargets" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
 		remapResults="true" 
-		resultMap="nodeResult">
+		resultMap="valueSetHierarchyRootNodeResolution">
 		SELECT
 			sourceEntityCode AS entityCode,
-			sourceEntityCodeNamespace AS entityCodeNamespace
+			sourceEntityCodeNamespace AS namespace,
+			description AS description,
+			source AS source
 		FROM 
 			$prefix$entityAssnsToEntity
 		LEFT JOIN
@@ -1332,17 +1341,23 @@
 		ON
 			ent.entityCode = sourceEntityCode
 		LEFT JOIN 
-			$prefix$property prop
+			$prefix$property prop 
 		ON
 			ent.entityGuid = prop.referenceGuid
+		LEFT JOIN
+			$prefix$property prop2
+		ON
+			prop2.referenceGuid = prop.referenceGuid
 		WHERE
 			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			targetEntityCode = #param2#
-		AND
+		AND (
 			prop.propertyName = #param3#
-		AND
-			prop.propertyValue = #param4#
+		OR
+			prop2.propertyName = #param4# )
+		GROUP BY
+			description, publish, source having publish = "Yes"
 	</select>
 	
 	<select id="getEntryStateUidByAssociationTarget"
