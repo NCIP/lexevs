@@ -262,6 +262,10 @@
 	<bean id="ibatisNciHistoryDao"
 		class="org.lexevs.dao.database.ibatis.ncihistory.IbatisNciHistoryDao" parent="abstractIbatisDao">
 	</bean>
+	
+	<bean id="ibatisValueSetHierarchyDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetHierarchyDao" parent="abstractIbatisDao">
+	</bean>
 
 	<bean id="databaseServiceManager" class="org.lexevs.dao.database.service.DatabaseServiceManager">
 		<property name="codingSchemeService" ref="codingSchemeService"/>
@@ -394,7 +398,7 @@
 	</bean>
 	
 	<bean id="valueSetHierarchyService" 
-		class="org.lexevs.dao.database.service.valuesets.ValueSetHiearchyServiceImpl"
+		class="org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl"
 		parent="abstractService">
 	</bean>
 	

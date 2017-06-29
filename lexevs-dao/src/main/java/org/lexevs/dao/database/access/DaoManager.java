@@ -84,7 +84,7 @@ public class DaoManager {
 	private List<VSDefinitionEntryDao> vsDefinitionEntryDaos;
 	
 	/** The Value Set Hierarchy daos. */
-	private List<ValueSetHierarchyDao> valueSetHiearchyDaos;
+	private List<ValueSetHierarchyDao> valueSetHierarchyDaos;
 
 	/** The vsProperty daos. */
 	private List<VSPropertyDao> vsPropertyDaos;
@@ -530,12 +530,12 @@ public class DaoManager {
 		this.valueSetDefinitionDaos = valueSetDefinitionDaos;
 	}
 	
-	public List<ValueSetHierarchyDao> getValueSetHiearchyDaos() {
-		return valueSetHiearchyDaos;
+	public List<ValueSetHierarchyDao> getvalueSetHierarchyDaos() {
+		return valueSetHierarchyDaos;
 	}
 
-	public void setValueSetHiearchyDaos(List<ValueSetHierarchyDao> valueSetHiearchyDaos) {
-		this.valueSetHiearchyDaos = valueSetHiearchyDaos;
+	public void setvalueSetHierarchyDaos(List<ValueSetHierarchyDao> valueSetHierarchyDaos) {
+		this.valueSetHierarchyDaos = valueSetHierarchyDaos;
 	}
 
 	/**
@@ -553,7 +553,7 @@ public class DaoManager {
 	 * @return the current value set hierarchy dao.
 	 */
 	public ValueSetHierarchyDao getCurrentValueSetHiearchyDao(){
-		return this.getCorrectDaoForSchemaVersion(this.getValueSetHiearchyDaos(), currentVersion);
+		return this.getCorrectDaoForSchemaVersion(this.getvalueSetHierarchyDaos(), currentVersion);
 	}
 	
 	

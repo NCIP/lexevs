@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -15,21 +16,65 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+
 import gov.nih.nci.evs.browser.utils.TreeItem;
 
 
 
-public class ValueSetHierarchServiceImpl extends AbstractDatabaseService implements ValueSetHierarchyService {
+public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implements ValueSetHierarchyService {
+
 	private LexBIGService LexBIGServiceImpl = null;
 	TreeItem super_root = new TreeItem(ROOT, "Root node");
+	String scheme = SCHEME;
+	String version = null; 
+	String association = HIERARCHY;
+	String sourceDesignation = SOURCE;
+	String publishName = PUBLISH_DESIGNATION;
+	String publishValue = CAN_PUBLISH;
+	String root_code = ROOT_CODE;
+	String schemeUID;
+	String associationPredicateGuid;
+	ValueSetHierarchyDao vsDao;
+	
+	public ValueSetHierarchyServiceImpl(){	
+	}
+	
+	public void init(String scheme, 
+			String version, 
+			String association,
+			String sourceDesignation,
+			String publishName,
+			String root_code){
+		this.scheme = scheme;
+		this.version = version;
+		this.association = association;
+		this.sourceDesignation = sourceDesignation;
+		this.publishName = publishName;
+		this.root_code = root_code;
+		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
+		super_root._expandable = true;
+		schemeUID = this.getCodingSchemeUId(scheme, version);
+		this.associationPredicateGuid = this.getPredicateUid();
+	}
+	
+	public void init(){
+		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
+		super_root._expandable = true;
+		schemeUID = this.getCodingSchemeUId(scheme, version);
+		this.associationPredicateGuid = this.getPredicateUid();
+	}
 	
 	@Override
-	public HashMap<String, TreeItem> getCodingSchemeValueSetTree(String scheme, String version) {
-
+	public HashMap<String, TreeItem> getCodingSchemeValueSetTree(String scheme, String version) throws LBException {
+		HashMap<String, TreeItem> roots = getHierarchyValueSetRoots(scheme, version, association, sourceDesignation, publishName, root_code);
+		TreeItem root = roots.get(ROOT);
+		List<TreeItem> nodes = root._assocToChildMap.get(INVERSE_IS_A);
+		for(TreeItem ti: nodes){
+			List<VSHierarchyNode> children = this.getUnfilteredNodes(root_code);
+		}
 		return null;
 	}
 
@@ -91,23 +136,32 @@ public class ValueSetHierarchServiceImpl extends AbstractDatabaseService impleme
 			String publishName,
 			String code) throws LBException{
 		HashMap<String, TreeItem> map = new HashMap<String,TreeItem>();
-		ValueSetHierarchyDao vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
-		//Get scheme UID from scheme, version 
-		//Get associationPredicateGuid from association name
-		String schemeUID = getDaoManager().getCurrentCodingSchemeDao().getCodingSchemeUIdByNameAndVersion(scheme, version);
-		String associationPredicateGuid = getDaoManager().getCurrentAssociationDao().getAssociationPredicateUidsForAssociationName(schemeUID, null, association).get(0);
+		List<TreeItem> subTrees = new ArrayList<TreeItem>();
 		
-		List<VSHierarchyNode> nodes = vsDao.getAllVSTriplesTrOfVSNode(schemeUID, code, 
-				associationPredicateGuid, sourceDesignation, publishName, 0, -1);
+		
+		List<VSHierarchyNode> nodes = this.getUnfilteredNodes(code);
 		//process nodes to remove duplicate description/code sets where source does not exist
 		List<VSHierarchyNode> temps = collectReducedNodes( nodes);
-		
-		for(VSHierarchyNode n: nodes){			
-			map.put(getURIFromVSHeirarchyNode(n), new TreeItem(n.getEntityCode(), 
+		this.sort(temps);
+		TreeItem root = super_root;
+		for(VSHierarchyNode n: temps){			
+			subTrees.add( new TreeItem(n.getEntityCode(), 
 					n.getDescription()));
 		}
-		
+		//Need to sort subtrees by some method at some point
+		root.addAll(INVERSE_IS_A , subTrees);
+		map.put(ROOT, root);
 		return map;
+	}
+	
+	private String getPredicateUid(){
+		return getDaoManager().getCurrentAssociationDao().getAssociationPredicateUidsForAssociationName(schemeUID, null, association).get(0);
+	}
+	
+	
+
+	private void sort(List<VSHierarchyNode> temps) {
+		Collections.sort(temps);
 	}
 	
 	private String getURIFromVSHeirarchyNode(VSHierarchyNode n) {
@@ -141,6 +195,11 @@ public class ValueSetHierarchServiceImpl extends AbstractDatabaseService impleme
 		
 	}
 	
+	protected List<VSHierarchyNode> getUnfilteredNodes(String code){
+		return vsDao.getAllVSTriplesTrOfVSNode(schemeUID, code, 
+				associationPredicateGuid, sourceDesignation, publishName, 0, -1);
+	}
+	
 	public static void main(String[] args){
 		List<VSHierarchyNode> nodes = new ArrayList<VSHierarchyNode>();
 		
@@ -170,8 +229,7 @@ public class ValueSetHierarchServiceImpl extends AbstractDatabaseService impleme
 		nodes.add(node3);
 		nodes.add(node4);
 		nodes.add(node5);
-		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null).collect(Collectors.toList());
-		List<VSHierarchyNode> complete = new ValueSetHierarchServiceImpl().collectReducedNodes(nodes);
+		List<VSHierarchyNode> complete = new ValueSetHierarchyServiceImpl().collectReducedNodes(nodes);
 		
 		complete.stream().forEach(x -> System.out.println(x.getDescription() + ": "+ x.getEntityCode() + ": " + x.getSource()));
 

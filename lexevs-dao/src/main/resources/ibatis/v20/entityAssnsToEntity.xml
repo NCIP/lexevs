@@ -1326,7 +1326,7 @@
 	</select>
 	
 	<select id="getValueSetHierarchySourcesOfTargets" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad"
 		remapResults="true" 
 		resultMap="valueSetHierarchyRootNodeResolution">
 		SELECT

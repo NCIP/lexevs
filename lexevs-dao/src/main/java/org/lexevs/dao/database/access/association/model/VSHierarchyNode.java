@@ -1,6 +1,6 @@
 package org.lexevs.dao.database.access.association.model;
 
-public class VSHierarchyNode {
+public class VSHierarchyNode implements Comparable<VSHierarchyNode>{
 	private String entityCode;
 	private String namespace;
 	private String description;
@@ -36,6 +36,11 @@ public class VSHierarchyNode {
 
 	public void setSource(String source) {
 		this.source = source;
+	}
+
+	@Override
+	public int compareTo(VSHierarchyNode o) {
+		return this.getDescription().compareTo(o.getDescription());
 	}
 
 }
