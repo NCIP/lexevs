@@ -2,10 +2,12 @@ package org.lexevs.dao.database.service.valuesets;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 
 import gov.nih.nci.evs.browser.utils.TreeItem;
 
@@ -28,7 +30,7 @@ public interface ValueSetHierarchyService {
 	
 	void initializeCS2vsdURIs_map();
 	
-	HashMap<String, TreeItem> getSourceValueSetTree(String Scheme, String version);
+	HashMap<String, TreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException;
 	
 	
 	//TODO Useful to have?
@@ -37,6 +39,12 @@ public interface ValueSetHierarchyService {
 	TreeItem getVSDChildNodeBySource(ValueSetDefinition vsd);
 
 	TreeItem getSourceValueSetTreeBranch(ValueSetDefinition vsd);
+	
+
+	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, TreeItem ti);
+
+
+	public TreeItem getSourceValueSetTreeBranch(TreeItem ti);
 
 	TreeItem getCodingSchemeValueSetTreeBranch(String scheme, String code, String name);
 

@@ -81,12 +81,23 @@ public class ValueSetHierarchyServiceTest {
 	
 	@Test 
 	public void testGetHierarchyRoots() throws LBException{
-		Map<String, TreeItem> map = service.getHierarchyValueSetRoots(service.scheme, "17.02d", service.association, service.sourceDesignation, service.publishName, service.root_code);
+		Map<String, TreeItem> map = service.getHierarchyValueSetRoots(service.scheme,
+				"17.02d", 
+				service.association, 
+				service.sourceDesignation, 
+				service.publishName, 
+				service.root_code);
 		assertTrue(map.size() > 0);
-		assertTrue(map.get(service.ROOT)._assocToChildMap.size() > 0);
-		Map<String, List<TreeItem>> items  = map.get(service.ROOT)._assocToChildMap;
+		assertTrue(map.get(ValueSetHierarchyService.ROOT)._assocToChildMap.size() > 0);
+		Map<String, List<TreeItem>> items  = map.get(ValueSetHierarchyService.ROOT)._assocToChildMap;
 		
 		items.forEach((y,z) -> z.forEach(x->System.out.println(x._code + ": " + x._text )));
+	}
+	
+	@Test
+	public void testBuildTree() throws LBException{
+		Map<String, TreeItem> items  = service.getSourceValueSetTree(null, "17.02d");
+		assertTrue(items.size() > 0);
 	}
 
 
