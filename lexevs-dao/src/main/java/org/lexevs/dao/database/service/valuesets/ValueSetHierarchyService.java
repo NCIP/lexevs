@@ -10,7 +10,7 @@ import org.LexGrid.valueSets.ValueSetDefinition;
 import gov.nih.nci.evs.browser.utils.TreeItem;
 
 public interface ValueSetHierarchyService {
-	public static final String SCHEME = "NCI_Thesaurus";
+	public static final String SCHEME = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
 	public static final String HIERARCHY = "subClassOf";
 	public static final String SOURCE = "Contributing_Source";
 	public static final String PUBLISH_DESIGNATION = "Publish_Value_Set";

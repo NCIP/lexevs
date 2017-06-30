@@ -9,16 +9,19 @@ import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 import gov.nih.nci.evs.browser.utils.TreeItem;
 
@@ -26,7 +29,7 @@ import gov.nih.nci.evs.browser.utils.TreeItem;
 
 public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implements ValueSetHierarchyService {
 
-	private LexBIGService LexBIGServiceImpl = null;
+	private LexBIGService lexBIGServiceImpl = null;
 	TreeItem super_root = new TreeItem(ROOT, "Root node");
 	String scheme = SCHEME;
 	String version = null; 
@@ -63,7 +66,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	public void init(){
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		super_root._expandable = true;
-		schemeUID = this.getCodingSchemeUId(scheme, version);
+		schemeUID = this.getSchemeUid(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
 	}
 	
@@ -73,7 +76,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		TreeItem root = roots.get(ROOT);
 		List<TreeItem> nodes = root._assocToChildMap.get(INVERSE_IS_A);
 		for(TreeItem ti: nodes){
-			List<VSHierarchyNode> children = this.getUnfilteredNodes(root_code);
+			List<VSHierarchyNode> children = this.getUnfilteredNodes(ti._code);
 		}
 		return null;
 	}
@@ -154,8 +157,29 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		return map;
 	}
 	
-	private String getPredicateUid(){
-		return getDaoManager().getCurrentAssociationDao().getAssociationPredicateUidsForAssociationName(schemeUID, null, association).get(0);
+	protected String getSchemeUid(String Uri, String version){
+		if(version == null){
+			version = getProductionVersionFromTargetScheme(Uri);
+		}
+		return this.getCodingSchemeUId(Uri, version);
+		
+	}
+	
+	protected String getProductionVersionFromTargetScheme(String uri) {
+
+		try {
+			return LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalVersionStringForTag(uri,
+					"PRODUCTION");
+		} catch (LBParameterException e) {
+			throw new RuntimeException("Problem retrieving a production version for coding scheme with uri: " + uri);
+		}
+	}
+
+
+
+	protected String getPredicateUid() {
+		return getDaoManager().getCurrentAssociationDao()
+				.getAssociationPredicateUidsForAssociationName(schemeUID, null, association).get(0);
 	}
 	
 	
@@ -169,9 +193,14 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	    		   n.getSource(), n.getEntityCode());
 	}
 	
+	public List<VSHierarchyNode> getFilteredNodeChildren(String code){
+		return collectReducedNodes(getUnfilteredNodes(code));
+	}
+	
 	protected List<VSHierarchyNode> collectReducedNodes(List<VSHierarchyNode> nodes){
 		//Get all nodes with declared sources
-		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null).collect(Collectors.toList());
+		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null).
+				collect(Collectors.toList());
 		//Filter these from the remainder when there is a duplicate with a null source
 		List<VSHierarchyNode> complete = new ArrayList<VSHierarchyNode>();
 		for(VSHierarchyNode n: nodes){
@@ -186,14 +215,14 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		return complete;
 	}
 
-	protected Entity getEntityForCode(String code, String codingScheme, String version) throws LBException{
-		CodedNodeSet set = LexBIGServiceImpl.getCodingSchemeConcepts(codingScheme, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(version));
-		set = set.restrictToCodes(Constructors.createConceptReferenceList(code));
-		ResolvedConceptReferencesIterator it = set.resolve(null, null, null);
-		return it.next().getEntity();
-		
-	}
+//	protected Entity getEntityForCode(String code, String codingScheme, String version) throws LBException{
+//		CodedNodeSet set = lexBIGServiceImpl.getCodingSchemeConcepts(codingScheme, 
+//				Constructors.createCodingSchemeVersionOrTagFromVersion(version));
+//		set = set.restrictToCodes(Constructors.createConceptReferenceList(code));
+//		ResolvedConceptReferencesIterator it = set.resolve(null, null, null);
+//		return it.next().getEntity();
+//		
+//	}
 	
 	protected List<VSHierarchyNode> getUnfilteredNodes(String code){
 		return vsDao.getAllVSTriplesTrOfVSNode(schemeUID, code, 
@@ -201,37 +230,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 	
 	public static void main(String[] args){
-		List<VSHierarchyNode> nodes = new ArrayList<VSHierarchyNode>();
 		
-		VSHierarchyNode node = new VSHierarchyNode();
-		VSHierarchyNode node2 = new VSHierarchyNode();
-		VSHierarchyNode node3 = new VSHierarchyNode();
-		VSHierarchyNode node4 = new VSHierarchyNode();
-		VSHierarchyNode node5 = new VSHierarchyNode();
-		
-		node.setDescription("apples");
-		node2.setDescription("oranges");
-		node3.setDescription("apples");
-		node4.setDescription("oranges");
-		node5.setDescription("banana");
-		
-		node.setEntityCode("C1");
-		node2.setEntityCode("C2");
-		node3.setEntityCode("C1");
-		node4.setEntityCode("C2");
-		node5.setEntityCode("C3");
-		
-		node.setSource("CDISC");
-		node2.setSource("FDA");
-		
-		nodes.add(node);
-		nodes.add(node2);
-		nodes.add(node3);
-		nodes.add(node4);
-		nodes.add(node5);
-		List<VSHierarchyNode> complete = new ValueSetHierarchyServiceImpl().collectReducedNodes(nodes);
-		
-		complete.stream().forEach(x -> System.out.println(x.getDescription() + ": "+ x.getEntityCode() + ": " + x.getSource()));
 
 	}
 

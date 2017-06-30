@@ -135,8 +135,8 @@
 	</resultMap>
 	
 	<resultMap id="valueSetHierarchyRootNodeResolution" class="org.lexevs.dao.database.access.association.model.VSHierarchyNode" groupBy="description">
-		<result property="entityCode" column="sourceEntityCode" />
-		<result property="namespace" column="sourceEntityCodeNamespace" />
+		<result property="entityCode" column="entityCode" />
+		<result property="namespace" column="namespace" />
 		<result property="description" column="description" />
 		<result property="source" column="source" />
 	</resultMap>
@@ -1330,12 +1330,17 @@
 		remapResults="true" 
 		resultMap="valueSetHierarchyRootNodeResolution">
 		SELECT
-			sourceEntityCode AS entityCode,
-			sourceEntityCodeNamespace AS namespace,
-			description AS description,
-			source AS source
+			assns.sourceEntityCode AS entityCode,
+			assns.sourceEntityCodeNamespace AS namespace,
+			ent.description AS description,
+			CASE prop.propertyName
+			WHEN "Contributing_Source" THEN prop.propertyValue
+			END AS source,
+			CASE prop2.propertyName
+			WHEN "Publish_Value_Set" THEN prop2.propertyValue
+			END AS publish
 		FROM 
-			$prefix$entityAssnsToEntity
+			$prefix$entityAssnsToEntity assns
 		LEFT JOIN
 			$prefix$entity ent
 		ON
