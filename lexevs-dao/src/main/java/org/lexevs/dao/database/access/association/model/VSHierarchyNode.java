@@ -40,7 +40,7 @@ public class VSHierarchyNode implements Comparable<VSHierarchyNode>{
 
 	@Override
 	public int compareTo(VSHierarchyNode o) {
-		return this.getDescription().compareTo(o.getDescription());
+		return this.getDescription().toLowerCase().compareTo(o.getDescription().toLowerCase());
 	}
 
 }

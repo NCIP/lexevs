@@ -78,8 +78,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	@Override
 	public void preprocessSourceHierarchyData() {
-		// TODO Auto-generated method stub
-
+		init();
 	}
 
 	@Override
@@ -111,21 +110,18 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(ti._code);
 		sort(nodes);
 		List<TreeItem> items = new ArrayList<TreeItem>();
-		for(VSHierarchyNode node: nodes){
-		TreeItem item = new TreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
-		items.add(item);
-//		List<VSHierarchyNode> children = 
-				this.getSourceValueSetTreeBranch(node, item);
-//		List<TreeItem> subItems = new ArrayList<TreeItem>();
-		//children.stream().forEach(x -> subItems.add(new TreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription())));
+		for (VSHierarchyNode node : nodes) {
+			TreeItem item = new TreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
+			items.add(item);
+			this.getSourceValueSetTreeBranch(node, item);
 		}
-		ti.addAll(INVERSE_IS_A,items);
-		
+		ti.addAll(INVERSE_IS_A, items);
 	}
 
 	@Override
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode topNode, TreeItem ti) {
 		List<VSHierarchyNode> nextBranch = this.getFilteredNodeChildren(topNode.getEntityCode());
+		sort(nextBranch);
 		List<TreeItem> treeNodes = new ArrayList<TreeItem>();
 		for(VSHierarchyNode node : nextBranch){
 			TreeItem newItem = new TreeItem(this.getURIFromVSHeirarchyNode(node),node.getDescription()); 

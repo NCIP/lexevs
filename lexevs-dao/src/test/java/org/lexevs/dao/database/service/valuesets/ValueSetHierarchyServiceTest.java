@@ -21,6 +21,8 @@ public class ValueSetHierarchyServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		service = (ValueSetHierarchyServiceImpl) LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
+//		service.init("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "subClassOf", "Contributing_Source","Publish_Value_Set", "C54443");
+		
 		service.init();
 	}
 
@@ -101,15 +103,26 @@ public class ValueSetHierarchyServiceTest {
 		TreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
 		int tabCounter = 0;
-		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
-		
+		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);		
 	}
+	
+//	@Test
+//	public void testBuildTree() throws LBException{
+//		Map<String, TreeItem> items  = service.getSourceValueSetTree("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+//		TreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+//		assertTrue(items.size() > 0);
+//		int tabCounter = 0;
+//		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+//		
+//	}
 	
 	private void printTree(List<TreeItem> items, int counter){
 		if(items == null || items.isEmpty()){return;}
 		counter = counter + 5;
 		for(TreeItem x : items){
-			System.out.println(StringUtils.leftPad(x._text, counter + x._text.length(), " "));
+			System.out.println(String.format(
+					"%1$" + (counter + x._text.length()) + "s",  
+					x._text));
 			List<TreeItem> list = x._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A);
 			printTree(list, counter);
 		}
