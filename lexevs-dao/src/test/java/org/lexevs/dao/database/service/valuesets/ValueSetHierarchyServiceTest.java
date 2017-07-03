@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
@@ -97,7 +98,23 @@ public class ValueSetHierarchyServiceTest {
 	@Test
 	public void testBuildTree() throws LBException{
 		Map<String, TreeItem> items  = service.getSourceValueSetTree(null, "17.02d");
+		TreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
+		int tabCounter = 0;
+		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+		
+	}
+	
+	private void printTree(List<TreeItem> items, int counter){
+		if(items == null || items.isEmpty()){return;}
+		counter = counter + 5;
+		for(TreeItem x : items){
+			System.out.println(StringUtils.leftPad(x._text, counter + x._text.length(), " "));
+			List<TreeItem> list = x._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A);
+			printTree(list, counter);
+		}
+
+	 
 	}
 
 
