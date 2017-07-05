@@ -99,7 +99,10 @@ public class ValueSetHierarchyServiceTest {
 	
 	@Test
 	public void testBuildTree() throws LBException{
+		long startNano = System.currentTimeMillis();
 		Map<String, TreeItem> items  = service.getSourceValueSetTree(null, "17.02d");
+		long endNano = System.currentTimeMillis();
+		System.out.println("Performance output milli sec: " + (endNano - startNano));
 		TreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
 		int tabCounter = 0;

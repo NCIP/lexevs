@@ -21,32 +21,18 @@ public interface ValueSetHierarchyService {
 	public  static final String ROOT = "<Root>";
     public final static String INVERSE_IS_A = "inverse_is_a";
 	
-	//TODO required
-	HashMap<String, TreeItem> getCodingSchemeValueSetTree(String scheme, String version) throws LBException;
-	
 	void preprocessSourceHierarchyData();
 	
-	HashSet<String> getValueSetParticipationHashSet();
-	
-	void initializeCS2vsdURIs_map();
-	
 	HashMap<String, TreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException;
-	
-	
-	//TODO Useful to have?
-	ResolvedConceptReferenceList getValueSetHierarchyRoots();
 
-	TreeItem getVSDChildNodeBySource(ValueSetDefinition vsd);
-
-	TreeItem getSourceValueSetTreeBranch(ValueSetDefinition vsd);
-	
+	public HashMap<String, TreeItem> getHierarchyValueSetRoots(
+			String scheme, 
+			String version, 
+			String association,
+			String sourceDesignation,
+			String publishName,
+			String code) throws LBException;
 
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, TreeItem ti);
-
-
-	public TreeItem getSourceValueSetTreeBranch(TreeItem ti);
-
-	TreeItem getCodingSchemeValueSetTreeBranch(String scheme, String code, String name);
-
 
 }
