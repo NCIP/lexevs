@@ -34,6 +34,7 @@ import org.lexevs.dao.database.service.relation.RelationService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
+import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.dao.database.service.version.AuthoringService;
 
 /**
@@ -76,6 +77,8 @@ public class DatabaseServiceManager {
 	
 	/** The value set definition service. */
 	private ValueSetDefinitionService valueSetDefinitionService;
+	
+	private ValueSetHierarchyService valueSetHierarchyService;
 	
 	/** The vsproperty service. */
 	private VSPropertyService vsPropertyService;
@@ -266,6 +269,23 @@ public class DatabaseServiceManager {
 	 */
 	public void setVsPropertyService(VSPropertyService vsPropertyService) {
 		this.vsPropertyService = vsPropertyService;
+	}
+
+	public ErrorCallbackDatabaseServiceFactory getErrorCallbackDatabaseServiceFactory() {
+		return errorCallbackDatabaseServiceFactory;
+	}
+
+	public void setErrorCallbackDatabaseServiceFactory(
+			ErrorCallbackDatabaseServiceFactory errorCallbackDatabaseServiceFactory) {
+		this.errorCallbackDatabaseServiceFactory = errorCallbackDatabaseServiceFactory;
+	}
+
+	public ValueSetHierarchyService getValueSetHierarchyService() {
+		return valueSetHierarchyService;
+	}
+
+	public void setValueSetHierarchyService(ValueSetHierarchyService valueSetHierarchyService) {
+		this.valueSetHierarchyService = valueSetHierarchyService;
 	}
 
 	/**

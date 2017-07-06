@@ -1,0 +1,38 @@
+package org.lexevs.dao.database.service.valuesets;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.valueSets.ValueSetDefinition;
+import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
+
+import gov.nih.nci.evs.browser.utils.TreeItem;
+
+public interface ValueSetHierarchyService {
+	public static final String SCHEME = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
+	public static final String HIERARCHY = "subClassOf";
+	public static final String SOURCE = "Contributing_Source";
+	public static final String PUBLISH_DESIGNATION = "Publish_Value_Set";
+	public static final String CAN_PUBLISH = "Yes";
+	public static final String ROOT_CODE = "C54443";
+	public  static final String ROOT = "<Root>";
+    public final static String INVERSE_IS_A = "inverse_is_a";
+	
+	void preprocessSourceHierarchyData();
+	
+	HashMap<String, TreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException;
+
+	public HashMap<String, TreeItem> getHierarchyValueSetRoots(
+			String scheme, 
+			String version, 
+			String association,
+			String sourceDesignation,
+			String publishName,
+			String code) throws LBException;
+
+	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, TreeItem ti);
+
+}

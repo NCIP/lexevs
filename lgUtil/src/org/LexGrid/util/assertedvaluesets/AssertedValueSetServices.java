@@ -1,4 +1,4 @@
-package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
+package org.LexGrid.util.assertedvaluesets;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,6 +26,7 @@ public class AssertedValueSetServices {
     public static final String CONCEPT_DOMAIN = "Semantic_Type";
     public static final String SOURCE_NAME = "Contributing_Source";
     public static final String SOURCE = "source";
+    public static final String BASE = "http://evs.nci.nih.gov/valueset/";
     
     public static boolean isPublishableValueSet(Entity entity, boolean force) {
         if(entity.getPropertyAsReference().stream().anyMatch(x -> x.
@@ -83,7 +84,7 @@ public class AssertedValueSetServices {
          return domain;  
     }
     
-    protected static SupportedCodingScheme createSupportedCodingScheme(String codingScheme, String uri) {
+    public static SupportedCodingScheme createSupportedCodingScheme(String codingScheme, String uri) {
         SupportedCodingScheme scheme = new SupportedCodingScheme();
         scheme.setContent(codingScheme);
         scheme.setLocalId(codingScheme);
@@ -92,7 +93,7 @@ public class AssertedValueSetServices {
         return scheme;
     }
 
-    protected static SupportedNamespace createSupportedNamespace(String entityCodeNamespace,
+    public static SupportedNamespace createSupportedNamespace(String entityCodeNamespace,
             String equivalentCodingScheme, String uri) {
         SupportedNamespace nmsp = new SupportedNamespace();
         nmsp.setContent(entityCodeNamespace);
@@ -103,7 +104,7 @@ public class AssertedValueSetServices {
     }
     
     
-    protected static SupportedSource createSupportedSource(String source, String uri){
+    public static SupportedSource createSupportedSource(String source, String uri){
         SupportedSource newSource = new SupportedSource();
         newSource.setLocalId(source);
         newSource.setContent(source);
@@ -124,15 +125,15 @@ public class AssertedValueSetServices {
         return sourceName == null?SOURCE_NAME: sourceName;
     }
     
-    protected static String createUri(String base, String source, String code){
+    public static String createUri(String base, String source, String code){
         return base + (source != null ?source + "/":"") + code;
      }
     
-    protected static List<Property> getPropertiesForPropertyName(List<Property> props, String  name){
+   public static List<Property> getPropertiesForPropertyName(List<Property> props, String  name){
         return props.stream().filter(x -> x.getPropertyName().equals(name)).collect(Collectors.toList());
     }
     
-    protected static String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
+    public static String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
         if(quals.stream().anyMatch(pq -> pq.getPropertyQualifierName().equals(SOURCE))){
             return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals(SOURCE)).findFirst().get().getValue().getContent();
         }

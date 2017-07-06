@@ -9,6 +9,7 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.junit.Before;
 import org.junit.Test;
 
