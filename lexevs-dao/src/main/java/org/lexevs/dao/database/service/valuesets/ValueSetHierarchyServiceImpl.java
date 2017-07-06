@@ -14,11 +14,10 @@ import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-import gov.nih.nci.evs.browser.utils.TreeItem;
 
 public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implements ValueSetHierarchyService {
 
-	TreeItem super_root = new TreeItem(ROOT, "Root node");
+	LexEVSTreeItem super_root = new LexEVSTreeItem(ROOT, "Root node");
 	String scheme = SCHEME;
 	String version = null;
 	String association = HIERARCHY;
@@ -29,7 +28,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	String schemeUID;
 	String associationPredicateGuid;
 	ValueSetHierarchyDao vsDao;
-	HashMap<String, TreeItem> master = new HashMap<String, TreeItem>();
+	HashMap<String, LexEVSTreeItem> master = new HashMap<String, LexEVSTreeItem>();
 
 	public ValueSetHierarchyServiceImpl() {
 	}
@@ -61,23 +60,23 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	@Override
-	public HashMap<String, TreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException {
-		HashMap<String, TreeItem> roots = getHierarchyValueSetRoots(scheme, version, association, sourceDesignation,
+	public HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException {
+		HashMap<String, LexEVSTreeItem> roots = getHierarchyValueSetRoots(scheme, version, association, sourceDesignation,
 				publishName, root_code);
-		TreeItem root = roots.get(ROOT);
-		List<TreeItem> nodes = root._assocToChildMap.get(INVERSE_IS_A);
-		for (TreeItem ti : nodes) {
+		LexEVSTreeItem root = roots.get(ROOT);
+		List<LexEVSTreeItem> nodes = root._assocToChildMap.get(INVERSE_IS_A);
+		for (LexEVSTreeItem ti : nodes) {
 			recurseFromRootsToUpdateMap(ti);
 		}
 		return master;
 	}
 
-	protected void recurseFromRootsToUpdateMap(TreeItem ti) {
+	protected void recurseFromRootsToUpdateMap(LexEVSTreeItem ti) {
 		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(ti._code);
 		sort(nodes);
-		List<TreeItem> items = new ArrayList<TreeItem>();
+		List<LexEVSTreeItem> items = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nodes) {
-			TreeItem item = new TreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
+			LexEVSTreeItem item = new LexEVSTreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
 			items.add(item);
 			this.getSourceValueSetTreeBranch(node, item);
 		}
@@ -85,12 +84,12 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	@Override
-	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode topNode, TreeItem ti) {
+	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode topNode, LexEVSTreeItem ti) {
 		List<VSHierarchyNode> nextBranch = this.getFilteredNodeChildren(topNode.getEntityCode());
 		sort(nextBranch);
-		List<TreeItem> treeNodes = new ArrayList<TreeItem>();
+		List<LexEVSTreeItem> treeNodes = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nextBranch) {
-			TreeItem newItem = new TreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
+			LexEVSTreeItem newItem = new LexEVSTreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
 			treeNodes.add(newItem);
 			getSourceValueSetTreeBranch(node, newItem);
 		}
@@ -99,9 +98,9 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	@Override
-	public HashMap<String, TreeItem> getHierarchyValueSetRoots(String scheme, String version, String association,
+	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(String scheme, String version, String association,
 			String sourceDesignation, String publishName, String code) throws LBException {
-		List<TreeItem> subTrees = new ArrayList<TreeItem>();
+		List<LexEVSTreeItem> subTrees = new ArrayList<LexEVSTreeItem>();
 
 		List<VSHierarchyNode> nodes = this.getUnfilteredNodes(code);
 		// process nodes to remove duplicate description/code sets where source
@@ -109,7 +108,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		List<VSHierarchyNode> temps = collectReducedNodes(nodes);
 		this.sort(temps);
 		for (VSHierarchyNode n : temps) {
-			subTrees.add(new TreeItem(n.getEntityCode(), n.getDescription()));
+			subTrees.add(new LexEVSTreeItem(n.getEntityCode(), n.getDescription()));
 		}
 		super_root.addAll(INVERSE_IS_A, subTrees);
 		master.put(ROOT, super_root);

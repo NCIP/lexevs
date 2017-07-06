@@ -1,15 +1,11 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 
-import gov.nih.nci.evs.browser.utils.TreeItem;
 
 public interface ValueSetHierarchyService {
 	public static final String SCHEME = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
@@ -23,9 +19,9 @@ public interface ValueSetHierarchyService {
 	
 	void preprocessSourceHierarchyData();
 	
-	HashMap<String, TreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException;
+	HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException;
 
-	public HashMap<String, TreeItem> getHierarchyValueSetRoots(
+	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(
 			String scheme, 
 			String version, 
 			String association,
@@ -33,6 +29,6 @@ public interface ValueSetHierarchyService {
 			String publishName,
 			String code) throws LBException;
 
-	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, TreeItem ti);
+	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, LexEVSTreeItem ti);
 
 }
