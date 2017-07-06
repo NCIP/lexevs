@@ -170,7 +170,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	protected List<VSHierarchyNode> getUnfilteredNodes(String code) {
 		return vsDao.getAllVSTriplesTrOfVSNode(schemeUID, code, associationPredicateGuid, sourceDesignation,
-				publishName, 0, -1);
+				publishName, publishValue, 0, -1);
 	}
 
 }

@@ -1326,7 +1326,7 @@
 	</select>
 	
 	<select id="getValueSetHierarchySourcesOfTargets" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint"
 		remapResults="true" 
 		resultMap="valueSetHierarchyRootNodeResolution">
 		SELECT
@@ -1334,10 +1334,10 @@
 			assns.sourceEntityCodeNamespace AS namespace,
 			ent.description AS description,
 			CASE prop.propertyName
-			WHEN "Contributing_Source" THEN prop.propertyValue
+			WHEN  #param3# THEN prop.propertyValue
 			END AS source,
 			CASE prop2.propertyName
-			WHEN "Publish_Value_Set" THEN prop2.propertyValue
+			WHEN #param4# THEN prop2.propertyValue
 			END AS publish
 		FROM 
 			$prefix$entityAssnsToEntity assns
@@ -1362,7 +1362,7 @@
 		OR
 			prop2.propertyName = #param4# )
 		GROUP BY
-			description, publish, source having publish = "Yes"
+			description, publish, source having publish = #param5#
 	</select>
 	
 	<select id="getEntryStateUidByAssociationTarget"
