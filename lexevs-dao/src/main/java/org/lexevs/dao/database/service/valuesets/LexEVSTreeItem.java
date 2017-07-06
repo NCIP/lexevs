@@ -1,12 +1,17 @@
 package org.lexevs.dao.database.service.valuesets;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 
-public class LexEVSTreeItem {
+public class LexEVSTreeItem implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -834052479613861465L;
 	String _auis;
 	String _code;
 	boolean _expandable = false;

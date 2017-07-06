@@ -81,11 +81,7 @@ public class ValueSetHierarchyServiceTest {
 	
 	@Test 
 	public void testGetHierarchyRoots() throws LBException{
-		Map<String, LexEVSTreeItem> map = service.getHierarchyValueSetRoots(service.scheme,
-				"17.02d", 
-				service.association, 
-				service.sourceDesignation, 
-				service.publishName, 
+		Map<String, LexEVSTreeItem> map = service.getHierarchyValueSetRoots(
 				service.root_code);
 		assertTrue(map.size() > 0);
 		assertTrue(map.get(ValueSetHierarchyService.ROOT)._assocToChildMap.size() > 0);

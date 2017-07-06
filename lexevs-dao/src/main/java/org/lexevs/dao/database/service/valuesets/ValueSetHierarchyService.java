@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.service.valuesets;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 
@@ -7,7 +8,8 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 
 
-public interface ValueSetHierarchyService {
+public interface ValueSetHierarchyService extends Serializable {
+	
 	public static final String SCHEME = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
 	public static final String HIERARCHY = "subClassOf";
 	public static final String SOURCE = "Contributing_Source";
@@ -19,16 +21,16 @@ public interface ValueSetHierarchyService {
 	
 	void preprocessSourceHierarchyData();
 	
+
+	void preprocessSourceHierarchyData(String scheme, String version, String association, String sourceDesignation,
+			String publishName, String root_code);
+	
 	HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException;
 
 	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(
-			String scheme, 
-			String version, 
-			String association,
-			String sourceDesignation,
-			String publishName,
 			String code) throws LBException;
 
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, LexEVSTreeItem ti);
+
 
 }

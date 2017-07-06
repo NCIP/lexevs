@@ -17,6 +17,10 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implements ValueSetHierarchyService {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2755261228867112212L;
 	LexEVSTreeItem super_root = new LexEVSTreeItem(ROOT, "Root node");
 	String scheme = SCHEME;
 	String version = null;
@@ -58,11 +62,17 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	public void preprocessSourceHierarchyData() {
 		init();
 	}
+	
+	@Override
+	public void preprocessSourceHierarchyData(String scheme, String version, String association, String sourceDesignation, String publishName,
+			String root_code) {
+		init(scheme, version, association, sourceDesignation, publishName,
+				root_code);
+	}
 
 	@Override
 	public HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException {
-		HashMap<String, LexEVSTreeItem> roots = getHierarchyValueSetRoots(scheme, version, association, sourceDesignation,
-				publishName, root_code);
+		HashMap<String, LexEVSTreeItem> roots = getHierarchyValueSetRoots(root_code);
 		LexEVSTreeItem root = roots.get(ROOT);
 		List<LexEVSTreeItem> nodes = root._assocToChildMap.get(INVERSE_IS_A);
 		for (LexEVSTreeItem ti : nodes) {
@@ -98,8 +108,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	@Override
-	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(String scheme, String version, String association,
-			String sourceDesignation, String publishName, String code) throws LBException {
+	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(String code) throws LBException {
 		List<LexEVSTreeItem> subTrees = new ArrayList<LexEVSTreeItem>();
 
 		List<VSHierarchyNode> nodes = this.getUnfilteredNodes(code);
