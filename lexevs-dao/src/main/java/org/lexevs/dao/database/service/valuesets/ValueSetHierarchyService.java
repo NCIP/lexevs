@@ -33,4 +33,10 @@ public interface ValueSetHierarchyService extends Serializable {
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, LexEVSTreeItem ti);
 
 
+	public ValueSetHierarchyServiceImpl init();
+	
+	public ValueSetHierarchyServiceImpl init(String scheme, String version, String association, String sourceDesignation, String publishName,
+			String root_code);
+
+
 }

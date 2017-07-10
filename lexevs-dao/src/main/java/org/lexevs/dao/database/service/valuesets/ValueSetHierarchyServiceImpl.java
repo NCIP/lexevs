@@ -37,7 +37,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	public ValueSetHierarchyServiceImpl() {
 	}
 
-	public void init(String scheme, String version, String association, String sourceDesignation, String publishName,
+	public ValueSetHierarchyServiceImpl init(String scheme, String version, String association, String sourceDesignation, String publishName,
 			String root_code) {
 		this.scheme = scheme;
 		this.version = version;
@@ -49,13 +49,15 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		super_root._expandable = true;
 		schemeUID = this.getCodingSchemeUId(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
+		return this;
 	}
 
-	public void init() {
+	public ValueSetHierarchyServiceImpl init() {
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		super_root._expandable = true;
 		schemeUID = this.getSchemeUid(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
+		return this;
 	}
 
 	@Override
