@@ -2322,9 +2322,11 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323">
         <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <rdfs:label>Black</rdfs:label>
         <NHC0>C48323</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>Black</P108>
+        <P372>Yes</P372>
         <P322>FDA</P322>
         <P90>BLACK</P90>
         <P90>Black</P90>
@@ -2360,6 +2362,7 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <NHC0>C48325</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>White</P108>
+        <P372>Yes</P372>
         <P322>FDA</P322>
         <P90>WHITE</P90>
         <P90>White</P90>
