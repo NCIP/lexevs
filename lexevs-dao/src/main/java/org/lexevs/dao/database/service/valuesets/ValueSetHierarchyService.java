@@ -25,7 +25,7 @@ public interface ValueSetHierarchyService extends Serializable {
 	void preprocessSourceHierarchyData(String scheme, String version, String association, String sourceDesignation,
 			String publishName, String root_code);
 	
-	HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException;
+	HashMap<String, LexEVSTreeItem> getSourceValueSetTree() throws LBException;
 
 	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(
 			String code) throws LBException;

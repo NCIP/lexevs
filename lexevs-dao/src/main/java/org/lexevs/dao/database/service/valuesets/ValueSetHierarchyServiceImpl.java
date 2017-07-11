@@ -21,7 +21,6 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	 * 
 	 */
 	private static final long serialVersionUID = 2755261228867112212L;
-	LexEVSTreeItem super_root = new LexEVSTreeItem(ROOT, "Root node");
 	String scheme = SCHEME;
 	String version = null;
 	String association = HIERARCHY;
@@ -32,7 +31,6 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	String schemeUID;
 	String associationPredicateGuid;
 	ValueSetHierarchyDao vsDao;
-	HashMap<String, LexEVSTreeItem> master = new HashMap<String, LexEVSTreeItem>();
 
 	public ValueSetHierarchyServiceImpl() {
 	}
@@ -46,7 +44,6 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		this.publishName = publishName;
 		this.root_code = root_code;
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
-		super_root._expandable = true;
 		schemeUID = this.getCodingSchemeUId(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
 		return this;
@@ -54,7 +51,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	public ValueSetHierarchyServiceImpl init() {
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
-		super_root._expandable = true;
+
 		schemeUID = this.getSchemeUid(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
 		return this;
@@ -73,18 +70,19 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	@Override
-	public HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String Scheme, String version) throws LBException {
+	public HashMap<String, LexEVSTreeItem> getSourceValueSetTree() throws LBException {
 		HashMap<String, LexEVSTreeItem> roots = getHierarchyValueSetRoots(root_code);
 		LexEVSTreeItem root = roots.get(ROOT);
 		List<LexEVSTreeItem> nodes = root._assocToChildMap.get(INVERSE_IS_A);
 		for (LexEVSTreeItem ti : nodes) {
 			recurseFromRootsToUpdateMap(ti);
 		}
-		return master;
+		return roots;
 	}
 
 	protected void recurseFromRootsToUpdateMap(LexEVSTreeItem ti) {
 		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(ti._code);
+		if(nodes != null && nodes.size() > 0){ ti._expandable= true;}
 		sort(nodes);
 		List<LexEVSTreeItem> items = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nodes) {
@@ -98,6 +96,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	@Override
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode topNode, LexEVSTreeItem ti) {
 		List<VSHierarchyNode> nextBranch = this.getFilteredNodeChildren(topNode.getEntityCode());
+		if(nextBranch != null && nextBranch.size() > 0){ ti._expandable = true;}
 		sort(nextBranch);
 		List<LexEVSTreeItem> treeNodes = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nextBranch) {
@@ -112,16 +111,15 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	@Override
 	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(String code) throws LBException {
 		List<LexEVSTreeItem> subTrees = new ArrayList<LexEVSTreeItem>();
-
-		List<VSHierarchyNode> nodes = this.getUnfilteredNodes(code);
-		// process nodes to remove duplicate description/code sets where source
-		// does not exist
-		List<VSHierarchyNode> temps = collectReducedNodes(nodes);
+		HashMap<String, LexEVSTreeItem> master = new HashMap<String, LexEVSTreeItem>();
+		List<VSHierarchyNode> temps = getFilteredNodeChildren(code);
 		this.sort(temps);
 		for (VSHierarchyNode n : temps) {
 			subTrees.add(new LexEVSTreeItem(n.getEntityCode(), n.getDescription()));
 		}
+		LexEVSTreeItem super_root = new LexEVSTreeItem(ROOT, "Root node");
 		super_root.addAll(INVERSE_IS_A, subTrees);
+		super_root._expandable = true;
 		master.put(ROOT, super_root);
 		return master;
 	}
@@ -131,7 +129,6 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 			version = getProductionVersionFromTargetScheme(Uri);
 		}
 		return this.getCodingSchemeUId(Uri, version);
-
 	}
 
 	protected String getProductionVersionFromTargetScheme(String uri) {

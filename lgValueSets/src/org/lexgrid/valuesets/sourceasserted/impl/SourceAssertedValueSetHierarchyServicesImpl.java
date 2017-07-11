@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.annotations.LgClientSideSafe;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl;
@@ -18,12 +17,9 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	 * 
 	 */
 	private static final long serialVersionUID = 6898341008352626661L;
-//	private transient ValueSetHierarchyServiceImpl service;
 	private static SourceAssertedValueSetHierarchyServices assertedService = null;
 
 	public SourceAssertedValueSetHierarchyServicesImpl() {
-//		service = (ValueSetHierarchyServiceImpl) LexEvsServiceLocator.
-//				getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
 	}
 	
 	public static SourceAssertedValueSetHierarchyServices defaultInstance(){
@@ -45,7 +41,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 
 	@Override
 	public HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String scheme, String version) throws LBException {
-		return getVSHierarchyService().getSourceValueSetTree(scheme, version);
+		return getVSHierarchyService().getSourceValueSetTree();
 	}
 
 	@Override
