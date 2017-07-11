@@ -2354,6 +2354,30 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P378>NCI</P378>
     </owl:Axiom>
     
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99999">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <rdfs:label>Blacker</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>Blacker</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>BLACKER</P90>
+        <P90>Blacker</P90>
+        <P97>Of even darker color;</P97>
+    </owl:Class>
+    
+     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99998">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <rdfs:label>UberBlack</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>UberBlack</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>UberBLACKER</P90>
+        <P90>BlackUber</P90>
+        <P97>Uber dark color;</P97>
+    </owl:Class>
+    
        <!-- White -->
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325">
@@ -2408,6 +2432,35 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P380>060724</P380>
         <P381>American Heritage Dictionary - Bartelby.com</P381>
     </owl:Axiom>
+    
+    
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99997">
+        <rdfs:label>ArchWhite</rdfs:label>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <NHC0>C48325</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>ArchWhite</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>ARCHWHITE</P90>
+        <P90>ArchWhite</P90>
+        <P90>Archly White Color</P90>
+        <P97>The archly achromatic color of maximum lightness; </P97>
+    </owl:Class>
+    
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99996">
+        <rdfs:label>BlindingWhite</rdfs:label>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <NHC0>C48325</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>BlindingWhite</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>BlindingWHITE</P90>
+        <P90>BlindingWhite</P90>
+        <P90>Blindingly White Color</P90>
+        <P97>The Blindingly achromatic color of maximum lightness; </P97>
+    </owl:Class>
     
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
