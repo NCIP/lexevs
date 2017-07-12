@@ -51,7 +51,6 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	public ValueSetHierarchyServiceImpl init() {
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
-
 		schemeUID = this.getSchemeUid(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
 		return this;

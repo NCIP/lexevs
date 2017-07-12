@@ -115,7 +115,7 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.1");
+                "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
         lbsm.removeCodingSchemeVersion(a);

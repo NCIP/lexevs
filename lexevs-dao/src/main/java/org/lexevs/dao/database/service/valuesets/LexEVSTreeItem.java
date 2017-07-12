@@ -162,5 +162,89 @@ public class LexEVSTreeItem implements Serializable{
             }
         }
 
+		/**
+		 * @return the _auis
+		 */
+		public String get_auis() {
+			return _auis;
+		}
+
+		/**
+		 * @param _auis the _auis to set
+		 */
+		public void set_auis(String _auis) {
+			this._auis = _auis;
+		}
+
+		/**
+		 * @return the _code
+		 */
+		public String get_code() {
+			return _code;
+		}
+
+		/**
+		 * @param _code the _code to set
+		 */
+		public void set_code(String _code) {
+			this._code = _code;
+		}
+
+		/**
+		 * @return the _expandable
+		 */
+		public boolean is_expandable() {
+			return _expandable;
+		}
+
+		/**
+		 * @param _expandable the _expandable to set
+		 */
+		public void set_expandable(boolean _expandable) {
+			this._expandable = _expandable;
+		}
+
+		/**
+		 * @return the _id
+		 */
+		public String get_id() {
+			return _id;
+		}
+
+		/**
+		 * @param _id the _id to set
+		 */
+		public void set_id(String _id) {
+			this._id = _id;
+		}
+
+		/**
+		 * @return the _text
+		 */
+		public String get_text() {
+			return _text;
+		}
+
+		/**
+		 * @param _text the _text to set
+		 */
+		public void set_text(String _text) {
+			this._text = _text;
+		}
+
+		/**
+		 * @return the _assocToChildMap
+		 */
+		public Map<String, List<LexEVSTreeItem>> get_assocToChildMap() {
+			return _assocToChildMap;
+		}
+
+		/**
+		 * @param _assocToChildMap the _assocToChildMap to set
+		 */
+		public void set_assocToChildMap(Map<String, List<LexEVSTreeItem>> _assocToChildMap) {
+			this._assocToChildMap = _assocToChildMap;
+		}
+
 
 }

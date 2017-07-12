@@ -30,17 +30,25 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 
 	@Override
 	public void preprocessSourceHierarchyData() {
-		getVSHierarchyService();
+		getVSHierarchyService().init();
 	}
 	
 	@Override
 	public void preprocessSourceHierarchyData(String scheme, String version, 
 			String association, String sourceDesignation, String publishName, String root_code) {
-		getVSHierarchyService().init(scheme, version, association, sourceDesignation, publishName, root_code);
+		getVSHierarchyService(scheme, version, association, sourceDesignation, publishName, root_code);
+	}
+
+	private ValueSetHierarchyServiceImpl getVSHierarchyService(String scheme, String version, String association, String sourceDesignation,
+			String publishName, String root_code) {
+		return (ValueSetHierarchyServiceImpl) LexEvsServiceLocator.
+				getInstance().getDatabaseServiceManager().getValueSetHierarchyService().
+				init(scheme, version, association, sourceDesignation, publishName, root_code);
+		
 	}
 
 	@Override
-	public HashMap<String, LexEVSTreeItem> getSourceValueSetTree(String scheme, String version) throws LBException {
+	public HashMap<String, LexEVSTreeItem> getSourceValueSetTree() throws LBException {
 		return getVSHierarchyService().getSourceValueSetTree();
 	}
 
@@ -56,7 +64,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	
 	private ValueSetHierarchyServiceImpl getVSHierarchyService(){
 		return (ValueSetHierarchyServiceImpl) LexEvsServiceLocator.
-		getInstance().getDatabaseServiceManager().getValueSetHierarchyService().init();
+		getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
 	}
 
 }
