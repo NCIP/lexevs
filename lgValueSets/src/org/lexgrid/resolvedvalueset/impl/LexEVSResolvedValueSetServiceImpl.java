@@ -2,7 +2,11 @@ package org.lexgrid.resolvedvalueset.impl;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
@@ -11,8 +15,12 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -20,6 +28,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
@@ -112,6 +121,32 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		return filteredSchemes;
 	}
 	
+	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException{
+		Set<AbsoluteCodingSchemeVersionReference> set = new HashSet<AbsoluteCodingSchemeVersionReference>();
+		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		ResolvedConceptReferencesIterator itr = search.search(matchText, matchType);
+		while(itr.hasNext()){
+			ResolvedConceptReference ref = itr.next();
+			if(isValueSet(ref)){
+			set.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
+					ref.getCodingSchemeVersion()));
+			}
+		}
+		return set.stream().collect(Collectors.toList());
+	}
+	
+	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforEntityCode(String matchCode) throws LBException{
+		Set<AbsoluteCodingSchemeVersionReference> set = new HashSet<AbsoluteCodingSchemeVersionReference>();
+		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		ResolvedConceptReferencesIterator itr = search.search(matchCode, MatchAlgorithm.CODE_EXACT);
+		ResolvedConceptReference ref = itr.next();
+		if(isValueSet(ref)){
+		set.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
+				ref.getCodingSchemeVersion()));
+		}
+		return set.stream().collect(Collectors.toList());
+	}
+	
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri){
 		LexBIGService lbs = getLexBIGService();
 		CodingScheme scheme;
@@ -170,6 +205,17 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		}
 		return false;
 	}
+	
+    private boolean isValueSet(ResolvedConceptReference ref) throws LBException
+    {
+        CodingScheme scheme = lbs.resolveCodingScheme(ref.getCodingSchemeURI(), 
+                Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getCodingSchemeVersion()));
+        Properties props = scheme.getProperties();
+        return props.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals
+        		("ontologyFormat")).filter(x->x.getValue().getContent().equals("RESOLVEDVALUESET")).
+        		findAny().isPresent();
+        
+    }
 	
 	/**
      * Return the associated LexBIGService instance; lazy initialized as
