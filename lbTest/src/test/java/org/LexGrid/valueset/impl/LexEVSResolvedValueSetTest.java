@@ -25,8 +25,11 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -130,6 +133,29 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(list.getResolvedConceptReferenceCount() == 1);
 		assertTrue(list.getResolvedConceptReference(0).getConceptCode().equals("C0011(5564)"));
 	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForCode() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = service.getResolvedValueSetsforEntityCode("005");
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertEquals(ref.getCodingSchemeURN(), "urn:oid:11.11.0.1");
+		assertEquals(ref.getCodingSchemeVersion(), "1.1");
+	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForText() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = 
+				service.getResolvedValueSetsforTextSearch("Domestic Auto Makers", 
+						MatchAlgorithm.PRESENTATION_EXACT);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertEquals(ref.getCodingSchemeURN(), "urn:oid:11.11.0.1");
+		assertEquals(ref.getCodingSchemeVersion(), "1.1");
+	}
+	
 	
 	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
