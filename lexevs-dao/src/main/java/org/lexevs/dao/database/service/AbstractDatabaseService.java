@@ -21,11 +21,8 @@ package org.lexevs.dao.database.service;
 import org.LexGrid.commonTypes.Versionable;
 import org.LexGrid.versions.types.ChangeType;
 import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.service.event.DatabaseServiceEventSupport;
 import org.lexevs.logging.Logger;
-
-import gov.nih.nci.evs.browser.utils.TreeItem;
 
 /**
  * The Class AbstractDatabaseService.

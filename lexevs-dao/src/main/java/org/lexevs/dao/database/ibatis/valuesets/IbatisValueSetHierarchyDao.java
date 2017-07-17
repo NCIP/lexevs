@@ -2,15 +2,12 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.util.List;
 
-import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 public class IbatisValueSetHierarchyDao extends AbstractIbatisDao implements ValueSetHierarchyDao {
 	public static String ASSOCIATION_NAMESPACE = "Association.";
@@ -22,7 +19,7 @@ public class IbatisValueSetHierarchyDao extends AbstractIbatisDao implements Val
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<VSHierarchyNode> getAllVSTriplesTrOfVSNode(
-			String codingSchemeId, String code, String associationGuid, String sourceDesignation, String publishName,  int start, int pagesize) {
+			String codingSchemeId, String code, String associationGuid, String sourceDesignation, String publishName, String canPublish,  int start, int pagesize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		if(pagesize < 0) {
@@ -30,7 +27,7 @@ public class IbatisValueSetHierarchyDao extends AbstractIbatisDao implements Val
 		}
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_VS_TRIPLES_OF_VSNODE_SQL, 
-				new PrefixedParameterQuad(prefix, associationGuid, code, sourceDesignation, publishName), start, pagesize);
+				new PrefixedParameterQuint(prefix, associationGuid, code, sourceDesignation, publishName, canPublish), start, pagesize);
 	}
 
 	@Override

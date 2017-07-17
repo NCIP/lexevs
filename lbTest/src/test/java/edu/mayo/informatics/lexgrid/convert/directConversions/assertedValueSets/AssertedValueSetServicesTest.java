@@ -1,7 +1,5 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
 
 import org.LexGrid.LexBIG.Utility.Constructors;

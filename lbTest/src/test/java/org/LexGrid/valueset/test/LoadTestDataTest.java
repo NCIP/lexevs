@@ -116,7 +116,7 @@ public class LoadTestDataTest {
 
 		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
         
-        //loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
+        loader.setLoaderPreferences(new File("resources/testData/owl2/OWLPrefsLoadAnonAsAssocPF2SetTopNodes.XML").toURI());
         loader.load(new File(fileName).toURI(),null,  1, false, true);
         
         while (loader.getStatus().getEndTime() == null) {
@@ -247,7 +247,7 @@ public class LoadTestDataTest {
 	@Order(9)
 	public void testLoadOWL2() throws LBParameterException,
             LBInvocationException, InterruptedException, LBException {
-		loadOWL2("resources/testData/owl2/owl2-test-cases-Primitive-Annotated.owl", 
+		loadOWL2("resources/testData/owl2/owl2-special-cases-Defined-Annotated.owl", 
 				LBConstants.KnownTags.PRODUCTION.toString());
 	}
 	

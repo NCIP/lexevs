@@ -10,7 +10,7 @@ import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 public interface ValueSetHierarchyDao extends LexGridSchemaVersionAwareDao {
 
 	List<VSHierarchyNode> getAllVSTriplesTrOfVSNode(String codingSchemeId, String code,
-			String associationName, String propertyOne, String propertyTwo, int start, int pagesize);
+			String associationName, String propertyOne, String propertyTwo, String canPublish, int start, int pagesize);
 	
 	
 
