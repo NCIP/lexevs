@@ -224,7 +224,6 @@
 
     <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97">
         <P97>English language definitions of what NCI means by the concept. These are limited to 1024 characters. They may also include information about the definition&apos;s source and attribution in a form that can easily be interpreted by software.</P97>
-        <P107>Definition</P107>
         <P90>DEFINITION</P90>
         <P108>DEFINITION</P108>
         <P106>Conceptual Entity</P106>
@@ -247,6 +246,33 @@
         <P384>NCI</P384>
     </owl:Axiom>
     
+    <!-- Contributing_Source -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P322">
+        <rdfs:label>Contributing_Source</rdfs:label>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Contributing_Source-enum"/>
+        <NHC0>P322</NHC0>
+        <P106>Conceptual Entity</P106>
+        <P108>Contributing_Source</P108>
+        <P90>Contributing_Source</P90>
+        <P97>This property is used to indicate when a non-EVS entity has contributed to, and has a stake in, a concept.  This is used where such entities, within or outside NCI, have indicated the need to be able to track their own concepts. A single concept can have multiple instances of this property if multiple entities have such a defined stake.</P97>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P322"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Contributing_Source</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P322"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>This property is used to indicate when a non-EVS entity has contributed to, and has a stake in, a concept.  This is used where such entities, within or outside NCI, have indicated the need to be able to track their own concepts. A single concept can have multiple instances of this property if multiple entities have such a defined stake.</owl:annotatedTarget>
+        <P378>NCI</P378>
+        <P379>DEFAULT_Review</P379>
+        <P380>060127</P380>
+    </owl:Axiom>
+      
        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#ALT_DEFINITION -->
 
     <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325">
@@ -268,6 +294,35 @@
         <P383>PT</P383>
         <P384>NCI</P384>
     </owl:Axiom>
+    
+        <!-- Publish_Value_Set -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P372">
+        <rdfs:label>Publish_Value_Set</rdfs:label>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Publish_Value_Set-enum"/>
+        <NHC0>P372</NHC0>
+        <P106>Conceptual Entity</P106>
+        <P108>Publish_Value_Set</P108>
+        <P90>Publish_Value_Set</P90>
+        <P95>This property will be used internally, and scrubbed before publication to the ftp and browser.</P95>
+        <P97>Indicates whether or not a value set is ready for publication in the browser.</P97>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P372"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Publish_Value_Set</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P372"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>Indicates whether or not a value set is ready for publication in the browser.</owl:annotatedTarget>
+        <P378>NCI</P378>
+        <P379>Elizabeth Hahn-Dantona</P379>
+        <P380>160413</P380>
+    </owl:Axiom>
+    
     
        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Term_Browser_Value_Set_Description -->
 
@@ -305,6 +360,20 @@
         <owl:annotatedTarget>Concept_In_Subset</owl:annotatedTarget>
     </owl:Axiom>
     
+    <!-- Semantic_Type -->
+
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P106">
+        <rdfs:label>Semantic_Type</rdfs:label>
+        <P108>Semantic_Type</P108>
+        <P90>Semantic_Type</P90>
+    </owl:AnnotationProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P106"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Semantic_Type</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
     
 
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Preferred_Name -->
@@ -2173,6 +2242,7 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
      
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743">
         <P90>CDISC SDTM Ophthalmic Exam Test Code Terminology</P90>
+        <P106>Intellectual Product</P106>
         <P90>OETESTCD</P90>
         <P90>Ophthalmic Exam Test Code</P90>
         <P90>SDTM-OETESTCD</P90>
@@ -2212,6 +2282,208 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P383>AB</P383>
         <P384>NCI</P384>
     </owl:Axiom>
+    
+        <!-- Structured Product Labeling Color Terminology -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453">
+        <rdfs:label>Structured Product Labeling Color Terminology</rdfs:label>
+        <NHC0>C54453</NHC0>
+        <P106>Intellectual Product</P106>
+        <P108>Structured Product Labeling Color Terminology</P108>
+        <P366>Labeling_Color_Terminology</P366>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>SPL Color Terminology</P90>
+        <P90>Structured Product Labeling Color Terminology</P90>
+        <P97>Terminology used for representation of the information on pharmaceutical product color in the framework of the Structured Product Labeling documents.</P97>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>SPL Color Terminology</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Structured Product Labeling Color Terminology</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>Terminology used for representation of the information on pharmaceutical product color in the framework of the Structured Product Labeling documents.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
+    
+        <!-- Black -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <rdfs:label>Black</rdfs:label>
+        <NHC0>C48323</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>Black</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>BLACK</P90>
+        <P90>Black</P90>
+        <P97>Of darkest color; producing or reflecting comparatively little light and having no predominant hue; being the color of coal or carbon.</P97>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>BLACK</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>FDA</P384>
+        <P386>SPL</P386>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Black</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>Of darkest color; producing or reflecting comparatively little light and having no predominant hue; being the color of coal or carbon.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
+    
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99999">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <rdfs:label>Blacker</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>Blacker</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>BLACKER</P90>
+        <P90>Blacker</P90>
+        <P97>Of even darker color;</P97>
+    </owl:Class>
+    
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99989">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99999"/>
+        <rdfs:label>Bla</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>Bla</P108>
+        <P322>FDA</P322>
+        <P90>BLA</P90>
+        <P90>Bla</P90>
+        <P97>Of even bla color;</P97>
+    </owl:Class>
+    
+   <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99988">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99999"/>
+        <rdfs:label>Ack</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>Ack</P108>
+        <P322>FDA</P322>
+        <P90>ACK</P90>
+        <P90>ack</P90>
+        <P97>Of even acker color;</P97>
+    </owl:Class>
+    
+     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99998">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <rdfs:label>UberBlack</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>UberBlack</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>UberBLACKER</P90>
+        <P90>BlackUber</P90>
+        <P97>Uber dark color;</P97>
+    </owl:Class>
+    
+       <!-- White -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325">
+        <rdfs:label>White</rdfs:label>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <NHC0>C48325</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>White</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>WHITE</P90>
+        <P90>White</P90>
+        <P90>White Color</P90>
+        <P97>The achromatic color of maximum lightness; the color of objects that reflect nearly all light of all visible wavelengths; the complement or antagonist of black, the other extreme of the neutral gray series.</P97>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325"/>
+        <owl:annotatedTarget>rgb(255, 255, 255)</owl:annotatedTarget>
+        <P378>SPL</P378>
+        <P379>DEFAULT_Review</P379>
+        <P380>060127</P380>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>WHITE</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>FDA</P384>
+        <P386>SPL</P386>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>White</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>White Color</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>The achromatic color of maximum lightness; the color of objects that reflect nearly all light of all visible wavelengths; the complement or antagonist of black, the other extreme of the neutral gray series.</owl:annotatedTarget>
+        <P378>NCI</P378>
+        <P379>Nicole Thomas</P379>
+        <P380>060724</P380>
+        <P381>American Heritage Dictionary - Bartelby.com</P381>
+    </owl:Axiom>
+    
+    
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99997">
+        <rdfs:label>ArchWhite</rdfs:label>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <NHC0>C48325</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>ArchWhite</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>ARCHWHITE</P90>
+        <P90>ArchWhite</P90>
+        <P90>Archly White Color</P90>
+        <P97>The archly achromatic color of maximum lightness; </P97>
+    </owl:Class>
+    
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99996">
+        <rdfs:label>BlindingWhite</rdfs:label>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <NHC0>C48325</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>BlindingWhite</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>BlindingWHITE</P90>
+        <P90>BlindingWhite</P90>
+        <P90>Blindingly White Color</P90>
+        <P97>The Blindingly achromatic color of maximum lightness; </P97>
+    </owl:Class>
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //

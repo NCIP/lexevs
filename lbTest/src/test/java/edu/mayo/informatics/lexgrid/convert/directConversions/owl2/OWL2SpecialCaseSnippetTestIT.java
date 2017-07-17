@@ -558,6 +558,26 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			}
 			}
 		}
+		
+		@Test
+		public void testPublishValueSet() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set = set.restrictToCodes(Constructors.createConceptReferenceList("C54453"));
+			ResolvedConceptReferenceList rcrlist = set.resolveToList(null, null, null, -1);
+			Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			ResolvedConceptReference rcr = itr.next();
+			assertTrue(rcr.getEntity().getProperty().length > 0);
+			assertTrue(rcr.getEntity().getPropertyAsReference().stream().filter(x ->
+			x.getPropertyName().equals("Publish_Value_Set")).findFirst().isPresent());
+			assertTrue(rcr.getEntity().getPropertyAsReference().stream().filter(x ->
+			x.getPropertyName().equals("Publish_Value_Set")).findFirst().get().getValue().
+					getContent().equalsIgnoreCase("yes"));
+		}
 	
 	
 	

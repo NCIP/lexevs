@@ -38,6 +38,7 @@ import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
+import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.registry.service.Registry;
@@ -81,6 +82,9 @@ public class DaoManager {
 	
 	/** The VSDefinitionEntry daos. */
 	private List<VSDefinitionEntryDao> vsDefinitionEntryDaos;
+	
+	/** The Value Set Hierarchy daos. */
+	private List<ValueSetHierarchyDao> valueSetHierarchyDaos;
 
 	/** The vsProperty daos. */
 	private List<VSPropertyDao> vsPropertyDaos;
@@ -526,6 +530,14 @@ public class DaoManager {
 		this.valueSetDefinitionDaos = valueSetDefinitionDaos;
 	}
 	
+	public List<ValueSetHierarchyDao> getvalueSetHierarchyDaos() {
+		return valueSetHierarchyDaos;
+	}
+
+	public void setvalueSetHierarchyDaos(List<ValueSetHierarchyDao> valueSetHierarchyDaos) {
+		this.valueSetHierarchyDaos = valueSetHierarchyDaos;
+	}
+
 	/**
 	 * Gets the current value set definition dao.
 	 * 
@@ -535,6 +547,16 @@ public class DaoManager {
 		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), currentVersion);
 	}
 
+	/**
+	 * Gets the current value set hierarchy dao.
+	 * 
+	 * @return the current value set hierarchy dao.
+	 */
+	public ValueSetHierarchyDao getCurrentValueSetHiearchyDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getvalueSetHierarchyDaos(), currentVersion);
+	}
+	
+	
 	/**
 	 * Gets the current value set definition entry dao.
 	 * 

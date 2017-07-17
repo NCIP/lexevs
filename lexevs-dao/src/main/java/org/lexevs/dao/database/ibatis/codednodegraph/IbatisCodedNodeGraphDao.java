@@ -63,6 +63,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_CONCEPTREFERENCE_FROM_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getConceptReferenceFromEntityAssnsToEntityUid";
 	private static String GET_ASSOCIATION_PREDICATE_NAMES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getAssociationPredicatNamesFromCodingSchemeUid";
 	private static String GET_DISTINCT_SOURCE_NODES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getDistinctSources";
+	private static String GET_DISTINCT_TARGET_NODES_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getDistinctTargets";
 	private static String GET_TARGET_NODES_OF_SOURCE_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTargetsOfSource";
 	private static String GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTailEntityAssnsToEntityUids";
 	private static String GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getRootEntityAssnsToEntityUids";
@@ -507,6 +508,22 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		return this.getSqlMapClientTemplate().
 			queryForList(GET_DISTINCT_SOURCE_NODES_SQL, 
+				bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	@CacheMethod
+	public List<Node> getDistinctTargetNodesForAssociationPredicate(
+			String codingSchemeUid, String associationPredicateUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
+		
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(prefix);
+		bean.setParam1(associationPredicateUid);
+		
+		return this.getSqlMapClientTemplate().
+			queryForList(GET_DISTINCT_TARGET_NODES_SQL, 
 				bean);
 	}
 
