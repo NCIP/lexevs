@@ -39,6 +39,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.junit.Test;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -53,7 +54,8 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	LexEVSResolvedValueSetService service;
 
 	public void setUp() {
-		service = new LexEVSResolvedValueSetServiceImpl();
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		service = new LexEVSResolvedValueSetServiceImpl(lbs);
 	}
 
 	@Test
@@ -140,20 +142,43 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-		assertEquals(ref.getCodingSchemeURN(), "urn:oid:11.11.0.1");
-		assertEquals(ref.getCodingSchemeVersion(), "1.1");
+		assertEquals(ref.getCodingSchemeURN(), "SRITEST:AUTO:AllDomesticButGMWithlt250charName");
 	}
 	
 	@Test
-	public void testGetValueSetURIAndVersionForText() throws LBException{
+	public void testGetValueSetURIAndVersionForTextExact() throws LBException{
 		List<AbsoluteCodingSchemeVersionReference> refs = 
 				service.getResolvedValueSetsforTextSearch("Domestic Auto Makers", 
 						MatchAlgorithm.PRESENTATION_EXACT);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-		assertEquals(ref.getCodingSchemeURN(), "urn:oid:11.11.0.1");
-		assertEquals(ref.getCodingSchemeVersion(), "1.1");
+		assertEquals(ref.getCodingSchemeURN(), "SRITEST:AUTO:AllDomesticButGMWithlt250charName");
+	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForTextLucene() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = 
+				service.getResolvedValueSetsforTextSearch("Domestic", 
+						MatchAlgorithm.LUCENE);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
+				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+
+	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForTextContains() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = 
+				service.getResolvedValueSetsforTextSearch("Domestic", 
+						MatchAlgorithm.PRESENTATION_CONTAINS);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
+				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
 	}
 	
 	
