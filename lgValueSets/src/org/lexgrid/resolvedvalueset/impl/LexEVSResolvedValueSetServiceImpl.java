@@ -137,10 +137,12 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		Set<AbsoluteCodingSchemeVersionReference> set = new HashSet<AbsoluteCodingSchemeVersionReference>();
 		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		ResolvedConceptReferencesIterator itr = search.search(matchCode, MatchAlgorithm.CODE_EXACT);
+		while(itr.hasNext()){
 		ResolvedConceptReference ref = itr.next();
 		if(isValueSet(ref)){
 		set.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
 				ref.getCodingSchemeVersion()));
+		}
 		}
 		return set.stream().collect(Collectors.toList());
 	}

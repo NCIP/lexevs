@@ -142,7 +142,8 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-		assertEquals(ref.getCodingSchemeURN(), "SRITEST:AUTO:AllDomesticButGMWithlt250charName");
+		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
+				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
 	}
 	
 	@Test
