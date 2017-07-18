@@ -138,23 +138,22 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	
 	@Test
 	public void testGetValueSetURIAndVersionForCode() throws LBException{
-		List<AbsoluteCodingSchemeVersionReference> refs = service.getResolvedValueSetsforEntityCode("005");
+		List<AbsoluteCodingSchemeVersionReference> refs = service.getResolvedValueSetsforEntityCode("C0011(5564)");
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
-				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
 	}
 	
 	@Test
 	public void testGetValueSetURIAndVersionForTextExact() throws LBException{
 		List<AbsoluteCodingSchemeVersionReference> refs = 
-				service.getResolvedValueSetsforTextSearch("Domestic Auto Makers", 
+				service.getResolvedValueSetsforTextSearch("TrailerCar(Yahoo)", 
 						MatchAlgorithm.PRESENTATION_EXACT);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-		assertEquals(ref.getCodingSchemeURN(), "SRITEST:AUTO:AllDomesticButGMWithlt250charName");
+		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
 	}
 	
 	@Test
