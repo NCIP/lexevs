@@ -25,8 +25,11 @@ import java.util.List;
 import junit.framework.TestCase;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -36,6 +39,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.junit.Test;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -50,7 +54,8 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	LexEVSResolvedValueSetService service;
 
 	public void setUp() {
-		service = new LexEVSResolvedValueSetServiceImpl();
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		service = new LexEVSResolvedValueSetServiceImpl(lbs);
 	}
 
 	@Test
@@ -130,6 +135,52 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(list.getResolvedConceptReferenceCount() == 1);
 		assertTrue(list.getResolvedConceptReference(0).getConceptCode().equals("C0011(5564)"));
 	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForCode() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = service.getResolvedValueSetsforEntityCode("C0011(5564)");
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
+	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForTextExact() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = 
+				service.getResolvedValueSetsforTextSearch("TrailerCar(Yahoo)", 
+						MatchAlgorithm.PRESENTATION_EXACT);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
+	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForTextLucene() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = 
+				service.getResolvedValueSetsforTextSearch("Domestic", 
+						MatchAlgorithm.LUCENE);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
+				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+
+	}
+	
+	@Test
+	public void testGetValueSetURIAndVersionForTextContains() throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> refs = 
+				service.getResolvedValueSetsforTextSearch("Domestic", 
+						MatchAlgorithm.PRESENTATION_CONTAINS);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
+				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+	}
+	
 	
 	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {

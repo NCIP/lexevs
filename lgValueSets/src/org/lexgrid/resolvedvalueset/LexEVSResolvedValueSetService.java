@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 
@@ -17,6 +19,8 @@ public interface LexEVSResolvedValueSetService {
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri);
 	public ResolvedConceptReferenceList getValueSetEntitiesForURI(String uri);
 	public ResolvedConceptReferencesIterator getValueSetIteratorForURI(String uri);
+	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforEntityCode(String matchCode) throws LBException;
+	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException;
 	
 	/**
 	 * Return a list of AbsoluteCodingSchemeVersionReference that was used for resolving the resolvedValueSet
