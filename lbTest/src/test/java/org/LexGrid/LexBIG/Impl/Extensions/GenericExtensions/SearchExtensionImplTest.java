@@ -70,7 +70,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("a^s sp*cial co{nce]pt", MatchAlgorithm.PRESENTATION_EXACT);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("a^s sp*cial co{nce]pt you (know/don't know)", MatchAlgorithm.PRESENTATION_EXACT);
 		assertTrue(itr.hasNext());
 		assertEquals("SpecialCharactersConcept", itr.next().getCode());
 		assertFalse(itr.hasNext());
@@ -519,7 +519,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 	
-		ResolvedConceptReferencesIterator itr = searchExtension.search("a^s sp*cial co{nce]pt", MatchAlgorithm.PRESENTATION_EXACT);
+		ResolvedConceptReferencesIterator itr = searchExtension.search("a^s sp*cial co{nce]pt you (know/don't know)", MatchAlgorithm.PRESENTATION_EXACT);
 		assertTrue(itr.hasNext());
 		assertEquals("SpecialCharactersConcept", itr.next().getCode());
 		assertFalse(itr.hasNext());
