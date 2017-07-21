@@ -1507,6 +1507,8 @@ public class OwlApi2LG {
             if(lgProp instanceof Presentation){
             if(isRepresentationalForm(annotationName)){
                 ((Presentation) lgProp).setRepresentationalForm(annotationValue);
+                lgSupportedMappings_.registerSupportedRepresentationalForm(annotationValue, 
+                        getNameSpace(annotation.getProperty()), annotationValue, false);
                 continue;
             }
             else if(isSource(annotationName)){
