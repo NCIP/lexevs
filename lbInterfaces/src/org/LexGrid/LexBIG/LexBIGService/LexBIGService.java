@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.LexBIGService;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ExtensionDescriptionList;
@@ -250,6 +251,7 @@ public interface LexBIGService extends Serializable {
 	CodingSchemeRenderingList getSupportedCodingSchemes()
 			throws LBInvocationException;
 
+
 	/**
 	 * Return detailed coding scheme information given a specific tag or version
 	 * identifier.
@@ -277,5 +279,14 @@ public interface LexBIGService extends Serializable {
 	
 	String resolveCodingSchemeCopyright(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag) throws LBException;
+
+	/**
+	 * Return a list of minimal coding scheme objects of the resolved value set
+	 * type, to be fully resolved by user later using resolveCodingScheme() method
+	 * 
+	 * @throws LBInvocationException
+	 */
+    List<CodingScheme> getMinimalResolvedCodingSchemes() 
+			  throws LBInvocationException;
 
 }

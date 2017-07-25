@@ -15,6 +15,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 public interface LexEVSResolvedValueSetService {
        
    	public List<CodingScheme> listAllResolvedValueSets() throws LBException;
+   	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException;
 	public List<CodingScheme> getResolvedValueSetsForConceptReference(ConceptReference ref);
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri);
 	public ResolvedConceptReferenceList getValueSetEntitiesForURI(String uri);

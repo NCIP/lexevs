@@ -58,6 +58,11 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
         
         return resolvedValueSetList;
 	}
+
+	@Override
+	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException {    
+        return lbs.getMinimalResolvedCodingSchemes() ;
+	}
 	
 	/**
 	 * Return a list of AbsoluteCodingSchemeVersionReference that was used for resolving the resolvedValueSet
