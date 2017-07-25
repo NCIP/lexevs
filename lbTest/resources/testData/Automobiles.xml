@@ -183,7 +183,7 @@
 			<lgCon:entityType>concept</lgCon:entityType>
 			<lgCon:presentation propertyName="textualPresentation"
 				propertyId="t1" isPreferred="true">
-				<lgCommon:value>a^s sp*cial co{nce]pt</lgCommon:value>
+				<lgCommon:value>a^s sp*cial co{nce]pt you (know/don't know)</lgCommon:value>
 			</lgCon:presentation>
 		</lgCon:entity>
 		<lgCon:entity entityCode="C0001" entityCodeNamespace="Automobiles"
