@@ -25,6 +25,7 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedRepresentationalForm;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -557,6 +558,18 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 				assertTrue(def.getSource()[0].getContent().equals("CDISC"));
 			}
 			}
+		}
+	
+		@Test
+		public void testPopulateSupportedRepresentationalForm() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodingScheme scheme = lbs.resolveCodingScheme(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			List<SupportedRepresentationalForm> repForms = scheme.getMappings().getSupportedRepresentationalFormAsReference();
+			assertTrue(repForms.stream().anyMatch(x -> x.getContent().equals("PT")));
+			assertTrue(repForms.stream().anyMatch(x -> x.getContent().equals("SY")));
+			assertTrue(repForms.stream().anyMatch(x -> x.getContent().equals("AB")));
 		}
 	
 	
