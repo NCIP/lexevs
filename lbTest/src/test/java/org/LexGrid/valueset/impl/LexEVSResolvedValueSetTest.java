@@ -60,49 +60,44 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 
 	@Test
 	public void testListAllResolvedValueSets() throws Exception {
-		long start = System.currentTimeMillis();
 		List<CodingScheme> list = service.listAllResolvedValueSets();
-		long end = System.currentTimeMillis();
-		System.out.println("Retrieval time: " + (end - start));
 		assertTrue(list.size() > 0);
-//		assertTrue(list.size() == 3);
+		assertTrue(list.size() == 3);
 		CodingScheme scheme = list.get(0);
-//		
-//		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
-//		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
-//			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
-//				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
-//						"Automobiles"));
-//				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
-//				System.out.println("Coding Scheme: "
-//						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop));
-//				System.out.println("Version: "
-//						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop));
-//			}
-//		}
-//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-//		CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(),
-//				Constructors.createCodingSchemeVersionOrTag(null, scheme.getRepresentsVersion()));
-//		ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
-//		while (refs.hasNext()) {
-//
-//			ResolvedConceptReference ref = refs.next();
-//			System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
-//			System.out.println("Code: " + ref.getCode());
-//			System.out.println("Description: " + ref.getEntityDescription().getContent());
-//
-//		}
+		
+		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
+		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
+			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
+						"Automobiles"));
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
+				System.out.println("Coding Scheme: "
+						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop));
+				System.out.println("Version: "
+						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop));
+			}
+		}
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(),
+				Constructors.createCodingSchemeVersionOrTag(null, scheme.getRepresentsVersion()));
+		ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
+		while (refs.hasNext()) {
+
+			ResolvedConceptReference ref = refs.next();
+			System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
+			System.out.println("Code: " + ref.getCode());
+			System.out.println("Description: " + ref.getEntityDescription().getContent());
+
+		}
 	}
 	
 	@Test
 	public void testListAllResolvedValueSetsWithMiniScheme() throws Exception {
-		long start = System.currentTimeMillis();
 		List<CodingScheme> list = service.getMinimalResolvedValueSetSchemes();
-		long end = System.currentTimeMillis();
-		System.out.println("Retrieval time: " + (end - start));
 		assertTrue(list.size() > 0);
-//		assertTrue(list.size() == 3);
-		list.forEach(x -> System.out.println(x.getFormalName()));
+		assertTrue(list.size() == 3);
+		final int count[] = {0};
+		list.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
 	}
 
 	@Test
@@ -194,8 +189,6 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
 				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
 	}
-	
-	
 	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
 		for (PropertyQualifier pq : prop.getPropertyQualifier()) {

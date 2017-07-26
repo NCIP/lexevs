@@ -276,6 +276,7 @@ public class LexBIGServiceImpl implements LexBIGService {
             
             for(RegistryEntry entry : vsEntries){
                 CodingScheme  mini = new CodingScheme();
+                mini.setFormalName(entry.getDbUri());
                 mini.setCodingSchemeURI(entry.getResourceUri()); 
                 mini.setRepresentsVersion(entry.getResourceVersion());
                 mini.setExpirationDate(entry.getDeactivationDate());
