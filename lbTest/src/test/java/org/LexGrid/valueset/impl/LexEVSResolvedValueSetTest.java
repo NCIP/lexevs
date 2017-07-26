@@ -93,11 +93,22 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	
 	@Test
 	public void testListAllResolvedValueSetsWithMiniScheme() throws Exception {
-		List<CodingScheme> list = service.getMinimalResolvedValueSetSchemes();
-		assertTrue(list.size() > 0);
-		assertTrue(list.size() == 3);
+		List<CodingScheme> schemes = service.getMinimalResolvedValueSetSchemes();
+		assertTrue(schemes.size() > 0);
+		assertTrue(schemes.size() == 3);
+		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
+				+ "as many characters as it takes to exceed 50 chars but not 250 chars and that "
+				+ "should about do it")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("One Child Value Set")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGM")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("XTEST:One.Node.ValueSet")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("12.03test")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("1.0")));
+		assertTrue(schemes.stream().anyMatch(x -> x.isIsActive()));
 		final int count[] = {0};
-		list.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
+		schemes.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
 	}
 
 	@Test
