@@ -283,6 +283,9 @@ public interface LexBIGService extends Serializable {
 	/**
 	 * Return a list of minimal coding scheme objects of the resolved value set
 	 * type, to be fully resolved by user later using resolveCodingScheme() method
+	 * This method is temporarily using the dbName and dbURI columns in the registry
+	 * Model changes for implementation will update the registry schema and model
+	 * as necessary
 	 * 
 	 * @throws LBInvocationException
 	 */

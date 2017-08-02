@@ -264,7 +264,7 @@ public class LexBIGServiceImpl implements LexBIGService {
 
     /**
      * @throws LBInvocationException
-     * @see org.LexGrid.LexBIG.LexBIGService.LexBIGService#getSupportedCodingSchemes()
+     * @see org.LexGrid.LexBIG.LexBIGService.LexBIGService#getMinimalResolvedCodingSchemes()
      */
     public List<CodingScheme> getMinimalResolvedCodingSchemes() throws LBInvocationException {
         getLogger().logMethod();
