@@ -18,8 +18,11 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeTagList;
@@ -41,6 +44,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Extensions.Load.SourceAssertedVStoCodingSchemeLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
@@ -255,6 +259,34 @@ public class LexBIGServiceImpl implements LexBIGService {
         } catch (Exception e) {
             String id = getLogger().error("There was an unexpected error", e);
             throw new LBInvocationException("There was an unexpected error", id);
+        }
+    }
+
+    /**
+     * @throws LBInvocationException
+     * @see org.LexGrid.LexBIG.LexBIGService.LexBIGService#getMinimalResolvedCodingSchemes()
+     */
+    public List<CodingScheme> getMinimalResolvedCodingSchemes() throws LBInvocationException {
+        getLogger().logMethod();
+        try {
+            List<CodingScheme> temp = new ArrayList<CodingScheme>();
+
+            List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+            List<RegistryEntry> vsEntries = entries.stream().filter(y ->y.getDbName() != null  && y.getDbName().equals(OntologyFormat.RESOLVEDVALUESET.name())).collect(Collectors.toList());
+            
+            for(RegistryEntry entry : vsEntries){
+                CodingScheme  mini = new CodingScheme();
+                mini.setFormalName(entry.getDbUri());
+                mini.setCodingSchemeURI(entry.getResourceUri()); 
+                mini.setRepresentsVersion(entry.getResourceVersion());
+                mini.setExpirationDate(entry.getDeactivationDate());
+                mini.setIsActive(entry.getStatus().equals("active")? true : false);
+                temp.add(mini);  
+            }
+            return temp;
+        } catch (Exception e) {
+            String id = getLogger().error("There was a problem retrieving resolved value sets: ", e);
+            throw new LBInvocationException("There was a problem retrieving resolved value sets: ", id);
         }
     }
 

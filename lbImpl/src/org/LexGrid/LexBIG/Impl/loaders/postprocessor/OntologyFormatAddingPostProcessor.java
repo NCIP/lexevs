@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
@@ -38,6 +39,8 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
 
 /**
  * The Class OntologyFormatAddingPostProcessor.
@@ -111,8 +114,19 @@ public class OntologyFormatAddingPostProcessor extends AbstractExtendable implem
                    return null;
                 }
             });
+            
+            updateRegistryForCodingSchemeMetadata(uri, version, codingScheme.getFormalName(), ontFormat);
         } catch (Exception e) {
            LoggerFactory.getLogger().warn("Post Process failed -- Load will not be rolled back.", e);
         }  
+    }
+    
+    public void updateRegistryForCodingSchemeMetadata(String uri, String version, String designation,  OntologyFormat format) throws LBParameterException{
+        Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+        AbsoluteCodingSchemeVersionReference codingScheme = Constructors.
+                createAbsoluteCodingSchemeVersionReference(uri, version);
+        RegistryEntry entry = registry.getCodingSchemeEntry(codingScheme);
+        entry.setDbName(format.name());
+        entry.setDbUri(designation);
     }
 }
