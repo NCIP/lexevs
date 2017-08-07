@@ -66,55 +66,54 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving full scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(list.size() > 0);
-//		assertTrue(list.size() == 3);
-//		CodingScheme scheme = list.get(0);
-//		
-//		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
-//		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
-//			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
-//				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
-//						"Automobiles"));
-//				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
-//				System.out.println("Coding Scheme: "
-//						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop));
-//				System.out.println("Version: "
-//						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop));
-//			}
-//		}
-//		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(scheme.getCodingSchemeName(),
-//				Constructors.createCodingSchemeVersionOrTag(null, scheme.getRepresentsVersion()));
-//		ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
-//		while (refs.hasNext()) {
-//
-//			ResolvedConceptReference ref = refs.next();
-//			System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
-//			System.out.println("Code: " + ref.getCode());
-//			System.out.println("Description: " + ref.getEntityDescription().getContent());
-//
-//		}
+		assertTrue(list.size() == 3);
+		CodingScheme scheme = list.get(0);
+		
+		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
+		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
+			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
+						"Automobiles"));
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
+				System.out.println("Coding Scheme: "
+						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop));
+				System.out.println("Version: "
+						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop));
+			}
+		}
+		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(),
+				Constructors.createCodingSchemeVersionOrTag(null, scheme.getRepresentsVersion()));
+		ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
+		while (refs.hasNext()) {
+
+			ResolvedConceptReference ref = refs.next();
+			System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
+			System.out.println("Code: " + ref.getCode());
+			System.out.println("Description: " + ref.getEntityDescription().getContent());
+
+		}
 	}
 	
 	@Test
 	public void testListAllResolvedValueSetsWithMiniScheme() throws Exception {
 		long start = System.currentTimeMillis();
 		List<CodingScheme> schemes = service.getMinimalResolvedValueSetSchemes();
-		long end = System.currentTimeMillis();
-		System.out.println("Retrieving minimal scheme value sets: " + (end - start) + " mseconds");
-//		assertTrue(schemes.size() > 0);
-//		assertTrue(schemes.size() == 3);
-//		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
-//				+ "as many characters as it takes to exceed 50 chars but not 250 chars and that "
-//				+ "should about do it")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("One Child Value Set")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGM")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("XTEST:One.Node.ValueSet")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("12.03test")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("1.0")));
-//		assertTrue(schemes.stream().anyMatch(x -> x.isIsActive()));
-//		final int count[] = {0};
-//		schemes.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
+		assertTrue(schemes.size() > 0);
+		assertTrue(schemes.size() == 3);
+		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
+				+ "as many characters as it takes to exceed 50 chars but not 250 chars and that "
+				+ "should about do it")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("One Child Value Set")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGM")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("XTEST:One.Node.ValueSet")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("12.03test")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("1.0")));
+		assertTrue(schemes.stream().anyMatch(x -> x.isIsActive()));
+		final int count[] = {0};
+		schemes.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
 	}
 
 	@Test
@@ -162,90 +161,42 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(list.getResolvedConceptReference(0).getConceptCode().equals("C0011(5564)"));
 	}
 	
-//	@Test
-//	public void testGetValueSetURIAndVersionForCode() throws LBException{
-//		List<AbsoluteCodingSchemeVersionReference> refs = service.getResolvedValueSetsforEntityCode("C0011(5564)");
-//		assertNotNull(refs);
-//		assertTrue(refs.size() > 0);
-//		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
-//	}
-//	
-//	@Test
-//	public void testGetValueSetURIAndVersionForTextExact() throws LBException{
-//		List<AbsoluteCodingSchemeVersionReference> refs = 
-//				service.getResolvedValueSetsforTextSearch("TrailerCar(Yahoo)", 
-//						MatchAlgorithm.PRESENTATION_EXACT);
-//		assertNotNull(refs);
-//		assertTrue(refs.size() > 0);
-//		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
-//	}
-//	
-//	@Test
-//	public void testGetValueSetURIAndVersionForTextLucene() throws LBException{
-//		List<AbsoluteCodingSchemeVersionReference> refs = 
-//				service.getResolvedValueSetsforTextSearch("Domestic", 
-//						MatchAlgorithm.LUCENE);
-//		assertNotNull(refs);
-//		assertTrue(refs.size() > 0);
-//		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
-//				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
-//
-//	}
-//	
-//	@Test
-//	public void testGetValueSetURIAndVersionForTextContains() throws LBException{
-//		List<AbsoluteCodingSchemeVersionReference> refs = 
-//				service.getResolvedValueSetsforTextSearch("Domestic", 
-//						MatchAlgorithm.PRESENTATION_CONTAINS);
-//		assertNotNull(refs);
-//		assertTrue(refs.size() > 0);
-//		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
-//				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
-//	}
-	
 	@Test
 	public void testGetValueSetURIAndVersionForCode() throws LBException{
-		long start = System.currentTimeMillis();
-		List<AbsoluteCodingSchemeVersionReference> refs = service.getResolvedValueSetsforEntityCode("C25308");
-		long end = System.currentTimeMillis();
-		System.out.println("Search for Code: " + (end - start) + " mseconds");
+		List<AbsoluteCodingSchemeVersionReference> refs = service.getResolvedValueSetsforEntityCode("C0011(5564)");
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
+		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
 	}
 	
 	@Test
 	public void testGetValueSetURIAndVersionForTextExact() throws LBException{
 		long start = System.currentTimeMillis();
 		List<AbsoluteCodingSchemeVersionReference> refs = 
-				service.getResolvedValueSetsforTextSearch("Blood", 
+				service.getResolvedValueSetsforTextSearch("TrailerCar(Yahoo)", 
 						MatchAlgorithm.PRESENTATION_EXACT);
 		long end = System.currentTimeMillis();
 		System.out.println("Exact Match: " + (end - start) + " mseconds");
 		assertNotNull(refs);
-//		assertTrue(refs.size() > 0);
-//		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
+		assertTrue(refs.size() > 0);
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
 	}
 	
 	@Test
 	public void testGetValueSetURIAndVersionForTextLucene() throws LBException{
 		long start = System.currentTimeMillis();
 		List<AbsoluteCodingSchemeVersionReference> refs = 
-				service.getResolvedValueSetsforTextSearch("Blood", 
+				service.getResolvedValueSetsforTextSearch("Domestic", 
 						MatchAlgorithm.LUCENE);
 		long end = System.currentTimeMillis();
 		System.out.println("Lucene Search: " + (end - start) + " mseconds");
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
-//		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
-//				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
+				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
 
 	}
 	
@@ -253,17 +204,16 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	public void testGetValueSetURIAndVersionForTextContains() throws LBException{
 		long start = System.currentTimeMillis();
 		List<AbsoluteCodingSchemeVersionReference> refs = 
-				service.getResolvedValueSetsforTextSearch("Blood", 
+				service.getResolvedValueSetsforTextSearch("Domestic", 
 						MatchAlgorithm.PRESENTATION_CONTAINS);
 		long end = System.currentTimeMillis();
 		System.out.println("Contians search: " + (end - start) + " mseconds");
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
-//		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
-//		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
-//				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
+		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
+				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
 	}
-
 	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
 		for (PropertyQualifier pq : prop.getPropertyQualifier()) {
