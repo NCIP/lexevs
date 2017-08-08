@@ -81,7 +81,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop));
 			}
 		}
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+		LexBIGService lbs = getLexBIGService();
 		CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(),
 				Constructors.createCodingSchemeVersionOrTag(null, scheme.getRepresentsVersion()));
 		ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
