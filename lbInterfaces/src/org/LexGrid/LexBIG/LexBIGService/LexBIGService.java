@@ -289,7 +289,11 @@ public interface LexBIGService extends Serializable {
 	 * 
 	 * @throws LBInvocationException
 	 */
-    List<CodingScheme> getMinimalResolvedCodingSchemes() 
+    List<CodingScheme> getMinimalResolvedVSCodingSchemes() 
 			  throws LBInvocationException;
+    
+    List<CodingScheme> getRegularResolvedVSCodingSchemes();
+    
+    List<CodingScheme> getSourceAssertedResolvedVSCodingSchemes();
 
 }

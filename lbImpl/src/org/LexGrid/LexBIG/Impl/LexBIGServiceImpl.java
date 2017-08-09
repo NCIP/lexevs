@@ -42,6 +42,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
@@ -266,13 +267,16 @@ public class LexBIGServiceImpl implements LexBIGService {
      * @throws LBInvocationException
      * @see org.LexGrid.LexBIG.LexBIGService.LexBIGService#getMinimalResolvedCodingSchemes()
      */
-    public List<CodingScheme> getMinimalResolvedCodingSchemes() throws LBInvocationException {
+    public List<CodingScheme> getMinimalResolvedVSCodingSchemes() throws LBInvocationException {
         getLogger().logMethod();
         try {
             List<CodingScheme> temp = new ArrayList<CodingScheme>();
 
             List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
-            List<RegistryEntry> vsEntries = entries.stream().filter(y ->y.getDbName() != null  && y.getDbName().equals(OntologyFormat.RESOLVEDVALUESET.name())).collect(Collectors.toList());
+            List<RegistryEntry> vsEntries = entries.stream().filter(y ->y.getDbName() != null  
+                    && (y.getDbName().equals(OntologyFormat.RESOLVEDVALUESET.name()) || 
+                    y.getDbName().equals(OntologyFormat.SOURCEASSERTEDRESOLVEDVS.name()))).
+                    collect(Collectors.toList());
             
             for(RegistryEntry entry : vsEntries){
                 CodingScheme  mini = new CodingScheme();
@@ -712,5 +716,32 @@ public class LexBIGServiceImpl implements LexBIGService {
             getLogger().warn(LexTreeExt.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
         
+    }
+
+    @Override
+    public List<CodingScheme> getRegularResolvedVSCodingSchemes() {
+       List<RegistryEntry> entries =  registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+       return entries.parallelStream().filter(x -> 
+       x.getDbName().equals(OntologyFormat.RESOLVEDVALUESET)).map(x -> {
+           CodingScheme ref = new CodingScheme();
+           ref.setCodingSchemeURI(x.getResourceUri());
+           ref.setRepresentsVersion(x.getResourceVersion());
+           ref.setCodingSchemeName(x.getDbUri());
+           return ref;
+       }).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<CodingScheme> getSourceAssertedResolvedVSCodingSchemes() {
+        List<RegistryEntry> entries =  registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+        return entries.parallelStream().filter(x -> 
+        x.getDbName().equals(OntologyFormat.SOURCEASSERTEDRESOLVEDVS)).map(x -> {
+            CodingScheme ref = new CodingScheme();
+            ref.setCodingSchemeURI(x.getResourceUri());
+            ref.setRepresentsVersion(x.getResourceVersion());
+            ref.setCodingSchemeName(x.getDbUri());
+            return ref;
+        }).collect(Collectors.toList());
     }
 }

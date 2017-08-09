@@ -37,6 +37,7 @@ import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -311,6 +312,13 @@ public class LoadTestDataTest {
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
         
+     }
+	
+	@Test
+	@Order(15)
+	public void testloadSourceAssertedResolvedValueSet() throws URISyntaxException, Exception{
+	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs","0.1.5","Concept_In_Subset", 
+			 true, "http://evs.nci.nih.gov/valueset/", "NCI","Semantic_Type").run("Contributing_Source");
      }
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){

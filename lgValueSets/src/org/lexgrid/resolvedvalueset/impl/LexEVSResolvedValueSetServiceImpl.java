@@ -18,6 +18,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -46,7 +47,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
 		LexBIGService lbs= getLexBIGService();
 		List<CodingScheme> resolvedValueSetList = new ArrayList<CodingScheme>();
-		List<CodingScheme> minSchemeList = lbs.getMinimalResolvedCodingSchemes();
+		List<CodingScheme> minSchemeList = lbs.getMinimalResolvedVSCodingSchemes();
 		minSchemeList.stream().forEach(x -> {
 			try {
 				resolvedValueSetList.add(
@@ -61,7 +62,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 
 	@Override
 	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException {    
-        return lbs.getMinimalResolvedCodingSchemes() ;
+        return lbs.getMinimalResolvedVSCodingSchemes() ;
 	}
 	
 	/**
@@ -208,17 +209,6 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		}
 		return false;
 	}
-	
-    private boolean isValueSet(ResolvedConceptReference ref) throws LBException
-    {
-        CodingScheme scheme = lbs.resolveCodingScheme(ref.getCodingSchemeURI(), 
-                Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getCodingSchemeVersion()));
-        Properties props = scheme.getProperties();
-        return props.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals
-        		("ontologyFormat")).filter(x->x.getValue().getContent().equals("RESOLVEDVALUESET")).
-        		findAny().isPresent();
-        
-    }
     
     public Set<CodingSchemeReference> getReferenceForSchemes(List<CodingScheme> schemes){
     	return schemes.parallelStream().map(x -> {

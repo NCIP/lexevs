@@ -20,6 +20,8 @@ public interface SourceAssertedValueSetHierarchyServices extends Serializable{
 	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(String code) throws LBException;
 
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, LexEVSTreeItem ti);
+	
+	public VSHierarchyNode addNodeToRoot(String URI, VSHierarchyNode root);
 
 
 }
