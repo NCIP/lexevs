@@ -55,6 +55,7 @@ public class SearchExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
+    @Category(RemoveFromDistributedTests.class)
 	public void testCodeSearchSpecialCharacters() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		SearchExtension searchExtension = (SearchExtension) lbs.getGenericExtension("SearchExtension");
