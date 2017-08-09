@@ -2,13 +2,11 @@ package org.lexgrid.resolvedvalueset.impl;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
-import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
@@ -48,14 +46,6 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
 		LexBIGService lbs= getLexBIGService();
 		List<CodingScheme> resolvedValueSetList = new ArrayList<CodingScheme>();
-//		CodingSchemeRenderingList schemes = lbs.getSupportedCodingSchemes();
-//        
-//        for (CodingSchemeRendering csr: schemes.getCodingSchemeRendering()) {
-//        	CodingScheme cs= getResolvedCodingScheme(csr);
-//        	if (isResolvedValueSetCodingScheme(cs) ) {
-//        	    resolvedValueSetList.add(cs);
-//        	}
-//        }
 		List<CodingScheme> minSchemeList = lbs.getMinimalResolvedCodingSchemes();
 		minSchemeList.stream().forEach(x -> {
 			try {
