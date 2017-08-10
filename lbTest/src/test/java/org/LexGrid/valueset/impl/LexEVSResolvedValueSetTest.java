@@ -218,6 +218,18 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
 	}
 	
+	@Test
+	public void testGetRegularResolvedValueSets(){
+		List<CodingScheme> schemes = lbs.getRegularResolvedVSCodingSchemes();
+		assertTrue(schemes.size() > 0);
+	}
+	
+	@Test
+	public void testGetSourceAssertedResolvedValueSets(){
+		List<CodingScheme> schemes = lbs.getSourceAssertedResolvedVSCodingSchemes();
+		assertTrue(schemes.size() > 0);
+	}
+	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
 		for (PropertyQualifier pq : prop.getPropertyQualifier()) {
 			if (pq.getPropertyQualifierName().equals(qualifierName)) {
