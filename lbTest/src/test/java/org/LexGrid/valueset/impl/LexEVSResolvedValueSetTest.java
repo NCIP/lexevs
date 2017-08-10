@@ -22,8 +22,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 
-import junit.framework.TestCase;
-
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -41,10 +39,11 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+
+import junit.framework.TestCase;
 
 /**
  * JUnit for Resolved Value Set Service.
@@ -68,7 +67,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving full scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(list.size() > 0);
-		assertTrue(list.size() == 3);
+		assertTrue(list.size() == 7);
 		CodingScheme scheme = list.get(0);
 		
 		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
@@ -101,8 +100,10 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	public void testListAllResolvedValueSetsWithMiniScheme() throws Exception {
 		long start = System.currentTimeMillis();
 		List<CodingScheme> schemes = service.getMinimalResolvedValueSetSchemes();
+		long end = System.currentTimeMillis();
+		System.out.println("Retrieving mini scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(schemes.size() > 0);
-		assertTrue(schemes.size() == 3);
+		assertTrue(schemes.size() == 7);
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
 				+ "as many characters as it takes to exceed 50 chars but not 250 chars and that "
@@ -222,12 +223,16 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	public void testGetRegularResolvedValueSets(){
 		List<CodingScheme> schemes = lbs.getRegularResolvedVSCodingSchemes();
 		assertTrue(schemes.size() > 0);
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGM")));
+		assertFalse(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("http://evs.nci.nih.gov/valueset/FDA/C99999")));
 	}
 	
 	@Test
 	public void testGetSourceAssertedResolvedValueSets(){
 		List<CodingScheme> schemes = lbs.getSourceAssertedResolvedVSCodingSchemes();
 		assertTrue(schemes.size() > 0);
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("http://evs.nci.nih.gov/valueset/FDA/C99999")));
+		assertFalse(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGM")));
 	}
 	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
