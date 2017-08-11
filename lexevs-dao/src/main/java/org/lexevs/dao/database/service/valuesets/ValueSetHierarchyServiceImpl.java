@@ -49,6 +49,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		return this;
 	}
 
+
 	public ValueSetHierarchyServiceImpl init() {
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		schemeUID = this.getSchemeUid(scheme, version);
@@ -178,6 +179,21 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	protected List<VSHierarchyNode> getUnfilteredNodes(String code) {
 		return vsDao.getAllVSTriplesTrOfVSNode(schemeUID, code, associationPredicateGuid, sourceDesignation,
 				publishName, publishValue, 0, -1);
+	}
+	
+
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
+		return version;
+	}
+
+	/**
+	 * @param version the version to set
+	 */
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }

@@ -9,12 +9,13 @@ import org.junit.Test;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl;
+import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetHierarchyServices;
 import org.lexgrid.valuesets.sourceasserted.impl.SourceAssertedValueSetHierarchyServicesImpl;
 
 import junit.framework.TestCase;
 
 public class AssertedVSHierarchyTest extends TestCase {
-	SourceAssertedValueSetHierarchyServicesImpl service;
+	SourceAssertedValueSetHierarchyServices service;
 
 	public AssertedVSHierarchyTest() {
 		super();
@@ -22,7 +23,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 	
 	@Before
 	public void setUp(){
-		service = new SourceAssertedValueSetHierarchyServicesImpl();
+		service = SourceAssertedValueSetHierarchyServicesImpl.defaultInstance();
 		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
  		//Comment this in instead for direct to NCIt testing
 //		service.preprocessSourceHierarchyData();
