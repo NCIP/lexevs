@@ -75,6 +75,16 @@ public class AssertedVSHierarchyTest extends TestCase {
 	}
 	
 	@Test
+	public void testBuildSourceDefinedTree() throws LBException{
+		Map<String, LexEVSTreeItem> items  = service.getSourceDefinedTree();
+		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+		assertTrue(items.size() > 0);
+		int tabCounter = 0;
+		System.out.println("Printing Full Service Tree");
+		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+	}
+	
+	@Test
 	public void testValidateTreeContent() throws LBException{
 		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
 		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);

@@ -18,6 +18,7 @@ public class AssertedValueSetServices {
     public static String VERSION= "version";
     public static String GENERIC= "generic";
     public static String CS_NAME= "codingSchemeName";
+    public static String SOURCE_SCHEME_NAME= "textualPresentation";
     
     public static final String DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
     public static final String DEFAULT_DO_PUBLISH_VALUE = "yes";

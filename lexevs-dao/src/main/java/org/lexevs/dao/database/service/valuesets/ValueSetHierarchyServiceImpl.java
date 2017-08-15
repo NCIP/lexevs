@@ -86,7 +86,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		sort(nodes);
 		List<LexEVSTreeItem> items = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nodes) {
-			LexEVSTreeItem item = new LexEVSTreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
+			LexEVSTreeItem item = new LexEVSTreeItem(node.getEntityCode(), node.getDescription());
 			items.add(item);
 			this.getSourceValueSetTreeBranch(node, item);
 		}
@@ -100,7 +100,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		sort(nextBranch);
 		List<LexEVSTreeItem> treeNodes = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nextBranch) {
-			LexEVSTreeItem newItem = new LexEVSTreeItem(this.getURIFromVSHeirarchyNode(node), node.getDescription());
+			LexEVSTreeItem newItem = new LexEVSTreeItem(node.getEntityCode(), node.getDescription());
 			treeNodes.add(newItem);
 			getSourceValueSetTreeBranch(node, newItem);
 		}
