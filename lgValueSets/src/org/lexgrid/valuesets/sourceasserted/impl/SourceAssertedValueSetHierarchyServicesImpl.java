@@ -201,7 +201,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		return sourceTI;
 	}
 	
-	protected String getURNForResolvedCodingSchemeProperties(Properties properties) {
+	private String getURNForResolvedCodingSchemeProperties(Properties properties) {
 		return properties.getPropertyAsReference().stream().filter( x -> x.getPropertyName()
 				.equals("resolvedAgainstCodingSchemeVersion")).findAny().get().getValue().getContent();
 	}
