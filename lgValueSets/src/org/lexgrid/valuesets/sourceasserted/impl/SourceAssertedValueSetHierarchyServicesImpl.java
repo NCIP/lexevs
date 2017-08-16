@@ -3,8 +3,6 @@ package org.lexgrid.valuesets.sourceasserted.impl;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -13,7 +11,6 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
-import org.apache.commons.collections.map.HashedMap;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
@@ -192,7 +189,6 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	}
 
 	private LexEVSTreeItem getTreeItemForSourceTerminology(CodingScheme scheme) {
-	//	String name = getNameForResolvedCodingSchemeProperties(scheme.getProperties());
 		CodingScheme source = null;
 		try {
 			source = lbs.resolveCodingScheme(
@@ -204,13 +200,8 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		sourceTI.set_expandable(true);
 		return sourceTI;
 	}
-
-//	private String getNameForResolvedCodingSchemeProperties(Properties properties) {
-//		return properties.getPropertyAsReference().stream().filter( x -> x.getPropertyName()
-//				.equals("textualPresentation")).findAny().get().getValue().getContent();
-//	}
 	
-	private String getURNForResolvedCodingSchemeProperties(Properties properties) {
+	protected String getURNForResolvedCodingSchemeProperties(Properties properties) {
 		return properties.getPropertyAsReference().stream().filter( x -> x.getPropertyName()
 				.equals("resolvedAgainstCodingSchemeVersion")).findAny().get().getValue().getContent();
 	}
