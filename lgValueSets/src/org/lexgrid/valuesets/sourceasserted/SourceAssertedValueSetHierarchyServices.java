@@ -25,7 +25,6 @@ public interface SourceAssertedValueSetHierarchyServices extends Serializable{
 
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, LexEVSTreeItem ti);
 	
-	public VSHierarchyNode addNodeToRoot(String URI, VSHierarchyNode root);
 
 
 }

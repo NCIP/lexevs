@@ -86,11 +86,6 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(String code) throws LBException {
 		return getVSHierarchyService().getHierarchyValueSetRoots(code);
 	}
-	
-	@Override
-	public VSHierarchyNode addNodeToRoot(String URI, VSHierarchyNode root){
-		return root;
-	};
 
 
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode node, LexEVSTreeItem ti) {
@@ -128,12 +123,6 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		}
 		return scheme;}).collect(Collectors.toList());		
 		return sourceSchemes;
-	}
-
-	private CodingScheme getSourceAssertedScheme() throws LBException {
-		return lbs.resolveCodingScheme(ValueSetHierarchyService.SCHEME, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(
-						getVSHierarchyService().getVersion()));
 	}
 	
 	@Override
