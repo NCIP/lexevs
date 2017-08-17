@@ -9,6 +9,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
@@ -26,11 +27,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	 */
 	private static final long serialVersionUID = 6898341008352626661L;
 	private static SourceAssertedValueSetHierarchyServices assertedService = null;
-	private LexBIGService lbs ;
-
-	private SourceAssertedValueSetHierarchyServicesImpl() {
-		lbs = getLexBIGService();
-	}
+	private transient LexBIGService lbs ;
 	
 	public static SourceAssertedValueSetHierarchyServices defaultInstance(){
 		if(assertedService == null){
@@ -67,7 +64,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		HashMap<String, LexEVSTreeItem> sourceTree = getVSHierarchyService().getSourceValueSetTree();
 		LexEVSTreeItem treeItem = sourceTree.get(ValueSetHierarchyServiceImpl.ROOT); 
 		List<LexEVSTreeItem> treeItems = getTreeItemListFromSchemes(
-				lbs.getRegularResolvedVSCodingSchemes(), false);
+				getLexBIGService().getRegularResolvedVSCodingSchemes(), false);
 		treeItem.addAll(ValueSetHierarchyServiceImpl.INVERSE_IS_A, treeItems);
 		return sourceTree;
 	}
@@ -97,6 +94,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
 	}
 	
+	@LgClientSideSafe
 	public LexBIGService getLexBIGService(){
 		if(lbs == null){
 			lbs = LexBIGServiceImpl.defaultInstance();
@@ -104,18 +102,16 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		return lbs;
 	}
 	
+	@LgClientSideSafe
 	public void setLexBIGService(LexBIGService lbs){
 		this.lbs = lbs;
 	}
-	
-
-
 
 	private List<CodingScheme> getOtherServiceSchemes() {
-		List<CodingScheme> serviceSchemes = lbs.getRegularResolvedVSCodingSchemes();
+		List<CodingScheme> serviceSchemes = getLexBIGService().getRegularResolvedVSCodingSchemes();
 		List<CodingScheme> sourceSchemes = serviceSchemes.stream().map(x -> {CodingScheme scheme = null;
 		try {
-			scheme = lbs.resolveCodingScheme(
+			scheme = getLexBIGService().resolveCodingScheme(
 					x.getCodingSchemeURI()
 					, null);
 		} catch (LBException e) {
@@ -167,7 +163,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		LexEVSTreeItem sourceItem = sources.get(0);
 		CodingScheme scheme = null;
 		try{
-			scheme = lbs.resolveCodingScheme(sourceItem.get_text(), null);
+			scheme = getLexBIGService().resolveCodingScheme(sourceItem.get_text(), null);
 		}catch(LBException e){
 			throw new RuntimeException("Unable to resolve value set coding scheme. "
 					+ " This scheme may not be tagged as a PRODUCTION scheme", e);
@@ -180,7 +176,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	private LexEVSTreeItem getTreeItemForSourceTerminology(CodingScheme scheme) {
 		CodingScheme source = null;
 		try {
-			source = lbs.resolveCodingScheme(
+			source = getLexBIGService().resolveCodingScheme(
 					getURNForResolvedCodingSchemeProperties(scheme.getProperties()), null);
 		} catch (LBException e) {
 			throw new RuntimeException("Error resolving source terminology for value set: ", e);
