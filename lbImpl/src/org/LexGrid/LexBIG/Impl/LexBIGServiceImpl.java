@@ -721,7 +721,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     @Override
     public List<CodingScheme> getRegularResolvedVSCodingSchemes() {
        List<RegistryEntry> entries =  registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
-       return entries.parallelStream().filter(x -> x.getDbName() != null &&
+       return entries.stream().filter(x -> x.getDbName() != null &&
        x.getDbName().equals(OntologyFormat.RESOLVEDVALUESET.name())).map(x -> {
            CodingScheme ref = new CodingScheme();
            ref.setCodingSchemeURI(x.getResourceUri());
