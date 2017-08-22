@@ -1995,7 +1995,7 @@ public class OwlApi2LG {
                     Source source = new Source();
                     source.setContent(stripQuotes(owl.getValue().toString()));
                     lgSupportedMappings_.registerSupportedSource(resolveLabel(owl.getProperty()), 
-                             getNameSpace(owl.getProperty()), owl.getValue().toString(), null, false);            
+                             getNameSpace(owl.getProperty()), stripQuotes(owl.getValue().toString()), null, false);            
                     lgScheme_.getSourceAsReference().add(source);
                 }
             }
