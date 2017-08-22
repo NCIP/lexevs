@@ -5,7 +5,7 @@
   http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd">
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
   <MatchXMLRepformNames>term-group</MatchXMLRepformNames> 
-  <MatchXMLSourceNames>term-source|def-source</MatchXMLSourceNames>
+  <MatchXMLSourceNames>term-source|def-source|source</MatchXMLSourceNames>
   <ProcessComplexProps>true</ProcessComplexProps>  
   <StrictOWLImplementation>false</StrictOWLImplementation>
   <PrioritizedPresentationNames>

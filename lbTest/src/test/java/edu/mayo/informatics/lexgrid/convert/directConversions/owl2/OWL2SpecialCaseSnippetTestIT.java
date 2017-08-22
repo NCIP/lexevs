@@ -22,10 +22,12 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedRepresentationalForm;
+import org.LexGrid.naming.SupportedSource;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -572,8 +574,49 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			assertTrue(repForms.stream().anyMatch(x -> x.getContent().equals("AB")));
 		}
 	
-	
-	
-
-
+		@Test
+		public void testPopulateSupportedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodingScheme scheme = lbs.resolveCodingScheme(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			List<SupportedSource> supportedSourceList = scheme.getMappings().getSupportedSourceAsReference();
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("NCI")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("CDISC")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("nci evs")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("ctep")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("caDSR")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("ONC")));
+		}
+		
+		@Test
+		public void testRestrictToSupporedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set = set.restrictToCodes(Constructors.createConceptReferenceList("C117743"));
+			
+			ResolvedConceptReferenceList rcrlist = set.resolveToList(null, null, null, -1);
+			Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			ResolvedConceptReference rcr = itr.next();
+			
+			Presentation[] presentations = rcr.getEntity().getPresentation();
+			boolean NCI_sourceFound = false;
+			boolean CDISC_sourceFound = false;
+			
+			for (int i = 0; i < presentations.length; i++) {
+				List<Source> sources = presentations[i].getSourceAsReference();
+				if (!NCI_sourceFound && sources.stream().anyMatch(x -> x.getContent().equals("NCI"))) {
+					NCI_sourceFound = true;
+				}
+				else if (!CDISC_sourceFound && sources.stream().anyMatch(x -> x.getContent().equals("CDISC"))) {
+					CDISC_sourceFound = true;
+				}
+			}
+			assertTrue(NCI_sourceFound);
+			assertTrue(CDISC_sourceFound);
+		}
 }
