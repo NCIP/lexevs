@@ -6,8 +6,5 @@
 <MatchConceptCode>code</MatchConceptCode>
 <MatchConceptStatus>DONTMATCHANYTHING</MatchConceptStatus>
 <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
-<MatchXMLRepformNames>term-group</MatchXMLRepformNames> 
-<MatchXMLSourceNames>term-source|def-source</MatchXMLSourceNames>
-<ProcessComplexProps>true</ProcessComplexProps>
 <StrictOWLImplementation>true</StrictOWLImplementation>
 </OWLLoaderPreferences>
