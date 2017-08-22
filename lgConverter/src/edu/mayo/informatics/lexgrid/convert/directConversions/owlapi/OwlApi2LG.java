@@ -1523,6 +1523,16 @@ public class OwlApi2LG {
             }
                 
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
+
+                if(isSource(annotationName)) {
+                        Source source = new Source();
+                        source.setContent(annotationValue);
+                        sources.add(source);
+                        
+                        lgSupportedMappings_.registerSupportedSource(annotationValue, 
+                                getNameSpace(annotation.getProperty()), annotationValue, null, false);
+                        continue;
+                }
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
                         lgSupportedMappings_));
 
@@ -1984,6 +1994,8 @@ public class OwlApi2LG {
                 if(owl.getProperty().getIRI().getFragment().equals("source")){
                     Source source = new Source();
                     source.setContent(stripQuotes(owl.getValue().toString()));
+                    lgSupportedMappings_.registerSupportedSource(resolveLabel(owl.getProperty()), 
+                             getNameSpace(owl.getProperty()), owl.getValue().toString(), null, false);            
                     lgScheme_.getSourceAsReference().add(source);
                 }
             }
