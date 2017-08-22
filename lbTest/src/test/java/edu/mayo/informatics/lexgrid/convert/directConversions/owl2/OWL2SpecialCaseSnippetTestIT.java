@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -19,7 +20,9 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
@@ -618,5 +621,48 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			}
 			assertTrue(NCI_sourceFound);
 			assertTrue(CDISC_sourceFound);
+		}
+		
+		@Test
+		public void testRestrictToSupportedClassDefinedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToProperties( Constructors.createLocalNameList("definition"), null, Constructors.createLocalNameList("ctep"), null, null);
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			assertTrue(itr.next().getEntity().getDefinitionAsReference().get(0).getSourceAsReference().
+					stream().anyMatch(x -> x.getContent().equals("ctep")));
+		}
+		
+		@Test
+		public void testRestrictToSupportedAnnotationDefinedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToProperties( Constructors.createLocalNameList("FULL_SYN"), null, Constructors.createLocalNameList("NCI"), null, null);
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			while(itr.hasNext()){
+				boolean found = false;
+				ResolvedConceptReference ref = itr.next();
+				if(ref.getConceptCode().equals("C117743")){
+					Presentation pres = ref.getEntity().getPresentationAsReference().stream().filter(x -> x.getValue().
+							getContent().equals("CDISC SDTM Ophthalmic Exam Test Code Terminology")).findFirst().get();
+					assertNotNull(pres);
+					assertTrue(pres.getSourceAsReference().
+							stream().anyMatch(x -> x.getContent().equals("NCI")));
+				}
+			}
+
+		}
+		
+		public void testCodingSchemeSourceDefinition() throws LBException{
+			CodingScheme scheme = lbs.resolveCodingScheme("owl2lexevs" , Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+			assertTrue(scheme.getSourceAsReference().stream().anyMatch(x -> x.getContent().equals("nci evs")));
 		}
 }
