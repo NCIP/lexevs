@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.concepts.Definition;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -184,6 +185,11 @@ public class DataLoadTestBaseSnippet2 extends TestCase {
 			}
 		}
 		return hasProp;
+	}
+	
+	protected boolean validateDefinitionSource(String value, ResolvedConceptReference rcr){
+		Definition prop = rcr.getEntity().getDefinitionAsReference().get(0);
+		return prop.getSourceAsReference().stream().anyMatch(x -> x.getContent().equals(value));
 	}
 	
 }
