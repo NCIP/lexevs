@@ -4,6 +4,9 @@
   xsi:schemaLocation="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences
   http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd">
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
+  <MatchXMLRepformNames>term-group</MatchXMLRepformNames> 
+  <MatchXMLSourceNames>term-source|def-source|source</MatchXMLSourceNames>
+  <ProcessComplexProps>true</ProcessComplexProps>  
   <StrictOWLImplementation>false</StrictOWLImplementation>
   <PrioritizedPresentationNames>
   <name>editor preferred term</name>
@@ -24,4 +27,7 @@
   <name>FGED alternative term</name>
   <name>OBI_9991119</name>
   </PrioritizedPresentationNames>
+    
+   
+    
 </OWLLoaderPreferences>

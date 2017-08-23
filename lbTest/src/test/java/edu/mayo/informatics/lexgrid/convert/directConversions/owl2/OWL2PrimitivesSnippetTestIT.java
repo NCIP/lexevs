@@ -218,7 +218,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());	
 		ResolvedConceptReference ref = itr.next();
-		assertTrue(validatePropertyQualifier("definition", "common knowledge", ref));
+		assertTrue(validateDefinitionSource( "common knowledge", ref));
 	}
 	
 	@Test
