@@ -81,7 +81,7 @@ SourceAssertedVStoCodingSchemeLoader {
 	
 	    @Override
 	    public OntologyFormat getOntologyFormat() {
-	        return OntologyFormat.RESOLVEDVALUESET;
+	        return OntologyFormat.SOURCEASSERTEDRESOLVEDVS;
 	    }
 
 

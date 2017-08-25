@@ -9,12 +9,13 @@ import org.junit.Test;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl;
+import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetHierarchyServices;
 import org.lexgrid.valuesets.sourceasserted.impl.SourceAssertedValueSetHierarchyServicesImpl;
 
 import junit.framework.TestCase;
 
 public class AssertedVSHierarchyTest extends TestCase {
-	SourceAssertedValueSetHierarchyServicesImpl service;
+	SourceAssertedValueSetHierarchyServices service;
 
 	public AssertedVSHierarchyTest() {
 		super();
@@ -22,7 +23,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 	
 	@Before
 	public void setUp(){
-		service = new SourceAssertedValueSetHierarchyServicesImpl();
+		service = SourceAssertedValueSetHierarchyServicesImpl.defaultInstance();
 		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
  		//Comment this in instead for direct to NCIt testing
 //		service.preprocessSourceHierarchyData();
@@ -59,11 +60,66 @@ public class AssertedVSHierarchyTest extends TestCase {
 		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
 		int tabCounter = 0;
+		System.out.println("Printing Source Only Tree");
 		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
 	}
 	
 	@Test
-	public void testValidateTreeContent() throws LBException{
+	public void testBuildFullServiceTree() throws LBException{
+		Map<String, LexEVSTreeItem> items  = service.getFullServiceValueSetTree();
+		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+		assertTrue(items.size() > 0);
+		int tabCounter = 0;
+		System.out.println("Printing Full Service Tree");
+		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+	}
+	
+	@Test
+	public void testBuildSourceDefinedTree() throws LBException{
+		Map<String, LexEVSTreeItem> items  = service.getSourceDefinedTree();
+		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+		assertTrue(items.size() > 0);
+		int tabCounter = 0;
+		System.out.println("Printing Full Source Defined Tree");
+		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+	}
+	
+	@Test
+	public void testValidateSourceDefinedTreeContent() throws LBException{
+		Map<String, LexEVSTreeItem> items  = service.getSourceDefinedTree();
+		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+		assertTrue(items.size() > 0);
+		List<LexEVSTreeItem> roots =  item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A);
+		assertTrue(roots.size() > 0);
+		assertTrue(roots.stream().anyMatch(x -> x.get_text().equals("autosV2")));
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("autosV2")).findAny().get().is_expandable());
+		assertTrue(roots.stream().anyMatch(x -> x.get_text().equals("owl2lexevs")));
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().is_expandable());
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("autosV2")).findAny().get().
+				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().anyMatch(y ->
+				y.get_text().equals("All Domestic Autos But GM")));
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("autosV2")).findAny().get().
+				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().anyMatch(y ->
+				y.get_text().equals("All Domestic Autos But GM  and as many characters")));
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("autosV2")).findAny().get().
+				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().anyMatch(y ->
+				y.get_text().equals("One Child Value Set")));
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().
+				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().anyMatch(y ->
+				y.get_text().equals("Black")));
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().
+				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().filter(y ->
+				y.get_text().equals("Black")).findAny().get().is_expandable());
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().
+				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().anyMatch(y ->
+				y.get_text().equals("White")));
+		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().
+				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().filter(y ->
+				y.get_text().equals("White")).findAny().get().is_expandable());
+	}
+	
+	@Test
+	public void testValidateAssertedTreeContent() throws LBException{
 		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
 		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
