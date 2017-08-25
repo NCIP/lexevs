@@ -118,6 +118,42 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		final int count[] = {0};
 		schemes.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
 	}
+	
+	@Test
+	public void testResolveDuplicateValueSetsWithTestSource() throws Exception {
+		CodingScheme ref = service.getResolvedValueSetForValueSetURI(new URI("http://evs.nci.nih.gov/valueset/TEST/C48323"));
+		assertNotNull(ref);
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(ref.getCodingSchemeURI(), 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getRepresentsVersion()));
+		ResolvedConceptReferencesIterator refs = null;
+		try{
+			refs = set.resolve(null, null, null);
+		}
+		catch(Exception e){
+			System.out.println(e);
+			fail();
+		}
+		assertNotNull(refs);
+		assertTrue(refs.hasNext());
+	}
+	
+	@Test
+	public void testResolveDuplicateValueSetsWithFDASource() throws Exception {
+		CodingScheme ref = service.getResolvedValueSetForValueSetURI(new URI("http://evs.nci.nih.gov/valueset/FDA/C48323"));
+		assertNotNull(ref);
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(ref.getCodingSchemeURI(), 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getRepresentsVersion()));
+		ResolvedConceptReferencesIterator refs = null;
+		try{
+			refs = set.resolve(null, null, null);
+		}
+		catch(Exception e){
+			System.out.println(e);
+			fail();
+		}
+		assertNotNull(refs);
+		assertTrue(refs.hasNext());
+	}
 
 	@Test
 	public void testGetResolvedValueSetsforConceptReference() {
