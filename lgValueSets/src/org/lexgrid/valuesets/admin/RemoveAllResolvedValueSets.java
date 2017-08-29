@@ -63,7 +63,7 @@ public class RemoveAllResolvedValueSets {
 		}
 	}
 
-	void remove(AbsoluteCodingSchemeVersionReference acsvr, boolean force) throws Exception {
+	public void remove(AbsoluteCodingSchemeVersionReference acsvr, boolean force) throws Exception {
 		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 		lbsm.deactivateCodingSchemeVersion(acsvr, null);
 		lbsm.removeCodingSchemeVersion(acsvr);
