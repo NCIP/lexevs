@@ -129,7 +129,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		List<LexEVSTreeItem> subTrees = new ArrayList<LexEVSTreeItem>();
 		Set<String> keys = duplicateGrouping.keySet();
 		TreeSet<String> sortedKeys =  keys.stream().collect(
-				Collector.of(TreeSet::new, TreeSet::add,  (left, right) -> { left.addAll(right); return left; }));
+				Collectors.toCollection(TreeSet::new));
 		for(String s : sortedKeys){
 			if(duplicateGrouping.get(s).size() > 1){
 				duplicateGrouping.get(s).stream().forEach(x -> subTrees.add(new LexEVSTreeItem(
@@ -193,7 +193,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		Set<String> keys = groupedNodes.keySet();
 		//effectively sorts on the description of each node
 		TreeSet<String> sortedKeys =  keys.stream().collect(
-				Collector.of(TreeSet::new, TreeSet::add,  (left, right) -> { left.addAll(right); return left; }));
+				Collectors.toCollection(TreeSet::new));
 		for(String s : sortedKeys){
 			if(groupedNodes.get(s).size() > 1){
 				groupedNodes.get(s).stream().forEach(x -> x.setDescription(x.getDescription() +
