@@ -142,6 +142,10 @@ public class AssertedValueSetServices {
         }
         return null;
     } 
+    
+    public static String createSuffixForSourceDefinedResolvedValueSet(String source){
+        return "_" + source;
+    }
 
 
     
