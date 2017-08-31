@@ -90,7 +90,10 @@ public class EntityToRVSTransformer {
         Entities vsEntities = getEntities(entity.getEntityCode());
         definedSources.forEach((x, y) -> {
             try {
-                schemes.add(transform(entity, x, y, vsEntities));
+                if(definedSources.size() > 1){
+                schemes.add(transformSchemeFromSpecificSource(entity, x, y, vsEntities));
+                }
+                else{schemes.add(transform(entity, x, y,vsEntities));}
             } catch (LBException e) {
                 throw new RuntimeException("Source Asserted Resolved Value Set Load Failed", e);
             }
@@ -104,7 +107,7 @@ public class EntityToRVSTransformer {
 
 
 
-    public CodingScheme transform(Entity entity, String source, String description,  Entities entities)
+    public CodingScheme transform(Entity entity, String source, String description, Entities entities)
             throws LBException {
         String codingSchemeUri = AssertedValueSetServices.createUri(baseUri, source, entity.getEntityCode());
         String codingSchemeVersion = csVersion == null ? "UNASSIGNED":
@@ -154,6 +157,15 @@ public class EntityToRVSTransformer {
         cs.setEntities(entities);
 
         return cs;
+    }
+    
+    public CodingScheme transformSchemeFromSpecificSource(Entity entity, String source, String description,  Entities entities) throws LBException{
+        String suffix = AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(source);
+        entity.setEntityDescription(Constructors.createEntityDescription(entity.getEntityDescription().getContent() + suffix));
+        if(description != null){
+            description = description + suffix;
+        }
+        return transform(entity, source, description, entities);
     }
 
     private Mappings createMappings(Entity entity) {

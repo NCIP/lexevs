@@ -1,6 +1,8 @@
 package org.LexGrid.util.assertedvaluesets;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.LexGrid.commonTypes.Property;
@@ -133,13 +135,17 @@ public class AssertedValueSetServices {
    public static List<Property> getPropertiesForPropertyName(List<Property> props, String  name){
         return props.stream().filter(x -> x.getPropertyName().equals(name)).collect(Collectors.toList());
     }
-    
+     
     public static String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
         if(quals.stream().anyMatch(pq -> pq.getPropertyQualifierName().equals(SOURCE))){
             return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals(SOURCE)).findFirst().get().getValue().getContent();
         }
         return null;
     } 
+    
+    public static String createSuffixForSourceDefinedResolvedValueSet(String source){
+        return "_" + source;
+    }
 
 
     

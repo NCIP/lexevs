@@ -67,7 +67,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving full scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(list.size() > 0);
-		assertTrue(list.size() == 7);
+		assertTrue(list.size() == 8);
 		CodingScheme scheme = list.get(0);
 		
 		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
@@ -103,7 +103,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving mini scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(schemes.size() > 0);
-		assertTrue(schemes.size() == 7);
+		assertTrue(schemes.size() == 8);
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
 				+ "as many characters as it takes to exceed 50 chars but not 250 chars and that "
@@ -117,6 +117,42 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(schemes.stream().anyMatch(x -> x.isIsActive()));
 		final int count[] = {0};
 		schemes.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
+	}
+	
+	@Test
+	public void testResolveDuplicateValueSetsWithTestSource() throws Exception {
+		CodingScheme ref = service.getResolvedValueSetForValueSetURI(new URI("http://evs.nci.nih.gov/valueset/TEST/C48323"));
+		assertNotNull(ref);
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(ref.getCodingSchemeURI(), 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getRepresentsVersion()));
+		ResolvedConceptReferencesIterator refs = null;
+		try{
+			refs = set.resolve(null, null, null);
+		}
+		catch(Exception e){
+			System.out.println(e);
+			fail();
+		}
+		assertNotNull(refs);
+		assertTrue(refs.hasNext());
+	}
+	
+	@Test
+	public void testResolveDuplicateValueSetsWithFDASource() throws Exception {
+		CodingScheme ref = service.getResolvedValueSetForValueSetURI(new URI("http://evs.nci.nih.gov/valueset/FDA/C48323"));
+		assertNotNull(ref);
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(ref.getCodingSchemeURI(), 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getRepresentsVersion()));
+		ResolvedConceptReferencesIterator refs = null;
+		try{
+			refs = set.resolve(null, null, null);
+		}
+		catch(Exception e){
+			System.out.println(e);
+			fail();
+		}
+		assertNotNull(refs);
+		assertTrue(refs.hasNext());
 	}
 
 	@Test

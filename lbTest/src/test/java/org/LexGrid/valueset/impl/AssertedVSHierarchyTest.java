@@ -106,10 +106,10 @@ public class AssertedVSHierarchyTest extends TestCase {
 				y.get_text().equals("One Child Value Set")));
 		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().
 				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().anyMatch(y ->
-				y.get_text().equals("Black")));
+				y.get_text().equals("Black_FDA")));
 		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().
 				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().filter(y ->
-				y.get_text().equals("Black")).findAny().get().is_expandable());
+				y.get_text().equals("Black_TEST")).findAny().get().is_expandable());
 		assertTrue(roots.stream().filter(x -> x.get_text().equals("owl2lexevs")).findAny().get().
 				_assocToChildMap.get(ValueSetHierarchyService.INVERSE_IS_A).stream().anyMatch(y ->
 				y.get_text().equals("White")));
@@ -125,7 +125,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 		assertTrue(items.size() > 0);
 		List<LexEVSTreeItem> roots =  item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A);
 		assertTrue(roots.size() > 0);
-		assertEquals(roots.get(0).get_text(),"Black");
+		assertEquals(roots.get(0).get_text(),"Black_FDA");
 		assertTrue(roots.get(0).is_expandable());
 		assertTrue(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
 		assertEquals(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).get_text(), "Blacker");
@@ -140,13 +140,13 @@ public class AssertedVSHierarchyTest extends TestCase {
 				_assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
 		assertEquals(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "UberBlack");
 		assertFalse(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
-		assertEquals(roots.get(1).get_text(), "White");
-		assertTrue(roots.get(1).is_expandable());
-		assertTrue(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
-		assertEquals(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).get_text(), "ArchWhite");
-		assertFalse(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).is_expandable());
-		assertEquals(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "BlindingWhite");
-		assertFalse(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
+		assertEquals(roots.get(2).get_text(), "White");
+		assertTrue(roots.get(2).is_expandable());
+		assertTrue(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
+		assertEquals(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).get_text(), "ArchWhite");
+		assertFalse(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).is_expandable());
+		assertEquals(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "BlindingWhite");
+		assertFalse(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
 	}
 	
 	private void printTree(List<LexEVSTreeItem> items, int counter){

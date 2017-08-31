@@ -134,7 +134,7 @@
 		<result property="expirationDate" column="expirationDate" />
 	</resultMap>
 	
-	<resultMap id="valueSetHierarchyRootNodeResolution" class="org.lexevs.dao.database.access.association.model.VSHierarchyNode" groupBy="description">
+	<resultMap id="valueSetHierarchyRootNodeResolution" class="org.lexevs.dao.database.access.association.model.VSHierarchyNode" groupBy="description, publish, source">
 		<result property="entityCode" column="entityCode" />
 		<result property="namespace" column="namespace" />
 		<result property="description" column="description" />
