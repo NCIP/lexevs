@@ -52,7 +52,7 @@ import org.lexevs.system.ResourceManager;
  *  -v,--version &amp;ltversionId&amp;gt; Version identifier.
  *  -mf,--manifest &amp;ltmanifest&amp;gt; location of manifest xml file.
  * 
- * Note: If the URN and version values are unspecified, a
+ * Note: If either the URN or the version values are unspecified, a
  * list of available coding schemes will be presented for
  * user selection.
  * 
@@ -109,7 +109,7 @@ public class LoadManifest {
             manifest = manifest.trim();
 
             try {
-                getReader(new File(manifest).toURI());
+                getReader(new URI(manifest));
             } catch (Exception e) {
                 Util.displayMessage("Supplied manifest file is invalid or do not exist.");
                 return;
@@ -152,7 +152,7 @@ public class LoadManifest {
             codingSchemeURNVersion.setCodingSchemeVersion(css.getRepresentsVersion());
 
             try {
-                mdLoader.loadLexGridManifest(new File(manifest).toURI(), codingSchemeURNVersion, false, true);
+                mdLoader.loadLexGridManifest(new URI(manifest), codingSchemeURNVersion, false, true);
                 Util.displayMessage("Manifest data applied successfully on the codingscheme.");
             } catch (LBException e) {
                 Util.displayMessage("Load failed: " + e.getMessage());
