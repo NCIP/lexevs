@@ -170,6 +170,19 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, version).
 				getDistinctTargetNodesForAssociationPredicate(codingSchemeUid, associationPredicateUid);
 			}
+	
+	@Override
+	@Transactional
+	public List<Node> getTargetsFromSource(
+			String codingSchemeUri, 
+			String version, 
+			String entityCode, 
+			String entityNamespace,
+			String associationPredicateUid){
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,version);
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, version).
+				getSourceNodesForTarget(codingSchemeUid, associationPredicateUid, entityCode, entityNamespace);
+			}
 
 
 	/* (non-Javadoc)

@@ -599,5 +599,7 @@ public interface CodedNodeGraphService {
 			List<ConceptReference> sourceOrTargetConceptReferences);
 
 	List<Node> getDistinctTargetTriples(String codingSchemeUri, String version, String associationPredicateUid);
+	
+	List<Node> getTargetsFromSource(String codingSchemeUri, String version, String entityCode, String entityNamespace, String associationPredicateUid);
 
 }

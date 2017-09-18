@@ -159,7 +159,5 @@ public class AssertedVSHierarchyTest extends TestCase {
 			List<LexEVSTreeItem> list = x._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A);
 			printTree(list, counter);
 		}
-
-	 
 	}
 }
