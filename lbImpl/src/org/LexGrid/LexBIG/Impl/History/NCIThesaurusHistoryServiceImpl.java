@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.History;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeVersionList;
 import org.LexGrid.LexBIG.DataModel.Collections.NCIChangeEventList;
@@ -219,6 +220,11 @@ public class NCIThesaurusHistoryServiceImpl implements HistoryService {
         } catch (UnexpectedInternalError e) {
             throw new LBInvocationException("There was an unexpected internal error", e.getLogId());
         }
+    }
+
+    @Override
+    public List<String> getCodeListforVersion(String currentVersion) {
+        throw new UnsupportedOperationException("This method is unsupported in this history service");
     }
 
 }

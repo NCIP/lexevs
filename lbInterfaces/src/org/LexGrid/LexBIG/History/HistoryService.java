@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.History;
 import java.io.Serializable;
 import java.net.URI;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeVersionList;
 import org.LexGrid.LexBIG.DataModel.Collections.NCIChangeEventList;
@@ -171,5 +172,7 @@ public interface HistoryService extends Serializable {
 	 */
 	public SystemReleaseDetail getSystemRelease(URI releaseURN)
 			throws LBParameterException, LBInvocationException;
+	
+	public List<String> getCodeListforVersion(String currentVersion);
 
 }

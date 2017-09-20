@@ -299,4 +299,11 @@ public class VersionableEventNciHistoryService extends AbstractDatabaseService i
 			return ref.getCode();
 		}
 	}
+
+
+	@Override
+	public List<String> getCodeListForVersion(String currentVersion, String uri) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
