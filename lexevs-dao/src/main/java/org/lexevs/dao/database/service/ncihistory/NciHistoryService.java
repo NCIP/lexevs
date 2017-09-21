@@ -184,4 +184,10 @@ public interface NciHistoryService {
 	public void removeNciHistory(String codingSchemeUri);
 
 	public List<String> getCodeListForVersion(String currentVersion, String uri);
+	
+	public Date getDateForVersion(String currentVersion, String uri);
+
+	public List<String> getVersionsForDateRange(String previousDate, String currentDate, String uri);
+
+	
 }

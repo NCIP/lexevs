@@ -173,6 +173,9 @@ public interface HistoryService extends Serializable {
 	public SystemReleaseDetail getSystemRelease(URI releaseURN)
 			throws LBParameterException, LBInvocationException;
 	
-	public List<String> getCodeListforVersion(String currentVersion);
+	public List<String> getCodeListForVersion(String currentVersion);
 
+	public Date getDateForVersion(String currentVersion);
+
+	public List<String> getVersionsForDateRange(String previousDate, String currentDate);
 }

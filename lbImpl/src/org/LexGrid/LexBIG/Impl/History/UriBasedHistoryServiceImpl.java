@@ -199,8 +199,18 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<String> getCodeListforVersion(String currentVersion) {
+    public List<String> getCodeListForVersion(String currentVersion) {
         return getNciHistoryService().getCodeListForVersion(currentVersion, uri);
+    }
+
+    @Override
+    public Date getDateForVersion(String currentVersion) {
+        return getNciHistoryService().getDateForVersion(currentVersion, uri);
+    }
+
+    @Override
+    public List<String> getVersionsForDateRange(String previousDate, String currentDate) {
+        return getNciHistoryService().getVersionsForDateRange(previousDate, currentDate, uri);
     }
 
 }

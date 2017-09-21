@@ -303,7 +303,19 @@ public class VersionableEventNciHistoryService extends AbstractDatabaseService i
 
 	@Override
 	public List<String> getCodeListForVersion(String currentVersion, String uri) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.getDaoManager().getNciHistoryDao(
+				uri).getCodeListForVersion(currentVersion);
+	}
+
+	@Override
+	public Date getDateForVersion(String currentVersion, String uri) {
+		return this.getDaoManager().getNciHistoryDao(
+				uri).getDateForVersion(currentVersion);
+	}
+
+	@Override
+	public List<String> getVersionsForDateRange(String previousDate, String currentDate, String uri) {
+		return this.getDaoManager().getNciHistoryDao(
+				uri).getVersionsForDateRange(previousDate, currentDate);
 	}
 }

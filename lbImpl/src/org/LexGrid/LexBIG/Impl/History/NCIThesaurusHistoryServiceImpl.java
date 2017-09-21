@@ -223,7 +223,17 @@ public class NCIThesaurusHistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<String> getCodeListforVersion(String currentVersion) {
+    public List<String> getCodeListForVersion(String currentVersion) {
+        throw new UnsupportedOperationException("This method is unsupported in this history service");
+    }
+
+    @Override
+    public Date getDateForVersion(String currentVersion) {
+        throw new UnsupportedOperationException("This method is unsupported in this history service");
+    }
+
+    @Override
+    public List<String> getVersionsForDateRange(String previousDate, String currentDate) {
         throw new UnsupportedOperationException("This method is unsupported in this history service");
     }
 

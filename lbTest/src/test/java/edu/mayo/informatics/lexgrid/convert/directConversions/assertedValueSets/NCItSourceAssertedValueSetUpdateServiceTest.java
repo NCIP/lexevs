@@ -1,8 +1,18 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexgrid.valuesets.sourceasserted.impl.NCItSourceAssertedValueSetUpdateServiceImpl;
@@ -20,5 +30,34 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 		assertTrue(namespace != null);
 		assertEquals(namespace, "Thesaurus");
 	}
+	
 
+	@Test
+	public void getReferencesForVersionTest() throws LBException {
+		List<String> refs = vsUpdate.getReferencesForVersion("17.07e");
+		assertTrue(refs.size() > 0);
+		assertEquals(refs.stream().filter(x -> x.equals("C100051")).findAny().get(), "C100051");
+	}
+	
+	@Test 
+	public void getDateForVersionTest() throws LBException, ParseException{
+		Date date = vsUpdate.getDateForVersion("17.07e");
+		assertNotNull(date);
+		DateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		assertEquals(outputDateFormat.format(date).toString(), "2017-07-31 00:00:00");		
+	}
+
+	@Test
+	public void getVersionsForDateRangeTest() throws LBInvocationException, LBException{
+		DateFormat fmat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Calendar current = Calendar.getInstance();
+		current.set(2017,  7, 30);
+		Date currentDate = current.getTime();
+		Calendar previous = Calendar.getInstance();
+		previous.set(2017, 1, 30);
+		Date previousDate = previous.getTime();
+		List<String> versions = vsUpdate.getVersionsForDateRange(fmat.format(previousDate).toString(), 
+				fmat.format(currentDate).toString());
+		assertTrue(versions.size() > 0);
+	}
 }

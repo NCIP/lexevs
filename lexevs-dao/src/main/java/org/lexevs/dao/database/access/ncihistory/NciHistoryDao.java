@@ -67,5 +67,5 @@ public interface NciHistoryDao extends LexGridSchemaVersionAwareDao {
 
 	public Date getDateForVersion(String currentVersion);
 
-	List<String> getDateForVersion(String currentVersion, String previousVersion);
+	public List<String> getVersionsForDateRange(String previousDate, String currentDate);
 }

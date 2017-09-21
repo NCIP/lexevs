@@ -164,7 +164,17 @@ public class UMLSHistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<String> getCodeListforVersion(String currentVersion) {
+    public List<String> getCodeListForVersion(String currentVersion) {
+        throw new UnsupportedOperationException("Not supported for RRF based terminologies");  
+    }
+
+    @Override
+    public Date getDateForVersion(String currentVersion) {
+        throw new UnsupportedOperationException("Not supported for RRF based terminologies");  
+    }
+
+    @Override
+    public List<String> getVersionsForDateRange(String previousDate, String currentDate) {
         throw new UnsupportedOperationException("Not supported for RRF based terminologies");  
     }
 }

@@ -1,5 +1,6 @@
 package org.lexgrid.valuesets.sourceasserted.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -47,15 +48,13 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	}
 
 	@Override
-	public List<String> getReferencesForVersion(String version) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<String> getReferencesForVersion(String version) throws LBException {
+		return getNCItSourceHistoryService().getCodeListForVersion(version);
 	}
 
 	@Override
-	public List<ConceptReference> getUpdateListFromHistoryService(String currentVersion, String previousVersion) throws LBInvocationException, LBException {
-		getNCItSourceHistoryService().getCodeListforVersion(currentVersion);
-		return null;
+	public List<String> getVersionsForDateRange(String previousDate, String currentDate) throws LBInvocationException, LBException {
+		return getNCItSourceHistoryService().getVersionsForDateRange(previousDate, currentDate);
 	}
 
 	@Override
@@ -78,7 +77,11 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 				x.getEquivalentCodingScheme().equals(schemeName)).
 				findAny().get().getLocalId();
 	}
-	
+
+	@Override
+	public Date getDateForVersion(String currentVersion) throws LBException {
+		return getNCItSourceHistoryService().getDateForVersion(currentVersion);
+	}
 
 
 }

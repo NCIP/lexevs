@@ -31,6 +31,18 @@
 		<result property="basedOnRelease" column="basedOnRelease" />
 	</resultMap>
 	
+	<resultMap id="entityCodeResult" class="string">
+		<result property="java.lang.String" column="entityCode" />
+	</resultMap>
+	
+	<resultMap id="dateResult" class="date">
+		<result property="java.util.Date" column="releaseDate" />
+	</resultMap>
+	
+	<resultMap id="versionsResult" class="string">
+		<result property="java.util.String" column="releaseId" />
+	</resultMap>
+	
 	<delete id="deleteSystemRelease"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
 		DELETE 
@@ -80,35 +92,35 @@
 	
  	<select id="getReferencesForVersion"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultType="string">
+		resultMap="entityCodeResult">
 		SELECT
 		 	entityCode 
-		 FROM 
+		FROM 
 		 	${defaultPrefix}nciHist hist 
-		 LEFT JOIN 
+		LEFT JOIN 
 		 	${defaultPrefix}ncihistsystemrelease sysr 
-		 ON 
+		ON 
 		 	hist.releaseGuid = sysr.releaseGuid 
-		 WHERE 
-		 	sysr.releaseId = "#param1#" 
-		 GROUP BY 
+		WHERE 
+		 	sysr.releaseId = #param1# 
+		GROUP BY 
 		 	hist.entityCode
 	</select>
 	
 	 <select id="getDateForVersion"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultType="date">
+		resultMap="dateResult">
 		SELECT
 			releasedate 
 		FROM
 			${defaultPrefix}ncihistsystemrelease 
 		WHERE 
-			releaseid = "#param1#"
+			releaseid = #param1#
 	</select>
 	
 	<select id="getVersionsForDateRange"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultType="string">
+		resultMap="versionsResult">
 		SELECT
 			releaseid
 		FROM
@@ -116,9 +128,9 @@
 		WHERE
 			releaseDate 
 		BETWEEN 
-			"#param1#"
+			#param1#
 		AND 
-			"#param2#"
+			#param2#
 	</select>
 		
 	<sql id="getChangeEventFragment">
