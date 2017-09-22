@@ -2,6 +2,7 @@ package org.lexgrid.valuesets.sourceasserted.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -13,21 +14,91 @@ import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.NCItSourceAssertedValueSetUpdateService;
 
 public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAssertedValueSetUpdateService {
 
 	private LexBIGService lbs;
+    private SourceAssertedValueSetToSchemeBatchLoader loader;
+	
+    private String codingScheme = "NCI_Thesaurus";
+    private String version;
+    private String association = "Concept_In_Subset";
+    private String target = "true";
+    private String uri = "http://evs.nci.nih.gov/valueset/";
+    private String owner="NCI";
+    private String source = "Contributing_Source";
+    private String conceptDomainIndicator = "Semantic_Type";
 
 	public NCItSourceAssertedValueSetUpdateServiceImpl() {
-		// TODO Auto-generated constructor stub
+	       try {
+	           loader = new SourceAssertedValueSetToSchemeBatchLoader(
+	                       codingScheme, 
+	                       version, 
+	                       association, 
+	                       Boolean.parseBoolean(target), 
+	                       uri, 
+	                       owner, 
+	                       conceptDomainIndicator);
+	       } catch (LBParameterException e) {
+	           // TODO Auto-generated catch block
+	           e.printStackTrace();
+	       }
+	}
+	
+	public NCItSourceAssertedValueSetUpdateServiceImpl(String userDeterminedVersion) {
+	       try {
+	           loader = new SourceAssertedValueSetToSchemeBatchLoader(
+	                       codingScheme, 
+	                       userDeterminedVersion, 
+	                       association, 
+	                       Boolean.parseBoolean(target), 
+	                       uri, 
+	                       owner, 
+	                       conceptDomainIndicator);
+	       } catch (LBParameterException e) {
+	           // TODO Auto-generated catch block
+	           e.printStackTrace();
+	       }
+	}
+	
+	public NCItSourceAssertedValueSetUpdateServiceImpl(String codingScheme,
+    String version,
+    String association,
+    String target,
+    String uri,
+    String owner,
+    String source,
+    String conceptDomainIndicator) {
+	    this.codingScheme = codingScheme;
+	    this.version = version;
+	    this.association = association;
+	    this.target = target;
+	    this.uri = uri;
+	    this.owner= owner;
+	    this.source = source;
+	    this.conceptDomainIndicator = conceptDomainIndicator;
+	    
+	       try {
+	           loader = new SourceAssertedValueSetToSchemeBatchLoader(
+	                       codingScheme, 
+	                       version, 
+	                       association, 
+	                       Boolean.parseBoolean(target), 
+	                       uri, 
+	                       owner, 
+	                       conceptDomainIndicator);
+	       } catch (LBParameterException e) {
+	           // TODO Auto-generated catch block
+	           e.printStackTrace();
+	       }
 	}
 
 	@Override
 	public SourceAssertedValueSetToSchemeBatchLoader getSourceAssertedValueSetToSchemeBatchLoader() {
-		// TODO Auto-generated method stub
-		return null;
+		return loader;
 	}
 
 	@Override
@@ -53,18 +124,30 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	}
 
 	@Override
-	public List<String> getVersionsForDateRange(String previousDate, String currentDate) throws LBInvocationException, LBException {
+	public List<String> getVersionsForDateRange(Date previousDate, Date currentDate) throws LBInvocationException, LBException {
 		return getNCItSourceHistoryService().getVersionsForDateRange(previousDate, currentDate);
 	}
 
 	@Override
-	public void loadUpdatedValueSets(List<ConceptReference> refs) {
-		// TODO Auto-generated method stub
+	public void loadUpdatedValueSets(List<Node> refs) {
+		
+      try {
+    	synchronized(lbs){
+		loader.processEntitiesToCodingScheme(refs, source);
+    	}
+	} catch (LBException | InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl();
+		List<String> valueSetCodes = service.resolveUpdatedVSToReferences("17.07e");
+		List<Node> nodes = service.getCurrentValueSetReferences();
+		List<Node> finalNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
+		service.loadUpdatedValueSets(finalNodes);
 
 	}
 	
@@ -83,5 +166,35 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		return getNCItSourceHistoryService().getDateForVersion(currentVersion);
 	}
 
+	@Override
+	public List<Node> getCurrentValueSetReferences() {
+	 return loader.getEntitiesForAssociation(association, NCIT_URI, version);
+	}
+
+	@Override
+	public List<String> resolveUpdatedVSToReferences(String previousVersion, String currentVersion) {
+		try {
+			if (previousVersion != null) {
+				Date previousDate = getNCItSourceHistoryService().getDateForVersion(previousVersion);
+				Date currentDate = getNCItSourceHistoryService().getDateForVersion(currentVersion);
+				return getNCItSourceHistoryService().getVersionsForDateRange(previousDate, currentDate);
+			} else {
+				return getNCItSourceHistoryService().getCodeListForVersion(currentVersion);
+			}
+		} catch (LBException e) {
+			throw new RuntimeException("Failed to retrieve Dates or Code Lists from history" + e);
+		}
+	}
+
+	@Override
+	public List<String> resolveUpdatedVSToReferences(String currentVersion) {
+		return resolveUpdatedVSToReferences(null,  currentVersion);
+	}
+	
+	@Override
+	public List<Node> getUpatedValueSetsForCurrentVersion(List<Node> references,
+			List<String> valuesets) {
+		return references.stream().filter(x -> valuesets.contains(x.getEntityCode())).collect(Collectors.toList());
+	}
 
 }

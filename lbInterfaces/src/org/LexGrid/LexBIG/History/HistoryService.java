@@ -177,5 +177,5 @@ public interface HistoryService extends Serializable {
 
 	public Date getDateForVersion(String currentVersion);
 
-	public List<String> getVersionsForDateRange(String previousDate, String currentDate);
+	public List<String> getVersionsForDateRange(Date previousDate, Date currentDate);
 }

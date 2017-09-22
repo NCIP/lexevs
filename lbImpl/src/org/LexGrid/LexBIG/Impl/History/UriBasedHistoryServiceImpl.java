@@ -209,7 +209,7 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<String> getVersionsForDateRange(String previousDate, String currentDate) {
+    public List<String> getVersionsForDateRange(Date previousDate, Date currentDate) {
         return getNciHistoryService().getVersionsForDateRange(previousDate, currentDate, uri);
     }
 

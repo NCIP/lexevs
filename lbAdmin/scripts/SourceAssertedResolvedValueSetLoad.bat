@@ -1,5 +1,5 @@
 @echo off
-REM Loads All LexGrid XML formatted Value Set Definitions in a given directory
+REM  Loads all source asserted Value Sets from a given source
 REM
 REM Options:
 REM

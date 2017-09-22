@@ -33,7 +33,7 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 	
 
 	@Test
-	public void getReferencesForVersionTest() throws LBException {
+	public void getReferencesForVyersionTest() throws LBException {
 		List<String> refs = vsUpdate.getReferencesForVersion("17.07e");
 		assertTrue(refs.size() > 0);
 		assertEquals(refs.stream().filter(x -> x.equals("C100051")).findAny().get(), "C100051");
@@ -49,15 +49,15 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 
 	@Test
 	public void getVersionsForDateRangeTest() throws LBInvocationException, LBException{
-		DateFormat fmat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//		DateFormat fmat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Calendar current = Calendar.getInstance();
 		current.set(2017,  7, 30);
 		Date currentDate = current.getTime();
 		Calendar previous = Calendar.getInstance();
 		previous.set(2017, 1, 30);
 		Date previousDate = previous.getTime();
-		List<String> versions = vsUpdate.getVersionsForDateRange(fmat.format(previousDate).toString(), 
-				fmat.format(currentDate).toString());
+		List<String> versions = vsUpdate.getVersionsForDateRange(previousDate, 
+				currentDate);
 		assertTrue(versions.size() > 0);
 	}
 }

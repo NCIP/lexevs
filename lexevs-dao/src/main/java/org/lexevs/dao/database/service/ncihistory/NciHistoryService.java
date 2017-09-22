@@ -187,7 +187,7 @@ public interface NciHistoryService {
 	
 	public Date getDateForVersion(String currentVersion, String uri);
 
-	public List<String> getVersionsForDateRange(String previousDate, String currentDate, String uri);
+	public List<String> getVersionsForDateRange(Date previousDate, Date currentDate, String uri);
 
 	
 }

@@ -233,7 +233,7 @@ public class NCIThesaurusHistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public List<String> getVersionsForDateRange(String previousDate, String currentDate) {
+    public List<String> getVersionsForDateRange(Date previousDate, Date currentDate) {
         throw new UnsupportedOperationException("This method is unsupported in this history service");
     }
 
