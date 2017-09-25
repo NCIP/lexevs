@@ -42,6 +42,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	                       uri, 
 	                       owner, 
 	                       conceptDomainIndicator);
+	           lbs = LexBIGServiceImpl.defaultInstance();
 	       } catch (LBParameterException e) {
 	           // TODO Auto-generated catch block
 	           e.printStackTrace();
@@ -58,6 +59,8 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	                       uri, 
 	                       owner, 
 	                       conceptDomainIndicator);
+	           this.version = userDeterminedVersion;
+	           lbs = LexBIGServiceImpl.defaultInstance();
 	       } catch (LBParameterException e) {
 	           // TODO Auto-generated catch block
 	           e.printStackTrace();
@@ -90,6 +93,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	                       uri, 
 	                       owner, 
 	                       conceptDomainIndicator);
+	           lbs = LexBIGServiceImpl.defaultInstance();
 	       } catch (LBParameterException e) {
 	           // TODO Auto-generated catch block
 	           e.printStackTrace();
@@ -143,7 +147,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	}
 
 	public static void main(String[] args) {
-		NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl();
+		NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl("17.07e");
 		List<String> valueSetCodes = service.resolveUpdatedVSToReferences("17.07e");
 		List<Node> nodes = service.getCurrentValueSetReferences();
 		List<Node> finalNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
