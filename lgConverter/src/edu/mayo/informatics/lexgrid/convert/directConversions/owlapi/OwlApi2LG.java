@@ -3033,7 +3033,10 @@ public class OwlApi2LG {
             String prefix = (String) prefix2NamespaceMap.get(keyName);
             if (ns.equals(prefix)) {
                 prefixName = keyName;
-                break;
+                // check for additional namespaces, if the current one found id empty (the default one)
+                if (!prefixName.equals(":")) {
+                    break;
+                }
             }
 
         }
