@@ -23,6 +23,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
@@ -34,6 +35,7 @@ import org.LexGrid.valueSets.ValueSetDefinitions;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
+import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
@@ -145,6 +147,13 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	public List<String> getValueSetDefinitionURIForSupportedTagAndValue(
 			String supportedTag, String value, String uri) {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionURIForSupportedTagAndValue(supportedTag, value, uri);
+	}
+	
+	@Override
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionSchemeRefForTopNodeSourceCode(Node node) throws LBException {
+		return this.getDaoManager().getCurrentValueSetDefinitionDao().
+				getValueSetDefinitionSchemeRefForTopNodeSourceCode(node.getEntityCode());
+		
 	}
 
 	/* (non-Javadoc)
@@ -483,4 +492,5 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 
 		return valueSetDefDao.getValueSetDefinitionByRevision(valueSetDefURI, revisionId);
 	}
+
 }

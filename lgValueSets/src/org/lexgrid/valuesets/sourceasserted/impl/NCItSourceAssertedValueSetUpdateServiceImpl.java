@@ -1,9 +1,13 @@
 package org.lexgrid.valuesets.sourceasserted.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -15,6 +19,8 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.NCItSourceAssertedValueSetUpdateService;
 
@@ -22,6 +28,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 
 	private LexBIGService lbs;
     private SourceAssertedValueSetToSchemeBatchLoader loader;
+    private ValueSetDefinitionService vsService;
 	
     private String codingScheme = "NCI_Thesaurus";
     private String version;
@@ -146,15 +153,45 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args){
 		NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl("17.07e");
 		List<String> valueSetCodes = service.resolveUpdatedVSToReferences("17.07e");
 		List<Node> nodes = service.getCurrentValueSetReferences();
-		List<Node> finalNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
+		List<Node> reducedNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
+		List<Node> finalNodes = service.getValueSetTopNodesForLeaves(reducedNodes);
+		
+
+		List<AbsoluteCodingSchemeVersionReference> refs = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		try {
+			for(Node node: finalNodes){
+				refs.addAll(service.getVsService().getValueSetDefinitionSchemeRefForTopNodeSourceCode(node));
+			}
+			for(AbsoluteCodingSchemeVersionReference abs: refs){
+				service.getLexBIGService().getServiceManager(null).deactivateCodingSchemeVersion(abs,null);
+				service.getLexBIGService().getServiceManager(null).removeCodingSchemeVersion(abs);
+			}
+		} catch (LBException e) {
+			throw new RuntimeException("Problem removing value set needing update" + e );
+		}
+	
 		service.loadUpdatedValueSets(finalNodes);
 
 	}
 	
+	public ValueSetDefinitionService getVsService(){
+		vsService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
+		return vsService;
+	}
+	
+	private List<Node> getValueSetTopNodesForLeaves(List<Node> reducedNodes) {
+		Set<Node> set = new HashSet<Node>();
+		for(Node x :reducedNodes){
+		set.addAll(loader.getEntitiesForAssociationAndSourceEntity(x.getEntityCode(), 
+				x.getEntityCodeNamespace(), this.association, NCIT_URI, this.version));
+		}
+		return set.stream().collect(Collectors.toList());
+	}
+
 	public String getCodingSchemeNamespaceForURIandVersion(String uri, String version) throws LBException{
 		CodingScheme scheme = getLexBIGService().resolveCodingScheme(uri, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(version));

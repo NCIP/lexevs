@@ -91,6 +91,11 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
     
     public List<Node> getEnitiesForAssociationAndTargetEntity(String code, String namespace, String association, String codingSchemeUri, String version){
         String associationPredicateUid = this.getPredicateGuidForValueSetRelation(association, codingSchemeUri, version);
+        return codedNodeGraphDao.getSourcesFromTarget(codingSchemeUri, version, code, namespace, associationPredicateUid);
+    }
+    
+    public List<Node> getEntitiesForAssociationAndSourceEntity(String code, String namespace, String association, String codingSchemeUri, String version){
+        String associationPredicateUid = this.getPredicateGuidForValueSetRelation(association, codingSchemeUri, version);
         return codedNodeGraphDao.getTargetsFromSource(codingSchemeUri, version, code, namespace, associationPredicateUid);
     }
     

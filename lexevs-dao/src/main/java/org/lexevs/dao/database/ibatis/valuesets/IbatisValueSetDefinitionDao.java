@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.commonTypes.Properties;
@@ -65,6 +66,7 @@ import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSet
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
@@ -95,6 +97,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public static String GET_VALUESET_DEFINITION_URIS_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionURIs";
 	
 	public static String GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionURIForValueSetName";
+	
+	public static String GET_VALUESETSCHEMEREF_FOR_TOP_NODE_SOURCE_CODE = VALUESETDEFINITION_NAMESPACE + "getValueSetSchemeRefForTopNodeSourceCode";
 	
 	public static String GET_VALUESET_DEFINITION_GUID_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefinitionGuidByValueSetDefinitionURI";
 	
@@ -267,6 +271,13 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		else
 			return this.getSqlMapClientTemplate().queryForList(GET_VALUESET_DEFINITION_URI_FOR_VALUESET_NAME_SQL,
 					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), valueSetDefinitionName));
+	}
+	
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionSchemeRefForTopNodeSourceCode(String code){
+		return (List<AbsoluteCodingSchemeVersionReference>) this.getSqlMapClientTemplate().queryForList( GET_VALUESETSCHEMEREF_FOR_TOP_NODE_SOURCE_CODE,
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), code, ResourceType.CODING_SCHEME.name()));
 	}
 
 	@Override
