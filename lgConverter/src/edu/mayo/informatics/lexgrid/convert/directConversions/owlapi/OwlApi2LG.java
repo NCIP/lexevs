@@ -749,8 +749,9 @@ public class OwlApi2LG {
         // be centrally linked to the top node for subclass traversal?;
         if (isRootNode(owlClass)) {
             // always give the root node the default namespace
+            
             AssociationTarget target = CreateUtils.createAssociationTarget(OwlApi2LGConstants.ROOT_CODE,
-                    getDefaultNameSpace());
+                    getUserSetNamespace());
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
 
         }
@@ -878,7 +879,7 @@ public class OwlApi2LG {
                     OWLCardinalityRestriction rest = (OWLCardinalityRestriction) restriction;
                     //OWLPropertyRange fillerProp = rest.getFiller();
                     opData = CreateUtils.createAssociationTextData("" + rest.getCardinality());
-                    targetNameSpace = getDefaultNameSpace();
+                    targetNameSpace = getUserSetNamespace();
                     //Defining the use case OWL data or data min exact.  otherwise defaults to 
                     //OWL object exact
                     if(restriction instanceof OWLDataExactCardinality  || 
@@ -1642,7 +1643,8 @@ public class OwlApi2LG {
     protected String resolveAnonymousClass(OWLClassExpression owlClassExp, AssociationSource assocSource) {
 
         String code = "@" + DigestUtils.md5Hex(owlClassExp.toString());
-        String nameSpace = getDefaultNameSpace();
+
+        String nameSpace = getUserSetNamespace();
         // Check if this concept has already been processed. We do not want
         // duplicate concepts.
         if (!isEntityCodeRegistered(nameSpace, code)) {
@@ -1698,7 +1700,7 @@ public class OwlApi2LG {
                 else {
                   
                     String lgCode = resolveAnonymousClass(operand, assocSource);
-                    String targetNameSpace = getDefaultNameSpace();
+                    String targetNameSpace = getUserSetNamespace();
                     AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
                 }
@@ -1708,7 +1710,7 @@ public class OwlApi2LG {
         if (owlClassExp instanceof OWLObjectComplementOf) {
             OWLObjectComplementOf complementClass = (OWLObjectComplementOf) owlClassExp;
             String lgCode = resolveAnonymousClass((OWLClassExpression) complementClass.getOperand(), assocSource);
-            String targetNameSpace = getDefaultNameSpace();
+            String targetNameSpace = getUserSetNamespace();
           
             AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
             relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
@@ -2387,7 +2389,7 @@ public class OwlApi2LG {
         Entity topThing = new Entity();
         topThing.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
         topThing.setEntityCode(OwlApi2LGConstants.ROOT_CODE);
-        topThing.setEntityCodeNamespace(getDefaultNameSpace());
+        topThing.setEntityCodeNamespace(getUserSetNamespace());
         EntityDescription ed = new EntityDescription();
         ed.setContent(OwlApi2LGConstants.ROOT_DESCRIPTION);
         topThing.setEntityDescription(ed);
@@ -3023,23 +3025,51 @@ public class OwlApi2LG {
     }
 
     public String getNameSpace(IRI iri) {
-        String prefixName = "";
         String iriString = iri.toString();
         String ns = XMLUtils.getNCNamePrefix(iriString);
+        
+        return getIRIfromIRIString(ns);
+    }
+        
+    private String getUserSetNamespace() {
+        String defaultPrefix = ":";
+        String iriString = "";
+        
+        // find the base IRI string 
         Map<String, String> prefix2NamespaceMap = renderer.getPrefixNameShortFormProvider().getPrefixManager()
                 .getPrefixName2PrefixMap();
         for (Iterator i$ = prefix2NamespaceMap.keySet().iterator(); i$.hasNext();) {
             String keyName = (String) i$.next();
             String prefix = (String) prefix2NamespaceMap.get(keyName);
-            if (ns.equals(prefix)) {
-                prefixName = keyName;
-                // check for additional namespaces, if the current one found id empty (the default one)
-                if (!prefixName.equals(":")) {
-                    break;
+            if (defaultPrefix.equals(keyName)) {
+               
+                iriString = prefix;
+                break;
+            }
+        }       
+        return getIRIfromIRIString(iriString);
+    }
+    
+    private String getIRIfromIRIString(String iriString) {
+        String prefixName = "";
+        
+        // check if there is a default one that has bee set.  If not, find the default one below
+        if (!iriString.isEmpty()){
+            Map<String, String> prefix2NamespaceMap = renderer.getPrefixNameShortFormProvider().getPrefixManager()
+                    .getPrefixName2PrefixMap();
+            for (Iterator i$ = prefix2NamespaceMap.keySet().iterator(); i$.hasNext();) {
+                String keyName = (String) i$.next();
+                String prefix = (String) prefix2NamespaceMap.get(keyName);
+                if (iriString.equals(prefix)) {
+                    prefixName = keyName;
+                    // check for additional namespaces, if the current one found is empty (the default one)
+                    if (!prefixName.equals(":")) {
+                        break;
+                    }
                 }
             }
-
         }
+        
         if (StringUtils.isNotEmpty(prefixName)) {
             if (prefixName.endsWith(":")) {
                 prefixName = prefixName.substring(0, prefixName.length() - 1);
@@ -3194,7 +3224,7 @@ public class OwlApi2LG {
             AssociationSource source, OWLClassExpression tgtResource, OWLAxiom ax) {
         if (tgtResource.isAnonymous()) {
             String lgCode = this.resolveAnonymousClass(tgtResource, source);
-            String namespace = getDefaultNameSpace();
+            String namespace = getUserSetNamespace();
             AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, namespace);
             processAnnotationsOfOWLAxiom(ax, target);
             relateAssociationSourceTarget(aw, source, target);
