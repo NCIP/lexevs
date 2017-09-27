@@ -1,0 +1,3 @@
+# releaseDate|releaseAgency|releaseURN|releaseId|basedOnRelease|entityDescription
+15-AUG-16|http://nci.nih.gov/|http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#:0.1.5|0.1.5||owl2lexevs with editing completed through July 22, 22016
+08-JAN-17|http://nci.nih.gov/|http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#:0.1.5.1|0.1.5.1|0.1.5|Editing of owl2lexevs V 1.5.0 was completed on January 24, 2017.
