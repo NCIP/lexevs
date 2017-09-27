@@ -13,7 +13,7 @@ import org.LexGrid.commonTypes.Property;
 import org.junit.Before;
 import org.junit.Test;
 
-public class OWL2SpecialCasesNamespaceTestIT extends DataLoadTestBaseSpecialCases{
+public class OWL2SpecialCasesNamespaceTestIT extends DataLoadTestBaseSpecialCasesNamespace{
 
 	@Before
 	public void setUp() throws Exception {
