@@ -2390,6 +2390,41 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P378>NCI</P378>
     </owl:Axiom>
     
+     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C11111">
+        <rdfs:label>Polka_dot</rdfs:label>
+        <NHC0>C48323</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>Polk dot</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P322>TEST</P322>
+        <P90>red</P90>
+        <P90>red</P90>
+        <P97>With dots; producing or reflecting comparatively little light and having no predominant hue; being the color of coal or carbon.</P97>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>polka dot</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>FDA</P384>
+        <P386>SPL</P386>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>polka dot</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>with dots color; producing or reflecting comparatively little light and having no predominant hue; being the color of coal or carbon.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
+    
+    
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48327">
         <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
         <rdfs:label>Purple</rdfs:label>

@@ -1,0 +1,3 @@
+C48326|Red|create|08-JAN-17|(null)|(null)
+C48327|Purple|create|08-JAN-17|(null)|(null)
+C11111|Polka_dot|create|08-JAN-17|(null)|(null)

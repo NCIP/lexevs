@@ -18,7 +18,7 @@ public class SourceAssertedValueSetDefinitionLauncher {
     private String association = "Concept_In_Subset";
     
     @Option(name="-t", aliases={"--target"}, usage="Target to Source resolution.") 
-    private boolean target=true;
+    private String target="true";
     
     @Option(name="-uri", aliases={"--uri"}, usage="Base uri to build the conding scheme uri upon") 
     private String uri = "http://evs.nci.nih.gov/valueset/";
@@ -49,7 +49,8 @@ public class SourceAssertedValueSetDefinitionLauncher {
     public void run(String[] args) throws LBParameterException, CmdLineException{
         CmdLineParser parser = new CmdLineParser(this);
         parser.parseArgument(args);    
-        new SourceAssertedValueSetBatchLoader(codingScheme, version, association, target, uri, owner, conceptDomainName).run(sourceName);
+        new SourceAssertedValueSetBatchLoader(codingScheme, version, association, 
+                Boolean.valueOf(target).booleanValue(), uri, owner, conceptDomainName).run(sourceName);
     }
 
 }

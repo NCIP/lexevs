@@ -11,10 +11,12 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.dao.database.access.association.model.Node;
 import org.lexgrid.valuesets.sourceasserted.impl.NCItSourceAssertedValueSetUpdateServiceImpl;
 
 public class NCItSourceAssertedValueSetUpdateServiceTest {
@@ -73,5 +75,13 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 		List<String> versions = vsUpdate.getVersionsForDateRange(previousDate, 
 				currentDate);
 		assertTrue(versions.size() > 1);
+	}
+	
+	@Test
+	public void getTopNodeForValueSet() throws LBException{
+		Node node = new Node();
+		node.setEntityCode("C54453");
+		List<AbsoluteCodingSchemeVersionReference> vref = vsUpdate.getVsService().getValueSetDefinitionSchemeRefForTopNodeSourceCode(node);
+		assertTrue(vref.size() > 0);
 	}
 }

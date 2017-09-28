@@ -68,8 +68,8 @@ public class UriBasedHistoryLoaderImpl implements UriBasedHistoryLoader {
         
         UriBasedHistoryLoaderImpl hloader = new UriBasedHistoryLoaderImpl("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
 
-        hloader.load(new File("../lbTest/resources/testData/owl2historytest.txt").toURI(), new File(
-                "../lbTest/resources/testData/owl2systemReleaseTest.txt").toURI(), false, true, true);
+        hloader.load(new File("../lbTest/resources/testData/owl2/owl2historytest.txt").toURI(), new File(
+                "../lbTest/resources/testData/owl2/owl2systemReleaseTest.txt").toURI(), false, true, true);
     }
     
     protected LgLoggerIF getLogger() {
