@@ -14,6 +14,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -38,6 +39,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
     private String owner="NCI";
     private String source = "Contributing_Source";
     private String conceptDomainIndicator = "Semantic_Type";
+    private String alternateUri;
 
 	public NCItSourceAssertedValueSetUpdateServiceImpl() {
 	       try {
@@ -81,7 +83,8 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
     String uri,
     String owner,
     String source,
-    String conceptDomainIndicator) {
+    String conceptDomainIndicator,
+    String alternateUri) {
 	    this.codingScheme = codingScheme;
 	    this.version = version;
 	    this.association = association;
@@ -90,7 +93,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	    this.owner= owner;
 	    this.source = source;
 	    this.conceptDomainIndicator = conceptDomainIndicator;
-	    
+	    this.alternateUri = alternateUri;
 	       try {
 	           loader = new SourceAssertedValueSetToSchemeBatchLoader(
 	                       codingScheme, 
@@ -114,7 +117,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 
 	@Override
 	public HistoryService getNCItSourceHistoryService() throws LBException {
-		return getLexBIGService().getHistoryService(NCIT_URI);
+		return new UriBasedHistoryServiceImpl(getUri());
 	}
 
 	@Override
@@ -154,11 +157,23 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	}
 
 	public static void main(String[] args){
-		NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl("17.07e");
-		List<String> valueSetCodes = service.resolveUpdatedVSToReferences("17.07e");
-		List<Node> nodes = service.getCurrentValueSetReferences();
-		List<Node> reducedNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
-		List<Node> finalNodes = service.getValueSetTopNodesForLeaves(reducedNodes);
+		NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl(
+				"owl2lexevs", "0.1.5.1", "Concept_In_Subset", "true", 
+				"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
+				"Semantic_Type", "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+				//new NCItSourceAssertedValueSetUpdateServiceImpl("17.07e");
+		List<String> valueSetCodes = service.resolveUpdatedVSToReferences("0.1.5.1");
+		List<Node> mappedNodes = null;
+		try {
+			mappedNodes = service.mapSimpleReferencesToNodes(valueSetCodes);
+		} catch (LBException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+				//service.resolveUpdatedVSToReferences("17.07e");
+//		List<Node> nodes = service.getCurrentValueSetReferences();
+//		List<Node> reducedNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
+		List<Node> finalNodes = service.getValueSetTopNodesForLeaves(mappedNodes);
 		
 
 		List<AbsoluteCodingSchemeVersionReference> refs = new ArrayList<AbsoluteCodingSchemeVersionReference>();
@@ -178,6 +193,16 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 
 	}
 	
+	private List<Node> mapSimpleReferencesToNodes(List<String> valueSetCodes) throws LBException {
+		final String namespace = this.getCodingSchemeNamespaceForURIandVersion(alternateUri, version);
+		return valueSetCodes.stream().map(x -> {
+			Node node = new Node(); 
+			node.setEntityCode(x); 
+			node.setEntityCodeNamespace(namespace != null? namespace : "no namespace"); 
+			return node;
+			}).collect(Collectors.toList());
+	}
+
 	public ValueSetDefinitionService getVsService(){
 		vsService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 		return vsService;
@@ -187,19 +212,43 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		Set<Node> set = new HashSet<Node>();
 		for(Node x :reducedNodes){
 		set.addAll(loader.getEntitiesForAssociationAndSourceEntity(x.getEntityCode(), 
-				x.getEntityCodeNamespace(), this.association, NCIT_URI, this.version));
+				x.getEntityCodeNamespace(), this.association, getUri(), this.version));
 		}
 		return set.stream().collect(Collectors.toList());
 	}
 
 	public String getCodingSchemeNamespaceForURIandVersion(String uri, String version) throws LBException{
+		//This complexity is thanks to some inconsistent namespace handling by the OWL2 loader
+		//We need to understand what the correct namespace format is and correct the loader accordingly
+		final String uriMod = normalizeUri(uri);
 		CodingScheme scheme = getLexBIGService().resolveCodingScheme(uri, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(version));
-		String schemeName = scheme.getMappings().getSupportedCodingSchemeAsReference().stream().filter(supScheme -> supScheme.getUri().equals(uri)).findAny().get().getLocalId();
-		return scheme.getMappings().getSupportedNamespaceAsReference().stream().filter(
+		String schemeName = scheme.getMappings().getSupportedCodingSchemeAsReference().stream().
+				filter(supScheme -> supScheme.getUri().equals(uriMod) || supScheme.getUri().equals(uri)).findAny().get().getLocalId();
+		String schemeUri = scheme.getMappings().getSupportedCodingSchemeAsReference().stream().
+				filter(supScheme -> supScheme.getUri().equals(uriMod) || supScheme.getUri().equals(uri)).findAny().get().getUri();
+		String namespaceFromUri = scheme.getMappings().getSupportedNamespaceAsReference().stream().filter(
+				x -> x.getUri().equals(schemeUri) || x.getUri().equals(uri) || x.getUri().equals(uriMod) ).
+				findAny().get().getLocalId();
+		if(namespaceFromUri != null){
+			return namespaceFromUri;
+		}
+		//Non standard namespace
+		String namespaceFromEqCs = scheme.getMappings().getSupportedNamespaceAsReference().stream().filter(
 				x -> x.getEquivalentCodingScheme() != null && 
 				x.getEquivalentCodingScheme().equals(schemeName)).
 				findAny().get().getLocalId();
+		if(namespaceFromEqCs != null){
+			return namespaceFromEqCs;
+		}
+		return schemeName;
+	}
+
+	private String normalizeUri(String uri) {
+		if(uri.endsWith("#")){return uri;}
+		else{
+			return uri + "#";
+		}
 	}
 
 	@Override
@@ -209,7 +258,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 
 	@Override
 	public List<Node> getCurrentValueSetReferences() {
-	 return loader.getEntitiesForAssociation(association, NCIT_URI, version);
+	 return loader.getEntitiesForAssociation(association, getUri(), version);
 	}
 
 	@Override
@@ -236,6 +285,10 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	public List<Node> getUpatedValueSetsForCurrentVersion(List<Node> references,
 			List<String> valuesets) {
 		return references.stream().filter(x -> valuesets.contains(x.getEntityCode())).collect(Collectors.toList());
+	}
+	
+	private String getUri(){
+		return alternateUri == null? NCIT_URI: alternateUri;
 	}
 
 }

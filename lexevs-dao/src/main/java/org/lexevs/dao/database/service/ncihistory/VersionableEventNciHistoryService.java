@@ -319,6 +319,6 @@ public class VersionableEventNciHistoryService extends AbstractDatabaseService i
 		DateFormat fmat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		return this.getDaoManager().getNciHistoryDao(
 				uri).getVersionsForDateRange(fmat.format(previousDate).toString(),
-						fmat.format(currentDate));
+						fmat.format(currentDate).toString());
 	}
 }
