@@ -28,17 +28,16 @@ import org.springframework.core.annotation.Order;
 
 @RunWith(OrderingTestRunner.class)
 public class LoadAndUpdateSourceAssertedValueSetsTest {
-
+	LexBIGServiceManager lbsm;
 
 @Order(1)
 @Before
 public void setUp() throws LBException{
-	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+	lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 }
 
 @Test
 public void loadFirstValueSetCodingSchemeTest() throws LBException, InterruptedException{
-	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 	OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
     String fileName = "resources/testData/owl2/owl2-special-cases-Defined-Annotated.owl";
@@ -85,7 +84,6 @@ public void loadHistoryTest() throws LBException, InterruptedException{
 @Order(5)
 @Test
 public void loadCurrentCodingSchemeTest() throws LBException, InterruptedException{
-	LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
 	OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
     String fileName = "resources/testData/owl2/owl2-special-cases-Defined-AnnotatedExpVS.owl";
