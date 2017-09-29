@@ -54,24 +54,8 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 
 	@Test
 	public void getVersionsForDateRangeTest() throws LBInvocationException, LBException{
-//		DateFormat fmat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Calendar current = Calendar.getInstance();
-        Date myDate;
-        current.set(Calendar.MONTH, 0);
-        current.set(Calendar.DATE, 8);
-        current.set(Calendar.YEAR, 2017);
-        current.set(Calendar.HOUR,0);
-        current.set(Calendar.MINUTE,0);
-        current.set(Calendar.SECOND,0);
-		Date currentDate = current.getTime();
-		Calendar previous = Calendar.getInstance();
-		previous.set(Calendar.MONTH, 7);
-		previous.set(Calendar.DATE, 15);
-		previous.set(Calendar.YEAR, 2016);
-		previous.set(Calendar.HOUR,0);
-		previous.set(Calendar.MINUTE,0);
-		previous.set(Calendar.SECOND,0);
-		Date previousDate = previous.getTime();
+		Date currentDate = vsUpdate.getDateForVersion("0.1.5.1");
+		Date previousDate = vsUpdate.getDateForVersion("0.1.5");
 		List<String> versions = vsUpdate.getVersionsForDateRange(previousDate, 
 				currentDate);
 		assertTrue(versions.size() > 1);

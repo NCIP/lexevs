@@ -191,7 +191,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 
 	}
 	
-	private List<Node> mapSimpleReferencesToNodes(List<String> valueSetCodes) throws LBException {
+	public List<Node> mapSimpleReferencesToNodes(List<String> valueSetCodes) throws LBException {
 		final String namespace = this.getCodingSchemeNamespaceForURIandVersion(alternateUri, version);
 		return valueSetCodes.stream().map(x -> {
 			Node node = new Node(); 
@@ -206,7 +206,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		return vsService;
 	}
 	
-	private List<Node> getValueSetTopNodesForLeaves(List<Node> reducedNodes) {
+	public List<Node> getValueSetTopNodesForLeaves(List<Node> reducedNodes) {
 		Set<Node> set = new HashSet<Node>();
 		for(Node x :reducedNodes){
 		set.addAll(loader.getEntitiesForAssociationAndSourceEntity(x.getEntityCode(), 
