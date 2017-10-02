@@ -101,7 +101,7 @@ public void loadCurrentCodingSchemeTest() throws LBException, InterruptedExcepti
 
 @Order(6)
 @Test
-public void updateResolvedValueSetsToCurrentScheme(){
+public void updateResolvedValueSetsToCurrentScheme() throws LBException{
 	NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl(
 			"owl2lexevs", "0.1.5.1", "Concept_In_Subset", "true", 
 			"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
@@ -113,21 +113,10 @@ public void updateResolvedValueSetsToCurrentScheme(){
 	} catch (LBException e1) {
 		e1.printStackTrace();
 	}
-	List<Node> finalNodes = service.getValueSetTopNodesForLeaves(mappedNodes);
+	List<Node> finalNodes = service.getNodeListForUpdate(mappedNodes);
 	
+	service.prepServiceForUpdate(finalNodes);
 
-	List<AbsoluteCodingSchemeVersionReference> refs = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-	try {
-		for(Node node: finalNodes){
-			refs.addAll(service.getVsService().getValueSetDefinitionSchemeRefForTopNodeSourceCode(node));
-		}
-		for(AbsoluteCodingSchemeVersionReference abs: refs){
-			service.getLexBIGService().getServiceManager(null).deactivateCodingSchemeVersion(abs,null);
-			service.getLexBIGService().getServiceManager(null).removeCodingSchemeVersion(abs);
-		}
-	} catch (LBException e) {
-		throw new RuntimeException("Problem removing value set needing update" + e );
-	}
 
 	service.loadUpdatedValueSets(finalNodes);
 }

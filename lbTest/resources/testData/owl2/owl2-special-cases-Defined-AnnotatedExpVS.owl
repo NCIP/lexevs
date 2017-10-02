@@ -2361,7 +2361,6 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <NHC0>C48323</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>Red</P108>
-        <P372>Yes</P372>
         <P322>FDA</P322>
         <P322>TEST</P322>
         <P90>red</P90>
@@ -2395,7 +2394,6 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <NHC0>C48323</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>Polk dot</P108>
-        <P372>Yes</P372>
         <P322>FDA</P322>
         <P322>TEST</P322>
         <P90>red</P90>
@@ -2431,7 +2429,6 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <NHC0>C48323</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>Purple</P108>
-        <P372>Yes</P372>
         <P322>FDA</P322>
         <P322>TEST</P322>
         <P90>Purple</P90>
@@ -2508,11 +2505,66 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P97>Uber dark color;</P97>
     </owl:Class>
     
+           <!-- White -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112">
+        <rdfs:label>Whiter Shade of Grey</rdfs:label>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <NHC0>C48325</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>White</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>SORT_OF_WHITE</P90>
+        <P90>Whitish</P90>
+        <P90>Whitish Color</P90>
+        <P97>The achromatic color of somewhat lightness; the color of objects that reflect nearly all light of all visible wavelengths; the complement or antagonist of black, the other extreme of the neutral gray series.</P97>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P325"/>
+        <owl:annotatedTarget>rgb(255, 255, 255)</owl:annotatedTarget>
+        <P378>SPL</P378>
+        <P379>DEFAULT_Review</P379>
+        <P380>060127</P380>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Whitish</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>FDA</P384>
+        <P386>SPL</P386>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Whitish</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>Whitish Color</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>The achromatic color of somewhat lightness; the color of objects that reflect nearly all light of all visible wavelengths; the complement or antagonist of black, the other extreme of the neutral gray series.</owl:annotatedTarget>
+        <P378>NCI</P378>
+        <P379>Nicole Thomas</P379>
+        <P380>060724</P380>
+        <P381>American Heritage Dictionary - Bartelby.com</P381>
+    </owl:Axiom>
        <!-- White -->
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325">
         <rdfs:label>White</rdfs:label>
         <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
         <NHC0>C48325</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>White</P108>
@@ -2567,6 +2619,7 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99997">
         <rdfs:label>ArchWhite</rdfs:label>
         <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
         <NHC0>C48325</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>ArchWhite</P108>
@@ -2581,6 +2634,7 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99996">
         <rdfs:label>BlindingWhite</rdfs:label>
         <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48325"/>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C111112"/>
         <NHC0>C48325</NHC0>
         <P106>Qualitative Concept</P106>
         <P108>BlindingWhite</P108>

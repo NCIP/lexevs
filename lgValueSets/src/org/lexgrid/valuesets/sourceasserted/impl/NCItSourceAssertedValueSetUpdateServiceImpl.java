@@ -14,9 +14,12 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
@@ -27,6 +30,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 
 	private LexBIGService lbs;
     private SourceAssertedValueSetToSchemeBatchLoader loader;
+    private SourceAssertedValueSetBatchLoader vsDefLoader;
     private ValueSetDefinitionService vsService;
 	
     private String codingScheme = "NCI_Thesaurus";
@@ -49,6 +53,14 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	                       uri, 
 	                       owner, 
 	                       conceptDomainIndicator);
+	           vsDefLoader = new SourceAssertedValueSetBatchLoader(
+                       codingScheme, 
+                       version, 
+                       association, 
+                       Boolean.parseBoolean(target), 
+                       uri, 
+                       owner, 
+                       conceptDomainIndicator);
 	           lbs = LexBIGServiceImpl.defaultInstance();
 	       } catch (LBParameterException e) {
 	           // TODO Auto-generated catch block
@@ -66,6 +78,14 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	                       uri, 
 	                       owner, 
 	                       conceptDomainIndicator);
+	           vsDefLoader = new SourceAssertedValueSetBatchLoader(
+                       codingScheme, 
+                       version, 
+                       association, 
+                       Boolean.parseBoolean(target), 
+                       uri, 
+                       owner, 
+                       conceptDomainIndicator);
 	           this.version = userDeterminedVersion;
 	           lbs = LexBIGServiceImpl.defaultInstance();
 	       } catch (LBParameterException e) {
@@ -101,6 +121,14 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	                       uri, 
 	                       owner, 
 	                       conceptDomainIndicator);
+	           vsDefLoader = new SourceAssertedValueSetBatchLoader(
+                       codingScheme, 
+                       version, 
+                       association, 
+                       Boolean.parseBoolean(target), 
+                       uri, 
+                       owner, 
+                       conceptDomainIndicator);
 	           lbs = LexBIGServiceImpl.defaultInstance();
 	       } catch (LBParameterException e) {
 	           // TODO Auto-generated catch block
@@ -206,6 +234,8 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		return vsService;
 	}
 	
+	
+	
 	public List<Node> getValueSetTopNodesForLeaves(List<Node> reducedNodes) {
 		Set<Node> set = new HashSet<Node>();
 		for(Node x :reducedNodes){
@@ -214,6 +244,47 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		}
 		return set.stream().collect(Collectors.toList());
 	}
+	
+	public List<Node> recurseToTopNodes(List<Node> nodes, List<Node> validTopNodes){
+	   List<Node> results = getValueSetTopNodesForLeaves(nodes).stream().filter(x -> {
+		try {
+			return isValueSetTopNode(x);
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}).collect(Collectors.toList());
+	   if(results == null  || results.size() == 0)
+	    {return validTopNodes;}
+	   else{ 
+		   validTopNodes.addAll(results);
+		   return recurseToTopNodes(results, validTopNodes); }
+	}
+	
+	public List<Node> getNodeListForUpdate(List<Node> nodes) throws LBException{
+		List<Node> nodeHolder = new ArrayList<Node>();
+	    List<Node> results = recurseToTopNodes(nodes, nodeHolder);
+	    for(Node node : nodes){
+	        if(this.isValueSetTopNode(node)){
+	            results.add(node);
+	        }
+	    }
+	    return results;
+	}
+	
+	public boolean isValueSetTopNode(Node node) throws LBException{
+	    CodedNodeSet set = lbs.getCodingSchemeConcepts(this.codingScheme, 
+	            Constructors.createCodingSchemeVersionOrTagFromVersion(this.version));
+	    set = set.restrictToCodes(Constructors.createConceptReferenceList(
+	            node.getEntityCode(), node.getEntityCodeNamespace()));
+	    ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
+	    if(refs.hasNext()){
+	       return refs.next().getEntity().getPropertyAsReference().stream().filter(x -> x.getPropertyName().
+	               equals("Publish_Value_Set")).anyMatch(x -> x.getValue().getContent().equals("Yes"));
+	    }
+	    else{ return false;}
+	    }
 
 	public String getCodingSchemeNamespaceForURIandVersion(String uri, String version) throws LBException{
 		//This complexity is thanks to some inconsistent namespace handling by the OWL2 loader
@@ -257,6 +328,27 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	@Override
 	public List<Node> getCurrentValueSetReferences() {
 	 return loader.getEntitiesForAssociation(association, getUri(), version);
+	}
+	
+	public void prepServiceForUpdate(List<Node> nodes){
+		List<AbsoluteCodingSchemeVersionReference> refs = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		try {
+			for(Node node: nodes){
+				List<AbsoluteCodingSchemeVersionReference>  subRefs = getVsService().getValueSetDefinitionSchemeRefForTopNodeSourceCode(node);
+				if(subRefs != null && subRefs.size() > 0)
+					{refs.addAll(subRefs);}
+				else
+				{ 	List<Node> temp = new ArrayList<Node>();
+					temp.add(node);
+					vsDefLoader.processEntitiesToDefinition(temp, source);}
+			}
+			for(AbsoluteCodingSchemeVersionReference abs: refs){
+				getLexBIGService().getServiceManager(null).deactivateCodingSchemeVersion(abs,null);
+				getLexBIGService().getServiceManager(null).removeCodingSchemeVersion(abs);
+			}
+		} catch (LBException e) {
+			throw new RuntimeException("Problem prepping service for update" + e );
+		}
 	}
 
 	@Override

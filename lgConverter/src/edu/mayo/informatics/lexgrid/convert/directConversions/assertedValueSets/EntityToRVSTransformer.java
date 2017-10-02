@@ -211,7 +211,7 @@ public class EntityToRVSTransformer {
                 Constructors.createConceptReference(topNodeCode, codingSchemeUri), 
                 false, true, 1, 1, null, null, null,-1);
         AssociatedConceptList concepts = null;
-        if( refs.getResolvedConceptReference(0) != null){
+        if( refs.getResolvedConceptReference(0) != null && refs.getResolvedConceptReference(0).getTargetOf() != null ){
             concepts = refs.getResolvedConceptReference(0).getTargetOf().getAssociation(0).getAssociatedConcepts();
         }
         else{
