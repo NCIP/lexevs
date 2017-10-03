@@ -199,7 +199,13 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 				//service.resolveUpdatedVSToReferences("17.07e");
 //		List<Node> nodes = service.getCurrentValueSetReferences();
 //		List<Node> reducedNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
-		List<Node> finalNodes = service.getValueSetTopNodesForLeaves(mappedNodes);
+		List<Node> finalNodes = null;
+		try {
+			finalNodes = service.getNodeListForUpdate(mappedNodes);
+		} catch (LBException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		
 
 		List<AbsoluteCodingSchemeVersionReference> refs = new ArrayList<AbsoluteCodingSchemeVersionReference>();
@@ -236,41 +242,23 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	
 	
 	
-	public List<Node> getValueSetTopNodesForLeaves(List<Node> reducedNodes) {
+	public Set<Node> getValueSetTopNodesForLeaves(List<Node> reducedNodes) {
 		Set<Node> set = new HashSet<Node>();
 		for(Node x :reducedNodes){
 		set.addAll(loader.getEntitiesForAssociationAndSourceEntity(x.getEntityCode(), 
 				x.getEntityCodeNamespace(), this.association, getUri(), this.version));
 		}
-		return set.stream().collect(Collectors.toList());
-	}
-	
-	public List<Node> recurseToTopNodes(List<Node> nodes, List<Node> validTopNodes){
-	   List<Node> results = getValueSetTopNodesForLeaves(nodes).stream().filter(x -> {
-		try {
-			return isValueSetTopNode(x);
-		} catch (LBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return false;
-	}).collect(Collectors.toList());
-	   if(results == null  || results.size() == 0)
-	    {return validTopNodes;}
-	   else{ 
-		   validTopNodes.addAll(results);
-		   return recurseToTopNodes(results, validTopNodes); }
+		return set;
 	}
 	
 	public List<Node> getNodeListForUpdate(List<Node> nodes) throws LBException{
-		List<Node> nodeHolder = new ArrayList<Node>();
-	    List<Node> results = recurseToTopNodes(nodes, nodeHolder);
+		Set<Node> nodeHolder = getValueSetTopNodesForLeaves(nodes);
 	    for(Node node : nodes){
 	        if(this.isValueSetTopNode(node)){
-	            results.add(node);
+	            nodeHolder.add(node);
 	        }
 	    }
-	    return results;
+	    return nodeHolder.stream().collect(Collectors.toList());
 	}
 	
 	public boolean isValueSetTopNode(Node node) throws LBException{

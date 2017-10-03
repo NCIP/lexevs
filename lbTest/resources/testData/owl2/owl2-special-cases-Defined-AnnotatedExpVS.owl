@@ -2243,6 +2243,12 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743">
         <P90>CDISC SDTM Ophthalmic Exam Test Code Terminology</P90>
         <P106>Intellectual Product</P106>
+        <NHC0>C117743</NHC0>
+        <P106>Intellectual Product</P106>
+        <P108>CDISC SDTM Ophthalmic Exam Test Code Terminology</P108>
+        <P366>Ophthalmic Exam Test Code Terminology</P366>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
         <P90>OETESTCD</P90>
         <P90>Ophthalmic Exam Test Code</P90>
         <P90>SDTM-OETESTCD</P90>
@@ -2286,6 +2292,7 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <!-- Structured Product Labeling Color Terminology -->
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
         <rdfs:label>Structured Product Labeling Color Terminology</rdfs:label>
         <NHC0>C54453</NHC0>
         <P106>Intellectual Product</P106>
