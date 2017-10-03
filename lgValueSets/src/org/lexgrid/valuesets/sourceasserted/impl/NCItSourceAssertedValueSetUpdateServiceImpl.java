@@ -41,7 +41,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
     private String owner="NCI";
     private String source = "Contributing_Source";
     private String conceptDomainIndicator = "Semantic_Type";
-    private String alternateUri;
+    private String schemeUri;
 
 	public NCItSourceAssertedValueSetUpdateServiceImpl() {
 	       try {
@@ -102,7 +102,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
     String owner,
     String source,
     String conceptDomainIndicator,
-    String alternateUri) {
+    String schemeUri) {
 	    this.codingScheme = codingScheme;
 	    this.version = version;
 	    this.association = association;
@@ -111,7 +111,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	    this.owner= owner;
 	    this.source = source;
 	    this.conceptDomainIndicator = conceptDomainIndicator;
-	    this.alternateUri = alternateUri;
+	    this.schemeUri = schemeUri;
 	       try {
 	           loader = new SourceAssertedValueSetToSchemeBatchLoader(
 	                       codingScheme, 
@@ -183,12 +183,12 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	}
 
 	public static void main(String[] args){
-		NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl(
-				"owl2lexevs", "0.1.5.1", "Concept_In_Subset", "true", 
-				"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
-				"Semantic_Type", "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
-				//new NCItSourceAssertedValueSetUpdateServiceImpl("17.07e");
-		List<String> valueSetCodes = service.resolveUpdatedVSToReferences("0.1.5.1");
+		NCItSourceAssertedValueSetUpdateServiceImpl service = //new NCItSourceAssertedValueSetUpdateServiceImpl(
+//				"owl2lexevs", "0.1.5.1", "Concept_In_Subset", "true", 
+//				"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
+//				"Semantic_Type", "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+				new NCItSourceAssertedValueSetUpdateServiceImpl("17.08d");
+		List<String> valueSetCodes = service.resolveUpdatedVSToReferences("17.07e","17.08d");
 		List<Node> mappedNodes = null;
 		try {
 			mappedNodes = service.mapSimpleReferencesToNodes(valueSetCodes);
@@ -199,34 +199,47 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 				//service.resolveUpdatedVSToReferences("17.07e");
 //		List<Node> nodes = service.getCurrentValueSetReferences();
 //		List<Node> reducedNodes = service.getUpatedValueSetsForCurrentVersion(nodes, valueSetCodes);
+//		List<Node> finalNodes = null;
+//		try {
+//			finalNodes = service.getNodeListForUpdate(mappedNodes);
+//		} catch (LBException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
+//		
+//
+//		List<AbsoluteCodingSchemeVersionReference> refs = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+//		try {
+//			for(Node node: finalNodes){
+//				refs.addAll(service.getVsService().getValueSetDefinitionSchemeRefForTopNodeSourceCode(node));
+//			}
+//			for(AbsoluteCodingSchemeVersionReference abs: refs){
+//				service.getLexBIGService().getServiceManager(null).deactivateCodingSchemeVersion(abs,null);
+//				service.getLexBIGService().getServiceManager(null).removeCodingSchemeVersion(abs);
+//			}
+//		} catch (LBException e) {
+//			throw new RuntimeException("Problem removing value set needing update" + e );
+//		}
+//	
+//		service.loadUpdatedValueSets(finalNodes);
+		
 		List<Node> finalNodes = null;
 		try {
 			finalNodes = service.getNodeListForUpdate(mappedNodes);
-		} catch (LBException e1) {
+		} catch (LBException e) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
 		
+		service.prepServiceForUpdate(finalNodes);
 
-		List<AbsoluteCodingSchemeVersionReference> refs = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-		try {
-			for(Node node: finalNodes){
-				refs.addAll(service.getVsService().getValueSetDefinitionSchemeRefForTopNodeSourceCode(node));
-			}
-			for(AbsoluteCodingSchemeVersionReference abs: refs){
-				service.getLexBIGService().getServiceManager(null).deactivateCodingSchemeVersion(abs,null);
-				service.getLexBIGService().getServiceManager(null).removeCodingSchemeVersion(abs);
-			}
-		} catch (LBException e) {
-			throw new RuntimeException("Problem removing value set needing update" + e );
-		}
-	
+
 		service.loadUpdatedValueSets(finalNodes);
 
 	}
 	
 	public List<Node> mapSimpleReferencesToNodes(List<String> valueSetCodes) throws LBException {
-		final String namespace = this.getCodingSchemeNamespaceForURIandVersion(alternateUri, version);
+		final String namespace = this.getCodingSchemeNamespaceForURIandVersion(getUri(), version);
 		return valueSetCodes.stream().map(x -> {
 			Node node = new Node(); 
 			node.setEntityCode(x); 
@@ -268,10 +281,14 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	            node.getEntityCode(), node.getEntityCodeNamespace()));
 	    ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
 	    if(refs.hasNext()){
-	       return refs.next().getEntity().getPropertyAsReference().stream().filter(x -> x.getPropertyName().
+	      boolean isTopNode = refs.next().getEntity().getPropertyAsReference().stream().filter(x -> x.getPropertyName().
 	               equals("Publish_Value_Set")).anyMatch(x -> x.getValue().getContent().equals("Yes"));
+	      refs.release();
+	      return isTopNode;
 	    }
-	    else{ return false;}
+	    else{ 
+	    	return false;
+	    	}
 	    }
 
 	public String getCodingSchemeNamespaceForURIandVersion(String uri, String version) throws LBException{
@@ -345,7 +362,13 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 			if (previousVersion != null) {
 				Date previousDate = getNCItSourceHistoryService().getDateForVersion(previousVersion);
 				Date currentDate = getNCItSourceHistoryService().getDateForVersion(currentVersion);
-				return getNCItSourceHistoryService().getVersionsForDateRange(previousDate, currentDate);
+				List<String> versions =  getNCItSourceHistoryService().getVersionsForDateRange(previousDate, currentDate);
+				List<String> list = new ArrayList<String>();
+				for(String s: versions){
+					list.addAll(getNCItSourceHistoryService().getCodeListForVersion(s));
+				}
+				return list;
+						
 			} else {
 				return getNCItSourceHistoryService().getCodeListForVersion(currentVersion);
 			}
@@ -366,7 +389,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	}
 	
 	private String getUri(){
-		return alternateUri == null? NCIT_URI: alternateUri;
+		return schemeUri == null? NCIT_URI: schemeUri;
 	}
 
 }
