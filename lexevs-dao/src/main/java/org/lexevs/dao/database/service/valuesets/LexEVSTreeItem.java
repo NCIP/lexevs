@@ -79,6 +79,10 @@ public class LexEVSTreeItem implements Serializable{
             _auis = auiText;
         }
 
+        public String get_ns(){
+        	return _ns;
+        }
+        
         public void setNs(String ns) {
     		_ns = ns;
     	}
