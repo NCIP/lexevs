@@ -1456,6 +1456,7 @@ public class OwlApi2LG {
         List<Source> sources = new ArrayList<Source>();
         for (OWLAnnotation annotation : prop.getAnnotations()) {
             String annotationName = getLocalName(annotation.getProperty());
+            String annotationPropertyCode = annotation.getProperty().getIRI().getFragment();
             if(owlDatatypeName2label_.get(annotationName) != null){
                 annotationName = owlDatatypeName2label_.get(annotationName);
             }
@@ -1493,13 +1494,13 @@ public class OwlApi2LG {
             //If this is a presentation we are going to try to populate the source
             //or representational form
             if(lgProp instanceof Presentation){
-                if(isRepresentationalForm(annotationName)){
+                if(isRepresentationalForm(annotationName) || isRepresentationalForm(annotationPropertyCode)){
                     ((Presentation) lgProp).setRepresentationalForm(annotationValue);
                     lgSupportedMappings_.registerSupportedRepresentationalForm(annotationValue, 
                             getNameSpace(annotation.getProperty()), annotationValue, false);
                     continue;
                 }
-                else if(isSource(annotationName)){
+                else if(isSource(annotationName) || isSource(annotationPropertyCode)){
                      Source source = new Source();
                      source.setContent(annotationValue);
                      sources.add(source);
@@ -1507,12 +1508,12 @@ public class OwlApi2LG {
                      lgSupportedMappings_.registerSupportedSource(annotationValue, 
                              getNameSpace(annotation.getProperty()), annotationValue, null, false);
                      continue;
-                    }
+                }
             }
             
             //Do the same for Definition sources
             if(lgProp instanceof Definition){
-                if(isSource(annotationName)) {
+                if(isSource(annotationName) || isSource(annotationPropertyCode)) {
                     Source source = new Source();
                     source.setContent(annotationValue);
                     sources.add(source);
@@ -1525,7 +1526,7 @@ public class OwlApi2LG {
                 
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
 
-                if(isSource(annotationName)) {
+                if(isSource(annotationName) || isSource(annotationPropertyCode)) {
                         Source source = new Source();
                         source.setContent(annotationValue);
                         sources.add(source);
@@ -1550,7 +1551,7 @@ public class OwlApi2LG {
             i++;
         }
         lgProp.setSource(sourceArray);
-        }
+    }
 
 
     private boolean isSource(String annotationValue) {

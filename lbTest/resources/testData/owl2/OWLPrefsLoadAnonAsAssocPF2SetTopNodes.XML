@@ -4,8 +4,13 @@
   xsi:schemaLocation="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences
   http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd">
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
+  
   <MatchXMLRepformNames>term-group</MatchXMLRepformNames> 
-  <MatchXMLSourceNames>term-source|def-source|source</MatchXMLSourceNames>
+  <!--MatchXMLRepformNames>P383</MatchXMLRepformNames--> 
+    
+  <MatchXMLSourceNames>source|P384|P378</MatchXMLSourceNames>
+  <!--MatchXMLSourceNames>term-source|source|def-source</MatchXMLSourceNames-->
+  
   <ProcessComplexProps>true</ProcessComplexProps>  
   <StrictOWLImplementation>false</StrictOWLImplementation>
   <PrioritizedPresentationNames>
