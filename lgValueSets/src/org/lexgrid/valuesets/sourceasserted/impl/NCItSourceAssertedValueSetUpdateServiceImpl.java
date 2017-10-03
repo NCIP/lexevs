@@ -80,7 +80,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 	                       conceptDomainIndicator);
 	           vsDefLoader = new SourceAssertedValueSetBatchLoader(
                        codingScheme, 
-                       version, 
+                       userDeterminedVersion, 
                        association, 
                        Boolean.parseBoolean(target), 
                        uri, 
