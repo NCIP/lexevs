@@ -279,6 +279,13 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		return (List<AbsoluteCodingSchemeVersionReference>) this.getSqlMapClientTemplate().queryForList( GET_VALUESETSCHEMEREF_FOR_TOP_NODE_SOURCE_CODE,
 				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), code, ResourceType.CODING_SCHEME.name()));
 	}
+    
+    @SuppressWarnings("unchecked")
+	@Override
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(String code){
+		return (List<AbsoluteCodingSchemeVersionReference>) this.getSqlMapClientTemplate().queryForList( GET_VALUESETSCHEMEREF_FOR_TOP_NODE_SOURCE_CODE,
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(), code, ResourceType.VALUESET_DEFINITION.name()));
+	}
 
 	@Override
 	public String insertValueSetDefinition(String systemReleaseURI,

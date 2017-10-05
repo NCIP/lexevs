@@ -14,10 +14,10 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Impl.loaders.NCItSourceAssertedValueSetUpdateServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Node;
-import org.lexgrid.valuesets.sourceasserted.impl.NCItSourceAssertedValueSetUpdateServiceImpl;
 
 public class NCItSourceAssertedValueSetUpdateServiceTest {
 	NCItSourceAssertedValueSetUpdateServiceImpl vsUpdate;

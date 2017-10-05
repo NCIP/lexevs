@@ -188,4 +188,6 @@ public interface ValueSetDefinitionService {
 
 	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionSchemeRefForTopNodeSourceCode(Node node)
 			throws LBException;
+
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(Node node) throws LBException;
 }

@@ -155,6 +155,13 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 				getValueSetDefinitionSchemeRefForTopNodeSourceCode(node.getEntityCode());
 		
 	}
+	
+	@Override
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(Node node) throws LBException {
+		return this.getDaoManager().getCurrentValueSetDefinitionDao().
+				getValueSetDefinitionDefRefForTopNodeSourceCode(node.getEntityCode());
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#insertDependentChanges(org.LexGrid.valueSets.ValueSetDefinition)

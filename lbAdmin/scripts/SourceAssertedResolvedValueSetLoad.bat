@@ -19,4 +19,4 @@ REM    -s", --sourceName", usage="Gives the name of the property to resolve the 
 REM        
 REM Example: SourceAssertedResolvedValueSetLoad.sh -v "17.04d"
 REM
-java -Xmx3000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.SourceAssertedResolvedValueSetBatchLauncher %*
+java -Xmx3000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.admin.SourceAssertedResolvedValueSetBatchLauncher %*

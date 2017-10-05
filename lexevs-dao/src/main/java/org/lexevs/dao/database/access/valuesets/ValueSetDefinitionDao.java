@@ -167,4 +167,7 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	public void deleteURIMap(String referenceGuid, String supportedAttributeTag);
 
 	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionSchemeRefForTopNodeSourceCode(String code);
+
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(
+			String entityCode);
 }
