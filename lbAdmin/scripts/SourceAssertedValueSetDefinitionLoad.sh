@@ -22,4 +22,4 @@
 #        
 # Example: SourceAssertedValueSetDefinition.bat -v "17.04d"
 #
-java -Xmx3000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.SourceAssertedValueSetDefinitionLauncher %*
+java -Xmx3000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.SourceAssertedValueSetDefinitionLauncher $@
