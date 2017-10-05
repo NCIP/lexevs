@@ -202,6 +202,7 @@ import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorT
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AllSourceAssertedUpdateTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToRVSTransformerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
@@ -518,6 +519,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(AllSourceAssertedUpdateTests.class));
         TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
         assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
         assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
