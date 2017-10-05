@@ -38,7 +38,7 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 	
 
 	@Test
-	public void getReferencesForVyersionTest() throws LBException {
+	public void getReferencesForVersionTest() throws LBException {
 		List<String> refs = vsUpdate.getReferencesForVersion("0.1.5.1");
 		assertTrue(refs.size() > 0);
 		assertEquals(refs.stream().filter(x -> x.equals("C48326")).findAny().get(), "C48326");

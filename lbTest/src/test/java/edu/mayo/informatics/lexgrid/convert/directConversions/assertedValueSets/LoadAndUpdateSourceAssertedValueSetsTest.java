@@ -75,7 +75,9 @@ public void loadHistoryTest() throws LBException, InterruptedException{
 
     hloader.load(new File("../lbTest/resources/testData/owl2/owl2historytest.txt").toURI(), new File(
             "../lbTest/resources/testData/owl2/owl2systemReleaseTest.txt").toURI(), false, true, true);
-    Thread.sleep(1000);
+    while (hloader.getStatus().getEndTime() == null) {
+        Thread.sleep(1000);
+    }
 }
 
 @Order(5)
