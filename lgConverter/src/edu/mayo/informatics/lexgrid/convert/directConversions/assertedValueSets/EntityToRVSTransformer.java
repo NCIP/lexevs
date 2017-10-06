@@ -26,6 +26,7 @@ import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 
 
 public class EntityToRVSTransformer {
@@ -88,6 +89,12 @@ public class EntityToRVSTransformer {
                                 s.getPropertyQualifierAsReference())
                         : entity.getEntityDescription().getContent()));
         Entities vsEntities = getEntities(entity.getEntityCode());
+        if(vsEntities == null || vsEntities.getEntityAsReference().size() < 1){
+            System.out.println("No Entities Found for Value Set : " + entity.getEntityCode());
+            System.out.println("No resolved Value Set scheme will be loaded");
+            LoggerFactory.getLogger().error("No Entities Found for Value Set : " + entity.getEntityCode());
+            return schemes;
+        }
         definedSources.forEach((x, y) -> {
             try {
                 if(definedSources.size() > 1){
@@ -215,7 +222,8 @@ public class EntityToRVSTransformer {
             concepts = refs.getResolvedConceptReference(0).getTargetOf().getAssociation(0).getAssociatedConcepts();
         }
         else{
-            throw new RuntimeException("No values for value set with focus code of " + topNodeCode);
+            LoggerFactory.getLogger().error("No values for value set with focus code of " + topNodeCode);
+            return newEntities;
         }
                 
         for (ResolvedConceptReference refer : concepts.getAssociatedConcept()) {

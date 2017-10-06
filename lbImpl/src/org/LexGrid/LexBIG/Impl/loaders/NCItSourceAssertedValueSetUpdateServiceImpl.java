@@ -214,7 +214,7 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 					.filter(x -> x.getPropertyName().equals(PUBLISH_VALUE_SETS))
 					.anyMatch(x -> x.getValue().getContent().equals(PUBLISH_VALUE_SETS_VALUE));
 			refs.release();
-			return isTopNode && isTargetOfConceptInSubset(ref);
+			return isTopNode;
 		} else {
 			return false;
 		}

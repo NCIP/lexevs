@@ -2,31 +2,41 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.NCItSourceAssertedValueSetUpdateServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Node;
 
 public class NCItSourceAssertedValueSetUpdateServiceTest {
 	NCItSourceAssertedValueSetUpdateServiceImpl vsUpdate;
+	LexBIGService lbs;
 	@Before
 	public void setUp() throws Exception {
 		vsUpdate = new NCItSourceAssertedValueSetUpdateServiceImpl(
 				"owl2lexevs", "0.1.5.1", "Concept_In_Subset", "true", 
 				"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
 				"Semantic_Type", "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+		lbs = LexBIGServiceImpl.defaultInstance();
+		
 	}
 
 	@Test
@@ -67,5 +77,38 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 		node.setEntityCode("C54453");
 		List<AbsoluteCodingSchemeVersionReference> vref = vsUpdate.getVsService().getValueSetDefinitionSchemeRefForTopNodeSourceCode(node);
 		assertTrue(vref.size() > 0);
+	}
+	
+	@Test
+	public void isValueSetTopNodeTest() throws LBException{
+		Node node = new Node();
+		node.setEntityCode("C54453");
+		assertTrue(vsUpdate.isValueSetTopNode(node));
+	}
+	
+	@Test
+	public void newValueSetIsLoaded() throws LBException{
+		CodingScheme scheme =lbs.resolveCodingScheme("Whiter Shade of Grey", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5.1"));
+		assertNotNull(scheme);
+	}
+	
+	@Test
+	public void newValuesLoaded() throws LBException{
+		CodedNodeSet set = lbs.getCodingSchemeConcepts("Structured Product Labeling Color Terminology",
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5.1"));
+		ResolvedConceptReferenceList list = set.resolveToList(null, null, null, 10);
+		assertTrue(Arrays.asList(list.getResolvedConceptReference()).
+				stream().anyMatch(x -> x.getCode().equals("C111112")));
+		assertTrue(Arrays.asList(list.getResolvedConceptReference()).
+				stream().anyMatch(x -> x.getCode().equals("C48326")));
+		assertTrue(Arrays.asList(list.getResolvedConceptReference()).
+				stream().anyMatch(x -> x.getCode().equals("C48327")));
+	}
+	
+	@Test(expected = LBException.class)
+	public void badNewValueSetIsNotLoaded() throws LBException{
+		CodingScheme scheme =lbs.resolveCodingScheme("Clinical Data Interchange Standards Consortium Terminology", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5.1"));
 	}
 }

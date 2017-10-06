@@ -27,12 +27,13 @@ import org.springframework.core.annotation.Order;
 public class LoadAndUpdateSourceAssertedValueSetsTest {
 	LexBIGServiceManager lbsm;
 
-@Order(1)
+
 @Before
 public void setUp() throws LBException{
 	lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 }
 
+@Order(1)
 @Test
 public void loadFirstValueSetCodingSchemeTest() throws LBException, InterruptedException{
 
@@ -76,7 +77,7 @@ public void loadHistoryTest() throws LBException, InterruptedException{
     hloader.load(new File("../lbTest/resources/testData/owl2/owl2historytest.txt").toURI(), new File(
             "../lbTest/resources/testData/owl2/owl2systemReleaseTest.txt").toURI(), false, true, true);
     while (hloader.getStatus().getEndTime() == null) {
-        Thread.sleep(1000);
+        Thread.sleep(2000);
     }
 }
 

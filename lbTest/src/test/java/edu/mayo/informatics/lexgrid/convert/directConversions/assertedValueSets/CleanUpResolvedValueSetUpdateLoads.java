@@ -1,7 +1,5 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -12,12 +10,8 @@ import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
-import org.LexGrid.LexBIG.Impl.History.UriBasedHistoryServiceImpl;
-import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
@@ -70,15 +64,7 @@ LexBIGServiceManager lbsm;
 	
 	@Test
 	public void testRemoveHistory() throws LBException{
-		UriBasedHistoryServiceImpl service = 
-				new UriBasedHistoryServiceImpl("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
 		lbsm.removeHistoryService("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
-	}
-	
-	@AfterClass
-	public  static void removeBrokenScheme() throws LBInvocationException, LBParameterException{
-		CleanUpUtility.removeAllUnusedDatabases();
-		assertTrue(CleanUpUtility.listUnusedDatabases().length == 0);
 	}
 	
 
