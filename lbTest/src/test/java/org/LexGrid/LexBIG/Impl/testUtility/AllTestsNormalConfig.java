@@ -519,7 +519,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(AllSourceAssertedUpdateTests.class));
+        mainSuite.addTest(orderedSuite(AllSourceAssertedUpdateTests.class));
         TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
         assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
         assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);

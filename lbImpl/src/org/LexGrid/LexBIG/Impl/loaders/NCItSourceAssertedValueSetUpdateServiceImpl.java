@@ -335,10 +335,6 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		return resolveUpdatedVSToReferences(null, currentVersion);
 	}
 
-	public List<Node> getUpatedValueSetsForCurrentVersion(List<Node> references, List<String> valuesets) {
-		return references.stream().filter(x -> valuesets.contains(x.getEntityCode())).collect(Collectors.toList());
-	}
-
 	private String getUri() {
 		return schemeUri == null ? NCIT_URI : schemeUri;
 	}
