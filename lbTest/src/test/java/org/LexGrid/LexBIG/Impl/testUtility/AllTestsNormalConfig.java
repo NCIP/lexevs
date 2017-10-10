@@ -512,6 +512,17 @@ public class AllTestsNormalConfig {
         //MRMAP RRF load tests
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
+        //AsserteValueSets
+        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
+        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
+        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
+        assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
+        mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
+        mainSuite.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
+
+        
         //Broken Load Clean Up Function tests
 
         mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
@@ -521,14 +532,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
-        mainSuite.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
-        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
-        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
-        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
-        assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
+
         //*******Always run this last, it breaks a lot of things that are created in ServiceHolder 
         mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
         // $JUnit-END$
