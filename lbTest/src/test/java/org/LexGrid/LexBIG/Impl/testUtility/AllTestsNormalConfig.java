@@ -204,8 +204,11 @@ import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AllSourceAssertedUpdateTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.CleanUpResolvedValueSetUpdateLoads;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToRVSTransformerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.LoadAndUpdateSourceAssertedValueSetsTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.NCItSourceAssertedValueSetUpdateServiceTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
@@ -519,7 +522,9 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
-        mainSuite.addTest(orderedSuite(AllSourceAssertedUpdateTests.class));
+        mainSuite.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
         assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
         assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
