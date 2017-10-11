@@ -1,5 +1,5 @@
 C48326|Red|create|08-JAN-17|(null)|(null)
 C48327|Purple|create|08-JAN-17|(null)|(null)
 C11111|Polka_dot|create|08-JAN-17|(null)|(null)
-C111112|Whiter shade of Grey|create|08-JAN-17|(null)|(null)
-C61410|CDISC Terminology|create|08-JAN-17|(null)|(null)
+C111112|Whiter_shade_of_Grey|create|08-JAN-17|(null)|(null)
+C61410|CDISC_Terminology|create|08-JAN-17|(null)|(null)
