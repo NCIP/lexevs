@@ -117,7 +117,7 @@ public class EntityToVSDTransformer{
         return null;
     }
     
-    protected String getProductionVersionForCodingSchemeURI(String uri) throws LBParameterException{
+    public String getProductionVersionForCodingSchemeURI(String uri) throws LBParameterException{
         List<RegistryEntry> entries =  registry.getEntriesForUri(uri);
         return entries.stream().filter(x -> x.getTag().equals(PRODUCTION)).
                 findFirst().get().getResourceVersion();

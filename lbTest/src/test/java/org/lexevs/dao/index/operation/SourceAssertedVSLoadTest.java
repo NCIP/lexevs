@@ -10,6 +10,7 @@ import java.util.NoSuchElementException;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -20,16 +21,23 @@ import org.LexGrid.LexBIG.admin.Util;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.AfterClass;
-import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
-import org.lexgrid.valuesets.admin.RemoveAllValueSetDefinitions;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
+
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransformer;
 
 public class SourceAssertedVSLoadTest {
 	
-	@Before
-	public void setUp() throws LBException, InterruptedException, NoSuchElementException{
+	public static final String CODING_SCHEME_URI = "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl";
+	public static final String CODING_SCHEME = "owl2lexevs";
+	public static final String VERSION = "0.1.5";
+	public static final String ASSOCIATION_NAME = "Concept_In_Subset";
+	private static  EntityToVSDTransformer transformer;
+
+	@BeforeClass
+	public static void setUp() throws LBException, InterruptedException, NoSuchElementException{
 
 			LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -51,7 +59,7 @@ public class SourceAssertedVSLoadTest {
 	        		new SourceAssertedValueSetBatchLoader("owl2lexevs", 
 	        				"0.1.5", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI", "Semantic_Type");
 	        vsdbatchLoader.run("Contributing_Source");
-	  
+			transformer = new EntityToVSDTransformer(null, null, null, null, null, ASSOCIATION_NAME, null);
 	}
 
 	@Test
@@ -76,6 +84,12 @@ public class SourceAssertedVSLoadTest {
 		assertTrue(def.getDefinitionEntry(0).getEntityReference().getLeafOnly());
 		assertTrue(def.getDefinitionEntry(0).getEntityReference().getTargetToSource());
 		assertTrue(def.getDefinitionEntry(0).getEntityReference().isTransitiveClosure());
+	}
+	
+	@Test
+	public void testTransformerIntegration() throws LBParameterException {
+		String version = transformer.getProductionVersionForCodingSchemeURI(CODING_SCHEME_URI);
+		assertNotNull(version);
 	}
 	
 	@AfterClass

@@ -53,12 +53,6 @@ public class EntityToVSDTransFormerTest extends TestCase{
 	}
 	
 	@Test
-	public void testGetProductionVersionForCodingSchemeURI() throws LBParameterException{		
-		String version = transformer.getProductionVersionForCodingSchemeURI(CODING_SCHEME_URI);
-		assertNotNull(version);
-	}
-	
-	@Test
     public void testInitValueSetDefintion(){
 		ValueSetDefinition def = transformer.initValueSetDefintion(CODING_SCHEME, true, "1", "NCI");
 		assertTrue(def.getDefaultCodingScheme().equals(CODING_SCHEME));

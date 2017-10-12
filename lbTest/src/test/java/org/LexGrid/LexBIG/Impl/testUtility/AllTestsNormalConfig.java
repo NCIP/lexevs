@@ -517,12 +517,13 @@ public class AllTestsNormalConfig {
         assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
         assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
         assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
+        mainSuite.addTest(assertedValueSets);
         TestSuite assertedValueSetUpdates = new TestSuite("AssertedValueSetUpdates");
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
-        
+        mainSuite.addTest(assertedValueSetUpdates);
 
         
         //Broken Load Clean Up Function tests
