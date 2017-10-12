@@ -6,6 +6,12 @@
 	<typeAlias alias="nciChangeEvent" type="org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent" />
 	<typeAlias alias="systemRelease" type="org.LexGrid.versions.SystemRelease" />
 	<typeAlias alias="changeTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NCIHistoryChangeTypeTypeHandler"/>
+	<typeAlias alias="conceptReference" type="org.LexGrid.LexBIG.DataModel.Core.ConceptReference"/>
+	
+	<resultMap id="conceptReferenceResult" class="conceptReference">
+		<result property="code" column="entityCode"/>
+		<result property="codeNamespace" column="entityNamespace" />
+	</resultMap>
 
 	<resultMap id="nciChangeEventResult" class="nciChangeEvent">
 		<result property="editaction" column="editAction" typeHandler="changeTypeHandler"/>
@@ -23,6 +29,18 @@
 		<result property="releaseDate" column="releaseDate"/>
 		<result property="releaseAgency" column="releaseAgency" />
 		<result property="basedOnRelease" column="basedOnRelease" />
+	</resultMap>
+	
+	<resultMap id="entityCodeResult" class="string">
+		<result property="java.lang.String" column="entityCode" />
+	</resultMap>
+	
+	<resultMap id="dateResult" class="date">
+		<result property="java.util.Date" column="releaseDate" />
+	</resultMap>
+	
+	<resultMap id="versionsResult" class="string">
+		<result property="java.util.String" column="releaseId" />
 	</resultMap>
 	
 	<delete id="deleteSystemRelease"
@@ -72,6 +90,49 @@
 					)    	
 	</select>
 	
+ 	<select id="getReferencesForVersion"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="entityCodeResult">
+		SELECT
+		 	entityCode 
+		FROM 
+		 	${defaultPrefix}nciHist hist 
+		LEFT JOIN 
+		 	${defaultPrefix}ncihistsystemrelease sysr 
+		ON 
+		 	hist.releaseGuid = sysr.releaseGuid 
+		WHERE 
+		 	sysr.releaseId = #param1# 
+		GROUP BY 
+		 	hist.entityCode
+	</select>
+	
+	 <select id="getDateForVersion"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="dateResult">
+		SELECT
+			releasedate 
+		FROM
+			${defaultPrefix}ncihistsystemrelease 
+		WHERE 
+			releaseid = #param1#
+	</select>
+	
+	<select id="getVersionsForDateRange"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+		resultMap="versionsResult">
+		SELECT
+			releaseid
+		FROM
+			${defaultPrefix}ncihistsystemrelease
+		WHERE
+			releaseDate 
+		BETWEEN 
+			#param1#
+		AND 
+			#param2#
+	</select>
+		
 	<sql id="getChangeEventFragment">
 		SELECT 
 			entityCode,

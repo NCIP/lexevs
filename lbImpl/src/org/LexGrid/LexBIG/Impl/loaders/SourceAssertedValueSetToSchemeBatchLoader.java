@@ -84,9 +84,19 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
     
     
     
-    protected List<Node> getEntitiesForAssociation(String association, String codingSchemeUri,String version){
+    public List<Node> getEntitiesForAssociation(String association, String codingSchemeUri,String version){
        String associationPredicateUid = this.getPredicateGuidForValueSetRelation(association, codingSchemeUri, version);
        return codedNodeGraphDao.getDistinctTargetTriples(codingSchemeUri, version, associationPredicateUid);
+    }
+    
+    public List<Node> getEnitiesForAssociationAndTargetEntity(String code, String namespace, String association, String codingSchemeUri, String version){
+        String associationPredicateUid = this.getPredicateGuidForValueSetRelation(association, codingSchemeUri, version);
+        return codedNodeGraphDao.getSourcesFromTarget(codingSchemeUri, version, code, namespace, associationPredicateUid);
+    }
+    
+    public List<Node> getEntitiesForAssociationAndSourceEntity(String code, String namespace, String association, String codingSchemeUri, String version){
+        String associationPredicateUid = this.getPredicateGuidForValueSetRelation(association, codingSchemeUri, version);
+        return codedNodeGraphDao.getTargetsFromSource(codingSchemeUri, version, code, namespace, associationPredicateUid);
     }
     
     protected String getPredicateGuidForValueSetRelation(String associationName, String codingSchemeUri,

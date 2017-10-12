@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeVersionList;
 import org.LexGrid.LexBIG.DataModel.Collections.NCIChangeEventList;
@@ -195,6 +196,21 @@ public class UriBasedHistoryServiceImpl implements HistoryService {
     @Override
     public SystemReleaseDetail getSystemRelease(URI releaseURN) throws LBParameterException, LBInvocationException {
         return getNciHistoryService().getSystemRelease(uri, releaseURN);
+    }
+
+    @Override
+    public List<String> getCodeListForVersion(String currentVersion) {
+        return getNciHistoryService().getCodeListForVersion(currentVersion, uri);
+    }
+
+    @Override
+    public Date getDateForVersion(String currentVersion) {
+        return getNciHistoryService().getDateForVersion(currentVersion, uri);
+    }
+
+    @Override
+    public List<String> getVersionsForDateRange(Date previousDate, Date currentDate) {
+        return getNciHistoryService().getVersionsForDateRange(previousDate, currentDate, uri);
     }
 
 }

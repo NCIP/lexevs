@@ -22,12 +22,14 @@ import java.net.URI;
 import java.sql.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.ValueSetDefinitions;
+import org.lexevs.dao.database.access.association.model.Node;
 
 /**
  * The Interface ValueSetDefinitionService.
@@ -182,4 +184,10 @@ public interface ValueSetDefinitionService {
 	 */
 	public ValueSetDefinition getValueSetDefinitionByDate(String valueSetDefURI,
 			Date date) throws LBRevisionException;
+
+
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionSchemeRefForTopNodeSourceCode(Node node)
+			throws LBException;
+
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(Node node) throws LBException;
 }

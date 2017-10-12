@@ -170,7 +170,29 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, version).
 				getDistinctTargetNodesForAssociationPredicate(codingSchemeUid, associationPredicateUid);
 			}
+	
+	@Override
+	@Transactional
+	public List<Node> getSourcesFromTarget(
+			String codingSchemeUri, 
+			String version, 
+			String entityCode, 
+			String entityNamespace,
+			String associationPredicateUid){
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,version);
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, version).
+				getSourceNodesForTarget(codingSchemeUid, associationPredicateUid, entityCode, entityNamespace);
+			}
 
+
+	@Override
+	@Transactional
+	public List<Node> getTargetsFromSource(String codingSchemeUri, String version, String code, String namespace,
+			String associationPredicateUid) {
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri,version);
+		return this.getDaoManager().getCodedNodeGraphDao(codingSchemeUri, version).
+				getTargetNodesForSource(codingSchemeUid, associationPredicateUid, code, namespace);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService#getTripleUidsContainingObject(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.lexevs.dao.database.service.codednodegraph.model.GraphQuery, java.util.List, int, int)
@@ -909,4 +931,5 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 							mappingCodingSchemeUid, 
 							relationsContainerName);
 	}
+
 }

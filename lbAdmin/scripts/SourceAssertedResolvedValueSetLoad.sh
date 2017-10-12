@@ -1,5 +1,5 @@
 #!/bin/bash
-# Loads All LexGrid XML formatted Value Set Definitions in a given directory
+# Loads all source asserted Value Sets from a given source
 #
 # Options:
 #

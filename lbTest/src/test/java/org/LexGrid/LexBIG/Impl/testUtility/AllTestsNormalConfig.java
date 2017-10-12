@@ -202,9 +202,13 @@ import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorT
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AllSourceAssertedUpdateTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.CleanUpResolvedValueSetUpdateLoads;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToRVSTransformerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.LoadAndUpdateSourceAssertedValueSetsTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.NCItSourceAssertedValueSetUpdateServiceTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
@@ -508,6 +512,19 @@ public class AllTestsNormalConfig {
         //MRMAP RRF load tests
         mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
         
+        //AsserteValueSets
+        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
+        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
+        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
+        assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
+        TestSuite assertedValueSetUpdates = new TestSuite("AssertedValueSetUpdates");
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
+        assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
+        
+
+        
         //Broken Load Clean Up Function tests
 
         mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
@@ -517,11 +534,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
-        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
-        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
-        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
-        assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
+
         //*******Always run this last, it breaks a lot of things that are created in ServiceHolder 
         mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
         // $JUnit-END$

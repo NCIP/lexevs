@@ -1325,6 +1325,24 @@
 			sourceEntityCodeNamespace = #param3#		
 	</select>
 	
+	
+	<select id="getSourcesOfTarget" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+		remapResults="true" 
+		resultMap="nodeResult">
+		SELECT
+			sourceEntityCode AS entityCode,
+			sourceEntityCodeNamespace AS entityCodeNamespace
+		FROM 
+			$prefix$entityAssnsToEntity
+		WHERE
+			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		AND
+			targetEntityCode = #param2#
+		AND
+			targetEntityCodeNamespace = #param3#		
+	</select>
+	
 	<select id="getValueSetHierarchySourcesOfTargets" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint"
 		remapResults="true" 
