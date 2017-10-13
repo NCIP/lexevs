@@ -73,8 +73,8 @@ public void loadSourceAssertedResolvedValueSetsTest() throws InterruptedExceptio
 public void loadHistoryTest() throws LBException, InterruptedException{
     UriBasedHistoryLoaderImpl hloader = new UriBasedHistoryLoaderImpl("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
 
-    hloader.load(new File("../lbTest/resources/testData/owl2/owl2historytest.txt").toURI(), new File(
-            "../lbTest/resources/testData/owl2/owl2systemReleaseTest.txt").toURI(), false, true, true);
+    hloader.load(new File("resources/testData/owl2/owl2historytest.txt").toURI(), new File(
+            "resources/testData/owl2/owl2systemReleaseTest.txt").toURI(), false, true, true);
     while (hloader.getStatus().getEndTime() == null) {
         Thread.sleep(2000);
     }
