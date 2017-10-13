@@ -98,7 +98,7 @@
 		FROM 
 		 	${defaultPrefix}nciHist hist 
 		LEFT JOIN 
-		 	${defaultPrefix}ncihistsystemrelease sysr 
+		 	${defaultPrefix}nciHistSystemRelease sysr 
 		ON 
 		 	hist.releaseGuid = sysr.releaseGuid 
 		WHERE 
@@ -113,7 +113,7 @@
 		SELECT
 			releasedate 
 		FROM
-			${defaultPrefix}ncihistsystemrelease 
+			${defaultPrefix}nciHistSystemRelease 
 		WHERE 
 			releaseid = #param1#
 	</select>
@@ -124,7 +124,7 @@
 		SELECT
 			releaseid
 		FROM
-			${defaultPrefix}ncihistsystemrelease
+			${defaultPrefix}nciHistSystemRelease
 		WHERE
 			releaseDate 
 		BETWEEN 
