@@ -1,7 +1,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.util.List;
@@ -79,6 +78,9 @@ public void loadHistoryTest() throws LBException, InterruptedException{
     while (hloader.getStatus().getEndTime() == null) {
         Thread.sleep(2000);
     }
+    
+    assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
+    assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
 }
 
 @Order(5)
