@@ -220,6 +220,7 @@ public OntologyFormat getOntologyFormat() {
             
             SystemResourceService resourceService = LexEvsServiceLocator.getInstance().
                 getSystemResourceService();
+            System.out.println("Loading Generic History for " + uri);
             try {
                 if(resourceService.containsNonCodingSchemeResource(uri)) {
                     if(overwrite) {
@@ -229,6 +230,7 @@ public OntologyFormat getOntologyFormat() {
                     resourceService.addNciHistoryResourceToSystem(uri);
                 }
             } catch (LBParameterException e) {
+                System.out.println("****ERROR*** Loading History Service" + e);
                throw new RuntimeException(e);
             }
             
@@ -247,12 +249,15 @@ public OntologyFormat getOntologyFormat() {
                 loadStatus.setState(ProcessState.FAILED);
                 messageDirector.fatal("Error loading NCI History", e);
                 loadStatus.setErrorsLogged(true);
-     
+                System.out.println("Error loading History for :);"
+                        + uri + e.getMessage());
                 messageDirector.info("Removing Resources...");
                 try {
                     LexBIGServiceImpl.defaultInstance().getServiceManager(null).removeHistoryService(uri);
                 } catch (Exception e1) {
                     messageDirector.warn("Resources cound not be removed.", e1);
+                    System.out.println("Error removing history :);"
+                            + uri + e.getMessage());
                 } 
             }
             
