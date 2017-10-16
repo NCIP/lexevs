@@ -215,6 +215,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLex
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCaseSnippetTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCasesNamespaceTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
@@ -279,9 +280,9 @@ public class AllTestsNormalConfig {
         owl2LoaderSuite.addTestSuite(OWL2PrimitivesUnannotatedSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2SpecialCaseSnippetTestIT.class);
         owl2LoaderSuite.addTestSuite(OWL2UnitTests.class);
+        owl2LoaderSuite.addTestSuite(OWL2SpecialCasesNamespaceTestIT.class);
         mainSuite.addTest(owl2LoaderSuite);
-        
-        
+                
         TestSuite umlsLoaderSuite = new TestSuite("UmlsLoader Tests");
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.EntityAssnsToEntityDataTestIT.class);
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.EntityAssnsToEntityQualsDataTestIT.class);

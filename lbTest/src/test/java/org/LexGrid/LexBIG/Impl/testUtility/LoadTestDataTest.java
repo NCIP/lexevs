@@ -677,6 +677,30 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 	}
     @Test
     @Order(25)
+	public void testloadOWL2SnippetSpecialCasesNamespaces() throws Exception {
+		
+		LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
+		try{
+			loader.setLoaderPreferences(new File("resources/testData/owl2/OWLPrefsLoadAnonAsAssocPF2SetTopNodesByNameToCode.XML").toURI());
+			loader.load(new File("resources/testData/owl2/owl2-special-cases-Namespaces.owl")
+					.toURI(), null, 1, true, true);
+		}
+		catch(ClassCastException e){
+			fail("Failed on class cast exception: " + e.getMessage());
+		}
+
+		while (loader.getStatus().getEndTime() == null) {
+			Thread.sleep(1000);
+		}
+		assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+	}
+    @Test
+    @Order(26)
 	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
 			InterruptedException {
 		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
@@ -700,7 +724,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 	}
 
     @Test
-    @Order(26)
+    @Order(27)
     public void testLoadHL7MifVocabulary() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
     	File accessPath = new File("resources/testData/hl7MifVocabulary/DEFN=UV=VO=1189-20121121.coremif");
@@ -720,7 +744,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(27)
+    @Order(28)
     public void testLoadMeta1() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -758,7 +782,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
     
     @Test
-    @Order(29)
+    @Order(30)
     public void testLoadUMLSFail1() throws Exception {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -776,7 +800,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
     
     @Test
-    @Order(30)
+    @Order(31)
     public void testLoadUMLSFail2() throws Exception {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -794,7 +818,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(31)
+    @Order(32)
     public void testLoadUMLS() throws Exception {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -813,7 +837,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(32)
+    @Order(33)
     public void testLoadMappingWithDefaultSettings() throws LBException{
     	
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -855,7 +879,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(33)
+    @Order(34)
     public void testLoadCodingSchemeWithMoreMetaData() throws LBException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
         LexEVSAuthoringServiceImpl authoring = new LexEVSAuthoringServiceImpl();
@@ -902,7 +926,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(34)
+    @Order(35)
     public void testLoadAuthoringShellSystem() throws LBException, LBInvocationException, InterruptedException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
@@ -923,7 +947,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     }
 
     @Test
-    @Order(35)
+    @Order(36)
     public void testLoadMappinglSystem() throws LBException, LBInvocationException, InterruptedException{
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
