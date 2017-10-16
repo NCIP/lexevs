@@ -18,6 +18,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.junit.Before;
@@ -26,10 +27,11 @@ import org.springframework.util.Assert;
 
 import junit.framework.TestCase;
 
-public class DataLoadTestBaseSpecialCases extends TestCase {
+public class DataLoadTestBaseSpecialCasesNamespace extends TestCase {
 
 	/** The lbs. */
 	protected LexBIGService lbs;
+	protected CodingScheme cs;
 	protected CodedNodeSet cns;
 	protected CodedNodeGraph cng;
 	protected ConvenienceMethods cm;
@@ -43,16 +45,18 @@ public class DataLoadTestBaseSpecialCases extends TestCase {
 		lbs = ServiceHolder.instance().getLexBIGService();
 		lbs.getSupportedCodingSchemes();
 		cm = new ConvenienceMethods(lbs);
+		cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_NAMESPACE_VERSION));
 		cns = lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION ));
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_NAMESPACE_VERSION ));
 		cng = lbs.getNodeGraph(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION ), null);
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_NAMESPACE_VERSION ), null);
 	}
 	
 	public CodedNodeSet getCodedNodeSet() throws Exception {
 		setUp();
 		return lbs.getCodingSchemeConcepts(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION ));
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_NAMESPACE_VERSION ));
 	}
 	
 	@Test
