@@ -71,7 +71,7 @@ public class EntityToRVSTransformer {
 
     //Entity with more than one source will be processed into more than one definition
     //Assumption is that this source representation is always a flat list of values
-    public List<CodingScheme> transformEntityToCodingSchemes(Entity entity, String sourceName) throws LBException {
+    public List<CodingScheme> transformEntityToCodingSchemes(Entity entity, String sourceName, HashMap<String, String> truncatedNames) throws LBException {
 
         final String source = AssertedValueSetServices.getDefaultSourceIfNull(sourceName);
         List<Property> props = entity.getPropertyAsReference();
@@ -98,23 +98,24 @@ public class EntityToRVSTransformer {
         definedSources.forEach((x, y) -> {
             try {
                 if(definedSources.size() > 1){
-                schemes.add(transformSchemeFromSpecificSource(entity, x, y, vsEntities));
+                schemes.add(transformSchemeFromSpecificSource(entity, x, y, vsEntities, truncatedNames));
                 }
-                else{schemes.add(transform(entity, x, y,vsEntities));}
+                else{schemes.add(transform(entity, x, y,vsEntities, truncatedNames));}
             } catch (LBException e) {
                 throw new RuntimeException("Source Asserted Resolved Value Set Load Failed", e);
             }
         });
         // No source has been declared. This must belong to the default source.
         if (definedSources.size() == 0) {
-            schemes.add(transform(entity, null, entity.getEntityDescription().getContent(), vsEntities));
+            schemes.add(transform(entity, null, entity.getEntityDescription().getContent(), vsEntities, truncatedNames));
         }
         return schemes;
     }
 
 
 
-    public CodingScheme transform(Entity entity, String source, String description, Entities entities)
+    public CodingScheme transform(Entity entity, String source, String description, 
+            Entities entities, HashMap<String, String> truncatedNames)
             throws LBException {
         String codingSchemeUri = AssertedValueSetServices.createUri(baseUri, source, entity.getEntityCode());
         String codingSchemeVersion = csVersion == null ? "UNASSIGNED":
@@ -134,7 +135,7 @@ public class EntityToRVSTransformer {
             cs.setExpirationDate(entity.getExpirationDate());
         cs.setEntryState(entity.getEntryState());
         cs.setFormalName(codingSchemeName);
-        cs.setCodingSchemeName(truncateDefNameforCodingSchemeName(codingSchemeName));
+        cs.setCodingSchemeName(AssertedValueSetServices.truncateDefNameforCodingSchemeName(codingSchemeName, truncatedNames));
         cs.setIsActive(entity.getIsActive());
         cs.setMappings(createMappings(entity));
         cs.setOwner(entity.getOwner());
@@ -166,13 +167,13 @@ public class EntityToRVSTransformer {
         return cs;
     }
     
-    public CodingScheme transformSchemeFromSpecificSource(Entity entity, String source, String description,  Entities entities) throws LBException{
+    public CodingScheme transformSchemeFromSpecificSource(Entity entity, String source, String description,  Entities entities, HashMap<String,  String> truncatedNames) throws LBException{
         String suffix = AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(source);
         entity.setEntityDescription(Constructors.createEntityDescription(entity.getEntityDescription().getContent() + suffix));
         if(description != null){
             description = description + suffix;
         }
-        return transform(entity, source, description, entities);
+        return transform(entity, source, description, entities, truncatedNames);
     }
 
     private Mappings createMappings(Entity entity) {
@@ -201,13 +202,21 @@ public class EntityToRVSTransformer {
         return sources;
     }
 
-    protected String truncateDefNameforCodingSchemeName(String name){
-        if (StringUtils.isNotEmpty(name) && name.length() > 50) {
-            name = name.substring(0, 49);
-        }
-        return name;
-    }
-    
+//    protected String truncateDefNameforCodingSchemeName(String name, HashMap<String, String> truncatedNames){
+//        if (StringUtils.isNotEmpty(name) && name.length() > 50) {
+//            String shortName = name.substring(0, 49);
+//            String remainder = name.substring(49);
+//            shortName = name.substring(0,name.lastIndexOf(" "));
+//            if(truncatedNames.containsKey(shortName)){
+//                shortName = AssertedValueSetServices.processForDiff(shortName, name, truncatedNames);
+//            }
+//            truncatedNames.put(shortName, name);
+//            return shortName;
+//        }
+//        return name;
+//    }
+
+
     public Entities getEntities(String topNodeCode) throws LBException {
         long start = System.currentTimeMillis();
         Entities newEntities = new Entities();

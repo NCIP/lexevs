@@ -1,5 +1,6 @@
 package org.LexGrid.util.assertedvaluesets;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
+import org.apache.commons.lang.StringUtils;
 
 public class AssertedValueSetServices {
 
@@ -30,6 +32,15 @@ public class AssertedValueSetServices {
     public static final String SOURCE_NAME = "Contributing_Source";
     public static final String SOURCE = "source";
     public static final String BASE = "http://evs.nci.nih.gov/valueset/";
+    public enum BaseName{
+        UNIT("Unit"), FORM("Form"), CODE("Code"), NAME("Name"); 
+        private String value; 
+        BaseName(String name){value = name;}
+        @Override
+        public String toString() {
+            return value;
+        }
+        }
     
     public static boolean isPublishableValueSet(Entity entity, boolean force) {
         if(entity.getPropertyAsReference().stream().anyMatch(x -> x.
@@ -145,6 +156,58 @@ public class AssertedValueSetServices {
     
     public static String createSuffixForSourceDefinedResolvedValueSet(String source){
         return "_" + source;
+    }
+    
+    public static List<String> getDiff(String a, String b){
+        List<String> compareTo = Arrays.asList(b.split(" ")); 
+        List<String> diffs = Arrays.asList(a.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        return diffs;
+    }
+    
+    
+    public static String processForDiff(String shortName, String similarName, HashMap<String, String> truncatedNames) {
+        String originalValue = truncatedNames.get(shortName);
+        List<String> diff = getDiff(similarName, originalValue);
+        return createDifferentBaseName(shortName, diff);
+    }
+
+    public static String createDifferentBaseName(String shortName, List<String> diff) {
+        if(!diffInShortName(shortName, diff)){
+            String diffConcat = diff.stream().reduce((x,y) -> x.concat(" " + y)).get(); 
+            shortName = shortName.substring(0, shortName.length() - diffConcat.length());
+            shortName = shortName.substring(0, shortName.lastIndexOf(" ") + 1);
+            shortName = shortName.concat(diffConcat);
+            return shortName;
+        }
+        return shortName;
+    }
+    
+    public static boolean diffInShortName(String shortName, List<String> diff) {
+        return diff.stream().allMatch(x -> shortName.contains(x));
+    }
+
+    public static String getCononicalDiffValue(String diff){
+        Set<String> canonicalValue =  Arrays.asList(BaseName.values()).stream().
+                filter(base -> diff.contains(base.value)).
+                map(value -> value.value).
+                collect(Collectors.toSet());
+        if (canonicalValue.size() == 1){
+            return canonicalValue.iterator().next();
+        }
+        return null;
+    }
+    
+    public static String truncateDefNameforCodingSchemeName(String name, HashMap<String, String> truncatedNames){
+        if (StringUtils.isNotEmpty(name) && name.length() > 50) {
+            String shortName = name.substring(0, 49);
+            shortName = shortName.trim();
+            if(truncatedNames.containsKey(shortName)){
+                shortName = AssertedValueSetServices.processForDiff(shortName, name, truncatedNames);
+            }
+            truncatedNames.put(shortName, name);
+            return shortName;
+        }
+        return name;
     }
 
 

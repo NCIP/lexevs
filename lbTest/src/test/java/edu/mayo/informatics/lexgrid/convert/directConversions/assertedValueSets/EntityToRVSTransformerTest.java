@@ -2,6 +2,7 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -34,14 +35,6 @@ public class EntityToRVSTransformerTest extends TestCase {
 		 prop.setPropertyQualifier(new PropertyQualifier[]{pq, pq1});
 		 entity.setProperty(new Property[]{prop});
 
-	}
-
-	@Test
-	public void testTruncateDefName() {
-		String fiftyPlus = "asdfjkl;neoimcfsha dkflajfd;l aldkj;asdfaljfdlasfdlaflaflafladsfladlfldfjasdlfdsalfadslf";
-		String target = fiftyPlus.substring(0, 49);
-		
-		assertEquals(transformer.truncateDefNameforCodingSchemeName(fiftyPlus), target);
 	}
 	
 	@Test
