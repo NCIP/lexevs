@@ -210,6 +210,10 @@ public class AssertedValueSetServicesTest extends TestCase {
 			HashMap<String, String> truncatedNames2 = new HashMap<String, String>();
 			String name2 = AssertedValueSetServices.truncateDefNameforCodingSchemeName(originalName2, truncatedNames2);
 			assertEquals(name2, shortName2);
+			String similarName2 = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Code Terminology";
+			String name3  = AssertedValueSetServices.truncateDefNameforCodingSchemeName(similarName2, truncatedNames2);
+			assertEquals(name3 , "CDISC Questionnaire BEBQ Concurrent Version Name");
+			assertTrue(truncatedNames.get("CDISC Questionnaire C-SSRS Code") != null);
 			
 		}
 		
@@ -218,6 +222,8 @@ public class AssertedValueSetServicesTest extends TestCase {
 			List<String> list = readToList(new File("resources/testData/long_names.csv"));
 			HashMap<String, String> truncatedNames = new HashMap<String, String>();
 			list.stream().forEach(x -> AssertedValueSetServices.truncateDefNameforCodingSchemeName(x, truncatedNames ));
+			System.out.println(truncatedNames.get("CDISC Questionnaire C-SSRS Code"));
+			System.out.println(truncatedNames.get("CDISC Questionnaire C-SSRS Name"));
 			list.stream().filter(x ->  !truncatedNames.values().contains(x)).forEach(y -> System.out.println(y));
 			assertEquals(list.size(),truncatedNames.size());
 		}

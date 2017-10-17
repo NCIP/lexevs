@@ -203,11 +203,37 @@ public class AssertedValueSetServices {
             shortName = shortName.trim();
             if(truncatedNames.containsKey(shortName)){
                 shortName = AssertedValueSetServices.processForDiff(shortName, name, truncatedNames);
+                if(shortNameExistsAsKey(shortName, truncatedNames.keySet())){
+                    shortName = getAlternativeNamingForShortName(shortName, name);
+                }
             }
             truncatedNames.put(shortName, name);
             return shortName;
         }
         return name;
+    }
+
+    public static String getAlternativeNamingForShortName(String shortName, String name) {
+        name = breakOnCommonDiff(name);
+       String beginning =  name.substring(name.length()/2);
+       String end = name.substring(0, name.length()/2);
+        return null;
+    }
+
+   public static String breakOnCommonDiff(String name) {
+        String[] tokenNames = StringUtils.split(name);
+        List<BaseName> canonicalValues = Arrays.asList(BaseName.values());
+        Set<String> breakOn = canonicalValues.stream().
+                filter(x -> Arrays.asList(tokenNames).
+                contains(x.value)).
+                map(y -> y.value).
+                collect(Collectors.toSet());
+        name = name.substring(name.indexOf(breakOn.iterator().next()));
+        return name;
+    }
+
+    public static boolean shortNameExistsAsKey(String shortName, Set<String> keySet) {
+        return keySet.stream().anyMatch(x -> x.equals(shortName));
     }
 
 
