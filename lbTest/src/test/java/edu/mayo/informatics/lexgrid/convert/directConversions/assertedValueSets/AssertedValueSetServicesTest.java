@@ -149,10 +149,6 @@ public class AssertedValueSetServicesTest extends TestCase {
 		}
 		
 		public void testGetCanonicalValue(){
-			String value = AssertedValueSetServices.getCononicalDiffValue("this string has Form Terminology");
-			assertEquals(value, "Form");
-			String value1 = AssertedValueSetServices.getCononicalDiffValue("this string has Unit Terminology");
-			assertEquals(value1, "Unit");
 			String value2 = AssertedValueSetServices.getCononicalDiffValue("this string has Code Terminology");
 			assertEquals(value2, "Code");
 			String value3 = AssertedValueSetServices.getCononicalDiffValue("this string has Name Terminology");
@@ -161,8 +157,8 @@ public class AssertedValueSetServicesTest extends TestCase {
 		
 		@Test
 		public void testTruncateDefName() {
-			String fiftyPlus = "asdfjkl;neoimcfsha dkflajfd;l aldkj;asdfaljfdlasfdlaflaflafladsfladlfldfjasdlfdsalfadslf";
-			String target = fiftyPlus.substring(0, 49);
+			String fiftyPlus = "asdfjkl;neoimcfsha dkflajfd;l aldkj;asdfaljfdlasfdlaflaflafladsfladlfldfjasdlfd Code salfadslf";
+			String target = "asdfjkl;neoimcfsha dkfl...dsfladlfldfjasdlfd Code";
 			
 			assertEquals(AssertedValueSetServices.truncateDefNameforCodingSchemeName(fiftyPlus, new HashMap<String, String>()), target);
 		}
@@ -200,20 +196,20 @@ public class AssertedValueSetServicesTest extends TestCase {
 			String similarName = "CDISC Questionnaire BEBQ Concurrent Version Test Name Terminology";
 			HashMap<String, String> truncatedNames = new HashMap<String, String>();
 			String processedName = AssertedValueSetServices.truncateDefNameforCodingSchemeName(originalName, truncatedNames );
-			assertEquals(processedName, "CDISC Questionnaire BEBQ Concurrent Version Test");
+			assertEquals(processedName, "CDISC Questionnaire BEB...rrent Version Test Code");
 			String diff  = AssertedValueSetServices.truncateDefNameforCodingSchemeName(similarName, truncatedNames);
-			assertEquals(diff , "CDISC Questionnaire BEBQ Concurrent Version Name");
-			assertTrue(truncatedNames.get("CDISC Questionnaire BEBQ Concurrent Version Name") != null);
+			assertEquals(diff , "CDISC Questionnaire BEB...rrent Version Test Name");
+			assertTrue(truncatedNames.get("CDISC Questionnaire BEB...rrent Version Test Name") != null);
 			
-			String shortName2 =   "CDISC Questionnaire C-SSRS Baseline/Screening Ver";
+			String shortName2 =   "CDISC Questionnaire C-S...rsion 1/14/09 Test Name";
 			String originalName2 = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Name Terminology";
 			HashMap<String, String> truncatedNames2 = new HashMap<String, String>();
 			String name2 = AssertedValueSetServices.truncateDefNameforCodingSchemeName(originalName2, truncatedNames2);
 			assertEquals(name2, shortName2);
 			String similarName2 = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Code Terminology";
 			String name3  = AssertedValueSetServices.truncateDefNameforCodingSchemeName(similarName2, truncatedNames2);
-			assertEquals(name3 , "CDISC Questionnaire BEBQ Concurrent Version Name");
-			assertTrue(truncatedNames.get("CDISC Questionnaire C-SSRS Code") != null);
+			assertEquals(name3 , "CDISC Questionnaire C-S...rsion 1/14/09 Test Code");
+			assertTrue(truncatedNames2.get("CDISC Questionnaire C-S...rsion 1/14/09 Test Code") != null);
 			
 		}
 		
@@ -236,14 +232,14 @@ public class AssertedValueSetServicesTest extends TestCase {
 			HashMap<String, String> truncatedNames = new HashMap<String, String>();
 			truncatedNames.put(shortName, "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Name Terminology");
 			String name = AssertedValueSetServices.processForDiff(shortName, similarName, truncatedNames);
-			assertEquals(name, "CDISC Questionnaire C-SSRS Code");
+			assertEquals(name, "CDISC Questionnaire C-SSRS Name");
 			
 			String shortName1 =   "CDISC Questionnaire BEBQ Concurrent Version Test";
 			String similarName1 = "CDISC Questionnaire BEBQ Concurrent Version Test Name Terminology";
 			HashMap<String, String> truncatedNames1 = new HashMap<String, String>();
 			truncatedNames1.put(shortName1, "CDISC Questionnaire BEBQ Concurrent Version Test Code Terminology");
 			String name1 = AssertedValueSetServices.processForDiff(shortName1, similarName1, truncatedNames1);
-			assertEquals(name1, "CDISC Questionnaire BEBQ Concurrent Version Name");
+			assertEquals(name1, "CDISC Questionnaire BEBQ Concurrent Version Code");
 			
 
 		}
@@ -259,15 +255,22 @@ public class AssertedValueSetServicesTest extends TestCase {
 		
 		@Test
 		public void testGetAlternativeNamingForShortName(){
-			String name = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Name Terminology";
-			String name1 = "CDISC Questionnaire WHODAS 2.0 12-item Version Proxy-administered Test Name Terminology";
-			String name2 = "CDISC Questionnaire WHODAS 2.0 12-item Version Self-administered Test Name Terminology";
-			String name3 = "CDISC Questionnaire WHODAS 2.0 36-item Version Proxy-administered Test Name Terminology";
-			String shortName = "CDISC Questionnaire WHODAS 2.0 36-item Version Int";
-			String shortName1 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName, name, new HashMap<String, String>());
-			String shortName2 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName1, name, new HashMap<String, String>());
-			String shortName3 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName2, name, new HashMap<String, String>());
-			String shortName4 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName3, name, new HashMap<String, String>());
+			String name = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Name";
+			String codeName = "CDISC Questionnaire WHODAS 2.0 36-item Version Self-administered Test Code Terminology";
+			String name1 = "CDISC Questionnaire WHODAS 2.0 12-item Version Proxy-administered Test Name";
+			String name2 = "CDISC Questionnaire WHODAS 2.0 12-item Version Self-administered Test Name";
+			String name3 = "CDISC Questionnaire WHODAS 2.0 36-item Version Proxy-administered Test Name";
+			String shortName = "CDISC Questionnaire WHO...administered Test Name ";
+			HashMap<String, String> truncatedNames = new HashMap<String, String>();
+			truncatedNames.put(shortName, name);
+			String shortName1 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName, codeName, truncatedNames);
+			truncatedNames.put(shortName1, codeName);
+			String shortName2 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName1, name1, truncatedNames);
+			truncatedNames.put(shortName2, name1);
+			String shortName3 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName2, name2, truncatedNames);
+			truncatedNames.put(shortName3, name2);
+			String shortName4 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName3, name3, truncatedNames);
+			truncatedNames.put(shortName4, name3);
 			assertTrue(!shortName.equals(shortName1) && !shortName.equals(shortName2) && !shortName.equals(shortName3) && !shortName.equals(shortName4));
 			assertTrue(!shortName1.equals(shortName2) && !shortName1.equals(shortName3) && !shortName1.equals(shortName4));
 			assertTrue(!shortName2.equals(shortName3) && !shortName2.equals(shortName4));
