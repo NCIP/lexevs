@@ -222,9 +222,10 @@ public class AssertedValueSetServicesTest extends TestCase {
 			List<String> list = readToList(new File("resources/testData/long_names.csv"));
 			HashMap<String, String> truncatedNames = new HashMap<String, String>();
 			list.stream().forEach(x -> AssertedValueSetServices.truncateDefNameforCodingSchemeName(x, truncatedNames ));
-			System.out.println(truncatedNames.get("CDISC Questionnaire C-SSRS Code"));
-			System.out.println(truncatedNames.get("CDISC Questionnaire C-SSRS Name"));
+//			System.out.println(truncatedNames.get("CDISC Questionnaire C-SSRS Code"));
+//			System.out.println(truncatedNames.get("CDISC Questionnaire C-SSRS Name"));
 			list.stream().filter(x ->  !truncatedNames.values().contains(x)).forEach(y -> System.out.println(y));
+//			truncatedNames.keySet().stream().sorted().forEach(x ->System.out.println(x));
 			assertEquals(list.size(),truncatedNames.size());
 		}
 		
@@ -245,6 +246,39 @@ public class AssertedValueSetServicesTest extends TestCase {
 			assertEquals(name1, "CDISC Questionnaire BEBQ Concurrent Version Name");
 			
 
+		}
+		
+		@Test
+		public void testAbbreviateFromMiddle(){
+			String name = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Code Terminology";
+			String abbrev = AssertedValueSetServices.abbreviateFromMiddle(name, "...", 50);
+			assertTrue(abbrev.length() <= 50);
+			assertEquals(abbrev,"CDISC Questionnaire C-S...9 Test Code Terminology");
+			
+		}
+		
+		@Test
+		public void testGetAlternativeNamingForShortName(){
+			String name = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Name Terminology";
+			String name1 = "CDISC Questionnaire WHODAS 2.0 12-item Version Proxy-administered Test Name Terminology";
+			String name2 = "CDISC Questionnaire WHODAS 2.0 12-item Version Self-administered Test Name Terminology";
+			String name3 = "CDISC Questionnaire WHODAS 2.0 36-item Version Proxy-administered Test Name Terminology";
+			String shortName = "CDISC Questionnaire WHODAS 2.0 36-item Version Int";
+			String shortName1 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName, name, new HashMap<String, String>());
+			String shortName2 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName1, name, new HashMap<String, String>());
+			String shortName3 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName2, name, new HashMap<String, String>());
+			String shortName4 = AssertedValueSetServices.getAlternativeNamingForShortName(shortName3, name, new HashMap<String, String>());
+			assertTrue(!shortName.equals(shortName1) && !shortName.equals(shortName2) && !shortName.equals(shortName3) && !shortName.equals(shortName4));
+			assertTrue(!shortName1.equals(shortName2) && !shortName1.equals(shortName3) && !shortName1.equals(shortName4));
+			assertTrue(!shortName2.equals(shortName3) && !shortName2.equals(shortName4));
+			assertTrue(!shortName3.equals(shortName4));
+		}
+		
+		@Test
+		public void testBreakOnCommonName(){
+			String name = "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Code Terminology";
+			String adjustedName = AssertedValueSetServices.breakOnCommonDiff(name);
+			assertEquals(adjustedName, "CDISC Questionnaire C-SSRS Baseline/Screening Version Phase 1 Study Version 1/14/09 Test Code");
 		}
 		
 		private List<String> readToList(File file) throws IOException{

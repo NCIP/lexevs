@@ -32,8 +32,9 @@ public class AssertedValueSetServices {
     public static final String SOURCE_NAME = "Contributing_Source";
     public static final String SOURCE = "source";
     public static final String BASE = "http://evs.nci.nih.gov/valueset/";
+    private static final String ELIPSIS = "...";
     public enum BaseName{
-        UNIT("Unit"), FORM("Form"), CODE("Code"), NAME("Name"); 
+        CODE("Code"), NAME("Name"); 
         private String value; 
         BaseName(String name){value = name;}
         @Override
@@ -158,9 +159,16 @@ public class AssertedValueSetServices {
         return "_" + source;
     }
     
-    public static List<String> getDiff(String a, String b){
+    public static List<String> getDiff(final String a, final String b){
+        List<String> diffs;
+        if(a.length() > b.length()){
         List<String> compareTo = Arrays.asList(b.split(" ")); 
-        List<String> diffs = Arrays.asList(a.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        diffs = Arrays.asList(a.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        }
+        else{
+            List<String> compareTo = Arrays.asList(a.split(" ")); 
+            diffs = Arrays.asList(b.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        }
         return diffs;
     }
     
@@ -175,7 +183,9 @@ public class AssertedValueSetServices {
         if(!diffInShortName(shortName, diff)){
             String diffConcat = diff.stream().reduce((x,y) -> x.concat(" " + y)).get(); 
             shortName = shortName.substring(0, shortName.length() - diffConcat.length());
+            if(shortName.contains(" ")){
             shortName = shortName.substring(0, shortName.lastIndexOf(" ") + 1);
+            }
             shortName = shortName.concat(diffConcat);
             return shortName;
         }
@@ -197,14 +207,16 @@ public class AssertedValueSetServices {
         return null;
     }
     
-    public static String truncateDefNameforCodingSchemeName(String name, HashMap<String, String> truncatedNames){
+    public static String truncateDefNameforCodingSchemeName(final String name, HashMap<String, String> truncatedNames){
         if (StringUtils.isNotEmpty(name) && name.length() > 50) {
-            String shortName = name.substring(0, 49);
-            shortName = shortName.trim();
-            if(truncatedNames.containsKey(shortName)){
-                shortName = AssertedValueSetServices.processForDiff(shortName, name, truncatedNames);
+            String breakAdj = name;
+            breakAdj = breakOnCommonDiff(breakAdj);
+            String shortName = abbreviateFromMiddle(breakAdj, ELIPSIS, 50);
+          if(truncatedNames.containsKey(shortName)){
+                shortName = AssertedValueSetServices.processForDiff(shortName, breakAdj, truncatedNames);
                 if(shortNameExistsAsKey(shortName, truncatedNames.keySet())){
-                    shortName = getAlternativeNamingForShortName(shortName, name);
+                    shortName = getAlternativeNamingForShortName(shortName, breakAdj, truncatedNames);
+                    System.out.println(shortName + " : " + name);
                 }
             }
             truncatedNames.put(shortName, name);
@@ -213,14 +225,42 @@ public class AssertedValueSetServices {
         return name;
     }
 
-    public static String getAlternativeNamingForShortName(String shortName, String name) {
-        name = breakOnCommonDiff(name);
-       String beginning =  name.substring(name.length()/2);
-       String end = name.substring(0, name.length()/2);
-        return null;
+    public static String getAlternativeNamingForShortName(String shortName, final String name, HashMap<String, String> truncatedNames) {
+            List<String> diffs = getDiff(name, truncatedNames.get(shortName));
+            //Already abbreviated with elipsis
+            if(!(shortName.indexOf(ELIPSIS) == -1)){
+            shortName = shortName.substring(0,shortName.length() - shortName.indexOf(ELIPSIS) + 3);
+            }
+            else{
+                shortName = shortName.substring(0, shortName.length()/2);
+            }
+            final String temp = shortName;
+            boolean success = false;
+            if(diffs.stream().filter(s -> truncatedNames.get(temp.concat(s)) == null).findAny().isPresent()){
+                shortName = shortName.concat(diffs.stream().filter(s -> truncatedNames.get(temp.concat(s)) == null).findAny().get());
+                return shortName;
+            }
+            int counter = 0;
+            while(!success){
+                shortName = temp.concat(String.valueOf(counter));
+                if(truncatedNames.get(temp) == null){
+                    success = true;
+                }
+                counter++;
+            }
+            return shortName;
     }
 
-   public static String breakOnCommonDiff(String name) {
+   public static String abbreviateFromMiddle(final String name, String string, int i) {
+     if(name == null || name.length() <= i){
+         return name;
+     }
+     String first = name.substring(0, (i - string.length())/2);
+     String remainder = name.substring(name.length() - (i - string.length())/2, name.length());
+     return first + string  + remainder;
+    }
+
+public static String breakOnCommonDiff(String name) {
         String[] tokenNames = StringUtils.split(name);
         List<BaseName> canonicalValues = Arrays.asList(BaseName.values());
         Set<String> breakOn = canonicalValues.stream().
@@ -228,7 +268,10 @@ public class AssertedValueSetServices {
                 contains(x.value)).
                 map(y -> y.value).
                 collect(Collectors.toSet());
-        name = name.substring(name.indexOf(breakOn.iterator().next()));
+        if(breakOn.size() > 0){
+        String value = breakOn.iterator().next();
+        name = name.substring(0, name.indexOf(value) + value.length());
+        }
         return name;
     }
 
