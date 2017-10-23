@@ -920,9 +920,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
 				mappingCodingSchemeUid,
-				relationsContainerName,
-				code, 
-				namespace);
+				namespace, 
+				code);
 		
 		bean.setPrefix(prefix);
 		
