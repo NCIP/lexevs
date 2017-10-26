@@ -278,6 +278,7 @@
 		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
 		<property name="valueSetHierarchyService" ref="valueSetHierarchyService"/>
+		<property name="assertedValueSetService" ref="assertedValueSetService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 		<property name="codedNodeGraphService" ref="codedNodeGraphService"/>
@@ -399,6 +400,11 @@
 	
 	<bean id="valueSetHierarchyService" 
 		class="org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl"
+		parent="abstractService">
+	</bean>
+	
+	<bean id="assertedValueSetService" 
+		class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
 		parent="abstractService">
 	</bean>
 	

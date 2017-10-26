@@ -1,18 +1,25 @@
 package org.LexGrid.util.assertedvaluesets;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.Text;
+import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
+import org.apache.commons.lang.StringUtils;
 
 public class AssertedValueSetServices {
 
@@ -30,6 +37,9 @@ public class AssertedValueSetServices {
     public static final String SOURCE_NAME = "Contributing_Source";
     public static final String SOURCE = "source";
     public static final String BASE = "http://evs.nci.nih.gov/valueset/";
+    public static final String DEFAULT_SOURCE = "NCI";
+    public static final String DEFAULT_CODINGSCHEME_URI = "";
+    public static final String DEFAULT_CODINGSCHEME_NAME = "NCI_Thesaurus";
     
     public static boolean isPublishableValueSet(Entity entity, boolean force) {
         if(entity.getPropertyAsReference().stream().anyMatch(x -> x.
@@ -146,7 +156,97 @@ public class AssertedValueSetServices {
     public static String createSuffixForSourceDefinedResolvedValueSet(String source){
         return "_" + source;
     }
+    
+    public static CodingScheme transform(Entity entity, String source, String description, Entities entities, String version, String codingSchemeURN)
+            throws LBException {
+        String codingSchemeUri = AssertedValueSetServices.createUri(BASE, source, entity.getEntityCode());
+        String codingSchemeVersion = version == null ? "UNASSIGNED":
+                version;
 
+        String codingSchemeName = description == null? entity.getEntityDescription().getContent(): description;
+
+        CodingScheme cs = null;
+
+        cs = new CodingScheme();
+
+        cs.setCodingSchemeURI(codingSchemeUri);
+        cs.setRepresentsVersion(codingSchemeVersion);
+        if (entity.getEffectiveDate() != null)
+            cs.setEffectiveDate(entity.getEffectiveDate());
+        if (entity.getExpirationDate() != null)
+            cs.setExpirationDate(entity.getExpirationDate());
+        cs.setEntryState(entity.getEntryState());
+        cs.setFormalName(codingSchemeName);
+        cs.setCodingSchemeName(truncateDefNameforCodingSchemeName(codingSchemeName));
+        cs.setIsActive(entity.getIsActive());
+        cs.setMappings(createMappings(entity));
+        cs.setOwner(entity.getOwner());
+        //init properties
+        cs.setProperties(new org.LexGrid.commonTypes.Properties());
+        Source lexSource = new Source();
+        lexSource.setContent(source == null?DEFAULT_SOURCE:source);
+        cs.setSource(new Source[]{lexSource});
+        cs.setStatus(entity.getStatus());
+
+        Property prop = new Property();
+        prop.setPropertyType(AssertedValueSetServices.GENERIC);
+        prop.setPropertyName(AssertedValueSetServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION);
+        Text txt = new Text();
+        txt.setContent(codingSchemeURN);
+        prop.setValue(txt);
+        PropertyQualifier pq = AssertedValueSetServices.createPropertyQualifier(AssertedValueSetServices.VERSION,
+                version);
+        prop.getPropertyQualifierAsReference().add(pq);
+
+        if (codingSchemeName != null) {
+            PropertyQualifier pQual = AssertedValueSetServices.createPropertyQualifier(AssertedValueSetServices.CS_NAME, codingSchemeName);
+            prop.getPropertyQualifierAsReference().add(pQual);
+        }
+        cs.getProperties().addProperty(prop);
+
+        cs.setEntities(entities);
+
+        return cs;
+    }
+
+    private static Mappings createMappings(Entity entity) {
+        Mappings mappings = new Mappings();
+        SupportedCodingScheme scheme = AssertedValueSetServices.createSupportedCodingScheme(
+                DEFAULT_CODINGSCHEME_NAME, DEFAULT_CODINGSCHEME_URI);
+        SupportedConceptDomain domain = AssertedValueSetServices.getSupportedConceptDomain(
+                entity, CONCEPT_DOMAIN, DEFAULT_CODINGSCHEME_URI);
+        for(SupportedSource source : getSupportedSources(entity)){
+            mappings.addSupportedSource(source);
+        }
+        mappings.addSupportedNamespace(AssertedValueSetServices.
+                createSupportedNamespace(entity.getEntityCodeNamespace(), 
+                        DEFAULT_CODINGSCHEME_NAME, 
+                        DEFAULT_CODINGSCHEME_URI));
+        mappings.addSupportedCodingScheme(scheme);
+        mappings.addSupportedConceptDomain(domain);
+        return mappings;
+    }
+    
+    protected static List<SupportedSource> getSupportedSources(Entity entity) {
+        List<SupportedSource> sources = new ArrayList<SupportedSource>();
+        List<Property> props = entity.getPropertyAsReference();
+        for(Property p: props){
+        p.getPropertyQualifierAsReference().stream().
+        filter(pq -> pq.getPropertyQualifierName().equals(SOURCE)).
+        map(PropertyQualifier::getValue).
+        forEach(qual -> 
+        sources.add(AssertedValueSetServices.createSupportedSource(
+                qual.getContent(),DEFAULT_CODINGSCHEME_URI )));
+        }
+        return sources;
+    }
+    
+    protected static String truncateDefNameforCodingSchemeName(String name){
+        if (StringUtils.isNotEmpty(name) && name.length() > 50) {
+            name = name.substring(0, 49);
+        }
+        return name;
+    }
 
     
     
