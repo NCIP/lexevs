@@ -2246,6 +2246,7 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P90>OETESTCD</P90>
         <P90>Ophthalmic Exam Test Code</P90>
         <P90>SDTM-OETESTCD</P90>
+         <P372>No</P372>
         <rdfs:label>CDISC SDTM Ophthalmic Exam Test Code Terminology</rdfs:label>
     </owl:Class>
     <owl:Axiom>
@@ -2322,6 +2323,7 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323">
         <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C117743"/>
         <rdfs:label>Black</rdfs:label>
         <NHC0>C48323</NHC0>
         <P106>Qualitative Concept</P106>
