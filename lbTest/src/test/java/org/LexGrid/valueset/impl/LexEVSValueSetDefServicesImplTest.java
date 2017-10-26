@@ -304,7 +304,20 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		
 		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
 		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());
+	}
+	
+	@Test
+	public void testGetValueSetDefinitionFromAssertedValueSet() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C54453"), null);
+		
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
 		assertTrue(vdDef.getIsActive());	
+		assertNotNull(vdDef.getEntityDescription().getContent().equals("Terminology used for representation of "
+				+ "the information on pharmaceutical product color in the framework of the Structured Product "
+				+ "Labeling documents."));
 	}
 	
 	@Test

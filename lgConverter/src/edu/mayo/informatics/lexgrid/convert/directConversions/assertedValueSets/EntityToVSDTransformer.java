@@ -81,7 +81,7 @@ public class EntityToVSDTransformer{
 
     
     private ValueSetDefinition tranformEntityToValueSet(Entity entity, String source, String definition) {
-        ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, "1", owner);
+        ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, "ACTIVE", owner);
         def.setValueSetDefinitionName(entity.getEntityDescription().getContent());
         DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
         Mappings mappings = new Mappings();

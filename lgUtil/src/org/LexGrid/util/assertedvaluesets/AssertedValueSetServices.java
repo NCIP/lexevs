@@ -60,7 +60,7 @@ public class AssertedValueSetServices {
         boolean isPresent = entity.getPropertyAsReference().stream().anyMatch(x -> 
         x.getPropertyName().equals(BROWSER_VS_DEFINITION));
         
-        boolean isDefinition = entity.getPropertyAsReference().stream().anyMatch(x -> 
+        boolean isDefinition = entity.getDefinitionAsReference().stream().anyMatch(x -> 
         x.getPropertyName().equals(DEFINITION));
         
         if(isPresent){
@@ -68,7 +68,7 @@ public class AssertedValueSetServices {
                     getPropertyName().equals(BROWSER_VS_DEFINITION)).findFirst().get().getValue().getContent();
         }
         else if(isDefinition){
-            return entity.getPropertyAsReference().stream().filter(x -> 
+            return entity.getDefinitionAsReference().stream().filter(x -> 
             x.getPropertyName().equals(DEFINITION)).findFirst().get().getValue().getContent();
         }
         else{
