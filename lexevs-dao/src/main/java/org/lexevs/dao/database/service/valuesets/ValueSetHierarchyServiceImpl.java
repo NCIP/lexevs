@@ -85,16 +85,23 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	protected void recurseFromRootsToUpdateMap(LexEVSTreeItem ti) {
-		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(ti._code);
+		String reducedCode = reduceToCodeFromUri(ti.get_code());
+		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(reducedCode);
 		if(nodes != null && nodes.size() > 0){ ti._expandable= true;}
 		sort(nodes);
 		List<LexEVSTreeItem> items = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nodes) {
-			LexEVSTreeItem item = new LexEVSTreeItem(node.getEntityCode(), node.getDescription());
+			LexEVSTreeItem item = new LexEVSTreeItem(AssertedValueSetServices.
+					createUri(VS_ROOT_URI, node.getSource(), node.getEntityCode()), 
+					node.getDescription());
 			items.add(item);
 			this.getSourceValueSetTreeBranch(node, item);
 		}
 		ti.addAll(INVERSE_IS_A, items);
+	}
+
+	protected String reduceToCodeFromUri(String get_code) {
+		return get_code.substring(get_code.lastIndexOf('/') + 1, get_code.length());
 	}
 
 	@Override
@@ -104,7 +111,9 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		sort(nextBranch);
 		List<LexEVSTreeItem> treeNodes = new ArrayList<LexEVSTreeItem>();
 		for (VSHierarchyNode node : nextBranch) {
-			LexEVSTreeItem newItem = new LexEVSTreeItem(node.getEntityCode(), node.getDescription());
+			LexEVSTreeItem newItem = new LexEVSTreeItem(AssertedValueSetServices.
+					createUri(VS_ROOT_URI, node.getSource(), node.getEntityCode()), 
+					node.getDescription());
 			treeNodes.add(newItem);
 			getSourceValueSetTreeBranch(node, newItem);
 		}
@@ -133,11 +142,13 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		for(String s : sortedKeys){
 			if(duplicateGrouping.get(s).size() > 1){
 				duplicateGrouping.get(s).stream().forEach(x -> subTrees.add(new LexEVSTreeItem(
-						x.getEntityCode(),x.getDescription() + 
+						AssertedValueSetServices.createUri(VS_ROOT_URI, x.getSource(), x.getEntityCode()),
+						x.getDescription() + 
 						AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(x.getSource()))));
 			}else{
 				duplicateGrouping.get(s).forEach(x ->subTrees.add(new LexEVSTreeItem(
-						x.getEntityCode(),x.getDescription())));
+						AssertedValueSetServices.createUri(VS_ROOT_URI, x.getSource(), x.getEntityCode()),
+						x.getDescription())));
 			}
 		}
 		return subTrees;
