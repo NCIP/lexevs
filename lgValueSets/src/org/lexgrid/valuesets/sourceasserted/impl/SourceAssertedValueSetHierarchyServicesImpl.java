@@ -1,6 +1,8 @@
 package org.lexgrid.valuesets.sourceasserted.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +16,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
+import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem.TextComparator;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -66,6 +69,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		List<LexEVSTreeItem> treeItems = getTreeItemListFromSchemes(
 				getLexBIGService().getRegularResolvedVSCodingSchemes(), false);
 		treeItem.addAll(ValueSetHierarchyServiceImpl.INVERSE_IS_A, treeItems);
+		sortOnText(treeItem.get_assocToChildMap().get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), new TextComparator());
 		return sourceTree;
 	}
 	
@@ -189,6 +193,10 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	private String getURNForResolvedCodingSchemeProperties(Properties properties) {
 		return properties.getPropertyAsReference().stream().filter( x -> x.getPropertyName()
 				.equals("resolvedAgainstCodingSchemeVersion")).findAny().get().getValue().getContent();
+	}
+	
+	public void sortOnText(List<LexEVSTreeItem> items, Comparator<LexEVSTreeItem> compare){
+		Collections.sort(items, compare);
 	}
 
 

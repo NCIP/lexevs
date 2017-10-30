@@ -1,5 +1,7 @@
 package org.LexGrid.valueset.impl;
 
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -69,6 +71,33 @@ public class AssertedVSHierarchyTest extends TestCase {
 		Map<String, LexEVSTreeItem> items  = service.getFullServiceValueSetTree();
 		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
+		List<LexEVSTreeItem> roots = item.get_assocToChildMap().get(
+				ValueSetHierarchyServiceImpl.INVERSE_IS_A);
+		String first = roots.iterator().next().get_text();
+		String last = null;
+		Iterator<LexEVSTreeItem> itr = roots.iterator();
+		while(itr.hasNext()){
+			last = itr.next().get_text();
+		}
+		assertEquals("All Domestic Autos But GM",first);
+		assertEquals("White", last);
+		String[] rootCompare = {
+				"All Domestic Autos But GM",
+				"All Domestic Autos But GM  and as many characters as it takes to exceed 50 chars but not 250 chars and that should about do it",
+				"Black_FDA",
+				"Black_TEST",
+				"One Child Value Set",
+				"White"};
+		Iterator<LexEVSTreeItem> compItr = roots.iterator();
+		Iterator<String> targetItr = Arrays.asList(rootCompare).iterator();
+		boolean ordered = true;
+		while(compItr.hasNext()){
+			if(!compItr.next().get_text().equals(targetItr.next())){
+				ordered = false;
+				break;
+			}
+		}
+		assertTrue(ordered);
 		int tabCounter = 0;
 		System.out.println("Printing Full Service Tree");
 		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
