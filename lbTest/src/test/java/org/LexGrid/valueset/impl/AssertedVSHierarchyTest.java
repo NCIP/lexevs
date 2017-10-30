@@ -108,6 +108,16 @@ public class AssertedVSHierarchyTest extends TestCase {
 		Map<String, LexEVSTreeItem> items  = service.getSourceDefinedTree();
 		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
+		List<LexEVSTreeItem> roots = item.get_assocToChildMap().get(
+				ValueSetHierarchyServiceImpl.INVERSE_IS_A);
+		String first = roots.iterator().next().get_text();
+		String last = null;
+		Iterator<LexEVSTreeItem> itr = roots.iterator();
+		while(itr.hasNext()){
+			last = itr.next().get_text();
+		}
+		assertEquals("owl2lexevs",first);
+		assertEquals("autosV2", last);
 		int tabCounter = 0;
 		System.out.println("Printing Full Source Defined Tree");
 		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);

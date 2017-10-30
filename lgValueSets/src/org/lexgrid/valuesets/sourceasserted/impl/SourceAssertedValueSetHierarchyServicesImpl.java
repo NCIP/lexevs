@@ -133,12 +133,15 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		//assuming the other source trees are all surfaced on one level.
 		List<CodingScheme> serviceSchemes = getOtherServiceSchemes();
 
-		List<LexEVSTreeItem> serviceTreeRoots = getServiceTreeRoots(serviceSchemes);
-		
-		serviceTreeRoots.add(sourceTreeRoot);
+		List<LexEVSTreeItem> serviceTreeRoots = getServiceTreeRoots(serviceSchemes);		
+//		serviceTreeRoots.add(sourceTreeRoot);
+//		sortOnText(serviceTreeRoots, new TextComparator());
+		List<LexEVSTreeItem> temp = new ArrayList<LexEVSTreeItem>();
+		temp.add(sourceTreeRoot);
+		temp.addAll(serviceTreeRoots);
 		LexEVSTreeItem super_root = new LexEVSTreeItem(ValueSetHierarchyServiceImpl.ROOT,
 				"Root node");
-		super_root._assocToChildMap.put(ValueSetHierarchyService.INVERSE_IS_A, serviceTreeRoots);
+		super_root._assocToChildMap.put(ValueSetHierarchyService.INVERSE_IS_A, temp);
 		fullTree.put(ValueSetHierarchyServiceImpl.ROOT, super_root);
 		
 		return fullTree;
