@@ -93,7 +93,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		for (VSHierarchyNode node : nodes) {
 			LexEVSTreeItem item = new LexEVSTreeItem(AssertedValueSetServices.
 					createUri(VS_ROOT_URI, node.getSource(), node.getEntityCode()), 
-					node.getDescription());
+					node.getDescription(), node.getNamespace(), null);
 			items.add(item);
 			this.getSourceValueSetTreeBranch(node, item);
 		}
@@ -113,7 +113,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		for (VSHierarchyNode node : nextBranch) {
 			LexEVSTreeItem newItem = new LexEVSTreeItem(AssertedValueSetServices.
 					createUri(VS_ROOT_URI, node.getSource(), node.getEntityCode()), 
-					node.getDescription());
+					node.getDescription(), node.getNamespace(), null);
 			treeNodes.add(newItem);
 			getSourceValueSetTreeBranch(node, newItem);
 		}
@@ -144,11 +144,12 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 				duplicateGrouping.get(s).stream().forEach(x -> subTrees.add(new LexEVSTreeItem(
 						AssertedValueSetServices.createUri(VS_ROOT_URI, x.getSource(), x.getEntityCode()),
 						x.getDescription() + 
-						AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(x.getSource()))));
+						AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(x.getSource()),
+						x.getNamespace(), null)));
 			}else{
 				duplicateGrouping.get(s).forEach(x ->subTrees.add(new LexEVSTreeItem(
 						AssertedValueSetServices.createUri(VS_ROOT_URI, x.getSource(), x.getEntityCode()),
-						x.getDescription())));
+						x.getDescription(), x.getNamespace(), null)));
 			}
 		}
 		return subTrees;

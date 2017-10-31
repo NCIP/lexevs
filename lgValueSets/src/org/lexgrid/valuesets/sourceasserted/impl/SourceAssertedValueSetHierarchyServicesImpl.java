@@ -14,6 +14,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem.TextComparator;
@@ -152,13 +153,16 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 				for(CodingScheme scheme: schemes){
 			LexEVSTreeItem item = getTreeItemForSourceTerminology(scheme);
 			if(!roots.contains(item)){
-				item.addChild(ValueSetHierarchyService.INVERSE_IS_A, new LexEVSTreeItem(scheme.getCodingSchemeURI(), scheme.getCodingSchemeName()));
+				item.addChild(ValueSetHierarchyService.INVERSE_IS_A, new LexEVSTreeItem(
+						scheme.getCodingSchemeURI(), scheme.getCodingSchemeName(), 
+						AssertedValueSetServices.getNameSpaceForCodingScheme(scheme), null));
 				roots.add(item);
 			}
 			else{
 				roots.stream().filter(x -> x.equals(item)).findFirst().get().
 				addChild(ValueSetHierarchyService.INVERSE_IS_A, 
-						new LexEVSTreeItem(scheme.getCodingSchemeURI(), scheme.getCodingSchemeName()));
+						new LexEVSTreeItem(scheme.getCodingSchemeURI(), scheme.getCodingSchemeName(),
+								AssertedValueSetServices.getNameSpaceForCodingScheme(scheme), null));
 			}
 		}
 	return roots;
@@ -188,7 +192,8 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		} catch (LBException e) {
 			throw new RuntimeException("Error resolving source terminology for value set: ", e);
 		}
-		LexEVSTreeItem sourceTI = new LexEVSTreeItem(source.getCodingSchemeURI(), source.getFormalName());
+		LexEVSTreeItem sourceTI = new LexEVSTreeItem(source.getCodingSchemeURI(), source.getFormalName(), 
+				AssertedValueSetServices.getNameSpaceForCodingScheme(scheme), null);
 		sourceTI.set_expandable(true);
 		return sourceTI;
 	}

@@ -8,9 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedNamespace;
@@ -134,6 +136,31 @@ public class AssertedValueSetServicesTest extends TestCase {
 			String test = AssertedValueSetServices.getDefaultSourceIfNull("testSource");
 			assertTrue(test.equals("testSource"));
 	    }
+		
+		@Test
+		public void testGetSupportedNameSpace(){
+			CodingScheme scheme = new CodingScheme();
+			scheme.setCodingSchemeName("CodingSchemeName");
+			scheme.setMappings(new Mappings());
+			SupportedNamespace namsp = new SupportedNamespace();
+			namsp.setContent("namespace");
+			scheme.getMappings().addSupportedNamespace(namsp);
+			assertNotNull(AssertedValueSetServices.getNameSpaceForCodingScheme(scheme));
+			
+			CodingScheme scheme1 = new CodingScheme();
+			scheme1.setCodingSchemeName("CodingSchemeName");
+			scheme1.setMappings(new Mappings());
+			SupportedNamespace namsp1 = new SupportedNamespace();
+			namsp1.setLocalId("namespace");
+			scheme1.getMappings().addSupportedNamespace(namsp1);
+			assertNotNull(AssertedValueSetServices.getNameSpaceForCodingScheme(scheme1));
+			
+			CodingScheme scheme2 = new CodingScheme();
+			scheme2.setCodingSchemeName("CodingSchemeName");
+			scheme2.setMappings(new Mappings());
+			scheme2.getMappings().addSupportedNamespace(namsp1);
+			assertNotNull(AssertedValueSetServices.getNameSpaceForCodingScheme(scheme2));
+		}
 	    
 		@Test
 	    public void testCreateUri(){

@@ -40,8 +40,11 @@ public class AssertedVSHierarchyTest extends TestCase {
 		assertTrue(map.size() > 0);
 		assertTrue(map.get(ValueSetHierarchyService.ROOT)._assocToChildMap.size() > 0);
 		Map<String, List<LexEVSTreeItem>> items  = map.get(ValueSetHierarchyService.ROOT)._assocToChildMap;
-		
-		items.forEach((y,z) -> z.forEach(x->System.out.println(x.get_code() + ": " + x.get_text() )));
+		items.forEach((y,z) -> z.forEach(x->System.out.println(x.get_code() + ": " + x.get_text() + " : " + x.get_ns())));
+		List<LexEVSTreeItem> treeItems = items.get(ValueSetHierarchyService.INVERSE_IS_A);
+		treeItems.forEach(x -> assertNotNull(x.get_code()));
+		treeItems.forEach(x -> assertNotNull(x.get_text()));
+		treeItems.forEach(x -> assertNotNull(x.get_ns()));
 	}
 //	Direct to NCIt test	
 //	@Test
@@ -196,6 +199,11 @@ public class AssertedVSHierarchyTest extends TestCase {
 					"%1$" + (counter + x.get_text().length()) + "s",  
 					x.get_text()));
 			List<LexEVSTreeItem> list = x._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A);
+			if(list != null && !list.isEmpty()){
+			list.forEach(y -> assertNotNull(y.get_code()));
+			list.forEach(y -> assertNotNull(y.get_text()));
+			list.forEach(y -> assertNotNull(y.get_ns()));
+			}
 			printTree(list, counter);
 		}
 	}
