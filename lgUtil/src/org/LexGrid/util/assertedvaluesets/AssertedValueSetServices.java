@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Text;
@@ -60,7 +61,7 @@ public class AssertedValueSetServices {
         boolean isPresent = entity.getPropertyAsReference().stream().anyMatch(x -> 
         x.getPropertyName().equals(BROWSER_VS_DEFINITION));
         
-        boolean isDefinition = entity.getPropertyAsReference().stream().anyMatch(x -> 
+        boolean isDefinition = entity.getDefinitionAsReference().stream().anyMatch(x -> 
         x.getPropertyName().equals(DEFINITION));
         
         if(isPresent){
@@ -68,7 +69,7 @@ public class AssertedValueSetServices {
                     getPropertyName().equals(BROWSER_VS_DEFINITION)).findFirst().get().getValue().getContent();
         }
         else if(isDefinition){
-            return entity.getPropertyAsReference().stream().filter(x -> 
+            return entity.getDefinitionAsReference().stream().filter(x -> 
             x.getPropertyName().equals(DEFINITION)).findFirst().get().getValue().getContent();
         }
         else{
@@ -279,7 +280,18 @@ public static String breakOnCommonDiff(String name) {
         return keySet.stream().anyMatch(x -> x.equals(shortName));
     }
 
-
+    public static String getNameSpaceForCodingScheme(CodingScheme scheme){
+        //Currently we only declare one namespace for a coding scheme
+        //It is possible to have more than one namespace for contained entities however
+        //So this implementation is limited in its scope
+        if(scheme.getMappings().enumerateSupportedNamespace().hasMoreElements()){
+        return scheme.getMappings().enumerateSupportedNamespace().nextElement().getContent();
+        }else{
+            return scheme.getMappings().enumerateSupportedCodingScheme().hasMoreElements()?
+                scheme.getMappings().enumerateSupportedCodingScheme().nextElement().getLocalId():
+                    scheme.getCodingSchemeName();
+        }
+    }
     
     
     

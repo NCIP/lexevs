@@ -1,6 +1,8 @@
 package org.lexgrid.valuesets.sourceasserted.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,8 +14,10 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Properties;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
+import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem.TextComparator;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -66,6 +70,7 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		List<LexEVSTreeItem> treeItems = getTreeItemListFromSchemes(
 				getLexBIGService().getRegularResolvedVSCodingSchemes(), false);
 		treeItem.addAll(ValueSetHierarchyServiceImpl.INVERSE_IS_A, treeItems);
+		sortOnText(treeItem.get_assocToChildMap().get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), new TextComparator());
 		return sourceTree;
 	}
 	
@@ -129,12 +134,15 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		//assuming the other source trees are all surfaced on one level.
 		List<CodingScheme> serviceSchemes = getOtherServiceSchemes();
 
-		List<LexEVSTreeItem> serviceTreeRoots = getServiceTreeRoots(serviceSchemes);
-		
-		serviceTreeRoots.add(sourceTreeRoot);
+		List<LexEVSTreeItem> serviceTreeRoots = getServiceTreeRoots(serviceSchemes);		
+//		serviceTreeRoots.add(sourceTreeRoot);
+//		sortOnText(serviceTreeRoots, new TextComparator());
+		List<LexEVSTreeItem> temp = new ArrayList<LexEVSTreeItem>();
+		temp.add(sourceTreeRoot);
+		temp.addAll(serviceTreeRoots);
 		LexEVSTreeItem super_root = new LexEVSTreeItem(ValueSetHierarchyServiceImpl.ROOT,
 				"Root node");
-		super_root._assocToChildMap.put(ValueSetHierarchyService.INVERSE_IS_A, serviceTreeRoots);
+		super_root._assocToChildMap.put(ValueSetHierarchyService.INVERSE_IS_A, temp);
 		fullTree.put(ValueSetHierarchyServiceImpl.ROOT, super_root);
 		
 		return fullTree;
@@ -145,13 +153,16 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 				for(CodingScheme scheme: schemes){
 			LexEVSTreeItem item = getTreeItemForSourceTerminology(scheme);
 			if(!roots.contains(item)){
-				item.addChild(ValueSetHierarchyService.INVERSE_IS_A, new LexEVSTreeItem(scheme.getCodingSchemeURI(), scheme.getCodingSchemeName()));
+				item.addChild(ValueSetHierarchyService.INVERSE_IS_A, new LexEVSTreeItem(
+						scheme.getCodingSchemeURI(), scheme.getCodingSchemeName(), 
+						AssertedValueSetServices.getNameSpaceForCodingScheme(scheme), null));
 				roots.add(item);
 			}
 			else{
 				roots.stream().filter(x -> x.equals(item)).findFirst().get().
 				addChild(ValueSetHierarchyService.INVERSE_IS_A, 
-						new LexEVSTreeItem(scheme.getCodingSchemeURI(), scheme.getCodingSchemeName()));
+						new LexEVSTreeItem(scheme.getCodingSchemeURI(), scheme.getCodingSchemeName(),
+								AssertedValueSetServices.getNameSpaceForCodingScheme(scheme), null));
 			}
 		}
 	return roots;
@@ -181,7 +192,8 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 		} catch (LBException e) {
 			throw new RuntimeException("Error resolving source terminology for value set: ", e);
 		}
-		LexEVSTreeItem sourceTI = new LexEVSTreeItem(source.getCodingSchemeURI(), source.getFormalName());
+		LexEVSTreeItem sourceTI = new LexEVSTreeItem(source.getCodingSchemeURI(), source.getFormalName(), 
+				AssertedValueSetServices.getNameSpaceForCodingScheme(scheme), null);
 		sourceTI.set_expandable(true);
 		return sourceTI;
 	}
@@ -189,6 +201,10 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	private String getURNForResolvedCodingSchemeProperties(Properties properties) {
 		return properties.getPropertyAsReference().stream().filter( x -> x.getPropertyName()
 				.equals("resolvedAgainstCodingSchemeVersion")).findAny().get().getValue().getContent();
+	}
+	
+	public void sortOnText(List<LexEVSTreeItem> items, Comparator<LexEVSTreeItem> compare){
+		Collections.sort(items, compare);
 	}
 
 

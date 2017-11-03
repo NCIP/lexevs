@@ -145,6 +145,13 @@ public class ValueSetHierarchyServiceTest {
 		assertFalse(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._expandable);
 	}
 	
+	@Test
+	public void reduceFromURITest(){
+		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/C234235"), "C234235");
+		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/FDA/C234235"), "C234235");
+		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/CDISC/C234235"), "C234235");
+	}
+	
 	private void printTree(List<LexEVSTreeItem> items, int counter){
 		if(items == null || items.isEmpty()){return;}
 		counter = counter + 5;

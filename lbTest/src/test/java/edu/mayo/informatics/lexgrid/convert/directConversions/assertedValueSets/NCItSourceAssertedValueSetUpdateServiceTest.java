@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,13 +25,17 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 public class NCItSourceAssertedValueSetUpdateServiceTest {
 	NCItSourceAssertedValueSetUpdateServiceImpl vsUpdate;
 	LexBIGService lbs;
+	LexEVSValueSetDefinitionServices svc;
 	@Before
 	public void setUp() throws Exception {
 		vsUpdate = new NCItSourceAssertedValueSetUpdateServiceImpl(
@@ -37,7 +43,7 @@ public class NCItSourceAssertedValueSetUpdateServiceTest {
 				"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
 				"Semantic_Type", "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
 		lbs = LexBIGServiceImpl.defaultInstance();
-		
+		svc = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 	}
 
 	@Test
