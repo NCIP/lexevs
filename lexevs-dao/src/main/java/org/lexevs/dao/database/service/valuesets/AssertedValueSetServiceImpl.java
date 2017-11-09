@@ -9,13 +9,16 @@ import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.access.valuesets.SourceAssertedValueSetDao;
+import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 
 public class AssertedValueSetServiceImpl extends AbstractDatabaseService implements AssertedValueSetService {
 	SourceAssertedValueSetDao vsDao;
+	private ValueSetHierarchyDao vsHierarchyDao;
 
 	public AssertedValueSetServiceImpl() {
 		vsDao = getDaoManager().getCurrentAssertedValueSetDao();
+		vsHierarchyDao = getDaoManager().getCurrentValueSetHiearchyDao();
 	}
 
 	@Override

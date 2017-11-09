@@ -190,6 +190,11 @@
 				<ref bean="ibatisValueSetHierarchyDao"/>
 			</list>
 		</property>	
+		<property name="assertedValueSetDaos">
+			<list>
+				<ref bean="ibatisAssertedValueSetDao"/>
+			</list>
+		</property>	
 		<property name="versionsDaos">
 			<list>
 				<ref bean="ibatisVersionsDao" />
@@ -265,6 +270,10 @@
 	
 	<bean id="ibatisValueSetHierarchyDao"
 		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetHierarchyDao" parent="abstractIbatisDao">
+	</bean>
+	
+	<bean id="ibatisAssertedValueSetDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisSourceAssertedValueSetDao" parent="abstractIbatisDao">
 	</bean>
 
 	<bean id="databaseServiceManager" class="org.lexevs.dao.database.service.DatabaseServiceManager">

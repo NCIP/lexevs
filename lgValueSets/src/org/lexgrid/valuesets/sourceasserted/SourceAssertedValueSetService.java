@@ -13,13 +13,13 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 
 public interface SourceAssertedValueSetService {
-	public final static String ASSERTED_VALUESET_RELATION = "Concept_In_Subset";
+	
 			
 	
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException;
    	public List<CodingScheme> getMinimalSourceAssertedValueSetSchemes() throws LBException;
 	public List<CodingScheme> getSourceAssertedValueSetsForConceptReference(ConceptReference ref);
-	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri);
+	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException;
 	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(String uri);
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri);
 	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode, String assertedRelation) throws LBException;

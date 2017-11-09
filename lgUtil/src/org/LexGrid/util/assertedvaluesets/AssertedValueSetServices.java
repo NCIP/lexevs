@@ -1,5 +1,6 @@
 package org.LexGrid.util.assertedvaluesets;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +24,11 @@ import org.apache.commons.lang.StringUtils;
 
 public class AssertedValueSetServices {
 
-    public static String RESOLVED_AGAINST_CODING_SCHEME_VERSION= "resolvedAgainstCodingSchemeVersion";
-    public static String VERSION= "version";
-    public static String GENERIC= "generic";
-    public static String CS_NAME= "codingSchemeName";
-    public static String SOURCE_SCHEME_NAME= "textualPresentation";
+    public static final String RESOLVED_AGAINST_CODING_SCHEME_VERSION= "resolvedAgainstCodingSchemeVersion";
+    public static final String VERSION= "version";
+    public static final String GENERIC= "generic";
+    public static final String CS_NAME= "codingSchemeName";
+    public static final String SOURCE_SCHEME_NAME= "textualPresentation";
     
     public static final String DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
     public static final String DEFAULT_DO_PUBLISH_VALUE = "yes";
@@ -38,8 +39,9 @@ public class AssertedValueSetServices {
     public static final String SOURCE = "source";
     public static final String BASE = "http://evs.nci.nih.gov/valueset/";
     public static final String DEFAULT_SOURCE = "NCI";
-    public static final String DEFAULT_CODINGSCHEME_URI = "";
+    public static final String DEFAULT_CODINGSCHEME_URI = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
     public static final String DEFAULT_CODINGSCHEME_NAME = "NCI_Thesaurus";
+    public final static String ASSERTED_VALUESET_RELATION = "Concept_In_Subset";
     
     public static boolean isPublishableValueSet(Entity entity, boolean force) {
         if(entity.getPropertyAsReference().stream().anyMatch(x -> x.
@@ -165,9 +167,7 @@ public class AssertedValueSetServices {
 
         String codingSchemeName = description == null? entity.getEntityDescription().getContent(): description;
 
-        CodingScheme cs = null;
-
-        cs = new CodingScheme();
+        CodingScheme cs = new CodingScheme();
 
         cs.setCodingSchemeURI(codingSchemeUri);
         cs.setRepresentsVersion(codingSchemeVersion);
@@ -246,6 +246,11 @@ public class AssertedValueSetServices {
             name = name.substring(0, 49);
         }
         return name;
+    }
+
+    public static String getConceptCodeForURI(URI uri) {
+        // TODO Auto-generated method stub
+        return null;
     }
 
     

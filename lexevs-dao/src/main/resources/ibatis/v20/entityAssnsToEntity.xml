@@ -1384,7 +1384,7 @@
 	</select>
 	
 	<select id="getValueSetEntitiesFromCode"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
 		remapResults="true" resultMap="Entity.entityResult">
 		SELECT
 			ent.entityGuid, ent.entityCode, ent.entityCodeNamespace, ent.description 
