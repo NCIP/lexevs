@@ -1,6 +1,8 @@
 package org.lexgrid.valuesets.sourceasserted.impl;
 
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
@@ -18,6 +20,7 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 
 public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSetService {
@@ -34,7 +37,8 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		params = new AssertedValueSetParameters.Builder(version).codingSchemeURI(codingSchemeURI).
 				assertedValueSetRelation(association).publishName(publishName).publishValue(publishValue).build();
 		svc = getSvc();
-		assVSSvc = new AssertedValueSetServiceImpl();
+		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
+		((AssertedValueSetServiceImpl) assVSSvc).init();
 	}
 	
 	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(String version){
@@ -45,7 +49,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 				AssertedValueSetParameters.DEFAULT_DO_PUBLISH_VALUE);
 	}
 	
-	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersionAndRelation(String version, 
+	public SourceAssertedValueSetService getDefaultValueSetServiceForVersionAndRelation(String version, 
 			String association){
 	return new SourceAssertedValueSetServiceImpl(version, 
 			AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI,
@@ -54,7 +58,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 			AssertedValueSetParameters.DEFAULT_DO_PUBLISH_VALUE);
 	}
 	
-	public static SourceAssertedValueSetService getDefaultValueSetServiceForCodingSchemeAndRelation(String version, 
+	public SourceAssertedValueSetService getDefaultValueSetServiceForCodingSchemeAndRelation(String version, 
 			String codingSchemeURI,
 			String association){
 	return new SourceAssertedValueSetServiceImpl(version, 
@@ -64,7 +68,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 			AssertedValueSetParameters.DEFAULT_DO_PUBLISH_VALUE);
 	}
 	
-	public static SourceAssertedValueSetService getDefaultValueSetServiceForCodingSchemeWithRelationAndPublishValues(
+	public SourceAssertedValueSetService getDefaultValueSetServiceForCodingSchemeWithRelationAndPublishValues(
 			String version, 
 			String codingSchemeURI,
 			String association,
@@ -100,7 +104,9 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {
 		getSourceAssertedValueSetforEntityCode(AssertedValueSetServices.getConceptCodeForURI(uri), 
 				params.getAssertedValueSetRelation());
-		return null;
+		return getSourceAssertedValueSetforEntityCode(
+				AssertedValueSetServices.getConceptCodeForURI(uri), 
+				params.getAssertedValueSetRelation()).get(0);
 	}
 
 	@Override
@@ -155,7 +161,15 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	}
 	
 	public static void main(String[] args){
-		getDefaultValueSetServiceForVersion("17.08d").getSourceAssertedValueSetEntitiesForURI(AssertedValueSetParameters.ROOT_URI + "C128784");
+		CodingScheme scheme = null;
+		try {
+			scheme = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion("17.08d").getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetParameters.ROOT_URI + "C128784"));
+		} catch (LBException | URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("name :" + scheme.getCodingSchemeName());
+		scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
 	}
 	
 

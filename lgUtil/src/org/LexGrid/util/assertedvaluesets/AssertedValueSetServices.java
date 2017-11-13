@@ -249,12 +249,9 @@ public class AssertedValueSetServices {
     }
 
     public static String getConceptCodeForURI(URI uri) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    
-    
-    
+        String temp = uri.toString();
+        temp = temp.substring(temp.lastIndexOf("/") + 1);
+        return temp;
+    }  
 
 }

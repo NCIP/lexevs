@@ -7,8 +7,8 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 
 public interface SourceAssertedValueSetDao extends LexGridSchemaVersionAwareDao {
 	
-	List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String matchCode, String assertedRelation);
-	
-	List<Entity> getSourceAssertedValueSetTopNodeForEntityCode(String matchCode, String valueSetDesignation, String designationValue);
+	List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String matchCode, String assertedRelation, String version, String codingSchemeURI);
+
+	List<Entity> getSourceAssertedValueSetTopNodeForEntityCode(String matchCode, String codingSchemeUID);
 
 }
