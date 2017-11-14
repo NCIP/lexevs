@@ -20,6 +20,7 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
+import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 
@@ -99,11 +100,20 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	public List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode){
+		return ((AssertedValueSetServiceImpl) assVSSvc).getAllValueSetTopNodeCodes(
+				params.getCodingSchemeURI(), 
+				params.getCodingSchemeVersion(), 
+				params.getDefaultHierarchyVSRelation(), 
+				params.getSourceName(), 
+				params.getPublishName(),
+				params.getPublishValue(),
+				rootCode);	
+	}
 
 	@Override
-	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {
-		getSourceAssertedValueSetforEntityCode(AssertedValueSetServices.getConceptCodeForURI(uri), 
-				params.getAssertedValueSetRelation());
+	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {;
 		return getSourceAssertedValueSetforEntityCode(
 				AssertedValueSetServices.getConceptCodeForURI(uri), 
 				params.getAssertedValueSetRelation()).get(0);
@@ -161,15 +171,22 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	}
 	
 	public static void main(String[] args){
+		List<String> list = ((SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
+				getDefaultValueSetServiceForVersion("17.08d")).
+				getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
 		CodingScheme scheme = null;
+		
+		for(String s: list){
 		try {
-			scheme = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion("17.08d").getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetParameters.ROOT_URI + "C128784"));
+			scheme = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion("17.08d").
+					getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetParameters.ROOT_URI + s));
 		} catch (LBException | URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("name :" + scheme.getCodingSchemeName());
-		scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
+		}
+		//scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
 	}
 	
 

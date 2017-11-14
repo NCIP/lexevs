@@ -24,11 +24,11 @@ import org.apache.commons.lang.StringUtils;
 
 public class AssertedValueSetServices {
 
-    public static final String RESOLVED_AGAINST_CODING_SCHEME_VERSION= "resolvedAgainstCodingSchemeVersion";
-    public static final String VERSION= "version";
-    public static final String GENERIC= "generic";
-    public static final String CS_NAME= "codingSchemeName";
-    public static final String SOURCE_SCHEME_NAME= "textualPresentation";
+    public static final String RESOLVED_AGAINST_CODING_SCHEME_VERSION = "resolvedAgainstCodingSchemeVersion";
+    public static final String VERSION = "version";
+    public static final String GENERIC = "generic";
+    public static final String CS_NAME = "codingSchemeName";
+    public static final String SOURCE_SCHEME_NAME = "textualPresentation";
     
     public static final String DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
     public static final String DEFAULT_DO_PUBLISH_VALUE = "yes";

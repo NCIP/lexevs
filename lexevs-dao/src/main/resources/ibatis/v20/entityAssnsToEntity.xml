@@ -140,7 +140,13 @@
 		<result property="entityCode" column="entityCode" />
 		<result property="namespace" column="namespace" />
 		<result property="description" column="description" />
-		<result property="source" column="source" />
+		<result property="source" column="source"/>
+	</resultMap>
+	
+	<resultMap id="definedNodeResolution" class="org.lexevs.dao.database.access.association.model.DefinedNode" groupBy="description, publish, source">
+		<result property="entityCode" column="entityCode" />
+		<result property="entityCodeNamespace" column="namespace" />
+		<result property="description" column="description" />
 	</resultMap>
 	
 	<resultMap id="vsEntityResult" class="vsEntity" groupBy="entityCode,entityCodeNamespace">
@@ -1474,6 +1480,32 @@
 			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
 		AND
 			entityCode = #param2#
+   </select>
+   
+   <select id="getAllValidValueSetTopNodes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+		remapResults="true" resultMap="definedNodeResolution">
+		SELECT
+			assns.sourceEntityCode AS entityCode,
+			assns.sourceEntityCodeNamespace AS namespace,
+			ent.description AS description
+		FROM 
+			$prefix$entityAssnsToEntity assns
+		LEFT JOIN
+			$prefix$entity ent
+		ON
+			ent.entityCode = assns.sourceEntityCode
+		LEFT JOIN 
+			$prefix$property prop 
+		ON
+			ent.entityGuid = prop.referenceGuid
+		WHERE
+			associationPredicateGuid = #param1#
+ 		AND
+			prop.propertyName = #param2#
+		AND 
+			prop.propertyValue = #param3#
+		GROUP BY
+			ent.entityCode
    </select>
 	
 	<select id="getEntryStateUidByAssociationTarget"

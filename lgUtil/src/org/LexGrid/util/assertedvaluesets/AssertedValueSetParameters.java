@@ -4,7 +4,7 @@ public final class AssertedValueSetParameters {
    
     
     public static final String DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
-    public static final String DEFAULT_DO_PUBLISH_VALUE = "yes";
+    public static final String DEFAULT_DO_PUBLISH_VALUE = "Yes";
     public static final String BROWSER_VS_DEFINITION = "Term_Browser_Value_Set_Description";
     public static final String DEFINITION = "DEFINITION";
     public static final String CONCEPT_DOMAIN = "Semantic_Type";
@@ -15,6 +15,7 @@ public final class AssertedValueSetParameters {
     public static final String DEFAULT_CODINGSCHEME_URI = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
     public static final String DEFAULT_CODINGSCHEME_NAME = "NCI_Thesaurus";
     public static final String ASSERTED_VALUESET_RELATION = "Concept_In_Subset";
+    public static final String DEFAULT_VS_HIERARCHY_RELATION = "subClassOf";
     
     private final String publishName;
     private final String publishValue;
@@ -29,6 +30,7 @@ public final class AssertedValueSetParameters {
     private final String codingSchemeName;
     private final String codingSchemeVersion;
     private final String assertedValueSetRelation;
+    private final String defaultHierarchyVSRelation;
 
     
     public static class Builder{
@@ -47,6 +49,7 @@ public final class AssertedValueSetParameters {
         private String codingSchemeURI = DEFAULT_CODINGSCHEME_URI;
         private String codingSchemeName = DEFAULT_CODINGSCHEME_NAME;
         private String assertedValueSetRelation = ASSERTED_VALUESET_RELATION;
+        private String defaultHierarchyVSRelation = DEFAULT_VS_HIERARCHY_RELATION;
         
         public Builder(String version){
             this.codingSchemeVersion = version;
@@ -113,6 +116,11 @@ public final class AssertedValueSetParameters {
             return this;
         }
         
+        public Builder assertedDefaultHierarchyVSRelation(String value){
+            this.defaultHierarchyVSRelation = value;
+            return this;
+        }
+        
         public AssertedValueSetParameters build(){
             return new AssertedValueSetParameters(this);
         }
@@ -132,6 +140,7 @@ public final class AssertedValueSetParameters {
         this.codingSchemeName = builder.codingSchemeName;
         this.codingSchemeVersion = builder.codingSchemeVersion;
         this.assertedValueSetRelation = builder.assertedValueSetRelation;
+        this.defaultHierarchyVSRelation = builder.defaultHierarchyVSRelation;
     }
     
    
@@ -228,6 +237,14 @@ public final class AssertedValueSetParameters {
      */
     public String getAssertedValueSetRelation() {
         return assertedValueSetRelation;
+    }
+
+
+    /**
+     * @return the defaultHierarchyVSRelation
+     */
+    public String getDefaultHierarchyVSRelation() {
+        return defaultHierarchyVSRelation;
     }
 
 

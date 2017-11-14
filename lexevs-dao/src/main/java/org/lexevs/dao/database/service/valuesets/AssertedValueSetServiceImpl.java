@@ -2,27 +2,31 @@ package org.lexevs.dao.database.service.valuesets;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
+import org.lexevs.dao.database.access.association.model.DefinedNode;
+import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.access.valuesets.SourceAssertedValueSetDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class AssertedValueSetServiceImpl extends AbstractDatabaseService implements AssertedValueSetService {
 	
 	private SourceAssertedValueSetDao ibatisAssertedValueSetDao;
 	
-	private ValueSetHierarchyDao ibatisValueSetHierarchyDao;
+	private ValueSetHierarchyService valueSetHeirarchyService;
 
 
 	
 	public  AssertedValueSetService init(){
 		ibatisAssertedValueSetDao = this.getDaoManager().getCurrentAssertedValueSetDao();
-		ibatisValueSetHierarchyDao = this.getDaoManager().getCurrentValueSetHiearchyDao();
+		valueSetHeirarchyService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
 		return this;
 	}
 
@@ -38,6 +42,12 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
 		schemes.add(scheme);
 		return schemes;
+	}
+	
+	public List<String> getAllValueSetTopNodeCodes(String scheme, String schemeVersion, String association, String sourceDesignation, String publishName, String publishValue, String rootCode){
+		valueSetHeirarchyService.preprocessSourceHierarchyData(scheme, schemeVersion, association, sourceDesignation, publishName, rootCode);
+		List<DefinedNode> list = ((ValueSetHierarchyServiceImpl) valueSetHeirarchyService).getAllValueSetNodesWithoutSource(association, publishName, publishValue);
+		return list.stream().map(x -> x.getEntityCode()).collect(Collectors.toList());
 	}
 
 	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities, String version, String codingSchemeURI) throws LBException {
@@ -61,17 +71,18 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	}
 
 	/**
-	 * @return the ibatisValueSetHierarchyDao
+	 * @return the valueSetHeirarchyService
 	 */
-	public ValueSetHierarchyDao getIbatisValueSetHierarchyDao() {
-		return ibatisValueSetHierarchyDao;
+	public ValueSetHierarchyService getValueSetHeirarchyService() {
+		return valueSetHeirarchyService;
 	}
 
 	/**
-	 * @param ibatisValueSetHierarchyDao the ibatisValueSetHierarchyDao to set
+	 * @param valueSetHeirarchyService the valueSetHeirarchyService to set
 	 */
-	public void setIbatisValueSetHierarchyDao(ValueSetHierarchyDao ibatisValueSetHierarchyDao) {
-		this.ibatisValueSetHierarchyDao = ibatisValueSetHierarchyDao;
+	public void setValueSetHeirarchyService(ValueSetHierarchyService valueSetHeirarchyService) {
+		this.valueSetHeirarchyService = valueSetHeirarchyService;
 	}
+
 
 }

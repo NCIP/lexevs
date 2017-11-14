@@ -411,8 +411,6 @@
 	<bean id="assertedValueSetService" 
 		class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
 		parent="abstractService">
-		<property name="ibatisAssertedValueSetDao" ref="ibatisAssertedValueSetDao"/>
-		<property name="ibatisValueSetHierarchyDao" ref ="ibatisValueSetHierarchyDao"/>
 	</bean>
 	
 	<bean id="vsDefinitionEntryService" 
