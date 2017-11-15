@@ -30,59 +30,15 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	AssertedValueSetService assVSSvc;
 	AssertedValueSetParameters params;
 
-	private SourceAssertedValueSetServiceImpl(String version, 
-			String codingSchemeURI, 
-			String association, 
-			String publishName,
-			String publishValue) {
-		params = new AssertedValueSetParameters.Builder(version).codingSchemeURI(codingSchemeURI).
-				assertedValueSetRelation(association).publishName(publishName).publishValue(publishValue).build();
-		svc = getSvc();
+	private SourceAssertedValueSetServiceImpl(AssertedValueSetParameters params) {
+		this.params = params;
 		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
 		((AssertedValueSetServiceImpl) assVSSvc).init();
 	}
 	
-	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(String version){
-		return new SourceAssertedValueSetServiceImpl(version, 
-				AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI,
-				AssertedValueSetParameters.ASSERTED_VALUESET_RELATION,
-				AssertedValueSetParameters.DEFAULT_DO_PUBLISH_NAME,
-				AssertedValueSetParameters.DEFAULT_DO_PUBLISH_VALUE);
+	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(AssertedValueSetParameters params){
+		return new SourceAssertedValueSetServiceImpl(params);
 	}
-	
-	public SourceAssertedValueSetService getDefaultValueSetServiceForVersionAndRelation(String version, 
-			String association){
-	return new SourceAssertedValueSetServiceImpl(version, 
-			AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI,
-			association,
-			AssertedValueSetParameters.DEFAULT_DO_PUBLISH_NAME,
-			AssertedValueSetParameters.DEFAULT_DO_PUBLISH_VALUE);
-	}
-	
-	public SourceAssertedValueSetService getDefaultValueSetServiceForCodingSchemeAndRelation(String version, 
-			String codingSchemeURI,
-			String association){
-	return new SourceAssertedValueSetServiceImpl(version, 
-			codingSchemeURI,
-			association,
-			AssertedValueSetParameters.DEFAULT_DO_PUBLISH_NAME,
-			AssertedValueSetParameters.DEFAULT_DO_PUBLISH_VALUE);
-	}
-	
-	public SourceAssertedValueSetService getDefaultValueSetServiceForCodingSchemeWithRelationAndPublishValues(
-			String version, 
-			String codingSchemeURI,
-			String association,
-			String publishName,
-			String publishValue){
-	return new SourceAssertedValueSetServiceImpl(version, 
-			codingSchemeURI,
-			association,
-			publishName,
-			publishValue);
-	}
-	
-	
 
 	@Override
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
@@ -172,13 +128,13 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	
 	public static void main(String[] args){
 		List<String> list = ((SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
-				getDefaultValueSetServiceForVersion("17.08d")).
+				getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder("17.08d").build())).
 				getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
 		CodingScheme scheme = null;
 		
 		for(String s: list){
 		try {
-			scheme = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion("17.08d").
+			scheme = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder("17.08d").build()).
 					getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetParameters.ROOT_URI + s));
 		} catch (LBException | URISyntaxException e) {
 			// TODO Auto-generated catch block
