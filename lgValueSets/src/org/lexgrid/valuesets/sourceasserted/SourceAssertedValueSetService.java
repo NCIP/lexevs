@@ -22,7 +22,7 @@ public interface SourceAssertedValueSetService {
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException;
 	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(String uri);
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri);
-	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode, String assertedRelation) throws LBException;
+	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode) throws LBException;
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException;
 	
 	/**

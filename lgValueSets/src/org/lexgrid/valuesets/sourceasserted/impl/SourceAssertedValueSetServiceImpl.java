@@ -33,7 +33,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	private SourceAssertedValueSetServiceImpl(AssertedValueSetParameters params) {
 		this.params = params;
 		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
-		((AssertedValueSetServiceImpl) assVSSvc).init();
+		assVSSvc.init(params);
 	}
 	
 	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(AssertedValueSetParameters params){
@@ -58,21 +58,13 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	}
 	
 	public List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode){
-		return ((AssertedValueSetServiceImpl) assVSSvc).getAllValueSetTopNodeCodes(
-				params.getCodingSchemeURI(), 
-				params.getCodingSchemeVersion(), 
-				params.getDefaultHierarchyVSRelation(), 
-				params.getSourceName(), 
-				params.getPublishName(),
-				params.getPublishValue(),
-				rootCode);	
+		return assVSSvc.getAllValueSetTopNodeCodes(rootCode);	
 	}
 
 	@Override
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {;
 		return getSourceAssertedValueSetforEntityCode(
-				AssertedValueSetServices.getConceptCodeForURI(uri), 
-				params.getAssertedValueSetRelation()).get(0);
+				AssertedValueSetServices.getConceptCodeForURI(uri)).get(0);
 	}
 
 	@Override
@@ -88,11 +80,9 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	}
 
 	@Override
-	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode, String assertedRelation)
+	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode)
 			throws LBException {
-		return assVSSvc.getSourceAssertedValueSetforEntityCode(matchCode, assertedRelation, 
-				params.getPublishName(), params.getPublishValue(),
-				params.getCodingSchemeVersion(), params.getCodingSchemeURI());
+		return assVSSvc.getSourceAssertedValueSetforEntityCode(matchCode);
 	}
 
 	@Override
@@ -134,7 +124,8 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		
 		for(String s: list){
 		try {
-			scheme = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder("17.08d").build()).
+			scheme = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(
+					new AssertedValueSetParameters.Builder("17.08d").build()).
 					getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetParameters.ROOT_URI + s));
 		} catch (LBException | URISyntaxException e) {
 			// TODO Auto-generated catch block
@@ -142,7 +133,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		}
 		System.out.println("name :" + scheme.getCodingSchemeName());
 		}
-		//scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
+		scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
 	}
 	
 

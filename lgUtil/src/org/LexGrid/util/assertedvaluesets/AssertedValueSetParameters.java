@@ -52,6 +52,9 @@ public final class AssertedValueSetParameters {
         private String defaultHierarchyVSRelation = DEFAULT_VS_HIERARCHY_RELATION;
         
         public Builder(String version){
+            if(version == null){
+                throw new RuntimeException("Coding Scheme version cannot be null");
+            }
             this.codingSchemeVersion = version;
         }
         
