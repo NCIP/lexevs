@@ -2,11 +2,9 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,11 +20,9 @@ import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
-import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import edu.stanford.smi.protegex.owl.swrl.bridge.builtins.temporal.Instant;
 import junit.framework.TestCase;
 
 
@@ -256,8 +252,8 @@ public class AssertedValueSetServicesTest extends TestCase {
 			subent2.setEntityCode("C01");
 			subent2.setEntityDescription(Constructors.createEntityDescription("description2"));
 			
-			subent2.setEntityCode("C11");
-			subent2.setEntityDescription(Constructors.createEntityDescription("description3"));
+			subent3.setEntityCode("C11");
+			subent3.setEntityDescription(Constructors.createEntityDescription("description3"));
 			
 			Entities ents = new Entities();
 			ents.getEntityAsReference().add(subent1);
@@ -287,6 +283,10 @@ public class AssertedValueSetServicesTest extends TestCase {
 					equals("resolvedAgainstCodingSchemeVersion")).findFirst().get().getPropertyQualifierAsReference().stream().filter(
 					pqtoo -> pqtoo.getPropertyQualifierName().equals("codingSchemeName")).findFirst().get().getValue().getContent(), "This is where we describe the entity"); 
 			assertEquals(scheme.getOwner(), "NCI");
+			assertTrue(scheme.getEntities().getEntityCount() == 3);
+			assertEquals(scheme.getEntities().getEntityAsReference().stream().filter(e -> e.getEntityCode().equals("C1")).findFirst().get().getEntityDescription().getContent(), "description1" );
+			assertEquals(scheme.getEntities().getEntityAsReference().stream().filter(e -> e.getEntityCode().equals("C01")).findFirst().get().getEntityDescription().getContent(), "description2" );
+			assertEquals(scheme.getEntities().getEntityAsReference().stream().filter(e -> e.getEntityCode().equals("C11")).findFirst().get().getEntityDescription().getContent(), "description3" );
 		}
 
 }
