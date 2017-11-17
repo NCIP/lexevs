@@ -23,6 +23,12 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	private static final String GET_VS_ENTITIES_FROM_CODE = ASSOCIATION_NAMESPACE + "getValueSetEntitiesFromCode";
 	private static final String GET_VS_ENTITY_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSTopNodeEntityByCode";
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
+	
+
+	@Override
+	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
+		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
+	}
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -31,11 +37,6 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_VS_ENTITIES_FROM_CODE, 
 				new PrefixedParameterTuple(prefix, predicateUID, matchCode));
-	}
-
-	@Override
-	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
-		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 
 	@SuppressWarnings("unchecked")

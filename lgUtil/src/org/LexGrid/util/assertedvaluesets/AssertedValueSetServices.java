@@ -177,7 +177,7 @@ public class AssertedValueSetServices {
             cs.setExpirationDate(entity.getExpirationDate());
         cs.setEntryState(entity.getEntryState());
         cs.setFormalName(codingSchemeName);
-        cs.setCodingSchemeName(truncateDefNameforCodingSchemeName(codingSchemeName));
+        cs.setCodingSchemeName(truncateDefNameforCodingSchemeName(codingSchemeName, false));
         cs.setIsActive(entity.getIsActive());
         cs.setMappings(createMappings(entity));
         cs.setOwner(entity.getOwner());
@@ -241,7 +241,8 @@ public class AssertedValueSetServices {
         return sources;
     }
     
-    protected static String truncateDefNameforCodingSchemeName(String name){
+    public static String truncateDefNameforCodingSchemeName(String name, boolean stored){
+        if(!stored){ return name;}
         if (StringUtils.isNotEmpty(name) && name.length() > 50) {
             name = name.substring(0, 49);
         }
