@@ -66,7 +66,9 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
 		Entities list = new Entities();
 		list.getEntityAsReference().addAll(entities);
-		return AssertedValueSetServices.transform(entity.iterator().next(), null, null, list, params.getCodingSchemeVersion(), params.getCodingSchemeURI());
+		Entity ent = entity.iterator().next();
+		String source = ent.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals("Contributing_Source")).map(x -> x.getValue().getContent()).collect(Collectors.toList()).get(0);
+		return AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(), params.getCodingSchemeURI());
 	}
 
 	/**

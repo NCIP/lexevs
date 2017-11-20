@@ -34,6 +34,7 @@ public interface SourceAssertedValueSetService {
 	 * @throws LBException
 	 */
 	public AbsoluteCodingSchemeVersionReferenceList getListOfCodingSchemeVersionsUsedInResolution(CodingScheme cs);
+	List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode);
 		
 
 }

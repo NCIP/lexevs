@@ -15,7 +15,7 @@ public class IbatisValueSetHierarchyDao extends AbstractIbatisDao implements Val
 	public static String ASSOCIATION_NAMESPACE = "Association.";
 	private static final String GET_VS_TRIPLES_OF_VSNODE_SQL = ASSOCIATION_NAMESPACE + "getValueSetHierarchySourcesOfTargets";
 	private static final String GET_VS_TRIPLES_OF_VS_SQL = ASSOCIATION_NAMESPACE + "getAllValidValueSetTopNodes";
-	/** The supported datebase version. */
+	/** The supported data base version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 
 	
