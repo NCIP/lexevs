@@ -273,6 +273,20 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
+	public void testGetMappingCodingSchemesEntityWithNamespaceParticipatesIn() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		AbsoluteCodingSchemeVersionReferenceList list = mappingExtension.getMappingCodingSchemesEntityParticipatesIn(
+				"C0001", "Automobiles");
+		
+		assertEquals(1,list.getAbsoluteCodingSchemeVersionReferenceCount());
+		
+		assertEquals(MAPPING_SCHEME_URI, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeURN());
+		assertEquals(MAPPING_SCHEME_VERSION, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion());
+	}
+	
+	@Test
 	public void testGetMapping() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
