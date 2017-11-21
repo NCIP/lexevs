@@ -37,6 +37,7 @@ import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
@@ -314,8 +315,17 @@ public class LoadTestDataTest {
         
      }
 	
-	@Test
 	@Order(15)
+	@Test
+	public void loadSourceAssertedValueSetDefinitionsTest() throws LBParameterException, InterruptedException{
+	    new SourceAssertedValueSetBatchLoader("owl2lexevs", "0.1.5",
+	    		"Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/",
+	    		"NCI", "Semantic_Type").run("Contributing_Source");
+	    Thread.sleep(1000);
+	}
+	
+	@Test
+	@Order(16)
 	public void testloadSourceAssertedResolvedValueSet() throws URISyntaxException, Exception{
 	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs","0.1.5","Concept_In_Subset", 
 			 true, "http://evs.nci.nih.gov/valueset/", "NCI","Semantic_Type").run("Contributing_Source");

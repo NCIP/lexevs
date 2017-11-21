@@ -1,7 +1,9 @@
 package org.LexGrid.util.assertedvaluesets;
 
+
 import java.net.URI;
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -43,17 +45,24 @@ public class AssertedValueSetServices {
     public static final String DEFAULT_CODINGSCHEME_URI = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
     public static final String DEFAULT_CODINGSCHEME_NAME = "NCI_Thesaurus";
     public final static String ASSERTED_VALUESET_RELATION = "Concept_In_Subset";
+
     
     private static final String ELIPSIS = "...";
-    public enum BaseName{
-        CODE("Code"), NAME("Name"); 
-        private String value; 
-        BaseName(String name){value = name;}
+
+    public enum BaseName {
+        CODE("Code"), NAME("Name");
+        private String value;
+
+        BaseName(String name) {
+            value = name;
+        }
+
         @Override
         public String toString() {
             return value;
         }
-        }
+    }
+    
     public static boolean isPublishableValueSet(Entity entity, boolean force) {
         nullEntityCheck(entity);
         if(entity.getPropertyAsReference().stream().anyMatch(x -> x.
@@ -72,7 +81,7 @@ public class AssertedValueSetServices {
         boolean isPresent = entity.getPropertyAsReference().stream().anyMatch(x -> 
         x.getPropertyName().equals(BROWSER_VS_DEFINITION));
         
-        boolean isDefinition = entity.getPropertyAsReference().stream().anyMatch(x -> 
+        boolean isDefinition = entity.getDefinitionAsReference().stream().anyMatch(x -> 
         x.getPropertyName().equals(DEFINITION));
         
         if(isPresent){
@@ -80,7 +89,7 @@ public class AssertedValueSetServices {
                     getPropertyName().equals(BROWSER_VS_DEFINITION)).findFirst().get().getValue().getContent();
         }
         else if(isDefinition){
-            return entity.getPropertyAsReference().stream().filter(x -> 
+            return entity.getDefinitionAsReference().stream().filter(x -> 
             x.getPropertyName().equals(DEFINITION)).findFirst().get().getValue().getContent();
         }
         else{
@@ -260,6 +269,39 @@ public class AssertedValueSetServices {
         return mappings;
     }
     
+    public static List<String> getDiff(final String a, final String b){
+        List<String> diffs;
+        if(a.length() > b.length()){
+        List<String> compareTo = Arrays.asList(b.split(" ")); 
+        diffs = Arrays.asList(a.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        }
+        else{
+            List<String> compareTo = Arrays.asList(a.split(" ")); 
+            diffs = Arrays.asList(b.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        }
+        return diffs;
+    }
+    
+    
+    public static String processForDiff(String shortName, String similarName, HashMap<String, String> truncatedNames) {
+        String originalValue = truncatedNames.get(shortName);
+        List<String> diff = getDiff(similarName, originalValue);
+        return createDifferentBaseName(shortName, diff);
+    }
+
+    public static String createDifferentBaseName(String shortName, List<String> diff) {
+        if(!diffInShortName(shortName, diff)){
+            String diffConcat = diff.stream().reduce((x,y) -> x.concat(" " + y)).get(); 
+            shortName = shortName.substring(0, shortName.length() - diffConcat.length());
+            if(shortName.contains(" ")){
+            shortName = shortName.substring(0, shortName.lastIndexOf(" ") + 1);
+            }
+            shortName = shortName.concat(diffConcat);
+            return shortName;
+        }
+        return shortName;
+    }
+    
     protected static List<SupportedSource> getSupportedSources(Entity entity) {
         nullEntityCheck(entity);
         List<SupportedSource> sources = new ArrayList<SupportedSource>();
@@ -292,39 +334,6 @@ public class AssertedValueSetServices {
     
     private static void nullEntityCheck(Entity entity) {
         if(entity == null) {throw new RuntimeException("Enity cannot be null");}
-    }
-
-    public static List<String> getDiff(final String a, final String b){
-        List<String> diffs;
-        if(a.length() > b.length()){
-        List<String> compareTo = Arrays.asList(b.split(" ")); 
-        diffs = Arrays.asList(a.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
-        }
-        else{
-            List<String> compareTo = Arrays.asList(a.split(" ")); 
-            diffs = Arrays.asList(b.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
-        }
-        return diffs;
-    }
-    
-    
-    public static String processForDiff(String shortName, String similarName, HashMap<String, String> truncatedNames) {
-        String originalValue = truncatedNames.get(shortName);
-        List<String> diff = getDiff(similarName, originalValue);
-        return createDifferentBaseName(shortName, diff);
-    }
-
-    public static String createDifferentBaseName(String shortName, List<String> diff) {
-        if(!diffInShortName(shortName, diff)){
-            String diffConcat = diff.stream().reduce((x,y) -> x.concat(" " + y)).get(); 
-            shortName = shortName.substring(0, shortName.length() - diffConcat.length());
-            if(shortName.contains(" ")){
-            shortName = shortName.substring(0, shortName.lastIndexOf(" ") + 1);
-            }
-            shortName = shortName.concat(diffConcat);
-            return shortName;
-        }
-        return shortName;
     }
     
     public static boolean diffInShortName(String shortName, List<String> diff) {

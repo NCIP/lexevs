@@ -2,6 +2,7 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -35,7 +36,7 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
     private String codingSchemeVersion;
     private String associationName;
     private boolean targetToSource;
-
+    private HashMap<String, String> truncatedNames;
     private EntityToRVSTransformer transformer;
     
 
@@ -74,6 +75,7 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
         supCS.setUri(codingSchemeUri);
         this.transformer = new EntityToRVSTransformer(associationName, 
                 codingSchemeUri, codingSchemeName, version, ref , lbsvc, baseUri, owner, supCS, conceptDomainIndicator);
+        truncatedNames = new HashMap<String, String>();
     }
     
     public void run(String sourceName) throws LBException, InterruptedException{
@@ -122,7 +124,7 @@ public class SourceAssertedValueSetToSchemeBatchLoader {
         for (Node n : nodes) {
             Entity e = getEntityByCodeAndNamespace(codingSchemeUri, codingSchemeVersion, n.getEntityCode(),
                     n.getEntityCodeNamespace());
-            List<CodingScheme> schemes = transformer.transformEntityToCodingSchemes(e, sourceName);
+            List<CodingScheme> schemes = transformer.transformEntityToCodingSchemes(e, sourceName, truncatedNames);
 
             for (CodingScheme s : schemes) {
 

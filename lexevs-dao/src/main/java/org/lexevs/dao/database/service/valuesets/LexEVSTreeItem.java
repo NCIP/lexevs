@@ -2,6 +2,7 @@ package org.lexevs.dao.database.service.valuesets;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -248,6 +249,14 @@ public class LexEVSTreeItem implements Serializable{
 		 */
 		public void set_assocToChildMap(Map<String, List<LexEVSTreeItem>> _assocToChildMap) {
 			this._assocToChildMap = _assocToChildMap;
+		}
+		
+		public static class TextComparator implements Comparator<LexEVSTreeItem>{
+			
+			public int compare(LexEVSTreeItem one, LexEVSTreeItem two){
+				return one.get_text().compareTo(two.get_text());
+			}
+			
 		}
 
 
