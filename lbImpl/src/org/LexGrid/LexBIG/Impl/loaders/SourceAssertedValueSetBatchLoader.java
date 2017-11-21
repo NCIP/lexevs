@@ -49,9 +49,10 @@ public class SourceAssertedValueSetBatchLoader {
         this.codingSchemeUri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
         valueSetDefinitionService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
         this.codingSchemeVersion = version;
+        this.codingSchemeName = codingScheme;
         this.associationName = associationName;
         this.targetToSource = targetToSource;
-        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, codingSchemeName, version, owner, associationName, conceptDomainIndicator);
+        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, version, codingSchemeName, owner, associationName, conceptDomainIndicator);
         messages_ = LoggerFactory.getLogger();
     }
     
