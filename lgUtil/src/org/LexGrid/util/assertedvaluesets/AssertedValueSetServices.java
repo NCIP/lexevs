@@ -2,6 +2,7 @@ package org.LexGrid.util.assertedvaluesets;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +44,16 @@ public class AssertedValueSetServices {
     public static final String DEFAULT_CODINGSCHEME_NAME = "NCI_Thesaurus";
     public final static String ASSERTED_VALUESET_RELATION = "Concept_In_Subset";
     
+    private static final String ELIPSIS = "...";
+    public enum BaseName{
+        CODE("Code"), NAME("Name"); 
+        private String value; 
+        BaseName(String name){value = name;}
+        @Override
+        public String toString() {
+            return value;
+        }
+        }
     public static boolean isPublishableValueSet(Entity entity, boolean force) {
         nullEntityCheck(entity);
         if(entity.getPropertyAsReference().stream().anyMatch(x -> x.
@@ -283,4 +294,136 @@ public class AssertedValueSetServices {
         if(entity == null) {throw new RuntimeException("Enity cannot be null");}
     }
 
+    public static List<String> getDiff(final String a, final String b){
+        List<String> diffs;
+        if(a.length() > b.length()){
+        List<String> compareTo = Arrays.asList(b.split(" ")); 
+        diffs = Arrays.asList(a.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        }
+        else{
+            List<String> compareTo = Arrays.asList(a.split(" ")); 
+            diffs = Arrays.asList(b.split(" ")).stream().filter(x -> !compareTo.contains(x)).collect(Collectors.toList());
+        }
+        return diffs;
+    }
+    
+    
+    public static String processForDiff(String shortName, String similarName, HashMap<String, String> truncatedNames) {
+        String originalValue = truncatedNames.get(shortName);
+        List<String> diff = getDiff(similarName, originalValue);
+        return createDifferentBaseName(shortName, diff);
+    }
+
+    public static String createDifferentBaseName(String shortName, List<String> diff) {
+        if(!diffInShortName(shortName, diff)){
+            String diffConcat = diff.stream().reduce((x,y) -> x.concat(" " + y)).get(); 
+            shortName = shortName.substring(0, shortName.length() - diffConcat.length());
+            if(shortName.contains(" ")){
+            shortName = shortName.substring(0, shortName.lastIndexOf(" ") + 1);
+            }
+            shortName = shortName.concat(diffConcat);
+            return shortName;
+        }
+        return shortName;
+    }
+    
+    public static boolean diffInShortName(String shortName, List<String> diff) {
+        return diff.stream().allMatch(x -> shortName.contains(x));
+    }
+
+    public static String getCononicalDiffValue(String diff){
+        Set<String> canonicalValue =  Arrays.asList(BaseName.values()).stream().
+                filter(base -> diff.contains(base.value)).
+                map(value -> value.value).
+                collect(Collectors.toSet());
+        if (canonicalValue.size() == 1){
+            return canonicalValue.iterator().next();
+        }
+        return null;
+    }
+    
+    public static String truncateDefNameforCodingSchemeName(final String name, HashMap<String, String> truncatedNames){
+        if (StringUtils.isNotEmpty(name) && name.length() > 50) {
+            String breakAdj = name;
+            breakAdj = breakOnCommonDiff(breakAdj);
+            String shortName = abbreviateFromMiddle(breakAdj, ELIPSIS, 50);
+          if(truncatedNames.containsKey(shortName)){
+                shortName = AssertedValueSetServices.processForDiff(shortName, breakAdj, truncatedNames);
+                if(shortNameExistsAsKey(shortName, truncatedNames.keySet())){
+                    shortName = getAlternativeNamingForShortName(shortName, breakAdj, truncatedNames);
+                    System.out.println(shortName + " : " + name);
+                }
+            }
+            truncatedNames.put(shortName, name);
+            return shortName;
+        }
+        return name;
+    }
+
+    public static String getAlternativeNamingForShortName(String shortName, final String name, HashMap<String, String> truncatedNames) {
+            List<String> diffs = getDiff(name, truncatedNames.get(shortName));
+            //Already abbreviated with elipsis
+            if(!(shortName.indexOf(ELIPSIS) == -1)){
+            shortName = shortName.substring(0,shortName.length() - shortName.indexOf(ELIPSIS) + 3);
+            }
+            else{
+                shortName = shortName.substring(0, shortName.length()/2);
+            }
+            final String temp = shortName;
+            boolean success = false;
+            if(diffs.stream().filter(s -> truncatedNames.get(temp.concat(s)) == null).findAny().isPresent()){
+                shortName = shortName.concat(diffs.stream().filter(s -> truncatedNames.get(temp.concat(s)) == null).findAny().get());
+                return shortName;
+            }
+            int counter = 0;
+            while(!success){
+                shortName = temp.concat(String.valueOf(counter));
+                if(truncatedNames.get(temp) == null){
+                    success = true;
+                }
+                counter++;
+            }
+            return shortName;
+    }
+
+   public static String abbreviateFromMiddle(final String name, String string, int i) {
+     if(name == null || name.length() <= i){
+         return name;
+     }
+     String first = name.substring(0, (i - string.length())/2);
+     String remainder = name.substring(name.length() - (i - string.length())/2, name.length());
+     return first + string  + remainder;
+    }
+
+public static String breakOnCommonDiff(String name) {
+        String[] tokenNames = StringUtils.split(name);
+        List<BaseName> canonicalValues = Arrays.asList(BaseName.values());
+        Set<String> breakOn = canonicalValues.stream().
+                filter(x -> Arrays.asList(tokenNames).
+                contains(x.value)).
+                map(y -> y.value).
+                collect(Collectors.toSet());
+        if(breakOn.size() > 0){
+        String value = breakOn.iterator().next();
+        name = name.substring(0, name.indexOf(value) + value.length());
+        }
+        return name;
+    }
+
+    public static boolean shortNameExistsAsKey(String shortName, Set<String> keySet) {
+        return keySet.stream().anyMatch(x -> x.equals(shortName));
+    }
+
+    public static String getNameSpaceForCodingScheme(CodingScheme scheme){
+        //Currently we only declare one namespace for a coding scheme
+        //It is possible to have more than one namespace for contained entities however
+        //So this implementation is limited in its scope
+        if(scheme.getMappings().enumerateSupportedNamespace().hasMoreElements()){
+        return scheme.getMappings().enumerateSupportedNamespace().nextElement().getContent();
+        }else{
+            return scheme.getMappings().enumerateSupportedCodingScheme().hasMoreElements()?
+                scheme.getMappings().enumerateSupportedCodingScheme().nextElement().getLocalId():
+                    scheme.getCodingSchemeName();
+        }
+    }
 }

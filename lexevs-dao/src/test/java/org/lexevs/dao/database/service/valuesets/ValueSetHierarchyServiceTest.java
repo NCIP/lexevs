@@ -21,9 +21,9 @@ public class ValueSetHierarchyServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		service = (ValueSetHierarchyServiceImpl) LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
-// 		service.init("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
+ 		service.init("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
  		//Comment this in instead for direct to NCIt testing
-		service.init();
+//		service.init();
 	}
 
 	@Test
@@ -93,26 +93,25 @@ public class ValueSetHierarchyServiceTest {
 		items.forEach((y,z) -> z.forEach(x->System.out.println(x._code + ": " + x._text )));
 	}
 //	Direct to NCIt test	
-	@Test
-	public void testBuildTree() throws LBException{
-		long startNano = System.currentTimeMillis();
-		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
-		long endNano = System.currentTimeMillis();
-		System.out.println("Performance output milli sec: " + (endNano - startNano));
-		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
-		assertTrue(items.size() > 0);
-		int tabCounter = 0;
-		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);		
-	}
-	
 //	@Test
 //	public void testBuildTree() throws LBException{
 //		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
+//		long endNano = System.currentTimeMillis();
+//		System.out.println("Performance output milli sec: " + (endNano - startNano));
 //		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 //		assertTrue(items.size() > 0);
 //		int tabCounter = 0;
-//		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+//		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);		
 //	}
+	
+	@Test
+	public void testBuildTree() throws LBException{
+		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
+		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+		assertTrue(items.size() > 0);
+		int tabCounter = 0;
+		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+	}
 	
 	@Test
 	public void validateTreeContent() throws LBException{
@@ -143,6 +142,13 @@ public class ValueSetHierarchyServiceTest {
 		assertFalse(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0)._expandable);
 		assertEquals(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._text, "BlindingWhite");
 		assertFalse(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._expandable);
+	}
+	
+	@Test
+	public void reduceFromURITest(){
+		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/C234235"), "C234235");
+		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/FDA/C234235"), "C234235");
+		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/CDISC/C234235"), "C234235");
 	}
 	
 	private void printTree(List<LexEVSTreeItem> items, int counter){

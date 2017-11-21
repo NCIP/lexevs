@@ -2036,27 +2036,29 @@
 			ap.relationGuid = rel.relationGuid
 			
 		WHERE
-			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-			
-		<isNotNull property="param2">
-		AND
-			rel.containerName = #param2#
-		</isNotNull>
-		
+			rel.codingSchemeGuid = #param1#
 		AND 
 		(
 			(
-			eate.sourceEntityCode = #param3#
-			<isNotNull property="param4">
-				eate.sourceEntityCode = #param4#
+
+
+
+			<isNotNull property="param3">
+				eate.sourceEntityCode = #param3#
 			</isNotNull>
+			<isNotEmpty property="param5" prepend="AND">
+				eate.sourceEntityCodeNamespace = #param2#
+			</isNotEmpty>
 			)
 		OR
 			(
-			eate.targetEntityCode = #param3#
-			<isNotNull property="param4">
-				eate.targetEntityCode = #param4#
+
+			<isNotNull property="param3">
+				eate.targetEntityCode = #param3#
 			</isNotNull>
+			<isNotEmpty property="param5" prepend="AND">
+				eate.targetEntityCodeNamespace = #param2#
+			</isNotEmpty>
 			)
 		)	
 	</select>

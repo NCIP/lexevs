@@ -33,14 +33,6 @@ public class EntityToRVSTransformerTest extends TestCase {
 		 entity.setProperty(new Property[]{prop});
 
 	}
-
-	@Test
-	public void testTruncateDefName() {
-		String fiftyPlus = "asdfjkl;neoimcfsha dkflajfd;l aldkj;asdfaljfdlasfdlaflaflafladsfladlfldfjasdlfdsalfadslf";
-		String target = fiftyPlus.substring(0, 49);
-		
-		assertEquals(transformer.truncateDefNameforCodingSchemeName(fiftyPlus), target);
-	}
 	
 	@Test
 	public void testGetSupportedSources(){
