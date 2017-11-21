@@ -67,7 +67,10 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		Entities list = new Entities();
 		list.getEntityAsReference().addAll(entities);
 		Entity ent = entity.iterator().next();
-		String source = ent.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals("Contributing_Source")).map(x -> x.getValue().getContent()).collect(Collectors.toList()).get(0);
+		String source = null;
+		if(ent.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(params.getSourceName())).findAny().isPresent())
+			{source = ent.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(params.getSourceName()))
+			.map(x -> x.getValue().getContent()).collect(Collectors.toList()).get(0);}
 		return AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(), params.getCodingSchemeURI());
 	}
 

@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
@@ -200,8 +201,9 @@ public class AssertedValueSetServices {
             String version, String codingSchemeURN)
             throws LBException {
         nullEntityCheck(entity);
-        if(entities == null || entities.getEntityCount() < 1) {throw new RuntimeException("Null metadata entity or lack of "
-                + "members prevents this coding scheme from being resolved");}
+//        if(entities == null || entities.getEntityCount() < 1) 
+//        {throw new RuntimeException("Null metadata entity or lack of "
+//                + "members prevents this coding scheme from being resolved");}
         String codingSchemeUri = AssertedValueSetServices.createUri(BASE, source, entity.getEntityCode());
         String codingSchemeVersion = version == null ? "UNASSIGNED":
                 version;
@@ -219,6 +221,11 @@ public class AssertedValueSetServices {
         cs.setEntryState(entity.getEntryState());
         cs.setFormalName(codingSchemeName);
         cs.setCodingSchemeName(truncateDefNameforCodingSchemeName(codingSchemeName, false));
+        String definitionProperty = null;
+        if(entity.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(DEFINITION)).findAny().isPresent())
+        {definitionProperty = entity.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(DEFINITION)).
+        map(x -> x.getValue().getContent()).collect(Collectors.toList()).get(0);}
+        cs.setEntityDescription(Constructors.createEntityDescription(definitionProperty));
         cs.setIsActive(entity.getIsActive());
         cs.setMappings(createMappings(entity));
         cs.setOwner(entity.getOwner());
