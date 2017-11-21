@@ -37,6 +37,8 @@ import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -116,7 +118,7 @@ public class LoadTestDataTest {
 
 		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
         
-        //loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
+        loader.setLoaderPreferences(new File("resources/testData/owl2/OWLPrefsLoadAnonAsAssocPF2SetTopNodes.XML").toURI());
         loader.load(new File(fileName).toURI(),null,  1, false, true);
         
         while (loader.getStatus().getEndTime() == null) {
@@ -247,7 +249,7 @@ public class LoadTestDataTest {
 	@Order(9)
 	public void testLoadOWL2() throws LBParameterException,
             LBInvocationException, InterruptedException, LBException {
-		loadOWL2("resources/testData/owl2/owl2-test-cases-Primitive-Annotated.owl", 
+		loadOWL2("resources/testData/owl2/owl2-special-cases-Defined-Annotated.owl", 
 				LBConstants.KnownTags.PRODUCTION.toString());
 	}
 	
@@ -311,6 +313,22 @@ public class LoadTestDataTest {
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
         
+     }
+	
+	@Order(15)
+	@Test
+	public void loadSourceAssertedValueSetDefinitionsTest() throws LBParameterException, InterruptedException{
+	    new SourceAssertedValueSetBatchLoader("owl2lexevs", "0.1.5",
+	    		"Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/",
+	    		"NCI", "Semantic_Type").run("Contributing_Source");
+	    Thread.sleep(1000);
+	}
+	
+	@Test
+	@Order(16)
+	public void testloadSourceAssertedResolvedValueSet() throws URISyntaxException, Exception{
+	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs","0.1.5","Concept_In_Subset", 
+			 true, "http://evs.nci.nih.gov/valueset/", "NCI","Semantic_Type").run("Contributing_Source");
      }
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){

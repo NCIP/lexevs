@@ -96,6 +96,10 @@
 		<property name="ibatisRevisionDao" ref="ibatisRevisionDao"/>
 	</bean>
 	
+	<bean id="ibatisAssertedValueSetDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisSourceAssertedValueSetDao" parent="abstractIbatisDao">
+	</bean>
+	
 	<bean id="abstractSqlInterfaceDao" abstract="true">
 		<property name="resourceManager" ref="resourceManager"/>
 	 	<property name="sqlImplementedMethodsDao" ref="sqlImplementedMethodsDao"/>
@@ -181,6 +185,16 @@
 				<ref bean="ibatisVSEntryStateDao"/>
 			</list>
 		</property>		
+		<property name="valueSetHierarchyDaos">
+			<list>
+				<ref bean="ibatisValueSetHierarchyDao"/>
+			</list>
+		</property>	
+		<property name="assertedValueSetDaos">
+			<list>
+				<ref bean="ibatisAssertedValueSetDao"/>
+			</list>
+		</property>	
 		<property name="versionsDaos">
 			<list>
 				<ref bean="ibatisVersionsDao" />
@@ -253,6 +267,10 @@
 	<bean id="ibatisNciHistoryDao"
 		class="org.lexevs.dao.database.ibatis.ncihistory.IbatisNciHistoryDao" parent="abstractIbatisDao">
 	</bean>
+	
+	<bean id="ibatisValueSetHierarchyDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetHierarchyDao" parent="abstractIbatisDao">
+	</bean>
 
 	<bean id="databaseServiceManager" class="org.lexevs.dao.database.service.DatabaseServiceManager">
 		<property name="codingSchemeService" ref="codingSchemeService"/>
@@ -264,6 +282,8 @@
 		<property name="associationDataService" ref="associationDataService"/>
 		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
+		<property name="valueSetHierarchyService" ref="valueSetHierarchyService"/>
+		<property name="assertedValueSetService" ref="assertedValueSetService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 		<property name="codedNodeGraphService" ref="codedNodeGraphService"/>
@@ -381,6 +401,16 @@
 		parent="abstractService">
 		<property name="vsDefinitionEntryService" ref="vsDefinitionEntryService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
+	</bean>
+	
+	<bean id="valueSetHierarchyService" 
+		class="org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl"
+		parent="abstractService">
+	</bean>
+	
+	<bean id="assertedValueSetService" 
+		class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
+		parent="abstractService">
 	</bean>
 	
 	<bean id="vsDefinitionEntryService" 

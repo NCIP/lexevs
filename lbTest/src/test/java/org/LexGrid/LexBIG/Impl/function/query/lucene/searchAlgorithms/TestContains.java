@@ -133,6 +133,16 @@ public class TestContains extends BaseSearchAlgorithmTest {
         assertTrue("Length: " + rcrl.length, rcrl.length == 0);
     }
     
+    @Test
+    public void testContainsSpecialCharacters() throws Exception {
+        CodedNodeSet cns = super.getAutosCodedNodeSet();
+        cns = cns.restrictToMatchingDesignations("a^s sp*cial co{nce]pt you (know/don't know)", SearchDesignationOption.ALL, getAlgorithm(), null);
+
+        ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
+
+        assertTrue("Length: " + rcrl.length, rcrl.length == 0);
+//        assertTrue(checkForMatch(rcrl,"SpecialCharactersConcept"));
+    }
     /**
      * Gets the algorithm.
      * 

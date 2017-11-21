@@ -109,7 +109,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
     @Test
     public void testLiteralExactMatch() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns = cns.restrictToMatchingDesignations("a^s sp*cial co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("a^s sp*cial co{nce]pt you (know/don't know)", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 
@@ -143,7 +143,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
     @Test
     public void testLiteralExactMatchWrongCase() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns = cns.restrictToMatchingDesignations("A^s sp*cial Co{nce]Pt", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("A^s sp*cial Co{nce]Pt you (know/don't know)", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

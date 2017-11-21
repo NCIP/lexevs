@@ -21,6 +21,7 @@ package org.LexGrid.LexBIG.Impl.Extensions.Search;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
 
 /**
@@ -67,7 +68,7 @@ public abstract class AbstractLiteralSearch extends AbstractSearch {
      * @return the string
      */
     protected static String excapeSpecialCharacters(String searchText){
-        return LUCENE_PATTERN.matcher(searchText).replaceAll(REPLACEMENT_STRING);
+        return QueryParser.escape(searchText);
     }
     
     /**

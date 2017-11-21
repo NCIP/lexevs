@@ -19,7 +19,11 @@
     <lgVD:representsRealmOrContext>Automobiles</lgVD:representsRealmOrContext>
     <lgVD:representsRealmOrContext>Ford</lgVD:representsRealmOrContext>
     <lgVD:representsRealmOrContext>GM</lgVD:representsRealmOrContext>
-	<lgVD:properties/>
+    <lgVD:properties>
+        <lgCommon:property propertyName="textualPresentation">
+        <lgCommon:value>One node only value set</lgCommon:value>
+        </lgCommon:property>
+    </lgVD:properties>
 	<lgVD:definitionEntry ruleOrder="0" operator="OR">
 		<lgVD:entityReference entityCode="C0001" entityCodeNamespace="Automobiles" referenceAssociation="hasSubtype" transitiveClosure="true"  targetToSource="false" leafOnly="true"/>
 	</lgVD:definitionEntry>

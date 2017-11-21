@@ -789,5 +789,15 @@ public class SystemVariables {
 	public void setGraphdbUrl(String graphdbUrl) {
 		this.graphdbUrl = graphdbUrl;
 	}
+	
+    public static String getAbsoluteIndexLocation(){
+    	String location =  PropertiesUtility.locatePropFile("config" + System.getProperty("file.separator")
+        + CONFIG_FILE_NAME, SystemVariables.class.getName());
+    	File newFile = new File(location);
+    	File tempFile = new File(newFile.getParent());
+    	tempFile = new File(tempFile.getParent());
+    	tempFile = new File(tempFile, "lbIndex");
+    	return tempFile.getAbsolutePath();
+    }
 
 }

@@ -3,16 +3,22 @@ package org.lexgrid.resolvedvalueset.impl;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
-import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -20,6 +26,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
@@ -39,17 +46,23 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	@Override
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
 		LexBIGService lbs= getLexBIGService();
-		List<CodingScheme> resolvedValueSetList= new ArrayList<CodingScheme>();
-		CodingSchemeRenderingList schemes = lbs.getSupportedCodingSchemes();
-        
-        for (CodingSchemeRendering csr: schemes.getCodingSchemeRendering()) {
-        	CodingScheme cs= getResolvedCodingScheme(csr);
-        	if (isResolvedValueSetCodingScheme(cs) ) {
-        	    resolvedValueSetList.add(cs);
-        	}
-        }
-        
+		List<CodingScheme> resolvedValueSetList = new ArrayList<CodingScheme>();
+		List<CodingScheme> minSchemeList = lbs.getMinimalResolvedVSCodingSchemes();
+		minSchemeList.stream().forEach(x -> {
+			try {
+				resolvedValueSetList.add(
+						lbs.resolveCodingScheme(x.getCodingSchemeURI(), 
+								Constructors.createCodingSchemeVersionOrTagFromVersion(x.getRepresentsVersion())));
+			} catch (LBException e) {
+				throw new RuntimeException("Problem resolving a Value Set Coding Scheme", e);
+			}
+		});
         return resolvedValueSetList;
+	}
+
+	@Override
+	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException {    
+        return lbs.getMinimalResolvedVSCodingSchemes() ;
 	}
 	
 	/**
@@ -112,6 +125,32 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		return filteredSchemes;
 	}
 	
+	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getMinimalResolvedValueSetSchemes());
+		ResolvedConceptReferencesIterator itr = search.search(matchText, refs,matchType);
+		while(itr.hasNext()){
+			ResolvedConceptReference ref = itr.next();
+			list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
+					ref.getCodingSchemeVersion()));
+		}
+		return list;
+	}
+	
+	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforEntityCode(String matchCode) throws LBException{
+		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getMinimalResolvedValueSetSchemes());
+		ResolvedConceptReferencesIterator itr = search.search(matchCode, refs, MatchAlgorithm.CODE_EXACT);
+		while(itr.hasNext()){
+		ResolvedConceptReference ref = itr.next();
+		list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
+				ref.getCodingSchemeVersion()));
+		}
+		return list;
+	}
+	
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri){
 		LexBIGService lbs = getLexBIGService();
 		CodingScheme scheme;
@@ -170,6 +209,16 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		}
 		return false;
 	}
+    
+    public Set<CodingSchemeReference> getReferenceForSchemes(List<CodingScheme> schemes){
+    	return schemes.parallelStream().map(x -> {
+    		CodingSchemeReference ref = new CodingSchemeReference();
+    		ref.setCodingScheme(x.getCodingSchemeURI());
+    		ref.setVersionOrTag(Constructors.createCodingSchemeVersionOrTagFromVersion(x.getRepresentsVersion()));
+    		return ref;
+    	}).collect(Collectors.toSet());
+    	
+    }
 	
 	/**
      * Return the associated LexBIGService instance; lazy initialized as

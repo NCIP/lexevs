@@ -1,13 +1,12 @@
 package org.lexevs.dao.indexer.utility;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.index.lucenesupport.LazyLoadMetaData;
@@ -37,7 +36,7 @@ public class LazyLoadMetaDataTest {
 		applicationListener = (LazyLoadMetaData)context.getBean("eventListenerBean");
 		try {
 			applicationListener.lazyLoadMetadata();
-		} catch (LBParameterException | IOException e) {
+		} catch (LBParameterException | LBInvocationException | IOException e) {
 			// TODO Auto-generated catch block
 			fail();
 		}

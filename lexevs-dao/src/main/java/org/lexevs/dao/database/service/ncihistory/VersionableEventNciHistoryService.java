@@ -19,6 +19,8 @@
 package org.lexevs.dao.database.service.ncihistory;
 
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -298,5 +300,25 @@ public class VersionableEventNciHistoryService extends AbstractDatabaseService i
 		} else {
 			return ref.getCode();
 		}
+	}
+
+	@Override
+	public List<String> getCodeListForVersion(String currentVersion, String uri) {
+		return this.getDaoManager().getNciHistoryDao(
+				uri).getCodeListForVersion(currentVersion);
+	}
+
+	@Override
+	public Date getDateForVersion(String currentVersion, String uri) {
+		return this.getDaoManager().getNciHistoryDao(
+				uri).getDateForVersion(currentVersion);
+	}
+
+	@Override
+	public List<String> getVersionsForDateRange(Date previousDate, Date currentDate, String uri) {
+		DateFormat fmat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return this.getDaoManager().getNciHistoryDao(
+				uri).getVersionsForDateRange(fmat.format(previousDate).toString(),
+						fmat.format(currentDate).toString());
 	}
 }

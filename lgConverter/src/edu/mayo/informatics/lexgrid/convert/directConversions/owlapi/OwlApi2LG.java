@@ -220,11 +220,7 @@ public class OwlApi2LG {
 
     final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     final static OWLDataFactory factory = manager.getOWLDataFactory();
-
-    private static final Object PROPERTY_SOURCE = "term-source";
-    private static final Object DEFINITION_SOURCE = "def-source";
-    private static final Object REPRESENTATIONAL_FORM = "term-group";
-    
+     
     /**
      * Create a new instance for conversion.
      * 
@@ -753,8 +749,9 @@ public class OwlApi2LG {
         // be centrally linked to the top node for subclass traversal?;
         if (isRootNode(owlClass)) {
             // always give the root node the default namespace
+            
             AssociationTarget target = CreateUtils.createAssociationTarget(OwlApi2LGConstants.ROOT_CODE,
-                    getDefaultNameSpace());
+                    getUserSetNamespace());
             relateAssociationSourceTarget(assocManager.getSubClassOf(), source, target);
 
         }
@@ -882,7 +879,7 @@ public class OwlApi2LG {
                     OWLCardinalityRestriction rest = (OWLCardinalityRestriction) restriction;
                     //OWLPropertyRange fillerProp = rest.getFiller();
                     opData = CreateUtils.createAssociationTextData("" + rest.getCardinality());
-                    targetNameSpace = getDefaultNameSpace();
+                    targetNameSpace = getUserSetNamespace();
                     //Defining the use case OWL data or data min exact.  otherwise defaults to 
                     //OWL object exact
                     if(restriction instanceof OWLDataExactCardinality  || 
@@ -1442,17 +1439,8 @@ public class OwlApi2LG {
                     .toString(), lang);
         }
 
-        // Handle imbedded XML if present ...
-        Map<String, String> xmlTagsAndVals = resolveXMLTagsAndValues(rdfText);
-
-        if (xmlTagsAndVals.keySet().size() > 0 && prefManager.isProcessComplexProperties()) {
-            processComplexXMLPropertyValue(lgProp, lgClass, lgID, lgLabel, lgDType, rdfNamespace, rdfText,
-                    xmlTagsAndVals);
-
-        } else {
-            // No XML; interpret text as complete property text.
-            lgProp.setValue(CreateUtils.createText(rdfText));
-        }
+        lgProp.setValue(CreateUtils.createText(rdfText));
+        
         processAnnotationsOfAnnotationAssertionAxiom(prop, lgProp);
         return lgProp;
     }
@@ -1468,6 +1456,7 @@ public class OwlApi2LG {
         List<Source> sources = new ArrayList<Source>();
         for (OWLAnnotation annotation : prop.getAnnotations()) {
             String annotationName = getLocalName(annotation.getProperty());
+            String annotationPropertyCode = annotation.getProperty().getIRI().getFragment();
             if(owlDatatypeName2label_.get(annotationName) != null){
                 annotationName = owlDatatypeName2label_.get(annotationName);
             }
@@ -1505,27 +1494,47 @@ public class OwlApi2LG {
             //If this is a presentation we are going to try to populate the source
             //or representational form
             if(lgProp instanceof Presentation){
-            if(isRepresentationalForm(annotationName)){
-                ((Presentation) lgProp).setRepresentationalForm(annotationValue);
-                continue;
-            }
-            else if(isSource(annotationName)){
-                 Source source = new Source();
-                 source.setContent(annotationValue);
-                 sources.add(source);
-                 continue;
+                if(isRepresentationalForm(annotationName) || isRepresentationalForm(annotationPropertyCode)){
+                    ((Presentation) lgProp).setRepresentationalForm(annotationValue);
+                    lgSupportedMappings_.registerSupportedRepresentationalForm(annotationValue, 
+                            getNameSpace(annotation.getProperty()), annotationValue, false);
+                    continue;
+                }
+                else if(isSource(annotationName) || isSource(annotationPropertyCode)){
+                     Source source = new Source();
+                     source.setContent(annotationValue);
+                     sources.add(source);
+                     
+                     lgSupportedMappings_.registerSupportedSource(annotationValue, 
+                             getNameSpace(annotation.getProperty()), annotationValue, null, false);
+                     continue;
                 }
             }
             
             //Do the same for Definition sources
-            if(lgProp instanceof Definition && isSource(annotationName)){
-                Source source = new Source();
-                source.setContent(annotationValue);
-                sources.add(source);
-                continue;
+            if(lgProp instanceof Definition){
+                if(isSource(annotationName) || isSource(annotationPropertyCode)) {
+                    Source source = new Source();
+                    source.setContent(annotationValue);
+                    sources.add(source);
+                    
+                    lgSupportedMappings_.registerSupportedSource(annotationValue, 
+                            getNameSpace(annotation.getProperty()), annotationValue, null, false);
+                    continue;
+                }             
             }
                 
             if (StringUtils.isNotBlank(annotationName) && StringUtils.isNotBlank(annotationValue)) {
+
+                if(isSource(annotationName) || isSource(annotationPropertyCode)) {
+                        Source source = new Source();
+                        source.setContent(annotationValue);
+                        sources.add(source);
+                        
+                        lgSupportedMappings_.registerSupportedSource(annotationValue, 
+                                getNameSpace(annotation.getProperty()), annotationValue, null, false);
+                        continue;
+                }
                 lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(annotationName, annotationValue,
                         lgSupportedMappings_));
 
@@ -1542,89 +1551,88 @@ public class OwlApi2LG {
             i++;
         }
         lgProp.setSource(sourceArray);
-        }
+    }
 
 
     private boolean isSource(String annotationValue) {
-        // TODO Auto-generated method stub
-        return annotationValue.equals(PROPERTY_SOURCE ) || annotationValue.equals(DEFINITION_SOURCE);
+        return annotationValue.matches(prefManager.getMatchPattern_xmlSourceNames());                
     }
 
     private boolean isRepresentationalForm(String annotationValue) {
-        // TODO Auto-generated method stub
-        return annotationValue.equals(REPRESENTATIONAL_FORM);
+        return annotationValue.matches(prefManager.getMatchPattern_xmlRepFormNames());
     }
 
-    private void processComplexXMLPropertyValue(Property lgProp, String lgClass, String lgID, String lgLabel,
-            String lgDType, String rdfNamespace, String rdfText, Map<String, String> xmlTagsAndVals) {
-        // Designated tags may act as property text or source;
-        // all other will be treated as property qualifiers.
-        for (String tag : xmlTagsAndVals.keySet()) {
-
-            if (tag == null) {
-                messages_.info("Skipping " + lgID + ", " + lgLabel + ", " + lgDType + ", " + rdfNamespace + ", "
-                        + rdfText);
-                continue;
-            }
-
-            String text = xmlTagsAndVals.get(tag);
-
-            if (tag.matches(prefManager.getMatchPattern_xmlTextNames())) {
-                lgProp.setValue(CreateUtils.createText(text));
-            } else if (tag.matches(prefManager.getMatchPattern_xmlSourceNames())) {
-                lgProp.addSource(CreateUtils.createSource(text, null, null, lgSupportedMappings_));
-
-                // Register the source as supported if not already
-                // defined.
-                lgSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
-            } else if (tag.matches("language")) {
-                lgProp.setLanguage(text);
-
-                // Register the source as supported if not already
-                // defined.
-                lgSupportedMappings_.registerSupportedLanguage(text, OwlApi2LGConstants.LANG_URI + ':' + text, text,
-                        false);
-            }
-            // specific to the new complex props implementation
-            else if (prefManager.isComplexProps_isDbxRefSource()
-                    && text.matches(OwlApi2LGConstants.MATCH_XMLSOURCE_VALUES)) {
-                String val = text;
-                String ref = null;
-                String[] sourceWithRef = text.split("(:)");
-                if (sourceWithRef.length == 2) {
-                    val = sourceWithRef[0];
-                    ref = sourceWithRef[1];
-                }
-                lgProp.addSource(CreateUtils.createSource(val, null, ref, lgSupportedMappings_));
-
-                // Register the source as supported if not already
-                // defined.
-                lgSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
-
-            } else if (lgProp instanceof Presentation && tag.matches(prefManager.getMatchPattern_xmlRepFormNames())) {
-                ((Presentation) lgProp).setRepresentationalForm(text);
-
-                // Register the source as supported if not already
-                // defined.
-                lgSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
-            }
-            // specific to the new complex props implementation
-            else if (prefManager.isComplexProps_isDbxRefRepForm() && lgProp instanceof Presentation
-                    && text.matches(OwlApi2LGConstants.MATCH_XMLREPFORM_VALUES)) {
-                ((Presentation) lgProp).setRepresentationalForm(text);
-
-                // Register the source as supported if not already
-                // defined.
-                lgSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
-            } else {
-                lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(tag, text, lgSupportedMappings_));
-
-                // Register the qualifier as supported if not already
-                // defined.
-                lgSupportedMappings_.registerSupportedPropertyQualifier(tag, rdfNamespace + tag, tag, false);
-            }
-        }
-    }
+//    private void processComplexXMLPropertyValue(Property lgProp, String lgClass, String lgID, String lgLabel,
+//            String lgDType, String rdfNamespace, String rdfText, Map<String, String> xmlTagsAndVals) {
+//        // Designated tags may act as property text or source;
+//        // all other will be treated as property qualifiers.
+//        
+//        for (String tag : xmlTagsAndVals.keySet()) {
+//
+//            if (tag == null) {
+//                messages_.info("Skipping " + lgID + ", " + lgLabel + ", " + lgDType + ", " + rdfNamespace + ", "
+//                        + rdfText);
+//                continue;
+//            }
+//
+//            String text = xmlTagsAndVals.get(tag);
+//
+//            if (tag.matches(prefManager.getMatchPattern_xmlTextNames())) {
+//                lgProp.setValue(CreateUtils.createText(text));
+//            } else if (tag.matches(prefManager.getMatchPattern_xmlSourceNames())) {
+//                lgProp.addSource(CreateUtils.createSource(text, null, null, lgSupportedMappings_));
+//
+//                // Register the source as supported if not already
+//                // defined.
+//                lgSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
+//            } else if (tag.matches("language")) {
+//                lgProp.setLanguage(text);
+//
+//                // Register the source as supported if not already
+//                // defined.
+//                lgSupportedMappings_.registerSupportedLanguage(text, OwlApi2LGConstants.LANG_URI + ':' + text, text,
+//                        false);
+//            }
+//            // specific to the new complex props implementation
+//            else if (prefManager.isComplexProps_isDbxRefSource()
+//                    && text.matches(OwlApi2LGConstants.MATCH_XMLSOURCE_VALUES)) {
+//                String val = text;
+//                String ref = null;
+//                String[] sourceWithRef = text.split("(:)");
+//                if (sourceWithRef.length == 2) {
+//                    val = sourceWithRef[0];
+//                    ref = sourceWithRef[1];
+//                }
+//                lgProp.addSource(CreateUtils.createSource(val, null, ref, lgSupportedMappings_));
+//
+//                // Register the source as supported if not already
+//                // defined.
+//                lgSupportedMappings_.registerSupportedSource(text, rdfNamespace + text, text, null, false);
+//
+//            } else if (lgProp instanceof Presentation && tag.matches(prefManager.getMatchPattern_xmlRepFormNames())) {
+//                ((Presentation) lgProp).setRepresentationalForm(text);
+//
+//                // Register the source as supported if not already
+//                // defined.
+//                lgSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
+//            }
+//            // specific to the new complex props implementation
+//            else if (prefManager.isComplexProps_isDbxRefRepForm() && lgProp instanceof Presentation
+//                    && text.matches(OwlApi2LGConstants.MATCH_XMLREPFORM_VALUES)) {
+//                ((Presentation) lgProp).setRepresentationalForm(text);
+//
+//                // Register the source as supported if not already
+//                // defined.
+//                lgSupportedMappings_.registerSupportedRepresentationalForm(text, rdfNamespace + text, text, false);
+//            } else {
+//                lgProp.addPropertyQualifier(CreateUtils.createPropertyQualifier(tag, text, lgSupportedMappings_));
+//
+//                // Register the qualifier as supported if not already
+//                // defined.
+//                lgSupportedMappings_.registerSupportedPropertyQualifier(tag, rdfNamespace + tag, tag, false);
+//            }
+//        }
+//    }
 
     /**
      * 
@@ -1636,7 +1644,8 @@ public class OwlApi2LG {
     protected String resolveAnonymousClass(OWLClassExpression owlClassExp, AssociationSource assocSource) {
 
         String code = "@" + DigestUtils.md5Hex(owlClassExp.toString());
-        String nameSpace = getDefaultNameSpace();
+
+        String nameSpace = getUserSetNamespace();
         // Check if this concept has already been processed. We do not want
         // duplicate concepts.
         if (!isEntityCodeRegistered(nameSpace, code)) {
@@ -1692,7 +1701,7 @@ public class OwlApi2LG {
                 else {
                   
                     String lgCode = resolveAnonymousClass(operand, assocSource);
-                    String targetNameSpace = getDefaultNameSpace();
+                    String targetNameSpace = getUserSetNamespace();
                     AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
                     relateAssociationSourceTarget(assocManager.getSubClassOf(), source, opTarget);
                 }
@@ -1702,7 +1711,7 @@ public class OwlApi2LG {
         if (owlClassExp instanceof OWLObjectComplementOf) {
             OWLObjectComplementOf complementClass = (OWLObjectComplementOf) owlClassExp;
             String lgCode = resolveAnonymousClass((OWLClassExpression) complementClass.getOperand(), assocSource);
-            String targetNameSpace = getDefaultNameSpace();
+            String targetNameSpace = getUserSetNamespace();
           
             AssociationTarget opTarget = CreateUtils.createAssociationTarget(lgCode, targetNameSpace);
             relateAssociationSourceTarget(assocManager.getComplementOf(), source, opTarget);
@@ -1988,6 +1997,8 @@ public class OwlApi2LG {
                 if(owl.getProperty().getIRI().getFragment().equals("source")){
                     Source source = new Source();
                     source.setContent(stripQuotes(owl.getValue().toString()));
+                    lgSupportedMappings_.registerSupportedSource(resolveLabel(owl.getProperty()), 
+                             getNameSpace(owl.getProperty()), stripQuotes(owl.getValue().toString()), null, false);            
                     lgScheme_.getSourceAsReference().add(source);
                 }
             }
@@ -2379,7 +2390,7 @@ public class OwlApi2LG {
         Entity topThing = new Entity();
         topThing.setEntityType(new String[] { EntityTypes.CONCEPT.toString() });
         topThing.setEntityCode(OwlApi2LGConstants.ROOT_CODE);
-        topThing.setEntityCodeNamespace(getDefaultNameSpace());
+        topThing.setEntityCodeNamespace(getUserSetNamespace());
         EntityDescription ed = new EntityDescription();
         ed.setContent(OwlApi2LGConstants.ROOT_DESCRIPTION);
         topThing.setEntityDescription(ed);
@@ -3015,20 +3026,51 @@ public class OwlApi2LG {
     }
 
     public String getNameSpace(IRI iri) {
-        String prefixName = "";
         String iriString = iri.toString();
         String ns = XMLUtils.getNCNamePrefix(iriString);
+        
+        return getIRIfromIRIString(ns);
+    }
+        
+    private String getUserSetNamespace() {
+        String defaultPrefix = ":";
+        String iriString = "";
+        
+        // find the base IRI string 
         Map<String, String> prefix2NamespaceMap = renderer.getPrefixNameShortFormProvider().getPrefixManager()
                 .getPrefixName2PrefixMap();
         for (Iterator i$ = prefix2NamespaceMap.keySet().iterator(); i$.hasNext();) {
             String keyName = (String) i$.next();
             String prefix = (String) prefix2NamespaceMap.get(keyName);
-            if (ns.equals(prefix)) {
-                prefixName = keyName;
+            if (defaultPrefix.equals(keyName)) {
+               
+                iriString = prefix;
                 break;
             }
-
+        }       
+        return getIRIfromIRIString(iriString);
+    }
+    
+    private String getIRIfromIRIString(String iriString) {
+        String prefixName = "";
+        
+        // check if there is a default one that has bee set.  If not, find the default one below
+        if (!iriString.isEmpty()){
+            Map<String, String> prefix2NamespaceMap = renderer.getPrefixNameShortFormProvider().getPrefixManager()
+                    .getPrefixName2PrefixMap();
+            for (Iterator i$ = prefix2NamespaceMap.keySet().iterator(); i$.hasNext();) {
+                String keyName = (String) i$.next();
+                String prefix = (String) prefix2NamespaceMap.get(keyName);
+                if (iriString.equals(prefix)) {
+                    prefixName = keyName;
+                    // check for additional namespaces, if the current one found is empty (the default one)
+                    if (!prefixName.equals(":")) {
+                        break;
+                    }
+                }
+            }
         }
+        
         if (StringUtils.isNotEmpty(prefixName)) {
             if (prefixName.endsWith(":")) {
                 prefixName = prefixName.substring(0, prefixName.length() - 1);
@@ -3183,7 +3225,7 @@ public class OwlApi2LG {
             AssociationSource source, OWLClassExpression tgtResource, OWLAxiom ax) {
         if (tgtResource.isAnonymous()) {
             String lgCode = this.resolveAnonymousClass(tgtResource, source);
-            String namespace = getDefaultNameSpace();
+            String namespace = getUserSetNamespace();
             AssociationTarget target = CreateUtils.createAssociationTarget(lgCode, namespace);
             processAnnotationsOfOWLAxiom(ax, target);
             relateAssociationSourceTarget(aw, source, target);

@@ -37,7 +37,7 @@ public abstract class AbstractContainsSearch extends AbstractExactMatchBoostingS
      */
     public Query doBuildQuery(String searchText) {
         QueryParser queryParser = super.getQueryParser();
-
+        searchText = QueryParser.escape(searchText);
         searchText = super.addTrailingWildcardToAllTokens(searchText);
         try {
             return queryParser.parse(getLuceneSearchField() + ":(" + searchText + ")");

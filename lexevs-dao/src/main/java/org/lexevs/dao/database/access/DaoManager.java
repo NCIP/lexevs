@@ -34,10 +34,12 @@ import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.access.valuesets.PickListDao;
 import org.lexevs.dao.database.access.valuesets.PickListEntryNodeDao;
+import org.lexevs.dao.database.access.valuesets.SourceAssertedValueSetDao;
 import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
 import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
 import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetDefinitionDao;
+import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.registry.service.Registry;
@@ -81,6 +83,9 @@ public class DaoManager {
 	
 	/** The VSDefinitionEntry daos. */
 	private List<VSDefinitionEntryDao> vsDefinitionEntryDaos;
+	
+	/** The Value Set Hierarchy daos. */
+	private List<ValueSetHierarchyDao> valueSetHierarchyDaos;
 
 	/** The vsProperty daos. */
 	private List<VSPropertyDao> vsPropertyDaos;
@@ -105,6 +110,8 @@ public class DaoManager {
 	
 	/** The registry. */
 	private Registry registry;
+
+	private List<SourceAssertedValueSetDao> assertedValueSetDaos;
 	
 	/**
 	 * Gets the versions dao.
@@ -526,6 +533,14 @@ public class DaoManager {
 		this.valueSetDefinitionDaos = valueSetDefinitionDaos;
 	}
 	
+	public List<ValueSetHierarchyDao> getvalueSetHierarchyDaos() {
+		return valueSetHierarchyDaos;
+	}
+
+	public void setvalueSetHierarchyDaos(List<ValueSetHierarchyDao> valueSetHierarchyDaos) {
+		this.valueSetHierarchyDaos = valueSetHierarchyDaos;
+	}
+
 	/**
 	 * Gets the current value set definition dao.
 	 * 
@@ -535,6 +550,25 @@ public class DaoManager {
 		return this.getCorrectDaoForSchemaVersion(this.getValueSetDefinitionDaos(), currentVersion);
 	}
 
+	/**
+	 * Gets the current value set hierarchy dao.
+	 * 
+	 * @return the current value set hierarchy dao.
+	 */
+	public ValueSetHierarchyDao getCurrentValueSetHiearchyDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getvalueSetHierarchyDaos(), currentVersion);
+	}
+	
+	/**
+	 * Gets the current asserted value set dao.
+	 * 
+	 * @return the current asserted value set dao.
+	 */
+	public SourceAssertedValueSetDao getCurrentAssertedValueSetDao(){
+		return this.getCorrectDaoForSchemaVersion(this.getAssertedValueSetDao(), currentVersion);
+	}
+	
+	
 	/**
 	 * Gets the current value set definition entry dao.
 	 * 
@@ -671,5 +705,13 @@ public class DaoManager {
 
 	public void setCurrentVersion(LexGridSchemaVersion currentVersion) {
 		this.currentVersion = currentVersion;
+	}
+
+	public List<SourceAssertedValueSetDao> getAssertedValueSetDao() {
+		return assertedValueSetDaos;
+	}
+	
+	public void setAssertedValueSetDaos(List<SourceAssertedValueSetDao> assertedValueSetDaos ){
+		this.assertedValueSetDaos = assertedValueSetDaos;
 	}
 }

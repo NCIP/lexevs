@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory.NamedDirectory;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
@@ -33,7 +34,6 @@ import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 import org.lexevs.dao.indexer.utility.Utility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
-import org.lexevs.dao.index.service.entity.LuceneEntityIndexService;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
@@ -51,20 +51,20 @@ public class LazyLoadMetaData implements
 	private SystemVariables systemVariables;
 	private LuceneDirectoryCreator directoryCreator;
 	private LuceneMultiDirectoryFactory multiDirectoryFactory;
-
+	
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent arg0) {
 		this.locator = LexEvsServiceLocator.getInstance();
 		try {
 			lazyLoadMetadata();
-		} catch (LBParameterException | IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
 
 
-	public void lazyLoadMetadata() throws LBParameterException, IOException {
+	public void lazyLoadMetadata() throws LBInvocationException, IOException, LBParameterException {
 		ConcurrentMetaData concurrentMetaData = ConcurrentMetaData
 				.getInstance();
 		List<RegistryEntry> registeredSchemes = locator.getRegistry()
@@ -87,11 +87,16 @@ public class LazyLoadMetaData implements
 		for (String key : orphanedIndexCache.keySet()) {
 
 			if (!key.equals("MetaDataIndex")) {
-				LoggerFactory.getLogger().warn(
-						"Deleting orphaned Index: " + key);
-				((LuceneEntityIndexService) locator.getIndexServiceManager()
-						.getEntityIndexService()).getIndexRegistry()
-						.destroyIndex(key);
+				try{
+				LoggerFactory.getLogger().fatalAndThrowException("Indexes seem to be created in another context "
+						+ "as they do not match database registrations. "
+						+ "If these indexes were copied from another service then "
+						+ "please edit the config.props file to match the source service. "
+						+ "Otherwise delete them and rebuild them from scratch");
+				}
+				catch(Exception e){
+					throw new LBInvocationException(e.getMessage(), "IndexException");
+				}
 			}
 		}
 	}

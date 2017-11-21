@@ -18,6 +18,8 @@
  */
 package org.LexGrid.valueset.impl;
 
+import static org.junit.Assert.assertNull;
+
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
@@ -304,7 +306,27 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 		
 		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
 		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());
+	}
+	
+	@Test
+	public void testGetValueSetDefinitionFromAssertedValueSet() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C54453"), null);
+		
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
 		assertTrue(vdDef.getIsActive());	
+		assertNotNull(vdDef.getEntityDescription().getContent().equals("Terminology used for representation of "
+				+ "the information on pharmaceutical product color in the framework of the Structured Product "
+				+ "Labeling documents."));
+	}
+	
+	@Test
+	public void isBadValueSetDefinitionCreated() throws LBException, URISyntaxException{
+		ValueSetDefinition def = getValueSetDefinitionService()
+				.getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C117743"), null);
+		assertNull(def);
 	}
 	
 	@Test
