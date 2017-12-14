@@ -412,32 +412,32 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());	
 	}
 	
-	@Ignore
-	@Test
-	 @Category(RemoveFromDistributedTests.class)
-	public void testGetResourceSummariesTargetRestrictionCorrectNumRemaining() throws Exception {
-		
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-	
-		Mapping mapping = mappingExtension.getMapping(
-				MAPPING_SCHEME_URI, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
-		
-		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
-		
-		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
-		
-		int count = 0;
-		int numberRemaining = itr.numberRemaining();
-		
-		while(itr.hasNext()){
-			itr.next();
-			count++;
-		}
-		
-		assertEquals(count, numberRemaining);
-	}
+//	@Ignore
+//	@Test
+//	 @Category(RemoveFromDistributedTests.class)
+//	public void testGetResourceSummariesTargetRestrictionCorrectNumRemaining() throws Exception {
+//		
+//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+//		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+//	
+//		Mapping mapping = mappingExtension.getMapping(
+//				MAPPING_SCHEME_URI, 
+//				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
+//		
+//		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
+//		
+//		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+//		
+//		int count = 0;
+//		int numberRemaining = itr.numberRemaining();
+//		
+//		while(itr.hasNext()){
+//			itr.next();
+//			count++;
+//		}
+//		
+//		assertEquals(count, numberRemaining);
+//	}
 	
 	@Test
 	public void testResolveMappingWithRestrictionCount() throws LBException {
