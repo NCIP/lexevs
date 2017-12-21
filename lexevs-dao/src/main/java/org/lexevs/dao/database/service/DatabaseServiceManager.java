@@ -31,6 +31,7 @@ import org.lexevs.dao.database.service.event.registry.ListenerRegistry;
 import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
+import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.PickListDefinitionService;
 import org.lexevs.dao.database.service.valuesets.VSPropertyService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
@@ -79,6 +80,8 @@ public class DatabaseServiceManager {
 	private ValueSetDefinitionService valueSetDefinitionService;
 	
 	private ValueSetHierarchyService valueSetHierarchyService;
+	
+	private AssertedValueSetService assertedValueSetService;
 	
 	/** The vsproperty service. */
 	private VSPropertyService vsPropertyService;
@@ -286,6 +289,20 @@ public class DatabaseServiceManager {
 
 	public void setValueSetHierarchyService(ValueSetHierarchyService valueSetHierarchyService) {
 		this.valueSetHierarchyService = valueSetHierarchyService;
+	}
+
+	/**
+	 * @return the assertedValueSetService
+	 */
+	public AssertedValueSetService getAssertedValueSetService() {
+		return assertedValueSetService;
+	}
+
+	/**
+	 * @param assertedValueSetService the assertedValueSetService to set
+	 */
+	public void setAssertedValueSetService(AssertedValueSetService assertedValueSetService) {
+		this.assertedValueSetService = assertedValueSetService;
 	}
 
 	/**

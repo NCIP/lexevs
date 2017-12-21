@@ -213,7 +213,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
         UMLSHistoryLoader loader = (UMLSHistoryLoader) lbsm
                 .getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl.name);
-        loader.load((new File("resources/testData/sampleNciMetaHistory")).toURI(), false, true, false);
+        loader.load((new File("resources/testData/sampleNciMeta/sampleNciMetaHistory")).toURI(), false, true, false);
 
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());

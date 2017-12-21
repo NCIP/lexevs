@@ -96,8 +96,8 @@
 		<property name="ibatisRevisionDao" ref="ibatisRevisionDao"/>
 	</bean>
 	
-	<bean id="ibatisValueSetHiearchyDao"
-		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetHierarchyDao" parent="abstractIbatisDao">
+	<bean id="ibatisAssertedValueSetDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisSourceAssertedValueSetDao" parent="abstractIbatisDao">
 	</bean>
 	
 	<bean id="abstractSqlInterfaceDao" abstract="true">
@@ -190,6 +190,11 @@
 				<ref bean="ibatisValueSetHierarchyDao"/>
 			</list>
 		</property>	
+		<property name="assertedValueSetDaos">
+			<list>
+				<ref bean="ibatisAssertedValueSetDao"/>
+			</list>
+		</property>	
 		<property name="versionsDaos">
 			<list>
 				<ref bean="ibatisVersionsDao" />
@@ -278,6 +283,7 @@
 		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
 		<property name="valueSetHierarchyService" ref="valueSetHierarchyService"/>
+		<property name="assertedValueSetService" ref="assertedValueSetService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 		<property name="codedNodeGraphService" ref="codedNodeGraphService"/>
@@ -399,6 +405,11 @@
 	
 	<bean id="valueSetHierarchyService" 
 		class="org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl"
+		parent="abstractService">
+	</bean>
+	
+	<bean id="assertedValueSetService" 
+		class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
 		parent="abstractService">
 	</bean>
 	

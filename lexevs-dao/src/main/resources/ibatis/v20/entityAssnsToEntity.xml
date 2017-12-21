@@ -11,6 +11,8 @@
 	<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
 	<typeAlias alias="countConceptReference" type="org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference"/>
 	<typeAlias alias="mappingTriple" type="org.lexevs.dao.database.ibatis.codednodegraph.model.TripleUidReferencingResolvedConceptReference"/>
+	<typeAlias alias="vsEntity" type="org.lexevs.dao.database.ibatis.entity.model.IdableEntity"/>
+	<typeAlias alias="vsProperty" type="org.LexGrid.commonTypes.Property"/>
 	
 	<resultMap id="countConceptReferenceResult" class="countConceptReference">
 		<result property="code" column="entityCode" />
@@ -138,7 +140,47 @@
 		<result property="entityCode" column="entityCode" />
 		<result property="namespace" column="namespace" />
 		<result property="description" column="description" />
-		<result property="source" column="source" />
+		<result property="source" column="source"/>
+	</resultMap>
+	
+	<resultMap id="definedNodeResolution" class="org.lexevs.dao.database.access.association.model.DefinedNode" groupBy="description, publish, source">
+		<result property="entityCode" column="entityCode" />
+		<result property="entityCodeNamespace" column="namespace" />
+		<result property="description" column="description" />
+	</resultMap>
+	
+	<resultMap id="vsEntityResult" class="vsEntity" groupBy="entityCode,entityCodeNamespace">
+		<result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="entityCode" column="entityCode" />
+		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
+		<result property="entityDescription.content" column="description" />
+		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
+	</resultMap>
+	
+	<resultMap id="vsEntityResultWithProperties" class="vsEntity" groupBy="entityCode,entityCodeNamespace">
+		<result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="entityCode" column="entityCode" />
+		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
+		<result property="entityDescription.content" column="description" />
+		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+		<result property="owner" column="owner" />
+		<result property="status" column="status" />
+		<result property="effectiveDate" column="effectiveDate" />
+		<result property="expirationDate" column="expirationDate" />
+		<result property="_propertyList" resultMap="Association.vsPropertyResult"/>
+	</resultMap>
+	
+	<resultMap id="vsPropertyResult" class="vsProperty" groupBy="propertyName, propertyValue">
+		<result property="propertyName" column="propertyName"/>
+		<result property="value.content" column="propertyValue"/>
 	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
@@ -1382,6 +1424,89 @@
 		GROUP BY
 			description, publish, source having publish = #param5#
 	</select>
+	
+	<select id="getValueSetEntitiesFromCode"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" resultMap="vsEntityResult">
+		SELECT
+			ent.entityGuid, 
+			ent.entityCode, 
+			ent.entityCodeNamespace,
+			 ent.isDefined, 
+			 ent.isAnonymous, 
+			 ent.description, 
+			 ent.isActive, 
+			 ent.owner, 
+			 ent.status, 
+			 ent.effectiveDate, 
+			 ent.expirationDate
+		FROM
+		 	$prefix$entityAssnsToEntity  assns 
+		JOIN 
+			$prefix$entity ent 
+		ON 
+			assns.sourceEntityCode = ent.entityCode
+		WHERE
+			assns.associationPredicateGuid  = #param1#
+		AND
+		 	assns.targetEntityCode = #param2#
+	</select>
+	
+	<select id="getVSTopNodeEntityByCode"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultMap="vsEntityResultWithProperties"
+		remapResults="true">
+		SELECT 
+			 ent.entityGuid, 
+			 ent.entityCode, 
+			 ent.entityCodeNamespace,
+			 ent.isDefined, 
+			 ent.isAnonymous, 
+			 ent.description, 
+			 ent.isActive, 
+			 ent.owner, 
+			 ent.status, 
+			 ent.effectiveDate, 
+			 ent.expirationDate,
+			 prop.propertyName, 
+			 prop.propertyValue  
+		FROM 
+			$prefix$entity ent 
+		JOIN 
+			$prefix$property prop 
+		ON 
+			entityGuid = referenceGuid 
+		WHERE
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		AND
+			entityCode = #param2#
+   </select>
+   
+   <select id="getAllValidValueSetTopNodes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+		remapResults="true" resultMap="definedNodeResolution">
+		SELECT
+			assns.sourceEntityCode AS entityCode,
+			assns.sourceEntityCodeNamespace AS namespace,
+			ent.description AS description
+		FROM 
+			$prefix$entityAssnsToEntity assns
+		LEFT JOIN
+			$prefix$entity ent
+		ON
+			ent.entityCode = assns.sourceEntityCode
+		LEFT JOIN 
+			$prefix$property prop 
+		ON
+			ent.entityGuid = prop.referenceGuid
+		WHERE
+			associationPredicateGuid = #param1#
+ 		AND
+			prop.propertyName = #param2#
+		AND 
+			prop.propertyValue = #param3#
+		GROUP BY
+			ent.entityCode
+   </select>
 	
 	<select id="getEntryStateUidByAssociationTarget"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"

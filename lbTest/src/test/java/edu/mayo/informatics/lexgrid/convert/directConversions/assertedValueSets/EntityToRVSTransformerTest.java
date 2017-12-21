@@ -1,8 +1,5 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.*;
-
-import java.util.HashMap;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -21,7 +18,7 @@ public class EntityToRVSTransformerTest extends TestCase {
 	Entity entity;
 	@Before
 	public void setUp() throws Exception {
-		 transformer = new EntityToRVSTransformer(null, null, null, null, null, null, null, null, null, null);
+		 transformer = new EntityToRVSTransformer(null, "http://Coding.Scheme.uri", null, null, null, null, null, null, null, null);
 		 entity = new Entity();
 		 Property prop = new Property();
 		 prop.setPropertyName("ImaProp");

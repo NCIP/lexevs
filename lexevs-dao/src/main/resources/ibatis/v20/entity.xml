@@ -306,6 +306,17 @@
 			entity.entityCodeNamespace = #param3#
      </select>
      
+     <select id="getEntityByCode"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultMap="Entity.entityResult"
+		remapResults="true">
+		<include refid="getEntityFragment"/>
+		WHERE
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		AND
+			entityCode = #param2#
+     </select>
+     
      <select id="getAssociationEntityByCodeAndNamespace" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
 		resultMap="Entity.associationEntityResult"

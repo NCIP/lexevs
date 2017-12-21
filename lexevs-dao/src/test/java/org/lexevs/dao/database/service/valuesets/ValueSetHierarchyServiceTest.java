@@ -95,7 +95,6 @@ public class ValueSetHierarchyServiceTest {
 //	Direct to NCIt test	
 //	@Test
 //	public void testBuildTree() throws LBException{
-//		long startNano = System.currentTimeMillis();
 //		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
 //		long endNano = System.currentTimeMillis();
 //		System.out.println("Performance output milli sec: " + (endNano - startNano));
