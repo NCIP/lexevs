@@ -11,6 +11,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entity;
 
 public interface SourceAssertedValueSetService {
 	
@@ -26,7 +27,7 @@ public interface SourceAssertedValueSetService {
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException;
 	
 	/**
-	 * Return a list of AbsoluteCodingSchemeVersionReference that was used for resolving the resolvedValueSet
+	 * Return a list of AbsoluteCodingSchemeVersionReferences that were used for resolving the resolvedValueSet
 	 * 
 	 * @param codingScheme- The resolvedValueSet CodingScheme
 	 * @return AbsoluteCodingSchemeVersionReferenceList list of codingScheme and
@@ -35,6 +36,10 @@ public interface SourceAssertedValueSetService {
 	 */
 	public AbsoluteCodingSchemeVersionReferenceList getListOfCodingSchemeVersionsUsedInResolution(CodingScheme cs);
 	List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode);
+	
+	public List<? extends Entity> getAllSourceAssertedValueSetEntities();
+	
+	
 		
 
 }

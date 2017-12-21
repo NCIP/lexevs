@@ -2,8 +2,13 @@ package org.lexgrid.valuesets.sourceasserted.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -16,6 +21,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
@@ -100,6 +106,18 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 				params.getCodingSchemeURI(), params.getCodingSchemeVersion()));
 		return list;
 	}
+	
+	@Override
+	public List<Entity> getAllSourceAssertedValueSetEntities() {
+		List<String> roots = this.getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
+		Comparator<Entity> entityCompare = Comparator.comparing(Entity::getEntityCode); 
+		Set<Entity> entitySet = new TreeSet<Entity>(entityCompare);
+		for(String matchCode: roots) {
+			List<Entity> temp = assVSSvc.getSourceAssertedValueSetEntitiesForEntityCode(matchCode);
+			entitySet.addAll(temp);
+		}
+		return Arrays.asList((Entity[])entitySet.toArray());
+	}
 
 	/**
 	 * @return the svc
@@ -136,6 +154,8 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		}
 		scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
 	}
+
+
 	
 
 }

@@ -73,6 +73,13 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 			.map(x -> x.getValue().getContent()).collect(Collectors.toList()).get(0);}
 		return AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(), params.getCodingSchemeURI());
 	}
+	
+
+	@Override
+	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
+		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode, 
+				params.getAssertedValueSetRelation(), params.getCodingSchemeVersion(), params.getCodingSchemeURI());
+	}
 
 	/**
 	 * @return the ibatisAssertedValueSetDao
@@ -101,6 +108,8 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public void setValueSetHeirarchyService(ValueSetHierarchyService valueSetHeirarchyService) {
 		this.valueSetHeirarchyService = valueSetHeirarchyService;
 	}
+
+
 
 
 }
