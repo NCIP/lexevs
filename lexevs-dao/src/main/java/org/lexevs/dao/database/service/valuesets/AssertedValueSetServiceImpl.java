@@ -77,7 +77,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 
 	@Override
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
-		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode, 
+		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode == null? params.getRootConcept(): rootCode, 
 				params.getAssertedValueSetRelation(), params.getCodingSchemeVersion(), params.getCodingSchemeURI());
 	}
 

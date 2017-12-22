@@ -16,6 +16,7 @@ public final class AssertedValueSetParameters {
     public static final String DEFAULT_CODINGSCHEME_NAME = "NCI_Thesaurus";
     public static final String ASSERTED_VALUESET_RELATION = "Concept_In_Subset";
     public static final String DEFAULT_VS_HIERARCHY_RELATION = "subClassOf";
+    public static final String ROOT_CONCEPT = "C54443";
     
     private final String publishName;
     private final String publishValue;
@@ -31,6 +32,7 @@ public final class AssertedValueSetParameters {
     private final String codingSchemeVersion;
     private final String assertedValueSetRelation;
     private final String defaultHierarchyVSRelation;
+    private final String rootConcept;
 
     
     public static class Builder{
@@ -50,6 +52,7 @@ public final class AssertedValueSetParameters {
         private String codingSchemeName = DEFAULT_CODINGSCHEME_NAME;
         private String assertedValueSetRelation = ASSERTED_VALUESET_RELATION;
         private String defaultHierarchyVSRelation = DEFAULT_VS_HIERARCHY_RELATION;
+        private String rootConcept = ROOT_CONCEPT;
         
         public Builder(String version){
             if(version == null){
@@ -124,6 +127,11 @@ public final class AssertedValueSetParameters {
             return this;
         }
         
+        public Builder rootConcept(String value) {
+            this.rootConcept = value;
+            return this;
+        }
+
         public AssertedValueSetParameters build(){
             return new AssertedValueSetParameters(this);
         }
@@ -144,6 +152,7 @@ public final class AssertedValueSetParameters {
         this.codingSchemeVersion = builder.codingSchemeVersion;
         this.assertedValueSetRelation = builder.assertedValueSetRelation;
         this.defaultHierarchyVSRelation = builder.defaultHierarchyVSRelation;
+        this.rootConcept = builder.rootConcept;
     }
     
    
@@ -248,6 +257,11 @@ public final class AssertedValueSetParameters {
      */
     public String getDefaultHierarchyVSRelation() {
         return defaultHierarchyVSRelation;
+    }
+    
+    
+    public String getRootConcept() {
+        return rootConcept;
     }
 
 
