@@ -62,7 +62,7 @@ public abstract class LuceneLoaderCode {
     protected boolean useCompoundFile_ = false;
     
     /** The generator_. */
-    private DocumentFromStringsGenerator generator_;
+    protected DocumentFromStringsGenerator generator_;
     
     /** The norm enabled_. */
     protected static boolean normEnabled_ = false;

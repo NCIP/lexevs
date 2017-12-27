@@ -1,5 +1,6 @@
 package org.lexevs.dao.index.indexer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -7,13 +8,18 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
+import org.lexevs.dao.index.access.IndexDaoManager;
+import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.indexer.utility.Utility;
+import org.apache.lucene.document.Document;
 
 public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 
 	private static final String ASSERTED_VALUE_SET_INDEX_NAME = "SOURCE_ASSERTED_VALUE_SETS";
 	private int batchSize = 1000;
 	private AssertedValueSetService valueSetService;
+	private AssertedValueSetEntityIndexer entityIndexer;
+	private IndexDaoManager indexDaoManager;
 
 	@Override
 	public String index(AbsoluteCodingSchemeVersionReference reference) {
@@ -49,6 +55,8 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 	    valueSetService.init(new AssertedValueSetParameters.
 	    		Builder(reference.getCodingSchemeVersion()).
 	    		baseValueSetURI(reference.getCodingSchemeURN()).build());
+	    EntityDao entityIndexService = indexDaoManager.getValueSetEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+	    
 		String indexName;
 		try {
 			indexName = this.getIndexName(reference);
@@ -56,10 +64,16 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 			throw new RuntimeException("Problems getting coding scheme name. uri = " + 
 					reference.getCodingSchemeURN()  + " version = " + reference.getCodingSchemeVersion(), e);
 		}
-		
 		List<? extends Entity> entities = 
 				valueSetService.getSourceAssertedValueSetEntitiesForEntityCode(null);
-		return null;
+		List<Document> documents = new ArrayList<Document>();
+		for(Entity entity : entities ) {documents.addAll(entityIndexer.indexEntity(indexName, reference.getCodingSchemeVersion(), entity));}
+		
+		entityIndexService.addDocuments(
+				indexName, 
+				reference.getCodingSchemeVersion(), 
+				documents, entityIndexer.getAnalyzer());
+		return indexName;
 	}
 
 	private String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {
@@ -72,6 +86,10 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 
 	public void setBatchSize(int batchSize) {
 		this.batchSize = batchSize;
+	}
+	
+	public static void main(String...args) {
+		
 	}
 
 }

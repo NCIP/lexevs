@@ -363,6 +363,10 @@
 		<property name="propertyService" ref="propertyService"/>
 	</bean>
 	
+	<bean id="valueSetService" class="org.lexevs.dao.database.service.valuesets.AssertedValueSetService"
+		parent="abstractService">
+	</bean>
+	
 	<bean id="codedNodeGraphService"
 		class="org.lexevs.dao.database.service.codednodegraph.VersionableEventCodedNodeGraphService"
 		parent="abstractService"/>
@@ -794,6 +798,12 @@
 		<property name="logger" ref="loggerFactory"/>
 	</bean>
 	
+	<bean id="assertedValueSetIndexCreator" class="org.lexevs.dao.index.indexer.SourceAssertedValueSetIndexCreator">
+		<property name="valueSetService" ref="assertedValueSetService"/>
+		<property name="entityIndexer" ref = "assertedValueSetIndexer"/>
+		<property name="indexDaoManager" ref="indexDaoManager"/>
+	</bean>
+	
 	<bean id="luceneMultiDirectoryFactory" class="org.lexevs.dao.index.lucenesupport.LuceneMultiDirectoryFactory">
 		<property name="indexDirectory" ref="multiIndexLocation"/>
 		<property name=	"luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
@@ -895,6 +905,8 @@
 		<property name="luceneEntityDao" ref="luceneIndexEntityDao"/>
 	</bean>
 	
+	<bean id="assertedValueSetIndexer" class="org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer"/>
+	
 	<bean id="abstractDirectoryFactory"
 		class="org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory" abstract="true"/>
 	
@@ -973,5 +985,4 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 
-	
 	</beans>
