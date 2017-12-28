@@ -67,7 +67,7 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		List<? extends Entity> entities = 
 				valueSetService.getSourceAssertedValueSetEntitiesForEntityCode(null);
 		List<Document> documents = new ArrayList<Document>();
-		for(Entity entity : entities ) {documents.addAll(entityIndexer.indexEntity(indexName, reference.getCodingSchemeVersion(), entity));}
+		for(Entity entity : entities ) {documents.addAll(entityIndexer.indexEntity(indexName,reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity));}
 		
 		entityIndexService.addDocuments(
 				indexName, 
@@ -88,6 +88,30 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		this.batchSize = batchSize;
 	}
 	
+	public AssertedValueSetService getValueSetService() {
+		return valueSetService;
+	}
+
+	public void setValueSetService(AssertedValueSetService valueSetService) {
+		this.valueSetService = valueSetService;
+	}
+
+	public AssertedValueSetEntityIndexer getEntityIndexer() {
+		return entityIndexer;
+	}
+
+	public void setEntityIndexer(AssertedValueSetEntityIndexer entityIndexer) {
+		this.entityIndexer = entityIndexer;
+	}
+
+	public IndexDaoManager getIndexDaoManager() {
+		return indexDaoManager;
+	}
+
+	public void setIndexDaoManager(IndexDaoManager indexDaoManager) {
+		this.indexDaoManager = indexDaoManager;
+	}
+
 	public static void main(String...args) {
 		
 	}

@@ -25,10 +25,6 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	
 	private AssertedValueSetParameters params;
 
-	private AssertedValueSetServiceImpl(){
-		
-	}
-
 	
 	public void init(AssertedValueSetParameters params){
 		ibatisAssertedValueSetDao = this.getDaoManager().getCurrentAssertedValueSetDao();
@@ -77,8 +73,12 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 
 	@Override
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
+		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
+		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
 		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode == null? params.getRootConcept(): rootCode, 
-				params.getAssertedValueSetRelation(), params.getCodingSchemeVersion(), params.getCodingSchemeURI());
+				params.getAssertedValueSetRelation(), predUID.get(0), csUID);
 	}
 
 	/**
@@ -107,6 +107,14 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	 */
 	public void setValueSetHeirarchyService(ValueSetHierarchyService valueSetHeirarchyService) {
 		this.valueSetHeirarchyService = valueSetHeirarchyService;
+	}
+
+	public AssertedValueSetParameters getParams() {
+		return params;
+	}
+
+	public void setParams(AssertedValueSetParameters params) {
+		this.params = params;
 	}
 
 

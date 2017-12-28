@@ -363,7 +363,7 @@
 		<property name="propertyService" ref="propertyService"/>
 	</bean>
 	
-	<bean id="valueSetService" class="org.lexevs.dao.database.service.valuesets.AssertedValueSetService"
+	<bean id="valueSetService" class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
 		parent="abstractService">
 	</bean>
 	
@@ -836,6 +836,10 @@
 		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 	</bean>
 	
+	<bean id="assertedValueSetIndexService" class="org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService">
+		<property name="indexCreator" ref="assertedValueSetIndexCreator"/>
+	</bean>
+	
 	<bean id="luceneMetadataIndexService" 
 		class="org.lexevs.dao.index.service.metadata.LuceneMetadataIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
@@ -846,6 +850,7 @@
 		<property name="entityIndexService" ref="luceneEntityIndexService"/>
 		<property name="metadataIndexService" ref="luceneMetadataIndexService"/>
 		<property name="searchIndexService" ref="luceneSearchIndexService"/>
+		<property name="assertedValueSetIndexService" ref="assertedValueSetIndexService"/>
 	</bean>
 	
 	<bean id="indexDaoManager" class="org.lexevs.dao.index.access.IndexDaoManager">

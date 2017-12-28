@@ -16,12 +16,10 @@ import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 
 public class AssertedValueSetEntityIndexer extends LuceneLoaderCodeIndexer implements EntityIndexer {
 
-	@Override
-	public List<Document> indexEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
+	public List<Document> indexEntity(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, Entity entity) {
 List<Document> returnList = new ArrayList<Document>();
 		
 		try {
-			String codingSchemeName = null;
 			
 			String entityUid = null;
 			if(entity instanceof IdableEntity) {

@@ -76,4 +76,12 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 		return null;
 	}
 
+	public IndexCreator getIndexCreator() {
+		return indexCreator;
+	}
+
+	public void setIndexCreator(IndexCreator indexCreator) {
+		this.indexCreator = indexCreator;
+	}
+
 }
