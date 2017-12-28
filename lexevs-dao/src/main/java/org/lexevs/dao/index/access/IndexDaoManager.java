@@ -239,8 +239,9 @@ public class IndexDaoManager {
 		this.valueSetEntityDaos = valueSetEntityDaos;
 	}
 
-	public EntityDao getValueSetEntityDao(String codingSchemeURN, String codingSchemeVersion) {
-		// TODO Auto-generated method stub
-		return null;
+	public ValueSetEntityDao getValueSetEntityDao(String codingSchemeURN, String codingSchemeVersion) {
+		Assert.state(this.valueSetEntityDaos.size() == 1, "Currently Search Daos are not Versionable.");
+		
+		return this.valueSetEntityDaos.get(0);
 	}
 }

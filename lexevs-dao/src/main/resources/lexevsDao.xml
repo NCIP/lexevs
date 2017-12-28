@@ -873,6 +873,11 @@
 				<ref bean="luceneSearch2013Dao"/>
 			</list>
 		</property>
+				<property name="valueSetEntityDaos">
+			<list>
+				<ref bean="luceneValueSetEntityDao"/>
+			</list>
+		</property>
 	</bean>
 	
 	<bean id="indexerService" class="org.lexevs.dao.index.factory.IndexerServiceFactory">
@@ -902,6 +907,11 @@
 	
 	<bean id="luceneSearch2013Dao" class="org.lexevs.dao.index.lucene.v2013.search.LuceneSearchDao">
 		<property name="indexRegistry" ref="multiIndexRegistry"/>
+	</bean>
+	
+	<bean id="luceneValueSetEntityDao" class="org.lexevs.dao.index.access.entity.ValueSetEntityDao">
+		<property name="indexRegistry" ref="multiIndexRegistry"/>
+		<property name="luceneIndexTemplate" ref="luceneIndexTemplate"/>
 	</bean>
 	
 	<bean id="commonIndexLoaderCodeIndexer" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">
@@ -968,6 +978,10 @@
 	</bean>
 
 	<bean id="luceneMetadataIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
+		<property name="namedDirectory" ref="metadataIndexDirectory"/>
+	</bean>
+	
+	<bean id="luceneIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
 		<property name="namedDirectory" ref="metadataIndexDirectory"/>
 	</bean>
 	
