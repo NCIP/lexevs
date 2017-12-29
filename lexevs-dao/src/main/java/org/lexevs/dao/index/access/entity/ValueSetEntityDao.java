@@ -40,7 +40,7 @@ public class ValueSetEntityDao extends AbstractBaseLuceneIndexTemplateDao implem
 
 	@Override
 	public void addDocuments(String codingSchemeUri, String version, List<Document> documents, Analyzer analyzer) {
-		getLuceneIndexTemplate(codingSchemeUri, version).addDocuments(documents, analyzer);
+		getLuceneIndexTemplate().addDocuments(documents, analyzer);
 	}
 
 	@Override
@@ -67,11 +67,6 @@ public class ValueSetEntityDao extends AbstractBaseLuceneIndexTemplateDao implem
 				LexEvsIndexFormatVersion.class, 
 				supportedIndexVersion2010);
 	}
-	
-	protected LuceneIndexTemplate getLuceneIndexTemplate(
-			String codingSchemeUri, String version) {
-			return this.getIndexRegistry().getLuceneIndexTemplate(codingSchemeUri, version);
-		}
 
 		public LuceneIndexTemplate getLuceneIndexTemplate() {
 			return luceneIndexTemplate;

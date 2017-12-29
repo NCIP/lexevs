@@ -953,8 +953,19 @@
 		<property name="indexName" value="MetaDataIndex" />
 	</bean>
 	
+	<bean id="assertedValueSetIndexDirectory" parent="abstractDirectoryFactory">
+		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
+		<property name="indexDirectory" ref="assertedValueSetIndexLocation" />
+		<property name="indexName" value="AssertedValueSetIndex" />
+	</bean>
+	
 	<bean id="metadataIndexLocation" 
 		class="org.lexevs.dao.index.factory.MetadataIndexLocationFactory">
+		<property name="systemVariables" ref="systemVariables"/> 
+	</bean>
+	
+	<bean id="assertedValueSetIndexLocation" 
+		class="org.lexevs.dao.index.factory.AssertedValueSetIndexLocationFactory">
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 		
@@ -982,7 +993,7 @@
 	</bean>
 	
 	<bean id="luceneIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
-		<property name="namedDirectory" ref="metadataIndexDirectory"/>
+		<property name="namedDirectory" ref="assertedValueSetIndexDirectory"/>
 	</bean>
 	
 	<bean id="luceneMultiIndexTemplate" class="org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate">

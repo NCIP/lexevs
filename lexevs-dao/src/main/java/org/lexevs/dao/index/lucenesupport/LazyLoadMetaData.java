@@ -86,7 +86,7 @@ public class LazyLoadMetaData implements
 		}
 		for (String key : orphanedIndexCache.keySet()) {
 
-			if (!key.equals("MetaDataIndex")) {
+			if (!(key.equals("MetaDataIndex") || key.equals("AssertedValueSetIndex"))) {
 				try{
 				LoggerFactory.getLogger().fatalAndThrowException("Indexes seem to be created in another context "
 						+ "as they do not match database registrations. "

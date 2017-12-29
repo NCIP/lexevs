@@ -473,6 +473,10 @@ public class SystemVariables {
     public static String getMetaDataIndexName() {
         return "MetaDataIndex";
     }
+    
+	public static String getAssertedValueSetIndexName() {
+		return "AssertedValueSetIndex";
+	}
 
     public Hashtable<String, SQLConnectionInfo> getSqlServers() {
         return sqlServers_;
