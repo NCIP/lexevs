@@ -18,4 +18,6 @@ public interface SourceAssertedValueSetEntityService extends EntityService {
 
 	public List<? extends Entity> getEntities(String codingSchemeUri, String version, int start, int pageSize, AssertedValueSetParameters params);
 
+	List<String> getEntityUids(String codingSchemeUri, String version, int start, int pageSize);
+
 }

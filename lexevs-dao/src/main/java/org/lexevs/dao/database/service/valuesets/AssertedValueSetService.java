@@ -17,4 +17,8 @@ public interface  AssertedValueSetService {
 	
 	public void init(AssertedValueSetParameters params);
 
+	List<String> getSourceAssertedValueSetEntityUidsforPredicateUid( int start, int pageSize);
+
+	List<Entity> getEntitiesForUidMap(List<String> entityUids);
+
 }

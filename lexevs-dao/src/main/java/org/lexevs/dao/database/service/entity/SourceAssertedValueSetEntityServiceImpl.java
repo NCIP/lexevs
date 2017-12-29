@@ -62,13 +62,30 @@ public class SourceAssertedValueSetEntityServiceImpl extends RevisableAbstractDa
 		return entities;
 	}
 	
+	@Override
+	@Transactional
+	public List<String> getEntityUids(String codingSchemeUri, String version,
+			int start, int pageSize) {
+		String codingSchemeId = this.getDaoManager().
+			getCodingSchemeDao(codingSchemeUri, version).
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		
+		String codingSchemeUid = null;
+		String predUid = null;
+		List<String> entities = this.getDaoManager().
+				getCurrentAssertedValueSetDao().getValueSetEntityUids(codingSchemeUid, predUid, start, pageSize);
+		
+		return entities;
+	}
+	
 
 	@Override
 	public List<? extends Entity> getEntities(String codingSchemeUri, String version, int start, int pageSize,
 			AssertedValueSetParameters params) {
 			
 			List<? extends Entity> entities = this.getDaoManager().getCurrentAssertedValueSetDao().
-					getSourceAssertedValueSetEntitiesForEntityCode(params.getRootConcept(),  params.getAssertedValueSetRelation(), version, codingSchemeUri);
+					getSourceAssertedValueSetEntitiesForEntityCode(params.getRootConcept(),  
+							params.getAssertedValueSetRelation(), version, codingSchemeUri);
 			
 			return entities;
 	}

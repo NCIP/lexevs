@@ -12,6 +12,7 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
+import org.lexevs.dao.database.access.entity.EntityDao;
 import org.lexevs.dao.database.access.valuesets.SourceAssertedValueSetDao;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -20,7 +21,7 @@ import org.lexevs.locator.LexEvsServiceLocator;
 public class AssertedValueSetServiceImpl extends AbstractDatabaseService implements AssertedValueSetService {
 	
 	private SourceAssertedValueSetDao ibatisAssertedValueSetDao;
-	
+	private EntityDao entityDao;
 	private ValueSetHierarchyService valueSetHeirarchyService;
 	
 	private AssertedValueSetParameters params;
@@ -79,6 +80,22 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
 		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode == null? params.getRootConcept(): rootCode, 
 				params.getAssertedValueSetRelation(), predUID.get(0), csUID);
+	}
+	
+	@Override
+	public List<String> getSourceAssertedValueSetEntityUidsforPredicateUid(int start, int pageSize) {
+		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
+		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
+		return ibatisAssertedValueSetDao.getValueSetEntityUids(csUID, predUID.get(0), start, pageSize);
+	}
+	
+	@Override
+	public List<Entity> getEntitiesForUidMap(List<String> entityUids){
+		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
+		return entityDao.getEntities(csUID, entityUids);
 	}
 
 	/**

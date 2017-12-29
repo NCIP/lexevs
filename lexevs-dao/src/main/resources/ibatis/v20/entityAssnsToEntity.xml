@@ -1452,6 +1452,25 @@
 			assns.sourceEntityCode
 	</select>
 	
+	getVSEntityUids
+	
+	<select id="getVSEntityUids"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" resultMap="Common.uidResult">
+		SELECT
+			ent.entityGuid
+		FROM
+		 	$prefix$entityAssnsToEntity  assns 
+		JOIN 
+			$prefix$entity ent 
+		ON 
+			assns.sourceEntityCode = ent.entityCode
+		WHERE
+			assns.associationPredicateGuid  = #param1#
+		GROUP BY
+			ent.entityGuid
+	</select>
+	
 	<select id="getVSTopNodeEntityByCode"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
 		resultMap="vsEntityResultWithProperties"
