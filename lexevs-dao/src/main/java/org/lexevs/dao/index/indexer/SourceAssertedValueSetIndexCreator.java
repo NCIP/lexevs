@@ -7,6 +7,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
+import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
@@ -16,9 +17,11 @@ import org.apache.lucene.document.Document;
 public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 
 	private static final String ASSERTED_VALUE_SET_INDEX_NAME = "SOURCE_ASSERTED_VALUE_SETS";
-	private int batchSize = 1000;
+	private static final int BATCH_SIZE = 1000;
+	private int batchSize =1000;
 	private AssertedValueSetService valueSetService;
 	private AssertedValueSetEntityIndexer entityIndexer;
+	private EntityService entityService;
 	private IndexDaoManager indexDaoManager;
 
 	@Override
@@ -48,6 +51,34 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		return this.index(reference, callback, false, option);
 	}
 
+//	@Override
+//	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback,
+//			boolean onlyRegister, IndexOption option) {
+//	
+//	    valueSetService.init(new AssertedValueSetParameters.
+//	    		Builder(reference.getCodingSchemeVersion()).
+//	    		baseValueSetURI(reference.getCodingSchemeURN()).build());
+//	    EntityDao entityIndexService = indexDaoManager.getValueSetEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+//	    
+//		String indexName;
+//		try {
+//			indexName = this.getIndexName(reference);
+//		} catch (LBParameterException e) {
+//			throw new RuntimeException("Problems getting coding scheme name. uri = " + 
+//					reference.getCodingSchemeURN()  + " version = " + reference.getCodingSchemeVersion(), e);
+//		}
+//		List<? extends Entity> entities = 
+//				valueSetService.getSourceAssertedValueSetEntitiesForEntityCode(null);
+//		List<Document> documents = new ArrayList<Document>();
+//		for(Entity entity : entities ) {documents.addAll(entityIndexer.indexEntity(indexName,reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity));}
+//		
+//		entityIndexService.addDocuments(
+//				indexName, 
+//				reference.getCodingSchemeVersion(), 
+//				documents, entityIndexer.getAnalyzer());
+//		return indexName;
+//	}
+	
 	@Override
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback,
 			boolean onlyRegister, IndexOption option) {
@@ -55,6 +86,7 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 	    valueSetService.init(new AssertedValueSetParameters.
 	    		Builder(reference.getCodingSchemeVersion()).
 	    		baseValueSetURI(reference.getCodingSchemeURN()).build());
+	    
 	    EntityDao entityIndexService = indexDaoManager.getValueSetEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
 	    
 		String indexName;
@@ -64,8 +96,14 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 			throw new RuntimeException("Problems getting coding scheme name. uri = " + 
 					reference.getCodingSchemeURN()  + " version = " + reference.getCodingSchemeVersion(), e);
 		}
-		List<? extends Entity> entities = 
-				valueSetService.getSourceAssertedValueSetEntitiesForEntityCode(null);
+		int position = 0;
+		List<Entity> entities = new ArrayList<Entity>();
+		for(List<String> entityUids = 
+				valueSetService.getSourceAssertedValueSetEntityUidsforPredicateUid( position, batchSize);
+				entityUids.size() > 0; 
+				entityUids = valueSetService.getSourceAssertedValueSetEntityUidsforPredicateUid(position += batchSize, batchSize)){
+		entities.addAll(valueSetService.getEntitiesForUidMap(entityUids));
+				}
 		List<Document> documents = new ArrayList<Document>();
 		for(Entity entity : entities ) {documents.addAll(entityIndexer.indexEntity(indexName,reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity));}
 		

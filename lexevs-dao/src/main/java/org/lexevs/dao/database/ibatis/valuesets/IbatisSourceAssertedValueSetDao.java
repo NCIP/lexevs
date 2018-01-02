@@ -60,10 +60,10 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 		if(pageSize < 0) {
 			pageSize = Integer.MAX_VALUE;
 		}
-		
+		System.out.println("CS Uid " + codingSchemeUid + " predicateUid: " + predUid + " start " + start + " pageSize " + pageSize + " prefix " + prefix);
 		return
 			this.getSqlMapClientTemplate().queryForList(GET_VS_ENTITY_UIDS, 
-					new PrefixedParameterTuple(prefix, codingSchemeUid, predUid),
+					new PrefixedParameter(prefix, predUid),
 					start, pageSize);
 	}
 

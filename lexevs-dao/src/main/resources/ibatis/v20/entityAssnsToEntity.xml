@@ -1452,13 +1452,11 @@
 			assns.sourceEntityCode
 	</select>
 	
-	getVSEntityUids
-	
 	<select id="getVSEntityUids"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
 		remapResults="true" resultMap="Common.uidResult">
 		SELECT
-			ent.entityGuid
+			ent.entityGuid AS uidKey
 		FROM
 		 	$prefix$entityAssnsToEntity  assns 
 		JOIN 

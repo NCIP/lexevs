@@ -29,6 +29,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	
 	public void init(AssertedValueSetParameters params){
 		ibatisAssertedValueSetDao = this.getDaoManager().getCurrentAssertedValueSetDao();
+		entityDao = this.getDaoManager().getCurrentEntityDao();
 		valueSetHeirarchyService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
 		this.params = params;
 	}
@@ -132,6 +133,14 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 
 	public void setParams(AssertedValueSetParameters params) {
 		this.params = params;
+	}
+
+	public EntityDao getEntityDao() {
+		return entityDao;
+	}
+
+	public void setEntityDao(EntityDao entityDao) {
+		this.entityDao = entityDao;
 	}
 
 
