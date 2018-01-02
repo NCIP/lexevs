@@ -69,11 +69,9 @@ public class SourceAssertedValueSetEntityServiceImpl extends RevisableAbstractDa
 		String codingSchemeId = this.getDaoManager().
 			getCodingSchemeDao(codingSchemeUri, version).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
-		
-		String codingSchemeUid = null;
 		String predUid = null;
 		List<String> entities = this.getDaoManager().
-				getCurrentAssertedValueSetDao().getValueSetEntityUids(codingSchemeUid, predUid, start, pageSize);
+				getCurrentAssertedValueSetDao().getValueSetEntityUids(codingSchemeId, predUid, start, pageSize);
 		
 		return entities;
 	}

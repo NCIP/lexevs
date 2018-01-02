@@ -839,6 +839,7 @@
 	
 	<bean id="assertedValueSetIndexService" class="org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService">
 		<property name="indexCreator" ref="assertedValueSetIndexCreator"/>
+		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
 	</bean>
 	
 	<bean id="luceneMetadataIndexService" 

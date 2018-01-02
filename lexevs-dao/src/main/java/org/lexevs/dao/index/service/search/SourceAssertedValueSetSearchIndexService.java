@@ -5,16 +5,19 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
+import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.IndexCreator.IndexOption;
+import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 
 public class SourceAssertedValueSetSearchIndexService implements SearchIndexService {
 
 	private IndexCreator indexCreator;
+	private ConcurrentMetaData concurrentMetaData;
 
 	@Override
 	public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
@@ -42,8 +45,12 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
-		// TODO Auto-generated method stub
-		return false;
+//		String key = this.getCodingSchemeKey(reference);
+		try {
+			return StringUtils.isNotBlank(concurrentMetaData.getIndexMetaDataValue("AssertedValueSetIndex"));
+		} catch (RuntimeException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -82,6 +89,14 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 
 	public void setIndexCreator(IndexCreator indexCreator) {
 		this.indexCreator = indexCreator;
+	}
+
+	public ConcurrentMetaData getConcurrentMetaData() {
+		return concurrentMetaData;
+	}
+
+	public void setConcurrentMetaData(ConcurrentMetaData concurrentMetaData) {
+		this.concurrentMetaData = concurrentMetaData;
 	}
 
 }
