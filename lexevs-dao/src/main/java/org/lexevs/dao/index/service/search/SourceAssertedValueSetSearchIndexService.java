@@ -10,6 +10,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
+import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.indexer.IndexCreator;
 import org.lexevs.dao.index.indexer.IndexCreator.IndexOption;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
@@ -17,6 +18,7 @@ import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
 public class SourceAssertedValueSetSearchIndexService implements SearchIndexService {
 
 	private IndexCreator indexCreator;
+	private IndexDaoManager indexDaoManager;
 	private ConcurrentMetaData concurrentMetaData;
 
 	@Override
@@ -45,11 +47,12 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
-//		String key = this.getCodingSchemeKey(reference);
-		try {
-			return StringUtils.isNotBlank(concurrentMetaData.getIndexMetaDataValue("AssertedValueSetIndex"));
-		} catch (RuntimeException e) {
-			throw new RuntimeException(e);
+		if (null != indexDaoManager
+				.getValueSetEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion())
+				.getLuceneIndexTemplate().getIndexName()) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -89,6 +92,14 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 
 	public void setIndexCreator(IndexCreator indexCreator) {
 		this.indexCreator = indexCreator;
+	}
+
+	public IndexDaoManager getIndexDaoManager() {
+		return indexDaoManager;
+	}
+
+	public void setIndexDaoManager(IndexDaoManager indexDaoManager) {
+		this.indexDaoManager = indexDaoManager;
 	}
 
 	public ConcurrentMetaData getConcurrentMetaData() {
