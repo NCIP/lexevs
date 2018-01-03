@@ -1448,8 +1448,8 @@
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
 			assns.associationPredicateGuid  = #param1#
-		GROUP BY
-			assns.sourceEntityCode
+		AND
+		 	assns.targetEntityCode = #param2#
 	</select>
 	
 	<select id="getVSEntityUids"
