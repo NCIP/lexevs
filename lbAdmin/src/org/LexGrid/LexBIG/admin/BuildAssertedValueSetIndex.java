@@ -39,25 +39,22 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 /**
- * Rebuilds indexes associated with the specified coding scheme.
+ * Builds indexes associated with the source asserted 
+ * value sets of the specified coding scheme.
  * 
  * <pre>
- * Example: java org.LexGrid.LexBIG.admin.RebuildIndex
- *   -u,--urn &lt;name&gt; URN uniquely identifying the code system.
- *   -v,--version &lt;id&gt; Version identifier.
- *   -f,--force Force clear (no confirmation).
+ * Example: java -Xmx512m -cp lgRuntime.jar
+ *  org.LexGrid.LexBIG.admin.BuildAssertedValueSetIndex
+ *  -u &quot;urn:oid:2.16.840.1.113883.3.26.1.1&quot; -v &quot;05.09e&quot;
  * 
  * Note: If the URN and version values are unspecified, a
  * list of available coding schemes will be presented for
  * user selection.
- * 
- * Example: java -Xmx512m -cp lgRuntime.jar
- *  org.LexGrid.LexBIG.admin.RebuildIndex
- *   -u &quot;urn:oid:2.16.840.1.113883.3.26.1.1&quot; -v &quot;05.09e&quot;
  * </pre>
  * 
- * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
+ * @author <A HREF="mailto:bauer.scott@mayo.edu">Scott Bauer</A>
  */
+
 @LgAdminFunction
 public class BuildAssertedValueSetIndex {
 
@@ -67,10 +64,6 @@ public class BuildAssertedValueSetIndex {
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
-    }
-
-    public BuildAssertedValueSetIndex() {
-        super();
     }
 
     /**
@@ -86,8 +79,8 @@ public class BuildAssertedValueSetIndex {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
-            Util.displayCommandOptions("RebuildIndex", options,
-                    "RebuildIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
+            Util.displayCommandOptions("BuildAssertedValueSetIndex", options,
+                    "BuildAssertedValueSetIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"17.08d\"", e);
             Util.displayMessage(Util.getPromptForSchemeHelp());
             return;
         }
@@ -126,7 +119,7 @@ public class BuildAssertedValueSetIndex {
 
         AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(css);
 
-        rebuildSingleNamedExtension(ref, force);
+        buildMonoLithicSourceAssertedValueSetIndex(ref, force);
     }
 
     /**
@@ -138,7 +131,7 @@ public class BuildAssertedValueSetIndex {
      * @paam force
      * @throws LBException
      */
-    protected void rebuildSingleNamedExtension(AbsoluteCodingSchemeVersionReference ref,
+    protected void buildMonoLithicSourceAssertedValueSetIndex(AbsoluteCodingSchemeVersionReference ref,
             boolean force) throws LBException {
         
         String indexName = "URI: " + ref.getCodingSchemeURN() + " VERSION: " + 
@@ -147,7 +140,7 @@ public class BuildAssertedValueSetIndex {
         // Confirm the action (if not bypassed by force option) ...
         boolean confirmed = force;
         if (!confirmed) {
-            Util.displayMessage("REBUILD INDEX FOR " + indexName + "? ('Y' to confirm, any other key to cancel)");
+            Util.displayMessage("BUILD INDEX FOR " + indexName + "? ('Y' to confirm, any other key to cancel)");
             try {
                 char choice = Util.getConsoleCharacter();
                 confirmed = choice == 'Y' || choice == 'y';
@@ -163,10 +156,10 @@ public class BuildAssertedValueSetIndex {
                         indexName + "' in progress...");
                 Util.displayStatus(loader.runProcess(ref, null));
             } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Rebuild of specified index extension '" + indexName + "' is not supported.");
+                Util.displayTaggedMessage("Build index extension for '" + indexName + "' is not supported.");
             }
         } else {
-            Util.displayTaggedMessage("Rebuild of index '" + indexName + "' cancelled by user.");
+            Util.displayTaggedMessage("Build of index '" + indexName + "' cancelled by user.");
         }
     }
 
