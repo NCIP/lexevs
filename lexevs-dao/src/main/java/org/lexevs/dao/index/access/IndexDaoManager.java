@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.lexevs.dao.index.access.entity.CommonEntityDao;
 import org.lexevs.dao.index.access.entity.EntityDao;
+import org.lexevs.dao.index.access.entity.ValueSetEntityDao;
 import org.lexevs.dao.index.access.metadata.MetadataDao;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
@@ -50,6 +51,7 @@ public class IndexDaoManager {
 	/** The entity daos. */
 	private List<SearchDao> searchDaos;
 	
+	private List<ValueSetEntityDao> valueSetEntityDaos;
 	/** The entity daos. */
 	private List<MetadataDao> metadataDaos;
 		
@@ -227,5 +229,19 @@ public class IndexDaoManager {
 
 	public void setSearchDaos(List<SearchDao> searchDaos) {
 		this.searchDaos = searchDaos;
+	}
+
+	public List<ValueSetEntityDao> getValueSetEntityDaos() {
+		return valueSetEntityDaos;
+	}
+
+	public void setValueSetEntityDaos(List<ValueSetEntityDao> valueSetEntityDaos) {
+		this.valueSetEntityDaos = valueSetEntityDaos;
+	}
+
+	public ValueSetEntityDao getValueSetEntityDao(String codingSchemeURN, String codingSchemeVersion) {
+		Assert.state(this.valueSetEntityDaos.size() == 1, "Currently Search Daos are not Versionable.");
+		
+		return this.valueSetEntityDaos.get(0);
 	}
 }

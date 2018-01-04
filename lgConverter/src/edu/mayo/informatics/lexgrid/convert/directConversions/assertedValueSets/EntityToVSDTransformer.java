@@ -49,6 +49,7 @@ public class EntityToVSDTransformer{
        this.association = definingAssociation;
        messages_ = LoggerFactory.getLogger();
        conceptDomainPropertyName = conceptDomainIndicator;
+       this.codingSchemeName = codingSchemeName;
        
    }
     

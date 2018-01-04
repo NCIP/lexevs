@@ -1,16 +1,27 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
-
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import java.util.stream.Collectors;
+
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Definition;
+
+import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.concepts.Entities;
+
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedCodingScheme;
@@ -171,6 +182,156 @@ public class AssertedValueSetServicesTest extends TestCase {
 	    }
 		
 		@Test
+		public void testGetPropertiesForPropertyName(){
+			Property prop1 = new Property();
+			Property prop2 = new Property();
+			Property prop3 = new Property();
+			Property prop4 = new Property();
+			prop1.setPropertyName(AssertedValueSetServices.DEFAULT_DO_PUBLISH_NAME);
+			prop2.setPropertyName("aName");
+			prop3.setPropertyName(AssertedValueSetServices.DEFAULT_DO_PUBLISH_NAME);
+			prop4.setPropertyName("anotherName");
+			prop1.setValue(Constructors.createText(AssertedValueSetServices.DEFAULT_DO_PUBLISH_VALUE));
+			prop2.setValue(Constructors.createText("aValue"));
+			prop3.setValue(Constructors.createText("Maybe"));
+			prop4.setValue(Constructors.createText("anotherValue"));
+			
+			List<Property> props = new ArrayList<Property>();
+			String name = AssertedValueSetServices.DEFAULT_DO_PUBLISH_NAME;
+			props.add(prop1);
+			props.add(prop2);
+			props.add(prop3);
+			props.add(prop4);
+			List<Property> results = AssertedValueSetServices.getPropertiesForPropertyName(props , name);
+			assertTrue(results.stream().filter(x -> x.getPropertyName().equals(name)).collect(Collectors.toList()).contains(prop1));
+			assertTrue(results.stream().filter(x -> x.getPropertyName().equals(name)).collect(Collectors.toList()).contains(prop3));
+			assertFalse(results.stream().filter(x -> x.getPropertyName().equals(name)).collect(Collectors.toList()).contains(prop2));
+			assertFalse(results.stream().filter(x -> x.getPropertyName().equals(name)).collect(Collectors.toList()).contains(prop4));
+			
+		}
+		
+		@Test
+		public void testGetPropertyQualifierValueForSource(){
+			PropertyQualifier prop1 = new PropertyQualifier();
+			PropertyQualifier prop2 = new PropertyQualifier();
+			PropertyQualifier prop3 = new PropertyQualifier();
+			PropertyQualifier prop4 = new PropertyQualifier();
+			prop1.setPropertyQualifierName(AssertedValueSetServices.SOURCE);
+			prop2.setPropertyQualifierName("aName");
+			prop3.setPropertyQualifierName(AssertedValueSetServices.SOURCE);
+			prop4.setPropertyQualifierName("anotherName");
+			prop1.setValue(Constructors.createText("NCI"));
+			prop2.setValue(Constructors.createText("aValue"));
+			prop3.setValue(Constructors.createText("CDISC"));
+			prop4.setValue(Constructors.createText("anotherValue"));
+			
+			List<PropertyQualifier> props = new ArrayList<PropertyQualifier>();
+			String name = AssertedValueSetServices.DEFAULT_DO_PUBLISH_NAME;
+			props.add(prop1);
+			props.add(prop2);
+			props.add(prop3);
+			props.add(prop4);
+			String result = AssertedValueSetServices.getPropertyQualifierValueForSource(props);
+			assertEquals("NCI", result);
+		}
+		
+		@Test
+	    public void testTruncateDefNameforCodingSchemeName(){
+			String longName ="Thisisacodingschemenamethatislongerthanitshouldbebecauseitis";
+			String rightName = "Thisisacodingschemenamethatislongerthanitshouldbe1";
+			String shortName = "Thisisacodingschemenamethatislongerthanitshouldbe";
+			assertEquals(AssertedValueSetServices.truncateDefNameforCodingSchemeName(longName, true).length(), 49);
+			assertEquals(AssertedValueSetServices.truncateDefNameforCodingSchemeName(rightName, true).length(), 50);
+			assertTrue(AssertedValueSetServices.truncateDefNameforCodingSchemeName(shortName, true).length() < 50);
+			
+			assertTrue(AssertedValueSetServices.truncateDefNameforCodingSchemeName(longName, false).length() > 49);
+			assertEquals(AssertedValueSetServices.truncateDefNameforCodingSchemeName(rightName,false).length(), 50);
+			assertTrue(AssertedValueSetServices.truncateDefNameforCodingSchemeName(shortName, false).length() < 50);
+	    }
+		
+		@Test
+		public void testGetConceptCodeForURI() throws URISyntaxException {
+			assertEquals(AssertedValueSetServices.getConceptCodeForURI(new URI(AssertedValueSetServices.BASE + "/NCIT/" + "C61410")), "C61410");
+		}
+		
+		@Test
+		public void testTransform() throws ParseException, LBException {
+			Entity entity = new Entity();
+			entity.setEntityCode("C010101");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			java.util.Date d = sdf.parse("21/12/2012");
+			entity.setEffectiveDate(d);
+			
+			java.util.Date expd = sdf.parse("21/12/2021");
+			entity.setExpirationDate(expd);
+			
+			entity.setEntityDescription(Constructors.createEntityDescription("This is where we describe the entity"));
+			entity.setIsActive(true);
+			Property prop = new Property();
+			prop.setPropertyName(AssertedValueSetServices.CONCEPT_DOMAIN);
+			prop.setValue(Constructors.createText("Intellectual Product"));
+			entity.getPropertyAsReference().add(prop);
+			Property p1 = new Property();
+			p1.setPropertyName("PropWSource");
+			p1.setValue(Constructors.createText("ValueWSource"));
+			PropertyQualifier pq = new PropertyQualifier();
+			pq.setPropertyQualifierName(AssertedValueSetServices.SOURCE);
+			pq.setValue(Constructors.createText("CDISC"));
+			p1.getPropertyQualifierAsReference().add(pq);
+			entity.getPropertyAsReference().add(p1);
+			entity.setEntityCodeNamespace("NCI_Thesaurus");
+			entity.setOwner("NCI");
+			entity.setStatus("Complete");
+			
+			Entity subent1 = new Entity();
+			Entity subent2 = new Entity();
+			Entity subent3 = new Entity();
+			
+			subent1.setEntityCode("C1");
+			subent1.setEntityDescription(Constructors.createEntityDescription("description1"));
+			
+			subent2.setEntityCode("C01");
+			subent2.setEntityDescription(Constructors.createEntityDescription("description2"));
+			
+			subent3.setEntityCode("C11");
+			subent3.setEntityDescription(Constructors.createEntityDescription("description3"));
+			
+			Entities ents = new Entities();
+			ents.getEntityAsReference().add(subent1);
+			ents.getEntityAsReference().add(subent2);
+			ents.getEntityAsReference().add(subent3);
+			
+			CodingScheme scheme = AssertedValueSetServices.transform(entity, "CDISC", null, ents, "17.08d", "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+			assertEquals(scheme.getCodingSchemeName(), "This is where we describe the entity");
+			assertEquals(scheme.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/CDISC/C010101" );
+			assertEquals(scheme.getEffectiveDate(), d);
+			assertEquals(scheme.getExpirationDate(), expd);
+			assertEquals(scheme.getRepresentsVersion(), "17.08d");
+			assertEquals(scheme.getStatus(), "Complete");
+			assertEquals(scheme.getMappings().getSupportedCodingSchemeAsReference().get(0).getContent(), "NCI_Thesaurus");
+			assertEquals(scheme.getMappings().getSupportedCodingSchemeAsReference().get(0).getUri(), "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+			assertEquals(scheme.getMappings().getSupportedConceptDomainAsReference().get(0).getContent(), "Intellectual Product");
+			assertEquals(scheme.getMappings().getSupportedConceptDomainAsReference().get(0).getUri(), "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+			assertEquals(scheme.getMappings().getSupportedNamespaceAsReference().get(0).getContent(), "NCI_Thesaurus");
+			assertEquals(scheme.getMappings().getSupportedNamespaceAsReference().get(0).getUri(), "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+			assertEquals(scheme.getSourceAsReference().get(0).getContent(), "CDISC");
+			assertEquals(scheme.getProperties().getPropertyAsReference().stream().filter(p -> p.getPropertyName().
+					equals("resolvedAgainstCodingSchemeVersion")).findFirst().get().getValue().getContent(),"http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#"); 
+			assertEquals(scheme.getProperties().getPropertyAsReference().stream().filter(p -> p.getPropertyName().
+					equals("resolvedAgainstCodingSchemeVersion")).findFirst().get().getPropertyQualifierAsReference().stream().filter(
+					pqual -> pqual.getPropertyQualifierName().equals("version")).findFirst().get().getValue().getContent(), "17.08d"); 
+			assertEquals(scheme.getProperties().getPropertyAsReference().stream().filter(p -> p.getPropertyName().
+					equals("resolvedAgainstCodingSchemeVersion")).findFirst().get().getPropertyQualifierAsReference().stream().filter(
+					pqtoo -> pqtoo.getPropertyQualifierName().equals("codingSchemeName")).findFirst().get().getValue().getContent(), "This is where we describe the entity"); 
+			assertEquals(scheme.getOwner(), "NCI");
+			assertTrue(scheme.getEntities().getEntityCount() == 3);
+			assertEquals(scheme.getEntities().getEntityAsReference().stream().filter(e -> e.getEntityCode().equals("C1")).findFirst().get().getEntityDescription().getContent(), "description1" );
+			assertEquals(scheme.getEntities().getEntityAsReference().stream().filter(e -> e.getEntityCode().equals("C01")).findFirst().get().getEntityDescription().getContent(), "description2" );
+			assertEquals(scheme.getEntities().getEntityAsReference().stream().filter(e -> e.getEntityCode().equals("C11")).findFirst().get().getEntityDescription().getContent(), "description3" );
+		}
+		
+		
+		@Test
 		public void testGetDiff(){
 			List<String> diff = AssertedValueSetServices.getDiff(TEST_STRING_STAGING_ADULTS_CODE, TEST_STRING_STAGING_CHILD_NAME);
 			assertTrue(diff.contains("Adults") && diff.contains("and") && diff.contains("Adolescents") && diff.contains("Code"));	
@@ -318,9 +479,6 @@ public class AssertedValueSetServicesTest extends TestCase {
 		
 		private List<String> readToList(File file) throws IOException{
 			return FileUtils.readLines(file);
-		
 		}
-		
-	
 
 }

@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
+import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
@@ -237,6 +238,10 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	protected List<VSHierarchyNode> getUnfilteredNodes(String code) {
 		return vsDao.getAllVSTriplesTrOfVSNode(schemeUID, code, associationPredicateGuid, sourceDesignation,
 				publishName, publishValue, 0, -1);
+	}
+	
+	public List<DefinedNode> getAllValueSetNodesWithoutSource(String association, String publishName, String publishValue){
+		return vsDao.getAllVSTriples(schemeUID, associationPredicateGuid, publishName, publishValue, 0, -1);
 	}
 	
 

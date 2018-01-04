@@ -203,7 +203,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	 * 
 	 * @return the qualifier[]
 	 */
-	private Qualifier[] propertyQualifiersToQualifiers(PropertyQualifier[] qualifiers) {
+	protected Qualifier[] propertyQualifiersToQualifiers(PropertyQualifier[] qualifiers) {
 		Qualifier[] quals = new Qualifier[qualifiers.length];
 		for(int i=0;i<qualifiers.length;i++) {
 			quals[i] = new Qualifier(qualifiers[i].getPropertyQualifierName(), qualifiers[i].getValue().getContent());
@@ -218,7 +218,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	 * 
 	 * @return the string[]
 	 */
-	private String[] sourceToString(Source[] sources) {
+	protected String[] sourceToString(Source[] sources) {
 		String[] stringSource = new String[sources.length];
 		for(int i=0;i<sources.length;i++) {
 			stringSource[i] = sources[i].getContent();
