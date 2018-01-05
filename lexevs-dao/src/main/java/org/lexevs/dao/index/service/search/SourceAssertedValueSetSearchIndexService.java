@@ -76,8 +76,8 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 
 	@Override
 	public void createIndex(AbsoluteCodingSchemeVersionReference ref) {
+		if(ref == null) {throw new RuntimeException("CodingScheme Reference cannot be null");}
 		indexCreator.index(ref, IndexOption.SEARCH);
-
 	}
 
 	@Override

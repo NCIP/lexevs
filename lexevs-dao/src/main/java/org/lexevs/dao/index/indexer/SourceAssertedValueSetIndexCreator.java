@@ -48,40 +48,13 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 			EntityIndexerProgressCallback callback, IndexOption option) {
 		return this.index(reference, callback, false, option);
 	}
-
-//	@Override
-//	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback,
-//			boolean onlyRegister, IndexOption option) {
-//	
-//	    valueSetService.init(new AssertedValueSetParameters.
-//	    		Builder(reference.getCodingSchemeVersion()).
-//	    		baseValueSetURI(reference.getCodingSchemeURN()).build());
-//	    EntityDao entityIndexService = indexDaoManager.getValueSetEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
-//	    
-//		String indexName;
-//		try {
-//			indexName = this.getIndexName(reference);
-//		} catch (LBParameterException e) {
-//			throw new RuntimeException("Problems getting coding scheme name. uri = " + 
-//					reference.getCodingSchemeURN()  + " version = " + reference.getCodingSchemeVersion(), e);
-//		}
-//		List<? extends Entity> entities = 
-//				valueSetService.getSourceAssertedValueSetEntitiesForEntityCode(null);
-//		List<Document> documents = new ArrayList<Document>();
-//		for(Entity entity : entities ) {documents.addAll(entityIndexer.indexEntity(indexName,reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), entity));}
-//		
-//		entityIndexService.addDocuments(
-//				indexName, 
-//				reference.getCodingSchemeVersion(), 
-//				documents, entityIndexer.getAnalyzer());
-//		return indexName;
-//	}
 	
 	@Override
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback,
 			boolean onlyRegister, IndexOption option) {
 
-		valueSetService.init(new AssertedValueSetParameters.Builder(reference.getCodingSchemeVersion()).codingSchemeURI(reference.getCodingSchemeURN()).build());
+		valueSetService.init(new AssertedValueSetParameters.Builder(reference.getCodingSchemeVersion())
+				.codingSchemeURI(reference.getCodingSchemeURN()).build());
 
 		EntityDao entityIndexService = indexDaoManager.getValueSetEntityDao(reference.getCodingSchemeURN(),
 				reference.getCodingSchemeVersion());

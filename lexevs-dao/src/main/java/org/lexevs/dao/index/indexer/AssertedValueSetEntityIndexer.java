@@ -26,20 +26,12 @@ List<Document> returnList = new ArrayList<Document>();
 				entityUid = ((IdableEntity)entity).getId();
 			}
 			
-			Document parentDoc = this.createParentDocument(
+			Document parentDoc = createParentDocument(
 					codingSchemeName, 
 					codingSchemeUri, 
 					codingSchemeVersion, 
-					entity.getEntityCode(),
-					entity.getEntityCodeNamespace(),
-					entity.getEntityDescription(),
-					entity.getIsActive(),
-					entity.getIsAnonymous(),
-					entity.getIsDefined(),
-					entity.getEntityType(),
-					entity.getStatus(),
-					entityUid,
-					isParent);
+					entity,
+					entityUid);
 			
 			if(entity.getAllProperties().length == 0) {
 				entity.addPresentation(
@@ -68,16 +60,16 @@ List<Document> returnList = new ArrayList<Document>();
 	}
 	
 	protected Document createParentDocument(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
-			String entityCode, String entityCodeNamespace, EntityDescription entityDescription) {
+			Entity entity, String entityUid) {
 
-		generator_.startNewDocument(codingSchemeName + "-" + entityCode);
+		generator_.startNewDocument(codingSchemeName + "-" + entity.getEntityCode());
 		generator_.addTextField("codingSchemeName", codingSchemeName, true, true, false);
 		generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
 		generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
-		generator_.addTextField("entityCode", entityCode, true, true, false);
-		generator_.addTextField("entityCodeNamespace", entityCodeNamespace, true, true, false);
+		generator_.addTextField("entityCode", entity.getEntityCode(), true, true, false);
+		generator_.addTextField("entityCodeNamespace", entity.getEntityCodeNamespace(), true, true, false);
 		generator_.addTextField("entityDescription",
-				entityDescription != null ? entityDescription.getContent() : "ENTITY DESCRIPTION ABSENT", true, true,
+				entity.getEntityDescription().getContent() != null ? entity.getEntityDescription().getContent() : "ENTITY DESCRIPTION ABSENT", true, true,
 				false);
 
 		generator_.addTextField("isParentDoc", "true", true, true, false);
@@ -85,8 +77,8 @@ List<Document> returnList = new ArrayList<Document>();
 		generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD,
 				createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
 		generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD,
-				createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeUri, codingSchemeVersion, entityCode,
-						entityCodeNamespace),
+				createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeUri, codingSchemeVersion, entity.getEntityCode(),
+						entity.getEntityCodeNamespace()),
 				false, true, false);
 
 		return generator_.getDocument();
@@ -109,13 +101,9 @@ List<Document> returnList = new ArrayList<Document>();
 				codingSchemeName, 
 				codingSchemeUri, 
 				codingSchemeVersion,
-				entity.getEntityCode(), 
-				entity.getEntityCodeNamespace(), 
-				entity.getEntityType(),
+				entity,
 				DaoUtility.getEntityDescriptionText(entity.getEntityDescription()),
-				prop.getPropertyType(), 
-				prop.getPropertyName(), 
-				prop.getValue().getContent(),
+				prop,
 				isPreferred,
 				sourceToString(prop.getSource()), 
 				propertyQualifiersToQualifiers(prop.getPropertyQualifier()));
@@ -124,61 +112,61 @@ List<Document> returnList = new ArrayList<Document>();
 
 
 	private Document addProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
-			String entityCode, String entityCodeNamespace, String[] entityType, String entityDescriptionText,
-			String propertyType, String propertyName, String propertyValue, Boolean isPreferred, String[] sources,
+			Entity entity, String entityDescriptionText,
+			Property prop, Boolean isPreferred, String[] sources,
 			Qualifier[] qualifiers) {
 		 String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
 	       
-	        generator_.startNewDocument(codingSchemeName + "-" + entityCode);
-	        generator_.addTextField(UNIQUE_ID + "Tokenized", entityCode, false, true, true);
-	        generator_.addTextField(UNIQUE_ID, entityCode, false, true, false);// must be anyalyzed with KeywordAnalyzer
-	        generator_.addTextField(UNIQUE_ID + "LC", entityCode.toLowerCase(), false, true, false);
+	        generator_.startNewDocument(codingSchemeName + "-" + entity.getEntityCode());
+	        generator_.addTextField(UNIQUE_ID + "Tokenized", entity.getEntityCode(), false, true, true);
+	        generator_.addTextField(UNIQUE_ID, entity.getEntityCode(), false, true, false);// must be anyalyzed with KeywordAnalyzer
+	        generator_.addTextField(UNIQUE_ID + "LC", entity.getEntityCode().toLowerCase(), false, true, false);
 	        
 	        
 	        generator_.addTextField(CODING_SCHEME_URI_VERSION_KEY_FIELD, 
 	        		createCodingSchemeUriVersionKey(codingSchemeUri, codingSchemeVersion), false, true, false);
 	        generator_.addTextField(CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD, 
 	        		createCodingSchemeUriVersionCodeNamespaceKey(codingSchemeUri, codingSchemeVersion, 
-	        				entityCode, entityCodeNamespace), false, true, false);
+	        				entity.getEntityCode(), entity.getEntityCodeNamespace()), false, true, false);
 	     // must be analyzed with KeywordAnalyzer
-	        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entityCodeNamespace, false, true, false);
+	        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entity.getEntityCodeNamespace(), false, true, false);
 
 	        String tempPropertyType;
-	        if (propertyType == null || propertyType.length() == 0) {
-	            if (propertyName.equalsIgnoreCase("textualPresentation")) {
+	        if (prop.getPropertyType() == null || prop.getPropertyType().length() == 0) {
+	            if (prop.getPropertyName().equalsIgnoreCase("textualPresentation")) {
 	                tempPropertyType = "presentation";
-	            } else if (propertyName.equals("definition")) {
+	            } else if (prop.getPropertyName().equals("definition")) {
 	                tempPropertyType = "definition";
-	            } else if (propertyName.equals("comment")) {
+	            } else if (prop.getPropertyName().equals("comment")) {
 	                tempPropertyType = "comment";
-	            } else if (propertyName.equals("instruction")) {
+	            } else if (prop.getPropertyName().equals("instruction")) {
 	                tempPropertyType = "instruction";
 	            } else {
 	                tempPropertyType = propertyFieldName;
 	            }
 	        } else {
-	            tempPropertyType = propertyType;
+	            tempPropertyType = prop.getPropertyType();
 	        }
 	        generator_.addTextField("propertyType", tempPropertyType, false, true, false);
 
-	        generator_.addTextField(propertyFieldName, propertyName, false, true, false);
+	        generator_.addTextField(propertyFieldName, prop.getPropertyName(), false, true, false);
 
-	        if (StringUtils.isNotBlank(propertyValue)) {
-	            generator_.addTextField(PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
+	        if (StringUtils.isNotBlank(prop.getValue().getContent())) {
+	            generator_.addTextField(PROPERTY_VALUE_FIELD, prop.getValue().getContent(), false, true, true);
 	            
 	            generator_.addTextField(REVERSE_PROPERTY_VALUE_FIELD, 
-	                    reverseTermsInPropertyValue(propertyValue), false, true, true);
+	                    reverseTermsInPropertyValue(prop.getValue().getContent()), false, true, true);
 	            
-	            generator_.addTextField(LITERAL_PROPERTY_VALUE_FIELD, propertyValue, false, true, true);
+	            generator_.addTextField(LITERAL_PROPERTY_VALUE_FIELD, prop.getValue().getContent(), false, true, true);
 	            
 	            generator_.addTextField(LITERAL_AND_REVERSE_PROPERTY_VALUE_FIELD, 
-	                    reverseTermsInPropertyValue(propertyValue), false, true, true);
+	                    reverseTermsInPropertyValue(prop.getValue().getContent()), false, true, true);
 
 	            // This copy of the content is required for making "startsWith" or
 	            // "exactMatch" types of queries
-	            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, propertyValue.getBytes().length > 32000? propertyValue.substring(0, 1000) : propertyValue.toLowerCase(), false, true, false);
-	            if(propertyValue.getBytes().length > 32000){
-	            	logger.warn("Term is of a size exceeding 32k bytes.  Truncating term that starts with: \"" + propertyValue.substring(0, 100) + "\"");
+	            generator_.addTextField(UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, prop.getValue().getContent().getBytes().length > 32000? prop.getValue().getContent().substring(0, 1000) : prop.getValue().getContent().toLowerCase(), false, true, false);
+	            if(prop.getValue().getContent().getBytes().length > 32000){
+	            	logger.warn("Term is of a size exceeding 32k bytes.  Truncating term that starts with: \"" + prop.getValue().getContent().substring(0, 100) + "\"");
 	            }
 	        }
 
