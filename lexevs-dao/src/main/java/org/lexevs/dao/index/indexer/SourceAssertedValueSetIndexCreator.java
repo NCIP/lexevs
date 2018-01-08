@@ -67,15 +67,14 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 					+ " version = " + reference.getCodingSchemeVersion(), e);
 		}
 		int position = 0;
-		List<Entity> entities = new ArrayList<Entity>();
-		for (List<String> entityUids = valueSetService.getSourceAssertedValueSetEntityUidsforPredicateUid(position,
-				batchSize); entityUids.size() > 0; entityUids = valueSetService
-						.getSourceAssertedValueSetEntityUidsforPredicateUid(position += batchSize, batchSize)) {
-			System.out.println("Entities processed: " + position);
-			entities.addAll(valueSetService.getEntitiesForUidMap(entityUids));
-		}
+		System.out.println("Processing entities");
+		List<String> entityUids = valueSetService.getSourceAssertedValueSetEntityUidsforPredicateUid(position,
+				-1);
+
+		List<Entity> entities = valueSetService.getEntitiesForUidMap(entityUids);
+
 		List<Document> documents = new ArrayList<Document>();
-		System.out.println("Indexing entities");
+		System.out.println("Indexing " + entities.size() + " entities");
 		for (Entity entity : entities) {
 			documents.addAll(entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(),
 					reference.getCodingSchemeVersion(), entity));

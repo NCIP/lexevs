@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -86,15 +88,12 @@ List<Document> returnList = new ArrayList<Document>();
 	
 	private Document indexProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, Entity entity, Property prop) {
 		
-		boolean isPreferred = false;
 		if(prop instanceof Presentation) {
 			Presentation pres = (Presentation)prop;
 			
 			if(pres.isIsPreferred() == null) {
-				isPreferred = false;
-			} else {
-				isPreferred = pres.isIsPreferred();
-			}
+				pres.setIsPreferred (false);
+			} 
 		}
 		
 		return this.addProperty(
@@ -102,24 +101,23 @@ List<Document> returnList = new ArrayList<Document>();
 				codingSchemeUri, 
 				codingSchemeVersion,
 				entity,
-				DaoUtility.getEntityDescriptionText(entity.getEntityDescription()),
-				prop,
-				isPreferred,
-				sourceToString(prop.getSource()), 
-				propertyQualifiersToQualifiers(prop.getPropertyQualifier()));
+				prop);
 	}
 
 
 
-	private Document addProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
-			Entity entity, String entityDescriptionText,
-			Property prop, Boolean isPreferred, String[] sources,
-			Qualifier[] qualifiers) {
+	protected Document addProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
+			Entity entity,
+			Property prop) {
+		 if(entity.getEntityCode() == null || entity.getEntityCodeNamespace() == null) {throw new RuntimeException("Entity code or namespace cannot be null for " + entity.getEntityCode());}
+		 if(prop.getPropertyName() == null || prop.getPropertyType() == null || prop.getValue() == null || prop.getValue().getContent() == null) {
+			 throw new RuntimeException("Property Name or Value cannot be null for entity " + entity.getEntityCode() + ":" + prop.getPropertyId());}
+
 		 String  propertyFieldName = SQLTableConstants.TBLCOL_PROPERTYNAME;
 	       
 	        generator_.startNewDocument(codingSchemeName + "-" + entity.getEntityCode());
 	        generator_.addTextField(UNIQUE_ID + "Tokenized", entity.getEntityCode(), false, true, true);
-	        generator_.addTextField(UNIQUE_ID, entity.getEntityCode(), false, true, false);// must be anyalyzed with KeywordAnalyzer
+	        generator_.addTextField(UNIQUE_ID, entity.getEntityCode(), false, true, false);// must be analyzed with KeywordAnalyzer
 	        generator_.addTextField(UNIQUE_ID + "LC", entity.getEntityCode().toLowerCase(), false, true, false);
 	        
 	        
@@ -170,15 +168,17 @@ List<Document> returnList = new ArrayList<Document>();
 	            }
 	        }
 
-
-	        if (isPreferred != null) {
-	            if (isPreferred.booleanValue()) {
+	        boolean isPreferred = false;
+	        if(prop instanceof Presentation) {
+	        isPreferred = ((Presentation) prop).isIsPreferred();
+	        }
+	        if (isPreferred) {
 	                generator_.addTextField("isPreferred", "T", false, true, false);
 	            } else {
 	                generator_.addTextField("isPreferred", "F", false, true, false);
 	            }
-	        }
-
+	        
+	        Source[] sources = prop.getSource();
 	        if (sources != null && sources.length > 0) {
 	            StringBuffer temp = new StringBuffer();
 	            for (int i = 0; i < sources.length; i++) {
@@ -190,11 +190,12 @@ List<Document> returnList = new ArrayList<Document>();
 	            generator_.addTextField("sources", temp.toString(), false, true, true);
 	        }
 
+	        PropertyQualifier[] qualifiers = prop.getPropertyQualifier();
 	        if (qualifiers != null && qualifiers.length > 0) {
 	            StringBuffer temp = new StringBuffer();
 	            for (int i = 0; i < qualifiers.length; i++) {
-	                temp.append(qualifiers[i].qualifierName + QUALIFIER_NAME_VALUE_SPLIT_TOKEN
-	                        + qualifiers[i].qualifierValue);
+	                temp.append(qualifiers[i].getPropertyQualifierName() + QUALIFIER_NAME_VALUE_SPLIT_TOKEN
+	                        + qualifiers[i].getValue().getContent());
 	                if (i + 1 < qualifiers.length) {
 	                    temp.append(STRING_TOKENIZER_TOKEN);
 	                }
