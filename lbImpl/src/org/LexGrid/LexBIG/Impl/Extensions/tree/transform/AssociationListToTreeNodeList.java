@@ -100,6 +100,7 @@ public class AssociationListToTreeNodeList implements Transformer<AssociationLis
 			node.setCode(concept.getCode());
 			node.setEntityDescription(concept.getEntityDescription().getContent());
 			node.setNamespace(concept.getCodeNamespace());
+			node.setAnonymous(concept.getEntity().getIsAnonymous());
 
 			List<LexEvsTreeNode> pathToRootParents = getTreeNodesForLevel(concept.getSourceOf(), codeMap);
 			for(LexEvsTreeNode parent : pathToRootParents){

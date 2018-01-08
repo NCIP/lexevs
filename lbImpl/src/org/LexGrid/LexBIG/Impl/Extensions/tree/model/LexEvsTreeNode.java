@@ -54,6 +54,9 @@ IS_EXPANDABLE, /** The I s_ no t_ expandable. */
 	
 	/** The namespace. */
 	private String namespace;
+	
+	/** is entity anonymous.  */
+	private boolean isAnonymous;
 
 	/** The path to root parents. */
 	private List<LexEvsTreeNode> pathToRootParents;
@@ -75,6 +78,7 @@ IS_EXPANDABLE, /** The I s_ no t_ expandable. */
 	public LexEvsTreeNode(LexEvsTreeNode letn ) {
 		this.code= letn.code;
 		this.entityDescription= letn.entityDescription;
+		this.isAnonymous = letn.isAnonymous;
 		if(letn.namespace != null){
 		this.namespace = letn.namespace;
 		}
@@ -146,6 +150,24 @@ IS_EXPANDABLE, /** The I s_ no t_ expandable. */
 	 */
 	public void setEntityDescription(String entityDescription) {
 		this.entityDescription = entityDescription;
+	}
+	
+	/**
+	 * is entity anonymous
+	 * 
+	 * @return isAnonymous
+	 */
+	@LgClientSideSafe
+	public boolean isAnonymous() {
+	    return this.isAnonymous;
+	}
+	
+	/**
+	 * Sets if the entity is anonymous
+	 * @param isAnonymous
+	 */
+	public void setAnonymous(boolean isAnonymous) {
+	    this.isAnonymous = isAnonymous;
 	}
 	
 	/**
@@ -234,6 +256,8 @@ IS_EXPANDABLE, /** The I s_ no t_ expandable. */
 			}
 		} else if (!code.equals(other.code)) {
 			return false;
+		} else if (!isAnonymous == (other.isAnonymous)) {
+		    return false;
 		}
 		if (namespace == null) {
 			if (other.namespace != null) {
@@ -254,7 +278,8 @@ IS_EXPANDABLE, /** The I s_ no t_ expandable. */
 		sb.append("\nCode: " + this.code
 			+ "\nEntityDescription: " + this.entityDescription
 			+ "\nNamespace: " + this.namespace
-			+ "\nExpandable Status: " + this.expandableStatus.toString());
+			+ "\nExpandable Status: " + this.expandableStatus.toString()
+			+ "\nisAnonymous " + this.isAnonymous);
 		
 		return sb.toString();
 	}
