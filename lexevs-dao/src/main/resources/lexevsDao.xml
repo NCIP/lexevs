@@ -770,6 +770,7 @@
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="registry" ref="registry"/>
 		<property name="indexServiceManager" ref="indexServiceManager"/>
+		<property name="indexDaoManager" ref="indexDaoManager"/>
 		<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>
 		<property name="lexEvsIndexOperations" ref="defaultLexEvsIndexOperations"/>
 	</bean>
@@ -912,7 +913,7 @@
 		<property name="indexRegistry" ref="multiIndexRegistry"/>
 	</bean>
 	
-	<bean id="luceneValueSetEntityDao" class="org.lexevs.dao.index.access.entity.ValueSetEntityDao">
+	<bean id="luceneValueSetEntityDao" class="org.lexevs.dao.index.lucene.v2013.search.ValueSetEntityDao">
 		<property name="indexRegistry" ref="multiIndexRegistry"/>
 		<property name="luceneIndexTemplate" ref="luceneIndexTemplate"/>
 	</bean>
