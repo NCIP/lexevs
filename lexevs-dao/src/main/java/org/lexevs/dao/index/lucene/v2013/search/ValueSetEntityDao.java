@@ -12,7 +12,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.LeafReaderContext;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.search.Collector;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.LeafCollector;
@@ -37,14 +36,12 @@ public class ValueSetEntityDao extends AbstractBaseLuceneIndexTemplateDao implem
 
 	@Override
 	public String getIndexName(String codingSchemeUri, String version) {
-		// TODO Auto-generated method stub
-		return null;
+		return luceneIndexTemplate.getIndexName();
 	}
 
 	@Override
 	public void deleteDocuments(String codingSchemeUri, String version, Query query) {
-		// TODO Auto-generated method stub
-
+		luceneIndexTemplate.removeDocuments(query);
 	}
 
 	@Override
@@ -128,7 +125,7 @@ public class ValueSetEntityDao extends AbstractBaseLuceneIndexTemplateDao implem
 
 	@Override
 	public Filter getCodingSchemeFilter(String uri, String version) {
-		// TODO Auto-generated method stub
+		System.out.println("Filtering by code system does not apply to source asserted value sets");
 		return null;
 	}
 
@@ -140,13 +137,13 @@ public class ValueSetEntityDao extends AbstractBaseLuceneIndexTemplateDao implem
 	@Override
 	public Document getById(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude, int id) {
 		throw new UnsupportedOperationException(
-				"No CodingScheme References can be used to get lucene documents for value sets");
+				"No CodingScheme References can be used to get lucene documents for source asserted value sets");
 	}
 
 	@Override
 	public List<ScoreDoc> query(Query query, Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude) {
 		throw new UnsupportedOperationException(
-				"No CodingScheme References can be used to get document ids for value sets");
+				"No CodingScheme References can be used to get document ids for source asserted value sets");
 	}
 
 }
