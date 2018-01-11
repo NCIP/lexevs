@@ -75,6 +75,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 
 	@Override
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
+		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
 		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
 				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
 		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
@@ -94,6 +95,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	
 	@Override
 	public List<Entity> getEntitiesForUidMap(List<String> entityUids){
+		if(entityUids == null || entityUids.size() == 0){throw new RuntimeException("Must have entity indentifiers to proceed!");}
 		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
 				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
 		return entityDao.getEntities(csUID, entityUids);

@@ -12,6 +12,7 @@ public class AssertedValueSetIndexLoaderImpl extends AbstractProcessRunner {
     @Override
     protected void doRunProcess(AbsoluteCodingSchemeVersionReference codingSchemeVersion, OntologyFormat format,
             LgMessageDirectorIF md, ProcessStatus status) {
+        if(codingSchemeVersion == null) { throw new RuntimeException("Coding Scheme Reference cannot me null");}
         SourceAssertedValueSetSearchIndexService entityIndexService = 
                 LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
             

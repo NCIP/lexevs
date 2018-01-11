@@ -552,7 +552,7 @@ public abstract class LuceneLoaderCode {
      * 
      * @return the string
      */
-    public String reverseTermsInPropertyValue(String propertyValue){
+    public static String reverseTermsInPropertyValue(String propertyValue){
         StringBuffer buffer = new StringBuffer();
         String[] terms = propertyValue.split(" ");
         for(int i=0;i<terms.length;i++){

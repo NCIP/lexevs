@@ -187,6 +187,7 @@ import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandlerTest;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
+import org.lexevs.dao.index.indexer.SourceAssertedIndexerTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateMultipleIndexesTest;
@@ -528,6 +529,7 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexCreation.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedIndexerTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         mainSuite.addTest(assertedValueSetUpdates);
 
