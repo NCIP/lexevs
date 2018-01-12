@@ -525,10 +525,10 @@ public class AllTestsNormalConfig {
         assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
         mainSuite.addTest(assertedValueSets);
         TestSuite assertedValueSetUpdates = new TestSuite("AssertedValueSetUpdates");
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexCreation.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexCreation.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedIndexerTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));

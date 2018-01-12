@@ -17,11 +17,12 @@ public class AssertedValueSetIndexCreation {
 	}
 
 	@Test
-	public void isIndexCreatedTest() {
+	public void isIndexCreatedTest() throws InterruptedException {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.
 				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		svc.createIndex(ref);
 		assertTrue(svc.doesIndexExist(ref));
+		Thread.sleep(3000);
 	}
 
 }
