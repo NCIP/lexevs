@@ -17,7 +17,7 @@ public class AssertedValueSetIndexCreation {
 	}
 
 	@Test
-	public void test() {
+	public void isIndexCreatedTest() {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.
 				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		svc.createIndex(ref);
