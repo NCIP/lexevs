@@ -37,7 +37,7 @@ public class ValueSetDaoTest {
 
 	@Test
 	@Order(0)
-	public void test() {
+	public void testAssertedValueSetIndexQuery() {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "C37927")), Occur.MUST);
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
