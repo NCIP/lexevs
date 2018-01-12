@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.springframework.core.annotation.Order;
 
 public class ValueSetDaoTest {
 	ValueSetEntityDao vsdao;
@@ -35,6 +36,7 @@ public class ValueSetDaoTest {
 	}
 
 	@Test
+	@Order(0)
 	public void test() {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "C37927")), Occur.MUST);
@@ -60,6 +62,7 @@ public class ValueSetDaoTest {
 	}
 
 	@Test
+	@Order(1)
 	public void testGetIndexName() {
 		String name = vsdao.getIndexName(null, null);
 		assertNotNull(name);
@@ -67,6 +70,7 @@ public class ValueSetDaoTest {
 	}
 
 	@Test
+	@Order(2)
 	public void testDeleteEntityFromIndex() {
 		Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD,
 				LuceneLoaderCode.createCodingSchemeUriVersionCodeNamespaceKey(
@@ -88,5 +92,4 @@ public class ValueSetDaoTest {
 		List<ScoreDoc> docs = vsdao.query(blockJoinQuery);
 		assertTrue(docs.size() == 0);
 	}
-
 }
