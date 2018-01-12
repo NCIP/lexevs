@@ -17,6 +17,7 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 
 public class AssertedValueSetEntityIndexer extends LuceneLoaderCodeIndexer implements EntityIndexer {
+	
 
 	public List<Document> indexEntity(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, Entity entity) {
 List<Document> returnList = new ArrayList<Document>();
