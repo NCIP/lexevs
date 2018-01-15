@@ -929,7 +929,7 @@
 	class="org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer" parent="commonIndexLoaderCodeIndexer">
 			<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="systemVariables" ref="systemVariables"/> 
-		<property name="luceneEntityDao" ref="luceneValueSetEntityDao"/>
+		<property name="luceneEntityDao" ref="luceneIndexEntityDao"/>
 	</bean>
 	
 	<bean id="abstractDirectoryFactory"

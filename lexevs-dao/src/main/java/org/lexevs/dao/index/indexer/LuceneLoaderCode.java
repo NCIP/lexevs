@@ -42,6 +42,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.util.AttributeFactory;
+import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
 
@@ -584,7 +585,7 @@ public abstract class LuceneLoaderCode {
 		this.luceneEntityDao = luceneEntityDao;
 	}
 
-	public LuceneEntityDao getLuceneEntityDao() {
+	public EntityDao getLuceneEntityDao() {
 		return luceneEntityDao;
 	}
 	

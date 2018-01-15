@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
@@ -13,11 +13,14 @@ import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.lexevs.dao.index.access.IndexDaoManager;
+import org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer;
 import org.lexevs.dao.index.indexer.EntityIndexer;
 import org.lexevs.dao.index.indexer.IndexCreator;
-import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.dao.index.indexer.IndexCreator.IndexOption;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
+import org.lexevs.dao.index.lucene.v2013.search.ValueSetEntityDao;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
+import org.lexevs.dao.indexer.utility.Utility;
 
 public class SourceAssertedValueSetSearchIndexService implements SearchIndexService {
 
@@ -34,10 +37,19 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 
 	@Override
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
+		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+		ref.setCodingSchemeURN(codingSchemeUri);
+		ref.setCodingSchemeVersion(codingSchemeVersion);
+		String codingSchemeName = null;
+		try {
+			codingSchemeName = Utility.getIndexName(ref);
+		} catch (LBParameterException e) {
+			 throw new RuntimeException("Index Name for value set index source could not be resolved");
+		}
 		List<Document> docs = 
-				entityIndexer.indexEntity(codingSchemeUri, codingSchemeVersion, entity);
+				((AssertedValueSetEntityIndexer)entityIndexer).indexEntity(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity);
 			
-			indexDaoManager.getSearchDao().
+			indexDaoManager.getValueSetEntityDao(codingSchemeUri, codingSchemeVersion).
 				addDocuments(codingSchemeUri, codingSchemeVersion, docs, entityIndexer.getAnalyzer());
 	}
 
@@ -67,7 +79,7 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 			LuceneLoaderCode.createCodingSchemeUriVersionKey(
 					codingSchemeUri, codingSchemeVersion));
 		
-		indexDaoManager.getSearchDao().
+		indexDaoManager.getValueSetEntityDao(codingSchemeUri, codingSchemeVersion).
 			deleteDocuments(
 				codingSchemeUri, 
 				codingSchemeVersion, 
@@ -76,12 +88,14 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 
 	@Override
 	public boolean doesIndexExist(AbsoluteCodingSchemeVersionReference reference) {
-		if (null != indexDaoManager
-				.getValueSetEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion())
-				.getLuceneIndexTemplate().getIndexName()) {
-			return true;
-		} else {
+		ValueSetEntityDao vsDao = indexDaoManager
+				.getValueSetEntityDao(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+		if (null == vsDao
+				.getLuceneIndexTemplate().getIndexName() || ((ValueSetEntityDao)vsDao).maxDocs() == 0) {
+
 			return false;
+		} else {
+			return true;
 		}
 	}
 

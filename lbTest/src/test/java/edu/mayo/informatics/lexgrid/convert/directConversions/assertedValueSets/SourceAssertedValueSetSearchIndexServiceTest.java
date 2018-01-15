@@ -1,5 +1,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -76,6 +77,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		props.addProperty(prop3);
 		Property prop4 = new Property();
 		prop4.setPropertyName("instruction");
+		prop4.setPropertyType(PropertyType.GENERIC.name());
 		prop4.setValue(Constructors.createText("I'm an instruction property"));
 		props.addProperty(prop4);
 		Property prop5 = new Property();
@@ -164,6 +166,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		props.addProperty(prop3);
 		Property prop4 = new Property();
 		prop4.setPropertyName("instruction");
+		prop4.setPropertyType(PropertyType.GENERIC.name());
 		prop4.setValue(Constructors.createText("tell what to do"));
 		props.addProperty(prop4);
 		Property prop5 = new Property();
@@ -285,6 +288,9 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	public static void dropIndexTest() {
 		service.dropIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+		boolean doesExist = service.doesIndexExist(Constructors.
+				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+		assertFalse(doesExist);
 	}
 
 }
