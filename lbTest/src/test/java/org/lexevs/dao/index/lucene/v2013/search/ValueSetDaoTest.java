@@ -53,7 +53,7 @@ public class ValueSetDaoTest {
 		List<ScoreDoc> docs = vsdao.query(blockJoinQuery);
 		assertNotNull(docs);
 		ScoreDoc doc = docs.get(0);
-		assertNotNull(docs);
+		assertNotNull(doc);
 		Document document = vsdao.getById(doc.doc);
 		assertNotNull(document);
 		assertTrue(document.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));

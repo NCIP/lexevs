@@ -213,6 +213,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.LoadAndUpdateSourceAssertedValueSetsTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.NCItSourceAssertedValueSetUpdateServiceTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.SourceAssertedValueSetSearchIndexServiceTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.SourceAssertedValueSetTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
@@ -528,6 +529,7 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchIndexServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexCreation.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedIndexerTest.class));
