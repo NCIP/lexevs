@@ -842,6 +842,7 @@
 		<property name="indexCreator" ref="assertedValueSetIndexCreator"/>
 		<property name="indexDaoManager" ref="indexDaoManager" />
 		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
+		<property name="entityIndexer" ref="assertedValueSetIndexer"/>
 	</bean>
 	
 	<bean id="luceneMetadataIndexService" 
@@ -924,7 +925,12 @@
 		<property name="luceneEntityDao" ref="luceneIndexEntityDao"/>
 	</bean>
 	
-	<bean id="assertedValueSetIndexer" class="org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer"/>
+	<bean id="assertedValueSetIndexer" 
+	class="org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer" parent="commonIndexLoaderCodeIndexer">
+			<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="systemVariables" ref="systemVariables"/> 
+		<property name="luceneEntityDao" ref="luceneIndexEntityDao"/>
+	</bean>
 	
 	<bean id="abstractDirectoryFactory"
 		class="org.lexevs.dao.index.lucenesupport.LuceneDirectoryFactory" abstract="true"/>

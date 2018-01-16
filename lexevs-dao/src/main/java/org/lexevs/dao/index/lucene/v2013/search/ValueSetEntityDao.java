@@ -145,5 +145,10 @@ public class ValueSetEntityDao extends AbstractBaseLuceneIndexTemplateDao implem
 		throw new UnsupportedOperationException(
 				"No CodingScheme References can be used to get document ids for source asserted value sets");
 	}
+	
+	
+	public int maxDocs() {
+		return luceneIndexTemplate.getMaxDoc();
+	}
 
 }
