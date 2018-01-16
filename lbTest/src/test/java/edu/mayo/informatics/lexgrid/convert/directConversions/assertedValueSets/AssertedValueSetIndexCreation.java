@@ -1,6 +1,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Utility.Constructors;
@@ -17,11 +17,12 @@ public class AssertedValueSetIndexCreation {
 	}
 
 	@Test
-	public void test() {
+	public void isIndexCreatedTest() throws InterruptedException {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.
 				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		svc.createIndex(ref);
 		assertTrue(svc.doesIndexExist(ref));
+		Thread.sleep(3000);
 	}
 
 }

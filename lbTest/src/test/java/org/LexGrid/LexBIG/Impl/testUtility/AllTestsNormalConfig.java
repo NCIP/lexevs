@@ -188,6 +188,7 @@ import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 import org.lexevs.dao.index.indexer.SourceAssertedIndexerTest;
+import org.lexevs.dao.index.lucene.v2013.search.ValueSetDaoTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateMultipleIndexesTest;
@@ -527,9 +528,10 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexCreation.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedIndexerTest.class));
+        assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         mainSuite.addTest(assertedValueSetUpdates);
 
@@ -544,7 +546,8 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
 
-        //*******Always run this last, it breaks a lot of things that are created in ServiceHolder 
+        //*******Always run this last and just before the JVM exits since ***********
+        //*******it breaks a lot of things that are created in ServiceHolder********* 
         mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
         // $JUnit-END$
 

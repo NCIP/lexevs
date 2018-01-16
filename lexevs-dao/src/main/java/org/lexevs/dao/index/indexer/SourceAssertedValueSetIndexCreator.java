@@ -12,6 +12,7 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.entity.EntityDao;
+import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.indexer.utility.Utility;
 
 public class SourceAssertedValueSetIndexCreator implements IndexCreator {
@@ -56,7 +57,7 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		valueSetService.init(new AssertedValueSetParameters.Builder(reference.getCodingSchemeVersion())
 				.codingSchemeURI(reference.getCodingSchemeURN()).build());
 
-		EntityDao entityIndexService = indexDaoManager.getValueSetEntityDao(reference.getCodingSchemeURN(),
+		SearchDao entityIndexService = indexDaoManager.getValueSetEntityDao(reference.getCodingSchemeURN(),
 				reference.getCodingSchemeVersion());
 
 		String indexName;

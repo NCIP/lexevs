@@ -29,7 +29,7 @@ private AssertedValueSetService svc;
 	}
 
 	@Test
-	public void test() {
+	public void testSupportServiceAVS() {
 		List<String> uids = svc.getSourceAssertedValueSetEntityUidsforPredicateUid(0, 2);
 		assertNotNull(uids);
 		assertTrue(uids.size() > 0);
