@@ -39,6 +39,8 @@ public interface SearchExtension extends GenericExtension {
 	public enum MatchAlgorithm {
 		PRESENTATION_EXACT, 
 		PRESENTATION_CONTAINS,
+		PROPERTY_EXACT,
+		PROPERTY_CONTAINS,
 		CODE_EXACT,		
 		LUCENE
 	}

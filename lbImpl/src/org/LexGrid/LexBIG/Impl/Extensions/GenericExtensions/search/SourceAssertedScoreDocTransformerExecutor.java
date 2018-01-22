@@ -7,11 +7,16 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.apache.lucene.search.ScoreDoc;
 
 public class SourceAssertedScoreDocTransformerExecutor {
-    
+
     public ResolvedConceptReferenceList transform(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
-            ScoreDocTransformer transformer, Iterable<ScoreDoc> items) {
-                return null;
-        
+            SourceAssertedScoreDocTransformer transformer, Iterable<ScoreDoc> items) {
+        ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
+        for (ScoreDoc item : items) {
+            ProxyProtectedScoreDocWrapper wrapper = new ProxyProtectedScoreDocWrapper();
+            wrapper.setScoreDoc(item);
+            list.addResolvedConceptReference(transformer.doTransform(codeSystemsToInclude, wrapper));
+        }
+        return list;
     }
 
 }

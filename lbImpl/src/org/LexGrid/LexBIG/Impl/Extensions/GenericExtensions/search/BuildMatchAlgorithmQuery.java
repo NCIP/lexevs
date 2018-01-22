@@ -30,41 +30,54 @@ public class BuildMatchAlgorithmQuery {
     private static final Term BASE_QUERY = new Term("propertyType", "presentation");
     private static final Term PREFERRED = new Term("isPreferred","T");
     
-    private BooleanQuery matchAllDocs;
-    private ToParentBlockJoinQuery codeExact;
-    private BooleanQuery presentationExact;
-    private BooleanQuery presentationContains;
-    private BooleanQuery propertyContains;
-    private BooleanQuery lucene;
-    private String text;
+    private final ToParentBlockJoinQuery matchAllDocs;
+    private final ToParentBlockJoinQuery codeExact;
+    private final ToParentBlockJoinQuery presentationExact;
+    private final ToParentBlockJoinQuery presentationContains;
+    private final ToParentBlockJoinQuery propertyContains;
+    private final ToParentBlockJoinQuery lucene;
     
     
-    private BuildMatchAlgorithmQuery(String text) {
-        this.text = text;
+    private BuildMatchAlgorithmQuery(Builder build) {
+        this.matchAllDocs = build.getMatchAllDocs();
+        this.codeExact = build.getCodeExact();
+        this.presentationExact = build.getPresentationExact();
+        this.presentationContains = build.getPresentationContains();
+        this.propertyContains = build.getPropertyContains();
+        this.lucene = build.getLucene();
     }
     
-    public class Builder{
-        private BuildMatchAlgorithmQuery algorithmMatchBuilder;
+    public static class Builder{
+        private ToParentBlockJoinQuery matchAllDocs;
+        private ToParentBlockJoinQuery codeExact;
+        private ToParentBlockJoinQuery presentationExact;
+        private ToParentBlockJoinQuery presentationContains;
+        private ToParentBlockJoinQuery propertyContains;
+        private ToParentBlockJoinQuery lucene;
         private boolean isAnon;
         private boolean isInActive;
+        private String matchText;
         
-        public Builder(String text, boolean includeAnonymous, boolean isInActive) {
+        public Builder(String matchText, boolean includeAnonymous, boolean isInActive) {
             isAnon = includeAnonymous;
             this.isInActive = isInActive;
-            algorithmMatchBuilder = new BuildMatchAlgorithmQuery(text);
         }
         
         public BuildMatchAlgorithmQuery buildMatchQuery() {
+            return new BuildMatchAlgorithmQuery(this);
+        }
+        
+        public Builder matchAllDocs() {
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new MatchAllDocsQuery(), Occur.MUST);
-            algorithmMatchBuilder.setMatchAllDocs(queryBuilder.build());
-            return algorithmMatchBuilder;
+            matchAllDocs = finalizeQuery(queryBuilder, queryBuilder.build());
+            return this;
         }
         
         public Builder codeExact() {
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
-            queryBuilder.add(new TermQuery(new Term("code",text)),Occur.MUST);
-            algorithmMatchBuilder.setCodeExact(finalizeQuery(queryBuilder, queryBuilder.build()));
+            queryBuilder.add(new TermQuery(new Term("code",matchText)),Occur.MUST);
+            codeExact = finalizeQuery(queryBuilder, queryBuilder.build());
             return this;
         }
         
@@ -72,8 +85,8 @@ public class BuildMatchAlgorithmQuery {
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new TermQuery(BASE_QUERY), Occur.MUST);
             queryBuilder.add(new TermQuery(new Term(
-                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text.toLowerCase())), Occur.MUST);
-            algorithmMatchBuilder.setPresentationExact(queryBuilder.build());
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText.toLowerCase())), Occur.MUST);
+            presentationExact = finalizeQuery(queryBuilder, queryBuilder.build());
             return this;
         }
         
@@ -81,12 +94,12 @@ public class BuildMatchAlgorithmQuery {
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new TermQuery(BASE_QUERY), Occur.MUST);
             queryBuilder.add(new TermQuery(PREFERRED), Occur.SHOULD);
-           text = text.toLowerCase();
+           matchText = matchText.toLowerCase();
 
             List<String> tokens;
             Analyzer tokenAnalyzer = new WhitespaceAnalyzer();
             try {
-                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, text);
+                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, matchText);
             } catch (IOException e) {
                throw new RuntimeException("Tokenizing query text failed", e);
             }
@@ -94,25 +107,25 @@ public class BuildMatchAlgorithmQuery {
             for(String token : tokens){
                 queryBuilder.add(new PrefixQuery(new Term(LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, token)), Occur.MUST);
             }
-            text = QueryParser.escape(text);
+            matchText = QueryParser.escape(matchText);
             try {
-                queryBuilder.add(parser.parse(text), Occur.SHOULD);
+                queryBuilder.add(parser.parse(matchText), Occur.SHOULD);
             } catch (ParseException e1) {
-                throw new RuntimeException("Parser failed parsing text: " + text);
+                throw new RuntimeException("Parser failed parsing matchText: " + matchText);
             }
-            queryBuilder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
-            algorithmMatchBuilder.setPresentationContains(queryBuilder.build());
+            queryBuilder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText)), Occur.SHOULD);
+            presentationContains =finalizeQuery(queryBuilder, queryBuilder.build());
             return this;
         }
         
         public Builder propertyContains() {
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
-           text = text.toLowerCase();
+           matchText = matchText.toLowerCase();
 
             List<String> tokens;
             Analyzer tokenAnalyzer = new WhitespaceAnalyzer();
             try {
-                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, text);
+                tokens = tokenize(tokenAnalyzer, LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, matchText);
             } catch (IOException e) {
                throw new RuntimeException("Tokenizing query text failed", e);
             }
@@ -120,14 +133,14 @@ public class BuildMatchAlgorithmQuery {
             for(String token : tokens){
                 queryBuilder.add(new PrefixQuery(new Term(LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, token)), Occur.MUST);
             }
-            text = QueryParser.escape(text);
+            matchText = QueryParser.escape(matchText);
             try {
-                queryBuilder.add(parser.parse(text), Occur.SHOULD);
+                queryBuilder.add(parser.parse(matchText), Occur.SHOULD);
             } catch (ParseException e1) {
-                throw new RuntimeException("Parser failed parsing text: " + text);
+                throw new RuntimeException("Parser failed parsing matchText: " + matchText);
             }
-            queryBuilder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,text)), Occur.SHOULD);
-            algorithmMatchBuilder.setPropertyContains(queryBuilder.build());
+            queryBuilder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText)), Occur.SHOULD);
+            propertyContains = finalizeQuery(queryBuilder, queryBuilder.build());
             return this;
         }
         
@@ -138,15 +151,47 @@ public class BuildMatchAlgorithmQuery {
             QueryParser luceneParser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             Query query;
             try {
-                query = luceneParser.parse(text);
+                query = luceneParser.parse(matchText);
             } catch (ParseException e) {
-                throw new RuntimeException("Parser failed parsing text: " + text);
+                throw new RuntimeException("Parser failed parsing matchText: " + matchText);
             }
             queryBuilder.add(query, Occur.MUST);
-            algorithmMatchBuilder.setLucene(queryBuilder.build());
+            lucene = finalizeQuery(queryBuilder, queryBuilder.build());
             return this;
         }
         
+        public String getMatchText() {
+            return matchText;
+        }
+
+        public void setMatchText(String matchText) {
+            this.matchText = matchText;
+        }
+
+        public ToParentBlockJoinQuery getMatchAllDocs() {
+            return matchAllDocs;
+        }
+
+        public ToParentBlockJoinQuery getCodeExact() {
+            return codeExact;
+        }
+
+        public ToParentBlockJoinQuery getPresentationExact() {
+            return presentationExact;
+        }
+
+        public ToParentBlockJoinQuery getPresentationContains() {
+            return presentationContains;
+        }
+
+        public ToParentBlockJoinQuery getPropertyContains() {
+            return propertyContains;
+        }
+
+        public ToParentBlockJoinQuery getLucene() {
+            return lucene;
+        }
+
         private List<String> tokenize(Analyzer analyzer, String field, String keywords) throws IOException  {
             List<String> result = new ArrayList<String>();
             StringReader reader = new StringReader(keywords);
@@ -210,34 +255,13 @@ public class BuildMatchAlgorithmQuery {
             return getParentFilteredBlockJoinQuery(builder, query);
         }
 
-    }
-    
+        public void propertyExact() {
+            // TODO Auto-generated method stub
+            
+        }
 
-    
-    public void setMatchAllDocs(BooleanQuery query) {
-      matchAllDocs = query;
     }
-    
-    private void setCodeExact(ToParentBlockJoinQuery query) {
-        codeExact = query;
-    }
-
-    private void setPresentationExact(BooleanQuery query) {
-        presentationExact = query;
-    }
-    
-    private void setPresentationContains(BooleanQuery query) {
-        presentationContains = query;
-    }
-    
-    public void setPropertyContains(BooleanQuery query) {
-        propertyContains = query;
-    }
-    
-    private void setLucene(BooleanQuery query) {
-        lucene = query;
-    }
-    
+   
     public Query getQuery() {
         return
             codeExact != null?codeExact:
@@ -247,4 +271,6 @@ public class BuildMatchAlgorithmQuery {
             lucene != null?lucene:
             matchAllDocs;
     }
+
+
 }

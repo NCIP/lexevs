@@ -1,5 +1,7 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -11,6 +13,16 @@ import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SourceAssertedValueSetSearchExtension;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.PrefixQuery;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 
 public class SourceAssertedValueSetSearchExtensionImpl extends AbstractExtendable implements SourceAssertedValueSetSearchExtension {
 
@@ -62,8 +74,51 @@ public class SourceAssertedValueSetSearchExtensionImpl extends AbstractExtendabl
             Set<CodingSchemeReference> sourceAssertedValueSetSchemeReferences,
             Set<CodingSchemeReference> resolvedValueSets, MatchAlgorithm matchAlgorithm, boolean includeAnonymous,
             boolean includeInactive) throws LBParameterException {
-        // TODO Auto-generated method stub
-        return null;
+        
+        BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder(text, includeAnonymous, includeInactive);
+        switch(matchAlgorithm){
+        
+        case CODE_EXACT:
+        builder.codeExact();
+        return new LexEVSSourceAssertedSearchServices(builder.buildMatchQuery()).
+                getQueryResults(LexEVSSourceAssertedSearchServices.
+                        resolveCodeSystemReferences(resolvedValueSets));
+        
+        case PRESENTATION_EXACT:
+            builder.presentationExact();
+            return new LexEVSSourceAssertedSearchServices(builder.buildMatchQuery()).
+                    getQueryResults(LexEVSSourceAssertedSearchServices.
+                            resolveCodeSystemReferences(resolvedValueSets));   
+
+        case PRESENTATION_CONTAINS:
+            builder.presentationContains();
+            return new LexEVSSourceAssertedSearchServices(builder.buildMatchQuery()).
+                    getQueryResults(LexEVSSourceAssertedSearchServices.
+                            resolveCodeSystemReferences(resolvedValueSets));
+            
+        case PROPERTY_EXACT:
+            builder.propertyExact();
+            return new LexEVSSourceAssertedSearchServices(builder.buildMatchQuery()).
+                    getQueryResults(LexEVSSourceAssertedSearchServices.
+                            resolveCodeSystemReferences(resolvedValueSets));
+            
+        case PROPERTY_CONTAINS:
+            builder.propertyContains();
+            return new LexEVSSourceAssertedSearchServices(builder.buildMatchQuery()).
+                    getQueryResults(LexEVSSourceAssertedSearchServices.
+                            resolveCodeSystemReferences(resolvedValueSets));
+          
+        case LUCENE:
+            builder.lucene();
+            return new LexEVSSourceAssertedSearchServices(builder.buildMatchQuery()).
+                    getQueryResults(LexEVSSourceAssertedSearchServices.
+                            resolveCodeSystemReferences(resolvedValueSets));
+        default:
+            builder.matchAllDocs();
+            return new LexEVSSourceAssertedSearchServices(builder.buildMatchQuery()).
+                    getQueryResults(LexEVSSourceAssertedSearchServices.
+                            resolveCodeSystemReferences(resolvedValueSets));
+        }
     }
 
     @Override
