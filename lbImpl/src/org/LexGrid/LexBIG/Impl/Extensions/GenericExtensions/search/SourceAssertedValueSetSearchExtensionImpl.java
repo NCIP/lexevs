@@ -5,13 +5,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SourceAssertedValueSetSearchExtension;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.core.WhitespaceAnalyzer;
@@ -137,6 +141,21 @@ public class SourceAssertedValueSetSearchExtensionImpl extends AbstractExtendabl
         ed.setVersion("1.0");
 
         return ed;
+    }
+    
+    public static void main(String ...args) {
+        LexBIGService svc = LexBIGServiceImpl.defaultInstance();
+        try {
+            SourceAssertedValueSetSearchExtensionImpl ext = (SourceAssertedValueSetSearchExtensionImpl)svc.getGenericExtension("AssertedValueSetSearchExtension");
+
+            ResolvedConceptReferencesIterator itr = ext.search("C48323", null, null, MatchAlgorithm.CODE_EXACT, false, false);
+            itr.hasNext();
+            ResolvedConceptReference ref = itr.next();
+           System.out.println(ref.getEntityDescription().getContent());
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
 }

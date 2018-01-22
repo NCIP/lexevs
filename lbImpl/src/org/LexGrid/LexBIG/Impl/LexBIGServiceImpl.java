@@ -56,6 +56,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchExtensionImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAssertedValueSetSearchExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.supplement.SupplementExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ContainsSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.DoubleMetaphoneSearch;
@@ -687,6 +688,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SupplementExtensionImpl().register();
         new HierarchyCheckingPostProcessor().register();
         new SearchExtensionImpl().register();
+        new SourceAssertedValueSetSearchExtensionImpl().register();
         
         //Tree Extension (Deprecated)
         ExtensionDescription treeExt = new ExtensionDescription();

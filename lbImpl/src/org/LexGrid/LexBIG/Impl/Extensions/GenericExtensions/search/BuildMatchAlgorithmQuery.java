@@ -61,6 +61,7 @@ public class BuildMatchAlgorithmQuery {
         public Builder(String matchText, boolean includeAnonymous, boolean isInActive) {
             isAnon = includeAnonymous;
             this.isInActive = isInActive;
+            this.matchText = matchText;
         }
         
         public BuildMatchAlgorithmQuery buildMatchQuery() {
