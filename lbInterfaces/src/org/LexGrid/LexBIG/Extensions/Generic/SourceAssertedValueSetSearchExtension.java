@@ -30,7 +30,7 @@ public interface SourceAssertedValueSetSearchExtension extends SearchExtension {
 	 */
 	public ResolvedConceptReferencesIterator search(
 			String text, 
-			AbsoluteCodingSchemeVersionReference  codingScheme,
+			CodingSchemeReference  codingScheme,
 			MatchAlgorithm matchAlgorithm) throws LBParameterException;
 	
 	/**

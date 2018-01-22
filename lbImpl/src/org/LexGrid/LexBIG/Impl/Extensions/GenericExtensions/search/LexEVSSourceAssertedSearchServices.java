@@ -29,8 +29,8 @@ public class LexEVSSourceAssertedSearchServices {
         return new SourceAssertedValueSetScoreDocIteratorWrapper(codeSystemToInclude, scoreDocs);
     }
     
-    public static Set<AbsoluteCodingSchemeVersionReference> 
-    resolveCodeSystemReferences(Set<CodingSchemeReference> references) throws LBParameterException{
+    public static Set<AbsoluteCodingSchemeVersionReference> resolveCodeSystemReferences(
+            Set<CodingSchemeReference> references) throws LBParameterException{
     if(CollectionUtils.isEmpty(references)){
         return null;
     }

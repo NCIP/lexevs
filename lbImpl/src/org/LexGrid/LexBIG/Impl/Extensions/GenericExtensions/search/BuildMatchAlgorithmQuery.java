@@ -34,6 +34,7 @@ public class BuildMatchAlgorithmQuery {
     private final ToParentBlockJoinQuery codeExact;
     private final ToParentBlockJoinQuery presentationExact;
     private final ToParentBlockJoinQuery presentationContains;
+    private final ToParentBlockJoinQuery propertyExact;
     private final ToParentBlockJoinQuery propertyContains;
     private final ToParentBlockJoinQuery lucene;
     
@@ -43,6 +44,7 @@ public class BuildMatchAlgorithmQuery {
         this.codeExact = build.getCodeExact();
         this.presentationExact = build.getPresentationExact();
         this.presentationContains = build.getPresentationContains();
+        this.propertyExact = build.getPropertyExact();
         this.propertyContains = build.getPropertyContains();
         this.lucene = build.getLucene();
     }
@@ -52,6 +54,7 @@ public class BuildMatchAlgorithmQuery {
         private ToParentBlockJoinQuery codeExact;
         private ToParentBlockJoinQuery presentationExact;
         private ToParentBlockJoinQuery presentationContains;
+        private ToParentBlockJoinQuery propertyExact;
         private ToParentBlockJoinQuery propertyContains;
         private ToParentBlockJoinQuery lucene;
         private boolean isAnon;
@@ -145,6 +148,15 @@ public class BuildMatchAlgorithmQuery {
             return this;
         }
         
+
+        public Builder propertyExact() {
+                BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
+                queryBuilder.add(new TermQuery(new Term(
+                        LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText.toLowerCase())), Occur.MUST);
+                propertyExact = finalizeQuery(queryBuilder, queryBuilder.build());
+                return this;
+        }
+        
         public Builder lucene() {
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new TermQuery(BASE_QUERY), Occur.MUST);
@@ -183,6 +195,10 @@ public class BuildMatchAlgorithmQuery {
 
         public ToParentBlockJoinQuery getPresentationContains() {
             return presentationContains;
+        }
+        
+        public ToParentBlockJoinQuery getPropertyExact() {
+            return propertyExact;
         }
 
         public ToParentBlockJoinQuery getPropertyContains() {
@@ -256,11 +272,6 @@ public class BuildMatchAlgorithmQuery {
             return getParentFilteredBlockJoinQuery(builder, query);
         }
 
-        public void propertyExact() {
-            // TODO Auto-generated method stub
-            
-        }
-
     }
    
     public Query getQuery() {
@@ -268,6 +279,7 @@ public class BuildMatchAlgorithmQuery {
             codeExact != null?codeExact:
             presentationExact != null?presentationExact:
             presentationContains != null?presentationContains:
+            propertyExact != null?propertyExact:
             propertyContains != null?propertyContains:
             lucene != null?lucene:
             matchAllDocs;
