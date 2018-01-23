@@ -24,5 +24,4 @@ public class AssertedValueSetIndexCreation {
 		assertTrue(svc.doesIndexExist(ref));
 		Thread.sleep(3000);
 	}
-
 }
