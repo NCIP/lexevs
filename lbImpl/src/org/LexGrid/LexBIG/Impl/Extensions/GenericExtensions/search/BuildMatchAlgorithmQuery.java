@@ -59,6 +59,7 @@ public class BuildMatchAlgorithmQuery {
         private ToParentBlockJoinQuery lucene;
         private boolean isAnon;
         private boolean isInActive;
+        private boolean querySelected;
         private String matchText;
         
         public Builder(String matchText, boolean includeAnonymous, boolean isInActive) {
@@ -72,29 +73,36 @@ public class BuildMatchAlgorithmQuery {
         }
         
         public Builder matchAllDocs() {
+            if(querySelected) {return this;}
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new MatchAllDocsQuery(), Occur.MUST);
             matchAllDocs = finalizeQuery(queryBuilder, queryBuilder.build());
+            querySelected = true;
             return this;
         }
         
         public Builder codeExact() {
+            if(querySelected) {return this;}
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
-            queryBuilder.add(new TermQuery(new Term("code",matchText)),Occur.MUST);
+            queryBuilder.add(new TermQuery(new Term("code", matchText)),Occur.MUST);
             codeExact = finalizeQuery(queryBuilder, queryBuilder.build());
+            querySelected = true;
             return this;
         }
         
         public Builder presentationExact() {
+            if(querySelected) {return this;}
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new TermQuery(BASE_QUERY), Occur.MUST);
             queryBuilder.add(new TermQuery(new Term(
-                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText.toLowerCase())), Occur.MUST);
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, matchText.toLowerCase())), Occur.MUST);
             presentationExact = finalizeQuery(queryBuilder, queryBuilder.build());
+            querySelected = true;
             return this;
         }
         
         public Builder presentationContains() {
+            if(querySelected) {return this;}
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new TermQuery(BASE_QUERY), Occur.MUST);
             queryBuilder.add(new TermQuery(PREFERRED), Occur.SHOULD);
@@ -117,12 +125,16 @@ public class BuildMatchAlgorithmQuery {
             } catch (ParseException e1) {
                 throw new RuntimeException("Parser failed parsing matchText: " + matchText);
             }
-            queryBuilder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText)), Occur.SHOULD);
-            presentationContains =finalizeQuery(queryBuilder, queryBuilder.build());
+            queryBuilder.add(new TermQuery(
+                    new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,
+                    matchText)), Occur.SHOULD);
+            presentationContains = finalizeQuery(queryBuilder, queryBuilder.build());
+            querySelected = true;
             return this;
         }
         
         public Builder propertyContains() {
+            if(querySelected) {return this;}
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
            matchText = matchText.toLowerCase();
 
@@ -135,7 +147,9 @@ public class BuildMatchAlgorithmQuery {
             }
             QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             for(String token : tokens){
-                queryBuilder.add(new PrefixQuery(new Term(LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, token)), Occur.MUST);
+                queryBuilder.add(new PrefixQuery(new Term(
+                        LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, token)), 
+                        Occur.MUST);
             }
             matchText = QueryParser.escape(matchText);
             try {
@@ -143,21 +157,28 @@ public class BuildMatchAlgorithmQuery {
             } catch (ParseException e1) {
                 throw new RuntimeException("Parser failed parsing matchText: " + matchText);
             }
-            queryBuilder.add(new TermQuery(new Term(LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText)), Occur.SHOULD);
+            queryBuilder.add(new TermQuery(new Term(
+                    LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, matchText)), 
+                    Occur.SHOULD);
             propertyContains = finalizeQuery(queryBuilder, queryBuilder.build());
+            querySelected = true;
             return this;
         }
         
 
         public Builder propertyExact() {
+            if(querySelected) {return this;}
                 BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
                 queryBuilder.add(new TermQuery(new Term(
-                        LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD,matchText.toLowerCase())), Occur.MUST);
+                        LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, matchText.toLowerCase())), 
+                        Occur.MUST);
                 propertyExact = finalizeQuery(queryBuilder, queryBuilder.build());
+                querySelected = true;
                 return this;
         }
         
         public Builder lucene() {
+            if(querySelected) {return this;}
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new TermQuery(BASE_QUERY), Occur.MUST);
             queryBuilder.add(new TermQuery(PREFERRED), Occur.SHOULD);
@@ -170,6 +191,7 @@ public class BuildMatchAlgorithmQuery {
             }
             queryBuilder.add(query, Occur.MUST);
             lucene = finalizeQuery(queryBuilder, queryBuilder.build());
+            querySelected = true;
             return this;
         }
         
@@ -239,7 +261,7 @@ public class BuildMatchAlgorithmQuery {
         private void setActiveAndAnonymousQueries(BooleanQuery.Builder builder, Query currentQuery) {
             if(! isAnon || ! isInActive){
 
-                builder.add(currentQuery, Occur.MUST);
+//               builder.add(currentQuery, Occur.MUST);
                 
                 if(! isAnon){
                    addAnonymousQuery(builder);
@@ -251,7 +273,7 @@ public class BuildMatchAlgorithmQuery {
         }
         
         private ToParentBlockJoinQuery getParentFilteredBlockJoinQuery(BooleanQuery.Builder builder, Query query){
-            builder.add(query, Occur.MUST);
+ //           builder.add(query, Occur.MUST);
             builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
 
             query = builder.build();

@@ -17,36 +17,49 @@ import org.springframework.util.CollectionUtils;
 public class LexEVSSourceAssertedSearchServices {
     BuildMatchAlgorithmQuery queryBuilder;
     LexEvsServiceLocator locator;
+
     public LexEVSSourceAssertedSearchServices(BuildMatchAlgorithmQuery queryBuilder) {
         this.queryBuilder = queryBuilder;
         locator = LexEvsServiceLocator.getInstance();
     }
-    
+
     public ResolvedConceptReferencesIterator getQueryResults(
-            Set<AbsoluteCodingSchemeVersionReference> codeSystemToInclude){
-        List<ScoreDoc> scoreDocs = locator.getIndexServiceManager().getAssertedValueSetIndexService().
-        query(codeSystemToInclude, queryBuilder.getQuery());
-        return new SourceAssertedValueSetScoreDocIteratorWrapper(codeSystemToInclude, scoreDocs);
+            Set<AbsoluteCodingSchemeVersionReference> codeSystemToInclude) {
+        List<ScoreDoc> scoreDocs = locator.getIndexServiceManager().
+                getAssertedValueSetIndexService()
+                .query(codeSystemToInclude, queryBuilder.getQuery());
+        return new SourceAssertedValueSetScoreDocIteratorWrapper(
+                codeSystemToInclude, scoreDocs);
     }
-    
+
     public static Set<AbsoluteCodingSchemeVersionReference> resolveCodeSystemReferences(
-            Set<CodingSchemeReference> references) throws LBParameterException{
-    if(CollectionUtils.isEmpty(references)){
-        return null;
-    }
-    
-    Set<AbsoluteCodingSchemeVersionReference> returnSet = new HashSet<AbsoluteCodingSchemeVersionReference>();
-    ConcurrentMetaData metadata = ConcurrentMetaData.getInstance();
-    for(CodingSchemeReference ref : references){
-        CodingSchemeMetaData csm = metadata.getCodingSchemeMetaDataForNameAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());
-        if(csm == null){csm = metadata.getCodingSchemeMetaDataForUriAndVersion(ref.getCodingScheme(), ref.getVersionOrTag().getVersion());}
-        if(csm == null){ continue;}
-        if((ref.getCodingScheme().equals(csm.getCodingSchemeName()) || ref.getCodingScheme().equals(csm.getCodingSchemeUri()) 
-                && ref.getVersionOrTag().getVersion().equals(csm.getCodingSchemeVersion()))){
-        returnSet.add(csm.getRef());
+            Set<CodingSchemeReference> references) throws LBParameterException {
+        if (CollectionUtils.isEmpty(references)) {
+            return null;
         }
+
+        Set<AbsoluteCodingSchemeVersionReference> returnSet = 
+                new HashSet<AbsoluteCodingSchemeVersionReference>();
+        ConcurrentMetaData metadata = ConcurrentMetaData.getInstance();
+        for (CodingSchemeReference ref : references) {
+            CodingSchemeMetaData csm = metadata.getCodingSchemeMetaDataForNameAndVersion(
+                    ref.getCodingScheme(),
+                    ref.getVersionOrTag().getVersion());
+            if (csm == null) {
+                csm = metadata.getCodingSchemeMetaDataForUriAndVersion(ref.getCodingScheme(),
+                        ref.getVersionOrTag().getVersion());
+            }
+            if (csm == null) {
+                continue;
+            }
+            if ((ref.getCodingScheme().equals(csm.getCodingSchemeName())
+                    || ref.getCodingScheme().equals(csm.getCodingSchemeUri())
+                            && ref.getVersionOrTag().getVersion().
+                            equals(csm.getCodingSchemeVersion()))) {
+                returnSet.add(csm.getRef());
+            }
+        }
+        return returnSet;
     }
-    return returnSet;
-}
 
 }
