@@ -324,6 +324,29 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
 				.anyMatch(y -> y.stringValue().equals("C99999")));
 	}
+	
+	@Test
+	public void queryPreferredPropertyTest() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("code", "C99999")), Occur.MUST);
+		builder.add(new TermQuery(new Term("isPreferred", "T")), Occur.MUST);
+		Query query = builder.build();
+		QueryBitSetProducer parentFilter;
+		parentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
+
+		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 0);
+		ScoreDoc sd = docs.get(0);
+		Document doc = service.getById(sd.doc);
+		assertNotNull(doc);
+		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
+		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
+				.anyMatch(y -> y.stringValue().equals("C99999")));
+	}
 
 	@Test
 	public void getAnalyzerTest() {
