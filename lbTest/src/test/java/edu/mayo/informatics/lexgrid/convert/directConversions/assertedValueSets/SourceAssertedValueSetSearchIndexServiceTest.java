@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Impl.loaders.AssertedValueSetIndexLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.commonTypes.Properties;
@@ -33,6 +34,7 @@ import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -252,18 +254,14 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 
 	@Test
-	public void queryTest() {
+	public void queryUpdateTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "3675309")), Occur.MUST);
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
 		Query query = builder.build();
 		QueryBitSetProducer parentFilter;
-		try {
-			parentFilter = new QueryBitSetProducer(
+		parentFilter = new QueryBitSetProducer(
 					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
-		} catch (ParseException e) {
-			throw new RuntimeException("Query Parser Failed against parent query: ", e);
-		}
 		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
 
 		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
@@ -275,7 +273,56 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
 		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
 				.anyMatch(y -> y.stringValue().equals("3675309")));
+	}
+	
+	@Test
+	public void queryPropertyTest() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("code", "C99998")), Occur.MUST);
+		builder.add(new TermQuery(new Term("propertyName", "Contributing_Source")), Occur.MUST);
+		QueryParser propValueParser = new QueryParser("propertyValue", service.getAnalyzer());
+		builder.add(propValueParser.createBooleanQuery("propertyValue", "FDA"), Occur.MUST);
+		Query query = builder.build();
+		QueryBitSetProducer parentFilter;
+		parentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
 
+		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 0);
+		ScoreDoc sd = docs.get(0);
+		Document doc = service.getById(sd.doc);
+		assertNotNull(doc);
+		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
+		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
+				.anyMatch(y -> y.stringValue().equals("C99998")));
+	}
+	
+	@Test
+	public void queryPublishPropertyTest() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("code", "C99999")), Occur.MUST);
+		builder.add(new TermQuery(new Term("propertyName", "Publish_Value_Set")), Occur.MUST);
+		QueryParser propValueParser = new QueryParser("propertyValue", service.getAnalyzer());
+		builder.add(propValueParser.createBooleanQuery("propertyValue", "Yes"), Occur.MUST);
+		Query query = builder.build();
+		QueryBitSetProducer parentFilter;
+		parentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
+
+		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 0);
+		ScoreDoc sd = docs.get(0);
+		Document doc = service.getById(sd.doc);
+		assertNotNull(doc);
+		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
+		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
+				.anyMatch(y -> y.stringValue().equals("C99999")));
 	}
 
 	@Test
