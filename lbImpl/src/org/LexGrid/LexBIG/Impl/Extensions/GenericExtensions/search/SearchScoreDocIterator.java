@@ -61,7 +61,7 @@ import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
  */
 @LgClientSideSafe
 public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator {
-    private int pos = 0;
+    protected int pos = 0;
     private ScoreDocTransformerExecutor transformerExecutor = new ScoreDocTransformerExecutor();
     transient protected List<ScoreDoc> list;
     protected ScoreDocTransformer transformer;
@@ -173,7 +173,7 @@ public class SearchScoreDocIterator implements ResolvedConceptReferencesIterator
         return this.transformerExecutor.transform(this.codeSystemsToInclude, this.transformer, subList);
     }
     
-    private int adjustEndPos(int requestedEnd){
+    protected int adjustEndPos(int requestedEnd){
         if(requestedEnd < this.list.size()){
             return requestedEnd;
         } else {
