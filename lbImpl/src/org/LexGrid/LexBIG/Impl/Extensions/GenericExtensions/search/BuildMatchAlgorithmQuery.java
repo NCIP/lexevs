@@ -94,6 +94,7 @@ public class BuildMatchAlgorithmQuery {
             if(querySelected) {return this;}
             BooleanQuery.Builder queryBuilder = new BooleanQuery.Builder();
             queryBuilder.add(new TermQuery(BASE_QUERY), Occur.MUST);
+            queryBuilder.add(new TermQuery(PREFERRED), Occur.SHOULD);
             queryBuilder.add(new TermQuery(new Term(
                     LuceneLoaderCode.UNTOKENIZED_LOWERCASE_PROPERTY_VALUE_FIELD, matchText.toLowerCase())), Occur.MUST);
             presentationExact = finalizeQuery(queryBuilder, queryBuilder.build());
@@ -253,18 +254,16 @@ public class BuildMatchAlgorithmQuery {
             return builder;
         }
         
-        private BooleanQuery.Builder addAnonymousQuery(BooleanQuery.Builder builder) {
+        private BooleanQuery.Builder addNonAnonymousQuery(BooleanQuery.Builder builder) {
             builder.add(new TermQuery(new Term("isAnonymous", "T")), Occur.MUST_NOT);
             return builder;
         }
         
         private void setActiveAndAnonymousQueries(BooleanQuery.Builder builder, Query currentQuery) {
             if(! isAnon || ! isInActive){
-
-//               builder.add(currentQuery, Occur.MUST);
                 
                 if(! isAnon){
-                   addAnonymousQuery(builder);
+                   addNonAnonymousQuery(builder);
                 }
                 if(! isInActive){
                    addInActiveQuery(builder);
@@ -273,7 +272,6 @@ public class BuildMatchAlgorithmQuery {
         }
         
         private ToParentBlockJoinQuery getParentFilteredBlockJoinQuery(BooleanQuery.Builder builder, Query query){
- //           builder.add(query, Occur.MUST);
             builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
 
             query = builder.build();
