@@ -14,9 +14,12 @@ import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionRefer
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAssertedValueSetSearchExtensionImpl;
+import org.LexGrid.LexBIG.Impl.helpers.Transformer;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
@@ -24,11 +27,14 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
+import org.lexevs.dao.database.service.entity.SourceAssertedValueSetEntityServiceImpl;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
+
+import com.thoughtworks.xstream.mapper.Mapper;
 
 public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSetService {
 	
@@ -40,6 +46,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		this.params = params;
 		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
 		assVSSvc.init(params);
+		svc = LexBIGServiceImpl.defaultInstance();
 	}
 	
 	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(AssertedValueSetParameters params){
@@ -48,19 +55,33 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
-		return null;
+		List<String> list = ((SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
+				getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder(params.getCodingSchemeVersion()).build())).
+				getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
+		return list.stream().map(code ->
+			{CodingScheme scheme = null;
+				try {
+					scheme = getSourceAssertedValueSetforEntityCode(code).get(0);
+				} catch (LBException e) {
+					throw new RuntimeException("Mapping value set root code: " + code + " failed");
+				}
+				return scheme;
+			}).collect(Collectors.toList());
+	
 	}
 
 	@Override
 	public List<CodingScheme> getMinimalSourceAssertedValueSetSchemes() throws LBException {
-		// return svc.getSourceAssertedResolvedVSCodingSchemes(); nope
-		return null;
+		return svc.getMinimalResolvedVSCodingSchemes();
 	}
 
 	@Override
 	public List<CodingScheme> getSourceAssertedValueSetsForConceptReference(ConceptReference ref) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			return getSourceAssertedValueSetforEntityCode(ref.getCode());
+		} catch (LBException e) {
+			throw new RuntimeException("Problem getting value set for code: " +  ref.getCode());
+		}
 	}
 	
 	@Override
@@ -76,13 +97,38 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(String uri) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<Entity> entities = null;
+		try {
+			entities = assVSSvc.getSourceAssertedValueSetEntitiesForEntityCode(
+					AssertedValueSetServices.getConceptCodeForURI(new URI(uri)));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ResolvedConceptReferenceList referenceList = new ResolvedConceptReferenceList();
+		entities.stream().forEach(x -> referenceList.addResolvedConceptReference(transformEntityToRCR(x, uri)));
+		return referenceList;
+	}
+
+	private ResolvedConceptReference transformEntityToRCR(Entity x, String uri) {
+		ResolvedConceptReference ref = new ResolvedConceptReference();
+		ref.setCode(x.getEntityCode());
+		ref.setCodeNamespace(x.getEntityCodeNamespace());
+		ref.setCodingSchemeName(x.getEntityCodeNamespace());
+		ref.setCodingSchemeURI(uri);
+		ref.setCodingSchemeVersion(params.getCodingSchemeVersion());
+		ref.setConceptCode(ref.getCode());
+		ref.setCode(ref.getCode());
+		ref.setEntity(x);
+		ref.setEntityDescription(x.getEntityDescription());
+		ref.setEntityType(x.getEntityType());
+		return ref;
 	}
 
 	@Override
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri) {
-		// TODO Auto-generated method stub
+	
 		return null;
 	}
 
@@ -95,8 +141,19 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText,
 			MatchAlgorithm matchType) throws LBException {
-		// TODO Auto-generated method stub
-		return null;
+		SourceAssertedValueSetSearchExtensionImpl saVSSearch =  (SourceAssertedValueSetSearchExtensionImpl) 
+				svc.getGenericExtension("AssertedValueSetSearchService");
+		ResolvedConceptReferencesIterator itr = saVSSearch.search(matchText, matchType);
+		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		while(itr.hasNext()) {
+			ResolvedConceptReference ref = itr.next();
+			ref.getCodingSchemeURI();
+			params.getCodingSchemeVersion();
+			list.add(Constructors.
+					createAbsoluteCodingSchemeVersionReference(
+							ref.getCodingSchemeURI(), params.getCodingSchemeVersion()));
+		}
+		return list;
 	}
 
 	@Override
