@@ -259,4 +259,19 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		this.version = version;
 	}
 
+	/**
+	 * 
+	 * @return the scheme
+	 */
+	public String getScheme() {
+		return this.scheme;
+	}
+	
+	/**
+	 * 
+	 * @return the association
+	 */
+	public String getAssociation() {
+		return this.association;
+	}
 }
