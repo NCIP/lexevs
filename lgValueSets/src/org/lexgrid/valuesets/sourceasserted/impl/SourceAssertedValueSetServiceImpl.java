@@ -30,8 +30,11 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.service.entity.SourceAssertedValueSetEntityServiceImpl;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
+import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
+import org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 
 import com.thoughtworks.xstream.mapper.Mapper;
@@ -39,6 +42,7 @@ import com.thoughtworks.xstream.mapper.Mapper;
 public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSetService {
 	
 	LexBIGService svc;
+	ValueSetDefinitionService vsds;
 	AssertedValueSetService assVSSvc;
 	AssertedValueSetParameters params;
 
@@ -47,6 +51,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
 		assVSSvc.init(params);
 		svc = LexBIGServiceImpl.defaultInstance();
+		vsds = (ValueSetDefinitionService) LexEVSValueSetDefinitionServicesImpl.defaultInstance();
 	}
 	
 	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(AssertedValueSetParameters params){
@@ -128,7 +133,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri) {
-	
+		//TODO Implement with full query path to source asserted iterator.
 		return null;
 	}
 

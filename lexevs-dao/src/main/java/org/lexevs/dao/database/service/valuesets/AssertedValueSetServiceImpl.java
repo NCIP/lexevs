@@ -38,12 +38,9 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode)
 			throws LBException {
 		if(matchCode == null){throw new RuntimeException("Entity code cannot be null!");}
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
+		String csUID = getCsUid();
 		List<Entity> entities = ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(matchCode,
-				params.getAssertedValueSetRelation(), predUID.get(0), csUID);
+				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
 		List<Entity> entity = ibatisAssertedValueSetDao.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
 		CodingScheme scheme = transformToCodingScheme(entity, entities);
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
@@ -76,29 +73,32 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	@Override
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
 		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
+		String csUID = getCsUid();
 		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode == null? params.getRootConcept(): rootCode, 
-				params.getAssertedValueSetRelation(), predUID.get(0), csUID);
+				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
 	}
 	
 	@Override
 	public List<String> getSourceAssertedValueSetEntityUidsforPredicateUid(int start, int pageSize) {
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
-		return ibatisAssertedValueSetDao.getValueSetEntityUids(csUID, predUID.get(0), start, pageSize);
+		String csUID = getCsUid();
+		return ibatisAssertedValueSetDao.getValueSetEntityUids(csUID, getPredUid(csUID), start, pageSize);
 	}
 	
 	@Override
 	public List<Entity> getEntitiesForUidMap(List<String> entityUids){
 		if(entityUids == null || entityUids.size() == 0){throw new RuntimeException("Must have entity indentifiers to proceed!");}
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		return entityDao.getEntities(csUID, entityUids);
+
+		return entityDao.getEntities(getCsUid(), entityUids);
+	}
+	
+	private String getCsUid() {
+		return this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+		getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
+	}
+	
+	private String getPredUid(String csUID) {
+		return this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation()).get(0);
 	}
 
 	/**
@@ -144,8 +144,5 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public void setEntityDao(EntityDao entityDao) {
 		this.entityDao = entityDao;
 	}
-
-
-
 
 }

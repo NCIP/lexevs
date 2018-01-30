@@ -3,7 +3,6 @@ package org.lexevs.dao.index.indexer;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
@@ -13,7 +12,6 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 
 public class AssertedValueSetEntityIndexer extends LuceneLoaderCodeIndexer implements EntityIndexer {

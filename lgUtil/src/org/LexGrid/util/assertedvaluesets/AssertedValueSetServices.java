@@ -185,7 +185,6 @@ public class AssertedValueSetServices {
     }
      
     public static String getPropertyQualifierValueForSource(List<PropertyQualifier> quals){
-  //      if(quals == null || quals.size() < 1) {throw new RuntimeException("Propertly list cannot be empty or null");}
         if(quals.stream().anyMatch(pq -> pq.getPropertyQualifierName().equals(SOURCE))){
             return quals.stream().filter(pq -> pq.getPropertyQualifierName().equals(SOURCE)).findFirst().get().getValue().getContent();
         }
@@ -201,9 +200,6 @@ public class AssertedValueSetServices {
             String version, String codingSchemeURN)
             throws LBException {
         nullEntityCheck(entity);
-//        if(entities == null || entities.getEntityCount() < 1) 
-//        {throw new RuntimeException("Null metadata entity or lack of "
-//                + "members prevents this coding scheme from being resolved");}
         String codingSchemeUri = AssertedValueSetServices.createUri(BASE, source, entity.getEntityCode());
         String codingSchemeVersion = version == null ? "UNASSIGNED":
                 version;
@@ -442,4 +438,13 @@ public static String breakOnCommonDiff(String name) {
                     scheme.getCodingSchemeName();
         }
     }
+    
+    public static String getDefinedSource(String sourceName, Entity entity) {
+        String source = null;
+        if(entity.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(sourceName)).findAny().isPresent())
+        {source = entity.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(sourceName))
+        .map(x -> x.getValue().getContent()).collect(Collectors.toList()).get(0);}
+        return source;
+    }
+
 }

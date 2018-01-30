@@ -7,7 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.LexGrid.LexBIG.Impl.loaders.AssertedValueSetIndexLoaderImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.commonTypes.Properties;
@@ -34,7 +33,6 @@ import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
@@ -346,6 +344,22 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
 		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
 				.anyMatch(y -> y.stringValue().equals("C99999")));
+	}
+	
+	@Test 
+	public void toChildBlockJoinQuery() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST);
+		builder.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C99997")), Occur.MUST);
+		Query query = builder.build();
+
+		List<ScoreDoc> docs = service.query(null, query);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 0);
+		for(ScoreDoc sd: docs) {
+		Document doc = service.getById(sd.doc);
+		assertNotNull(doc);
+	}
 	}
 
 	@Test

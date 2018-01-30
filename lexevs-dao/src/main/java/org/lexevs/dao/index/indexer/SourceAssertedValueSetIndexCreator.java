@@ -8,10 +8,8 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.apache.lucene.document.Document;
-import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.index.access.IndexDaoManager;
-import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.indexer.utility.Utility;
 
