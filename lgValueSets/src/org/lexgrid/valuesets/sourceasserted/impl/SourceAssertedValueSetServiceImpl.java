@@ -27,6 +27,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.service.entity.SourceAssertedValueSetEntityServiceImpl;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
@@ -51,7 +52,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
 		assVSSvc.init(params);
 		svc = LexBIGServiceImpl.defaultInstance();
-		vsds = (ValueSetDefinitionService) LexEVSValueSetDefinitionServicesImpl.defaultInstance();
+		vsds = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	}
 	
 	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(AssertedValueSetParameters params){
@@ -130,10 +131,33 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		ref.setEntityType(x.getEntityType());
 		return ref;
 	}
+	
+	public String getEntityCodeFromValueSetDefinition(String uri) {
+		ValueSetDefinition vsDef = null;
+		try {
+			vsDef = vsds.getValueSetDefinitionByUri(new URI(uri));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(vsDef == null || 
+				vsDef.getDefinitionEntry(0) == null || 
+				vsDef.getDefinitionEntry(0).getEntityReference() == null ||
+				vsDef.getDefinitionEntry(0).getEntityReference().getEntityCode() == null
+				) {
+			throw new RuntimeException("ValueSet Definition does not contain adequate idenitfying information to resolve value set: "
+					+ uri);
+		}
+		else {
+		return vsDef.getDefinitionEntry(0).getEntityReference().getEntityCode();
+		}
+	}
 
 	@Override
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri) {
+		String code = getEntityCodeFromValueSetDefinition(uri);
 		//TODO Implement with full query path to source asserted iterator.
+//		return new AssertedValueSetResolvedConceptReferenceIterator(code, params);
 		return null;
 	}
 

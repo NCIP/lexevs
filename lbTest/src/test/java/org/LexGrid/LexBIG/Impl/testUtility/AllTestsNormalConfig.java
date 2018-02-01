@@ -18,10 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.testUtility;
 
-import junit.framework.JUnit4TestAdapter;
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 //import org.LexGrid.LexBIG.Impl.CodedNodeGraphImplTest;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImplTest;
@@ -205,7 +201,6 @@ import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorT
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
-import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AllSourceAssertedUpdateTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetIndexCreation;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetIndexSupport;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
@@ -215,7 +210,6 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.LoadAndUpdateSourceAssertedValueSetsTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.NCItSourceAssertedValueSetUpdateServiceTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.SourceAssertedValueSetSearchIndexServiceTest;
-import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.SourceAssertedValueSetTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
@@ -227,6 +221,9 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationP
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
 import edu.mayo.informatics.lexgrid.convert.indexer.LuceneLoaderCodeTest;
+import junit.framework.JUnit4TestAdapter;
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 
 public class AllTestsNormalConfig {

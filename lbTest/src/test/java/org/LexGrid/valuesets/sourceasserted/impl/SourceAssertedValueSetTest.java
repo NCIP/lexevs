@@ -1,4 +1,4 @@
-package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
+package org.LexGrid.valuesets.sourceasserted.impl;
 
 
 import java.net.URI;
@@ -79,6 +79,14 @@ public class SourceAssertedValueSetTest extends TestCase {
 		assertTrue(list.getAbsoluteCodingSchemeVersionReferenceCount() == 1);
 		assertTrue(list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeURN().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl"));
 		assertTrue(list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion().equals("0.1.5"));
+	}
+	
+	@Test
+	public void testGetValueSetCodeForUri() {
+		String code = ((SourceAssertedValueSetServiceImpl) svc).
+		getEntityCodeFromValueSetDefinition(AssertedValueSetServices.BASE + "FDA/" + "C54453");
+		assertNotNull(code);
+		assertEquals(code, "C54453");
 	}
 
 }
