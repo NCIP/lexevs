@@ -1447,7 +1447,7 @@
 		ON 
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
-			assns.associationPredicateGuid  = #param1#
+			assns.associationPredicateGuid = #param1#
 		AND
 		 	assns.targetEntityCode = #param2#
 	</select>
@@ -1465,6 +1465,25 @@
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
 			assns.associationPredicateGuid  = #param1#
+		GROUP BY
+			ent.entityGuid
+	</select>
+	
+	<select id="getVSEntityUidsForTopNodeCode"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" resultMap="Common.uidResult">
+		SELECT
+			ent.entityGuid AS uidKey
+		FROM
+		 	$prefix$entityAssnsToEntity  assns 
+		JOIN 
+			$prefix$entity ent 
+		ON 
+			assns.sourceEntityCode = ent.entityCode
+		WHERE
+			assns.associationPredicateGuid  = #param1#
+		AND
+			assns.targetEntityCode = #param2#
 		GROUP BY
 			ent.entityGuid
 	</select>

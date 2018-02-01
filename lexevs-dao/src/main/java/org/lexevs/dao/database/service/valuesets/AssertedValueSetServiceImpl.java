@@ -91,12 +91,11 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		return entityDao.getEntities(getCsUid(), entityUids);
 	}
 	
-	private String getCsUid() {
-		return this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-		getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
+	public String getCsUid() {
+		return this.getCodingSchemeUId(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
 	}
 	
-	private String getPredUid(String csUID) {
+	public String getPredUid(String csUID) {
 		return this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
 				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation()).get(0);
 	}
