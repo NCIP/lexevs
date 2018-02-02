@@ -95,5 +95,19 @@ public class IbatisSourceAssertedValueSetDaoTest {
         assertNotNull(list);
         assertTrue(list.size() > 0);
 	}
+	
+	@Test
+	public void testGetValueSetEntities() {
+        List<Entity> list = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+			public List<Entity> execute(DaoManager daoManager) {
+                savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                return savsDao.getPagedValueSetEntities(matchCode,csUID, predicateUID, 0, 10);
+            }
+        });
+        
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+	}
 
 }

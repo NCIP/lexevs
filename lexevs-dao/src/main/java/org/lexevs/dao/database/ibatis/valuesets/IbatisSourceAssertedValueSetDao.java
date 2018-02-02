@@ -82,4 +82,13 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 					new PrefixedParameterTuple(prefix, predUid, code),start, pageSize);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Entity> getPagedValueSetEntities(String matchCode, String csUID, String predicateUID, int start, int pageSize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_VS_ENTITIES_FROM_CODE, 
+				new PrefixedParameterTuple(prefix, predicateUID, matchCode), start, pageSize);
+	}
+
 }
