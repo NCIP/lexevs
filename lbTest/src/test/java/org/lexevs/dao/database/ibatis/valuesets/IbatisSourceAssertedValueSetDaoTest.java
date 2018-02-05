@@ -109,5 +109,19 @@ public class IbatisSourceAssertedValueSetDaoTest {
         assertNotNull(list);
         assertTrue(list.size() > 0);
 	}
+	
+	@Test
+	public void testGetValueSetEntityCount() {
+        Integer count = daoCallbackService.executeInDaoLayer(new DaoCallback<Integer>() {
+
+			public Integer execute(DaoManager daoManager) {
+                savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                return savsDao.getValueSetEntityCount(matchCode, csUID, predicateUID);
+            }
+        });
+        
+        assertNotNull(count);
+        assertTrue(count.intValue() == 2);
+	}
 
 }

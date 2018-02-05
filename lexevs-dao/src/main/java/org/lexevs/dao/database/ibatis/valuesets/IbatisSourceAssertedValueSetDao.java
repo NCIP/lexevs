@@ -24,6 +24,7 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	private static final String GET_VS_ENTITY_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSTopNodeEntityByCode";
 	private static final String GET_VS_ENTITY_UIDS = ASSOCIATION_NAMESPACE + "getVSEntityUids";
 	private static final String GET_VS_ENTITY_UIDS_FOR_TOPNODE_CODE = ASSOCIATION_NAMESPACE + "getVSEntityUidsForTopNodeCode";
+	private static final String GET_VS_ENTITY_COUNT_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSEntityCount";
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 
@@ -51,8 +52,6 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 				new PrefixedParameterTuple(prefix, codingSchemeUID,  matchCode));
 	}
 	
-
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getValueSetEntityUids(String codingSchemeUid, String predUid, int start, int pageSize) {
@@ -89,6 +88,18 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_VS_ENTITIES_FROM_CODE, 
 				new PrefixedParameterTuple(prefix, predicateUID, matchCode), start, pageSize);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public int getValueSetEntityCount(String matchCode, String csUID, String predicateUID) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
+		List<String> results = this.getSqlMapClientTemplate().queryForList(
+				GET_VS_ENTITY_COUNT_FROM_CODE, 
+				new PrefixedParameterTuple(prefix, predicateUID, matchCode));
+				if(!results.isEmpty()){
+					return Integer.parseInt(results.get(0));}
+					else {return 0;}
 	}
 
 }

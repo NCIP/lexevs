@@ -182,6 +182,10 @@
 		<result property="propertyName" column="propertyName"/>
 		<result property="value.content" column="propertyValue"/>
 	</resultMap>
+	
+	<resultMap id="vsEntityCount" class="string">
+		<result property="java.util.String" column="vsEntityCount" />
+	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
@@ -1517,6 +1521,21 @@
 		AND
 			entityCode = #param2#
    </select>
+   
+   <select id="getVSEntityCount"
+   		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultMap="vsEntityCount"
+		remapResults="true">
+		SELECT 
+			 count(*) AS vsEntityCount
+			FROM
+		 	$prefix$entityAssnsToEntity  assns 
+		WHERE
+			assns.associationPredicateGuid  = #param1#
+		AND
+			assns.targetEntityCode = #param2#
+   </select>
+   
    
    <select id="getAllValidValueSetTopNodes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
 		remapResults="true" resultMap="definedNodeResolution">

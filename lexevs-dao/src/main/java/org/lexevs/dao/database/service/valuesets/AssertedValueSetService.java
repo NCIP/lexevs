@@ -21,4 +21,8 @@ public interface  AssertedValueSetService {
 
 	List<Entity> getEntitiesForUidMap(List<String> entityUids);
 
+	int getVSEntityCountForTopNodeCode(String code);
+
+	List<Entity> getPagedSourceAssertedValueSetEntities(String rootCode, int start, int pageSize);
+
 }

@@ -74,8 +74,15 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
 		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
 		String csUID = getCsUid();
-		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode == null? params.getRootConcept(): rootCode, 
+		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode, 
 				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+	}
+	
+	@Override
+	public List<Entity> getPagedSourceAssertedValueSetEntities(String rootCode, int start, int pageSize) {
+		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
+		String csUID = getCsUid();
+		return ibatisAssertedValueSetDao.getPagedValueSetEntities(rootCode, csUID, getPredUid(csUID), start, pageSize);
 	}
 	
 	@Override
@@ -89,6 +96,13 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		if(entityUids == null || entityUids.size() == 0){throw new RuntimeException("Must have entity indentifiers to proceed!");}
 
 		return entityDao.getEntities(getCsUid(), entityUids);
+	}
+	
+	@Override
+	public int getVSEntityCountForTopNodeCode(String code){
+		if(code == null ){throw new RuntimeException("Must have entity indentifiers to proceed!");}
+		String csUid = getCsUid();
+		return ibatisAssertedValueSetDao.getValueSetEntityCount(code, csUid, getPredUid(csUid));
 	}
 	
 	public String getCsUid() {
