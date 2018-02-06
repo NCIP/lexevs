@@ -346,21 +346,21 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 				.anyMatch(y -> y.stringValue().equals("C99999")));
 	}
 	
-	@Test 
-	public void toChildBlockJoinQuery() throws ParseException {
-		BooleanQuery.Builder builder = new BooleanQuery.Builder();
-		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST);
-		builder.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C99997")), Occur.MUST);
-		Query query = builder.build();
-
-		List<ScoreDoc> docs = service.query(null, query);
-		assertNotNull(docs);
-		assertTrue(docs.size() > 0);
-		for(ScoreDoc sd: docs) {
-		Document doc = service.getById(sd.doc);
-		assertNotNull(doc);
-	}
-	}
+//	@Test 
+//	public void toChildBlockJoinQuery() throws ParseException {
+//		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+//		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST);
+//		builder.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C99997")), Occur.MUST);
+//		Query query = builder.build();
+//
+//		List<ScoreDoc> docs = service.query(null, query);
+//		assertNotNull(docs);
+//		assertTrue(docs.size() > 0);
+//		for(ScoreDoc sd: docs) {
+//		Document doc = service.getById(sd.doc);
+//		assertNotNull(doc);
+//	}
+//	}
 
 	@Test
 	public void getAnalyzerTest() {

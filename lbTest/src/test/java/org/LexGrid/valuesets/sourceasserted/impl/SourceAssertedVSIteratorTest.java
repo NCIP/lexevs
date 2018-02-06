@@ -128,6 +128,9 @@ public class SourceAssertedVSIteratorTest {
 		assertEquals(2, list2.getResolvedConceptReferenceCount());
 		assertEquals(count - 5, itr.numberRemaining());
 		
+		//checking possible overlap
+		assertNotSame(list.getResolvedConceptReference(2).getCode(), list2.getResolvedConceptReference(0).getCode());
+		
 		ResolvedConceptReferenceList list4 = itr.next(2);
 		assertNotNull(list4);
 		assertTrue(list4.getResolvedConceptReferenceCount() == 0);
