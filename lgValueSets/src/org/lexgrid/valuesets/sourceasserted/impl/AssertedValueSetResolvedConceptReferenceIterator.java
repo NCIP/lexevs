@@ -99,9 +99,10 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
 
             if(position < max){
                 returnedRefs = 
-                		assertedValueSetEntityResolver.getResolvedConceptReferenceByCursorAndCode(topNode, position, pageSize);
-                position = pageSize + position;
-                remaining = remaining - pageSize;
+                		assertedValueSetEntityResolver.getResolvedConceptReferenceByCursorAndCode(topNode, position, getPageSizeSelectAll(pageSize));
+                position = getPageSizeSelectAll(pageSize) + position;
+               //remaining = remaining - getPageSizeSelectAll(pageSize);
+                remaining = sizeRemaining(remaining, pageSize);
                 if (refs == null) {
                     throw new LBResourceUnavailableException("This iterator has expired and is no longer valid. "
                             + "You may be attempting to retrieve too large a list or iterator page");
@@ -135,6 +136,13 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
 	public ResolvedConceptReferenceList getNext() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	private int getPageSizeSelectAll(int size) {
+		return size >= 0?size:maxValueSets;
+	}
+	
+	private int sizeRemaining(int remain, int size) {
+		return remaining - getPageSizeSelectAll(size) < 0?0: remaining - getPageSizeSelectAll(size); 
 	}
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
