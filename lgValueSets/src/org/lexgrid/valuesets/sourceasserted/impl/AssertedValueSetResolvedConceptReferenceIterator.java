@@ -30,7 +30,7 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
 	 */
 	private static final long serialVersionUID = 4182443658366514327L;
 
-	public AssertedValueSetResolvedConceptReferenceIterator(String code, AssertedValueSetParameters params) {
+	public AssertedValueSetResolvedConceptReferenceIterator(final String code, AssertedValueSetParameters params) {
 		topNode = code;
 		refs = new ArrayList<ResolvedConceptReference>();
 		vsSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
@@ -42,14 +42,17 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
 
 	@Override
 	public boolean hasNext() throws LBResourceUnavailableException {
-		// TODO Auto-generated method stub
-		return false;
+		return numberRemaining() > 0;
 	}
 
 	@Override
 	public void release() throws LBResourceUnavailableException {
-		// TODO Auto-generated method stub
-
+		refs = null;
+		vsSvc = null;
+		topNode = null;
+		remaining = 0;
+		position = 0;
+		assertedValueSetEntityResolver = null;
 	}
 
 	@Override

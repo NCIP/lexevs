@@ -53,22 +53,26 @@ public class SourceAssertedVSIteratorTest {
 		assertTrue(list.getResolvedConceptReferenceCount() > 0);
 		assertNotNull(list.getResolvedConceptReference()[0]);
 		assertEquals(2, list.getResolvedConceptReferenceCount());
+		assertEquals(3, itr.numberRemaining());
 		
 		ResolvedConceptReferenceList list2 = itr.next(2);
 		assertNotNull(list2);
 		assertTrue(list2.getResolvedConceptReferenceCount() > 0);
 		assertNotNull(list2.getResolvedConceptReference()[0]);
 		assertEquals(2, list2.getResolvedConceptReferenceCount());
+		assertEquals(1, itr.numberRemaining());
 		
 		ResolvedConceptReferenceList list3 = itr.next(2);
 		assertNotNull(list3);
 		assertTrue(list3.getResolvedConceptReferenceCount() > 0);
 		assertNotNull(list3.getResolvedConceptReference()[0]);
 		assertEquals(1, list3.getResolvedConceptReferenceCount());
+		assertEquals(0, itr.numberRemaining());
 		
 		ResolvedConceptReferenceList list4 = itr.next(2);
 		assertNotNull(list4);
 		assertTrue(list4.getResolvedConceptReferenceCount() == 0);
+		assertEquals(0, itr.numberRemaining());
 	}
 	
 	@Test
@@ -81,6 +85,7 @@ public class SourceAssertedVSIteratorTest {
 		assertTrue(list.getResolvedConceptReferenceCount() > 0);
 		assertNotNull(list.getResolvedConceptReference()[0]);
 		assertEquals(count, list.getResolvedConceptReferenceCount());
+		assertEquals(0, itr.numberRemaining());
 		
 		AssertedValueSetResolvedConceptReferenceIterator itr2 = new 
 				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
@@ -89,6 +94,7 @@ public class SourceAssertedVSIteratorTest {
 		assertTrue(list2.getResolvedConceptReferenceCount() > 0);
 		assertNotNull(list2.getResolvedConceptReference()[0]);
 		assertEquals(count - 1, list2.getResolvedConceptReferenceCount());
+		assertEquals(1, itr2.numberRemaining());
 	}
 	
 	@Test
@@ -113,16 +119,19 @@ public class SourceAssertedVSIteratorTest {
 		assertTrue(list.getResolvedConceptReferenceCount() > 0);
 		assertNotNull(list.getResolvedConceptReference()[0]);
 		assertEquals(3, list.getResolvedConceptReferenceCount());
+		assertEquals(count - 3, itr.numberRemaining());
 		
 		ResolvedConceptReferenceList list2 = itr.next(2);
 		assertNotNull(list2);
 		assertTrue(list2.getResolvedConceptReferenceCount() > 0);
 		assertNotNull(list2.getResolvedConceptReference()[0]);
 		assertEquals(2, list2.getResolvedConceptReferenceCount());
+		assertEquals(count - 5, itr.numberRemaining());
 		
 		ResolvedConceptReferenceList list4 = itr.next(2);
 		assertNotNull(list4);
 		assertTrue(list4.getResolvedConceptReferenceCount() == 0);
+		assertEquals(0, itr.numberRemaining());
 	}
 	
 	
