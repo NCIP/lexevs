@@ -6,7 +6,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
@@ -31,6 +33,37 @@ public class SourceAssertedValueSetTest extends TestCase {
 		svc = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(params);
 		
 	}
+	@Test
+	public void testListAllSourceAssertedValueSets() throws LBException {
+		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();
+		long count = schemes.stream().count();
+		assertTrue(count > 0L);
+		assertTrue(count == 8L);
+		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
+	}
+	
+	//TODO:  Needs addtl non asserted value sets loaded
+	@Test
+	public void testListAllValueSets() throws LBException {
+		List<CodingScheme> schemes = svc.getMinimalSourceAssertedValueSetSchemes();
+		long count = schemes.stream().count();
+		assertTrue(count > 0L);
+		assertTrue(count == 8L);
+		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
+	}
+
+	@Test
+	public void testgetSourceAssertedValueSetsForConceptReference() throws LBException {
+		ConceptReference reference = Constructors.createConceptReference("C48323", "owl2lexevs");
+		List<CodingScheme> schemes = svc.getSourceAssertedValueSetsForConceptReference(reference );
+		long count = schemes.stream().count();
+		assertTrue(count > 0L);
+ 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Structured Product Labeling Color Terminology")).findAny().isPresent());
+ 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("CDISC SDTM Ophthalmic Exam Test Code Terminology")).findAny().isPresent());
+	}
+	
+	
+	
 	
 	@Test
 	public void testSchemeData() throws LBException, URISyntaxException {
@@ -44,6 +77,8 @@ public class SourceAssertedValueSetTest extends TestCase {
 				getContent().equals("Black")).findAny().get().getEntityCode());
 		
 	}
+	
+	
 	
 	@Test
 	public void testGetSourceAssertedValueSetTopNodesForRootCode() {
@@ -63,7 +98,7 @@ public class SourceAssertedValueSetTest extends TestCase {
 	
 	@Test
 	public void testGetSourceAssertedValueSetforEntityCode() throws LBException {
-		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforEntityCode("C48323");
+		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		assertNotNull(schemes);
 		assertTrue(schemes.size() > 0);
 		assertEquals("Black", schemes.get(0).getCodingSchemeName());
@@ -73,7 +108,7 @@ public class SourceAssertedValueSetTest extends TestCase {
 	
 	@Test
 	public void testGetListOfCodingSchemeVersionsUsedInResolution() throws LBException {
-		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforEntityCode("C48323");
+		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		CodingScheme scheme = schemes.get(0);
 		AbsoluteCodingSchemeVersionReferenceList list = svc.getListOfCodingSchemeVersionsUsedInResolution(scheme);
 		assertTrue(list.getAbsoluteCodingSchemeVersionReferenceCount() == 1);

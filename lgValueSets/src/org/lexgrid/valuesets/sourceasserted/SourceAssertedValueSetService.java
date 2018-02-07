@@ -23,7 +23,7 @@ public interface SourceAssertedValueSetService {
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException;
 	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(String uri);
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri);
-	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode) throws LBException;
+	public List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode) throws LBException;
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException;
 	
 	/**
@@ -35,9 +35,10 @@ public interface SourceAssertedValueSetService {
 	 * @throws LBException
 	 */
 	public AbsoluteCodingSchemeVersionReferenceList getListOfCodingSchemeVersionsUsedInResolution(CodingScheme cs);
-	List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode);
-	
+	public List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode);
 	public List<? extends Entity> getAllSourceAssertedValueSetEntities();
+	List<CodingScheme> getSourceAssertedValueSetforValueSetMemberEntityCode(String matchCode) throws LBException;
+
 	
 	
 		

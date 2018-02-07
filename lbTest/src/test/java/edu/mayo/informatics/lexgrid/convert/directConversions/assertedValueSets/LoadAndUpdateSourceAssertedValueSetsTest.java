@@ -61,29 +61,29 @@ public void loadSourceAssertedValueSetDefinitionsTest() throws LBParameterExcept
     Thread.sleep(1000);
 }
 
-@Order(3)
-@Test
-public void loadSourceAssertedResolvedValueSetsTest() throws InterruptedException, LBException{
-	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs", "0.1.5", 
-			 "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", 
-			 "NCI", "Semantic_Type").run("Contributing_Source");
-	    Thread.sleep(1000);
-}
+//@Order(3)
+//@Test
+//public void loadSourceAssertedResolvedValueSetsTest() throws InterruptedException, LBException{
+//	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs", "0.1.5", 
+//			 "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", 
+//			 "NCI", "Semantic_Type").run("Contributing_Source");
+//	    Thread.sleep(1000);
+//}
 
-@Order(4)
-@Test
-public void loadHistoryTest() throws LBException, InterruptedException{
-    UriBasedHistoryLoaderImpl hloader = new UriBasedHistoryLoaderImpl("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
-
-    hloader.load(new File("resources/testData/owl2/owl2historytest.txt").toURI(), new File(
-            "resources/testData/owl2/owl2systemReleaseTest.txt").toURI(), false, true, true);
-    while (hloader.getStatus().getEndTime() == null) {
-        Thread.sleep(2000);
-    }
-    
-    assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
-    assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
-}
+//@Order(4)
+//@Test
+//public void loadHistoryTest() throws LBException, InterruptedException{
+//    UriBasedHistoryLoaderImpl hloader = new UriBasedHistoryLoaderImpl("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+//
+//    hloader.load(new File("resources/testData/owl2/owl2historytest.txt").toURI(), new File(
+//            "resources/testData/owl2/owl2systemReleaseTest.txt").toURI(), false, true, true);
+//    while (hloader.getStatus().getEndTime() == null) {
+//        Thread.sleep(2000);
+//    }
+//    
+//    assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
+//    assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
+//}
 
 @Order(5)
 @Test
@@ -103,26 +103,26 @@ public void loadCurrentCodingSchemeTest() throws LBException, InterruptedExcepti
     lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 }
 
-@Order(6)
-@Test
-public void updateResolvedValueSetsToCurrentScheme() throws LBException{
-	NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl(
-			"owl2lexevs", "0.1.5.1", "Concept_In_Subset", "true", 
-			"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
-			"Semantic_Type", "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
-	List<String> valueSetCodes = service.resolveUpdatedVSToReferences("0.1.5.1");
-	List<Node> mappedNodes = null;
-	try {
-		mappedNodes = service.mapSimpleReferencesToNodes(valueSetCodes);
-	} catch (LBException e1) {
-		e1.printStackTrace();
-	}
-	List<Node> finalNodes = service.getNodeListForUpdate(mappedNodes);
-	
-	service.prepServiceForUpdate(finalNodes);
-
-
-	service.loadUpdatedValueSets(finalNodes);
-}
+//@Order(6)
+//@Test
+//public void updateResolvedValueSetsToCurrentScheme() throws LBException{
+//	NCItSourceAssertedValueSetUpdateServiceImpl service = new NCItSourceAssertedValueSetUpdateServiceImpl(
+//			"owl2lexevs", "0.1.5.1", "Concept_In_Subset", "true", 
+//			"http://evs.nci.nih.gov/valueset/","NCI","Contributing_Source",
+//			"Semantic_Type", "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+//	List<String> valueSetCodes = service.resolveUpdatedVSToReferences("0.1.5.1");
+//	List<Node> mappedNodes = null;
+//	try {
+//		mappedNodes = service.mapSimpleReferencesToNodes(valueSetCodes);
+//	} catch (LBException e1) {
+//		e1.printStackTrace();
+//	}
+//	List<Node> finalNodes = service.getNodeListForUpdate(mappedNodes);
+//	
+//	service.prepServiceForUpdate(finalNodes);
+//
+//
+//	service.loadUpdatedValueSets(finalNodes);
+//}
 
 }

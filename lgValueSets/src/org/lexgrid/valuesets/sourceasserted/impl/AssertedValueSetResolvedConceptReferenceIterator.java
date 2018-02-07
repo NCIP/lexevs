@@ -12,7 +12,6 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
-import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
@@ -101,7 +100,6 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
                 returnedRefs = 
                 		assertedValueSetEntityResolver.getResolvedConceptReferenceByCursorAndCode(topNode, position, getPageSizeSelectAll(pageSize));
                 position = getPageSizeSelectAll(pageSize) + position;
-               //remaining = remaining - getPageSizeSelectAll(pageSize);
                 remaining = sizeRemaining(remaining, pageSize);
                 if (refs == null) {
                     throw new LBResourceUnavailableException("This iterator has expired and is no longer valid. "
@@ -121,21 +119,18 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
 	@Override
 	public ResolvedConceptReferenceList get(int start, int end)
 			throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
-		// TODO Auto-generated method stub
-		return null;
+		return assertedValueSetEntityResolver.getResolvedConceptReferenceByCursorAndCode(topNode, start, end);
 	}
 
 	@Override
 	public ResolvedConceptReferencesIterator scroll(int maxToReturn)
 			throws LBResourceUnavailableException, LBInvocationException {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("Scroll unsupported.");
 	}
 
 	@Override
 	public ResolvedConceptReferenceList getNext() {
-		// TODO Auto-generated method stub
-		return null;
+		throw new UnsupportedOperationException("GetNext unsupported.");
 	}
 	private int getPageSizeSelectAll(int size) {
 		return size >= 0?size:maxValueSets;

@@ -35,7 +35,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	}
 
 	@Override
-	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode)
+	public List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode)
 			throws LBException {
 		if(matchCode == null){throw new RuntimeException("Entity code cannot be null!");}
 		String csUID = getCsUid();
@@ -45,6 +45,28 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		CodingScheme scheme = transformToCodingScheme(entity, entities);
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
 		schemes.add(scheme);
+		return schemes;
+	}
+	
+	@Override
+	public List<CodingScheme> getSourceAssertedValueSetforMemberEntityCode(String matchCode) {
+		if(matchCode == null){throw new RuntimeException("Entity code cannot be null!");}
+		String csUID = getCsUid();
+		List<Entity> entities = ibatisAssertedValueSetDao.getSourceAssertedValueSetsForVSMemberEntityCode(matchCode,
+				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
+		for(Entity entity: entities) { 
+			List<Entity> vsEntities = ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(entity.getEntityCode(),
+					params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+			
+			List<Entity> topNodeListOfOne = new ArrayList<Entity>();
+			topNodeListOfOne.add(entity);
+					try {
+						schemes.add(transformToCodingScheme(topNodeListOfOne, vsEntities));
+					} catch (LBException e) {
+						throw new RuntimeException("Failed to retrieve value set for: " + entity.getEntityCode(), e);
+					}
+		}
 		return schemes;
 	}
 	

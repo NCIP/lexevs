@@ -19,7 +19,6 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAssertedValueSetSearchExtensionImpl;
-import org.LexGrid.LexBIG.Impl.helpers.Transformer;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
@@ -28,17 +27,11 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.lexevs.dao.database.service.entity.SourceAssertedValueSetEntityServiceImpl;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
-import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
-import org.lexevs.dao.database.service.valuesets.VersionableEventValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
-
-import com.thoughtworks.xstream.mapper.Mapper;
 
 public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSetService {
 	
@@ -62,12 +55,12 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
 		List<String> list = ((SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
-				getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder(params.getCodingSchemeVersion()).build())).
+				getDefaultValueSetServiceForVersion(params)).
 				getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
 		return list.stream().map(code ->
 			{CodingScheme scheme = null;
 				try {
-					scheme = getSourceAssertedValueSetforEntityCode(code).get(0);
+					scheme = getSourceAssertedValueSetforTopNodeEntityCode(code).get(0);
 				} catch (LBException e) {
 					throw new RuntimeException("Mapping value set root code: " + code + " failed");
 				}
@@ -78,13 +71,15 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public List<CodingScheme> getMinimalSourceAssertedValueSetSchemes() throws LBException {
-		return svc.getMinimalResolvedVSCodingSchemes();
+		List<CodingScheme> assertedVS = listAllSourceAssertedValueSets();
+		assertedVS.addAll(svc.getMinimalResolvedVSCodingSchemes());
+		return assertedVS;
 	}
 
 	@Override
 	public List<CodingScheme> getSourceAssertedValueSetsForConceptReference(ConceptReference ref) {
 		try {
-			return getSourceAssertedValueSetforEntityCode(ref.getCode());
+			return getSourceAssertedValueSetforValueSetMemberEntityCode(ref.getCode());
 		} catch (LBException e) {
 			throw new RuntimeException("Problem getting value set for code: " +  ref.getCode());
 		}
@@ -97,7 +92,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {;
-		return getSourceAssertedValueSetforEntityCode(
+		return getSourceAssertedValueSetforTopNodeEntityCode(
 				AssertedValueSetServices.getConceptCodeForURI(uri)).get(0);
 	}
 
@@ -156,15 +151,19 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri) {
 		String code = getEntityCodeFromValueSetDefinition(uri);
-		//TODO Implement with full query path to source asserted iterator.
-//		return new AssertedValueSetResolvedConceptReferenceIterator(code, params);
-		return null;
+ 		return new AssertedValueSetResolvedConceptReferenceIterator(code, params);
 	}
 
 	@Override
-	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode)
+	public List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode)
 			throws LBException {
-		return assVSSvc.getSourceAssertedValueSetforEntityCode(matchCode);
+		return assVSSvc.getSourceAssertedValueSetforTopNodeEntityCode(matchCode);
+	}
+	
+	@Override
+	public List<CodingScheme> getSourceAssertedValueSetforValueSetMemberEntityCode(String matchCode)
+			throws LBException {
+		return assVSSvc.getSourceAssertedValueSetforMemberEntityCode(matchCode);
 	}
 
 	@Override

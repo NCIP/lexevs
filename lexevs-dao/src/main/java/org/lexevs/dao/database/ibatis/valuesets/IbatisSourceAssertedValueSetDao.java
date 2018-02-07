@@ -22,6 +22,7 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	public static final String ASSOCIATION_NAMESPACE = "Association.";
 	private static final String GET_VS_ENTITIES_FROM_CODE = ASSOCIATION_NAMESPACE + "getValueSetEntitiesFromCode";
 	private static final String GET_VS_ENTITY_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSTopNodeEntityByCode";
+	private static final String GET_VS_FROM_MEMBER_CODE = ASSOCIATION_NAMESPACE + "getValueSetTopNodesFromMemberCode";
 	private static final String GET_VS_ENTITY_UIDS = ASSOCIATION_NAMESPACE + "getVSEntityUids";
 	private static final String GET_VS_ENTITY_UIDS_FOR_TOPNODE_CODE = ASSOCIATION_NAMESPACE + "getVSEntityUidsForTopNodeCode";
 	private static final String GET_VS_ENTITY_COUNT_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSEntityCount";
@@ -100,6 +101,16 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 				if(!results.isEmpty()){
 					return Integer.parseInt(results.get(0));}
 					else {return 0;}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Entity> getSourceAssertedValueSetsForVSMemberEntityCode(String matchCode,
+			String assertedValueSetRelation, String predUid, String csUID) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
+		return this.getSqlMapClientTemplate().queryForList(
+		GET_VS_FROM_MEMBER_CODE,
+		new PrefixedParameterTuple(prefix, predUid, matchCode));
 	}
 
 }
