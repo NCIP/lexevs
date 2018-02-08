@@ -3,13 +3,21 @@ package org.LexGrid.valuesets.sourceasserted.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.junit.Before;
@@ -38,7 +46,7 @@ public class SourceAssertedValueSetTest extends TestCase {
 		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertTrue(count == 8L);
+		assertEquals(count, 8L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 	
@@ -48,7 +56,7 @@ public class SourceAssertedValueSetTest extends TestCase {
 		List<CodingScheme> schemes = svc.getMinimalSourceAssertedValueSetSchemes();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertTrue(count == 8L);
+		assertEquals(count, 9L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 
@@ -61,8 +69,6 @@ public class SourceAssertedValueSetTest extends TestCase {
  		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Structured Product Labeling Color Terminology")).findAny().isPresent());
  		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("CDISC SDTM Ophthalmic Exam Test Code Terminology")).findAny().isPresent());
 	}
-	
-	
 	
 	
 	@Test
@@ -97,6 +103,16 @@ public class SourceAssertedValueSetTest extends TestCase {
 	}
 	
 	@Test
+	public void testGetSourceAssertedValueSetEntitiesForURI() {
+		ResolvedConceptReferenceList list = svc.getSourceAssertedValueSetEntitiesForURI(AssertedValueSetServices.BASE + "C99999");
+		List<ResolvedConceptReference> refs = Arrays.asList(list.getResolvedConceptReference());
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertTrue(refs.stream().filter(x -> x.getCode().equals("C99989")).findAny().isPresent());
+		assertTrue(refs.stream().filter(x -> x.getCode().equals("C99988")).findAny().isPresent());
+	}
+	
+	@Test
 	public void testGetSourceAssertedValueSetforEntityCode() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		assertNotNull(schemes);
@@ -107,6 +123,14 @@ public class SourceAssertedValueSetTest extends TestCase {
 	}
 	
 	@Test
+	public void testGetSourceAssertedValueSetIteratorForURI() throws LBResourceUnavailableException {
+		ResolvedConceptReferencesIterator itr = svc.getSourceAssertedValueSetIteratorForURI(AssertedValueSetServices.BASE + "FDA/" + "C54453");
+		assertTrue(itr.hasNext());
+		assertTrue(itr.numberRemaining() > 0);
+		assertEquals(itr.numberRemaining(), 2);
+	}
+	
+	@Test
 	public void testGetListOfCodingSchemeVersionsUsedInResolution() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		CodingScheme scheme = schemes.get(0);
@@ -114,6 +138,37 @@ public class SourceAssertedValueSetTest extends TestCase {
 		assertTrue(list.getAbsoluteCodingSchemeVersionReferenceCount() == 1);
 		assertTrue(list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeURN().equals("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl"));
 		assertTrue(list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion().equals("0.1.5"));
+	}
+	
+	@Test
+	public void testGetSourceAssertedValueSetforValueSetMemberEntityCode() throws LBException {
+		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforValueSetMemberEntityCode("C99988");
+		assertNotNull(schemes);
+		assertTrue(schemes.size() > 0);
+		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Blacker")).findAny().isPresent());
+		
+		schemes = svc.getSourceAssertedValueSetforValueSetMemberEntityCode("C48323");
+		long count = schemes.stream().count();
+		assertTrue(count > 0L);
+ 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Structured Product Labeling Color Terminology")).findAny().isPresent());
+ 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("CDISC SDTM Ophthalmic Exam Test Code Terminology")).findAny().isPresent());
+	}
+	
+	@Test
+	public void testGetSourceAssertedValueSetsforTextSearch() throws LBException {
+		List<AbsoluteCodingSchemeVersionReference> acsvr = svc.getSourceAssertedValueSetsforTextSearch("Black", MatchAlgorithm.LUCENE);
+		assertTrue(acsvr.stream().filter(x -> x.getCodingSchemeURN().equals(AssertedValueSetServices.BASE + "C54453")).findAny().isPresent());
+		assertTrue(acsvr.stream().filter(x -> x.getCodingSchemeVersion().equals("0.1.5")).findAny().isPresent());
+		assertTrue(acsvr.stream().filter(x -> x.getCodingSchemeURN().equals(AssertedValueSetServices.BASE + "C117743")).findAny().isPresent());
+	}
+	
+	@Test
+	public void testGetAllSourceAssertedValueSetEntities() {
+		@SuppressWarnings("unchecked")
+		List<Entity> entities = (List<Entity>) svc.getAllSourceAssertedValueSetEntities();
+		assertNotNull(entities);
+		assertTrue(entities.size() > 0);
+		assertEquals(entities.size(), 6);
 	}
 	
 	@Test

@@ -5,11 +5,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.NCItSourceAssertedValueSetUpdateServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
@@ -17,16 +23,20 @@ import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader
 import org.LexGrid.LexBIG.Impl.loaders.UriBasedHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.springframework.core.annotation.Order;
 
 @RunWith(OrderingTestRunner.class)
 public class LoadAndUpdateSourceAssertedValueSetsTest {
 	LexBIGServiceManager lbsm;
+	private LexEVSValueSetDefinitionServices vds;
 
 
 @Before
@@ -124,5 +134,52 @@ public void loadCurrentCodingSchemeTest() throws LBException, InterruptedExcepti
 //
 //	service.loadUpdatedValueSets(finalNodes);
 //}
+
+	@Order(7)
+	@Test
+	public void loadNonSourceAssertedValueSetDefinition() throws LBException, InterruptedException {
+        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+
+        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm
+                .getLoader("LexGrid_Loader");
+        
+        // load non-async - this should block
+        loader.load(new File("resources/testData/valueDomain/VSD_OWL2Annotations.xml").toURI(), true, false);
+        
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(3000);
+        }
+        assertTrue(loader.getStatus().getEndTime() != null);
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+        
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+        
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+        
+        Thread.sleep(1000);
+	}
+	
+	@Order(8)
+	@Test
+	public void resolveNonSourceAssertedValueSet() throws URISyntaxException, Exception {
+		LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+		AbsoluteCodingSchemeVersionReferenceList csVersionList = new AbsoluteCodingSchemeVersionReferenceList(); 
+		AbsoluteCodingSchemeVersionReference vRef = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		csVersionList.addAbsoluteCodingSchemeVersionReference(vRef);
+
+			loader.load(new URI("OWL2LEXEVS:VerySickCancerPatient"), null, csVersionList, "owl2lexevs", "0.1.5");;
+
+			while (loader.getStatus().getEndTime() == null) {
+				Thread.sleep(3000);
+			}
+			assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+			assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+			lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+	        
+	     }
+	
 
 }

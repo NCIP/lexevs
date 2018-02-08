@@ -170,16 +170,15 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText,
 			MatchAlgorithm matchType) throws LBException {
 		SourceAssertedValueSetSearchExtensionImpl saVSSearch =  (SourceAssertedValueSetSearchExtensionImpl) 
-				svc.getGenericExtension("AssertedValueSetSearchService");
+				svc.getGenericExtension("AssertedValueSetSearchExtension");
 		ResolvedConceptReferencesIterator itr = saVSSearch.search(matchText, matchType);
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
 		while(itr.hasNext()) {
 			ResolvedConceptReference ref = itr.next();
-			ref.getCodingSchemeURI();
-			params.getCodingSchemeVersion();
-			list.add(Constructors.
-					createAbsoluteCodingSchemeVersionReference(
-							ref.getCodingSchemeURI(), params.getCodingSchemeVersion()));
+			List<CodingScheme> schemes = getSourceAssertedValueSetforValueSetMemberEntityCode(ref.getCode());
+			schemes.stream().map(scheme -> 
+			Constructors.createAbsoluteCodingSchemeVersionReference(
+					scheme.getCodingSchemeURI(), scheme.getRepresentsVersion())).forEachOrdered(list::add);
 		}
 		return list;
 	}
@@ -201,7 +200,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 			List<Entity> temp = assVSSvc.getSourceAssertedValueSetEntitiesForEntityCode(matchCode);
 			entitySet.addAll(temp);
 		}
-		return Arrays.asList((Entity[])entitySet.toArray());
+		return entitySet.stream().collect(Collectors.toList());
 	}
 
 	/**
