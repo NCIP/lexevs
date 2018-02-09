@@ -1,6 +1,11 @@
 package org.LexGrid.valuesets.sourceasserted.impl;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -20,18 +25,26 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 import org.lexgrid.valuesets.sourceasserted.impl.SourceAssertedValueSetServiceImpl;
 
 import junit.framework.TestCase;
 
-public class SourceAssertedValueSetTest extends TestCase {
-	SourceAssertedValueSetService svc;
-	
-	@Before
-	public void setUp() {
+public class SourceAssertedValueSetTest{
+	static SourceAssertedValueSetService svc;
+	static SourceAssertedValueSetSearchIndexService service;
+
+	@BeforeClass
+	public static void createIndex() throws Exception {
+		service = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
+		service.createIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
 		
 		AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
 				assertedDefaultHierarchyVSRelation("Concept_In_Subset").
@@ -39,8 +52,14 @@ public class SourceAssertedValueSetTest extends TestCase {
 				codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl")
 				.build();
 		svc = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(params);
-		
 	}
+	
+	
+//	@Before
+//	public void setUp() {
+//
+//		
+//	}
 	@Test
 	public void testListAllSourceAssertedValueSets() throws LBException {
 		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();
@@ -56,7 +75,7 @@ public class SourceAssertedValueSetTest extends TestCase {
 		List<CodingScheme> schemes = svc.getMinimalSourceAssertedValueSetSchemes();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 9L);
+		assertEquals(count, 15L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 
@@ -177,6 +196,15 @@ public class SourceAssertedValueSetTest extends TestCase {
 		getEntityCodeFromValueSetDefinition(AssertedValueSetServices.BASE + "FDA/" + "C54453");
 		assertNotNull(code);
 		assertEquals(code, "C54453");
+	}
+	
+    @AfterClass
+	public static void dropIndexTest() {
+		service.dropIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+		boolean doesExist = service.doesIndexExist(Constructors.
+				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+		assertFalse(doesExist);
 	}
 
 }
