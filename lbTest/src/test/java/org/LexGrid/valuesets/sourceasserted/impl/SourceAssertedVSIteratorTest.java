@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Before;
@@ -153,4 +154,97 @@ public class SourceAssertedVSIteratorTest {
 		System.out.println(i);
 		}
 	}
+	
+	@Test
+	public void testGetLast() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(2,5);
+
+		assertNotNull(list);
+		assertTrue(list.getResolvedConceptReferenceCount() > 0);
+		assertNotNull(list.getResolvedConceptReference()[0]);
+		assertEquals(3, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testGetFirst() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(0,2);
+
+		assertNotNull(list);
+		assertTrue(list.getResolvedConceptReferenceCount() > 0);
+		assertNotNull(list.getResolvedConceptReference()[0]);
+		assertEquals(2, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testGetAll() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(0,5);
+
+		assertNotNull(list);
+		assertTrue(list.getResolvedConceptReferenceCount() > 0);
+		assertNotNull(list.getResolvedConceptReference()[0]);
+		assertEquals(5, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testGetTooManyBoundary() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(0,6);
+
+		assertNotNull(list);
+		assertTrue(list.getResolvedConceptReferenceCount() > 0);
+		assertNotNull(list.getResolvedConceptReference()[0]);
+		assertEquals(5, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testGetOneTooFewBoundary() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(0,4);
+
+		assertNotNull(list);
+		assertTrue(list.getResolvedConceptReferenceCount() > 0);
+		assertNotNull(list.getResolvedConceptReference()[0]);
+		assertEquals(4, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testGetOneBoundary() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(0,1);
+
+		assertNotNull(list);
+		assertTrue(list.getResolvedConceptReferenceCount() > 0);
+		assertNotNull(list.getResolvedConceptReference()[0]);
+		assertEquals(1, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testGetNoneBoundary() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(0,0);
+
+		assertNotNull(list);
+		assertEquals(0, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testGetFinishBeforeStart() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReferenceList list = itr.get(1,0);
+
+		assertNotNull(list);
+		assertEquals(0, list.getResolvedConceptReferenceCount());
+	}
+
 }
