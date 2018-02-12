@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -251,6 +252,24 @@ public class AssertedValueSetServices {
         cs.setEntities(entities);
 
         return cs;
+    }
+    
+    public static ResolvedConceptReference transformEntityToRCR(Entity entity, AssertedValueSetParameters params) {
+        ResolvedConceptReference ref = new ResolvedConceptReference();
+        ref.setCode(entity.getEntityCode());
+        ref.setCodeNamespace(entity.getEntityCodeNamespace());
+        ref.setEntityType(entity.getEntityType());
+        ref.setCodingSchemeName(params.getCodingSchemeName());
+        ref.setCodingSchemeURI(params.getCodingSchemeURI());
+        ref.setCodingSchemeVersion(params.getCodingSchemeVersion());
+        ref.setConceptCode(ref.getCode());
+        ref.setCode(ref.getCode());
+        ref.setEntity(entity);
+        if(StringUtils.isNotBlank(entity.getEntityDescription().getContent())){
+            ref.setEntityDescription(Constructors.createEntityDescription(
+                    entity.getEntityDescription().getContent()));
+        }
+        return ref;
     }
 
     private static Mappings createMappings(Entity entity) {

@@ -30,13 +30,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.database.access.association.model.Node;
-import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.springframework.core.annotation.Order;
 
 @RunWith(OrderingTestRunner.class)
 public class LoadAndUpdateSourceAssertedValueSetsTest {
 	LexBIGServiceManager lbsm;
-	private LexEVSValueSetDefinitionServices vds;
 
 
 @Before

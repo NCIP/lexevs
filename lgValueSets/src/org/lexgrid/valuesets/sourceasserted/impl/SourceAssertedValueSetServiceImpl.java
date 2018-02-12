@@ -108,23 +108,12 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 			e.printStackTrace();
 		}
 		ResolvedConceptReferenceList referenceList = new ResolvedConceptReferenceList();
-		entities.stream().forEach(x -> referenceList.addResolvedConceptReference(transformEntityToRCR(x, uri)));
+		entities.stream().forEach(x -> referenceList.addResolvedConceptReference(transformEntityToRCR(x)));
 		return referenceList;
 	}
 
-	private ResolvedConceptReference transformEntityToRCR(Entity x, String uri) {
-		ResolvedConceptReference ref = new ResolvedConceptReference();
-		ref.setCode(x.getEntityCode());
-		ref.setCodeNamespace(x.getEntityCodeNamespace());
-		ref.setCodingSchemeName(x.getEntityCodeNamespace());
-		ref.setCodingSchemeURI(uri);
-		ref.setCodingSchemeVersion(params.getCodingSchemeVersion());
-		ref.setConceptCode(ref.getCode());
-		ref.setCode(ref.getCode());
-		ref.setEntity(x);
-		ref.setEntityDescription(x.getEntityDescription());
-		ref.setEntityType(x.getEntityType());
-		return ref;
+	private ResolvedConceptReference transformEntityToRCR(Entity entity) {
+		return AssertedValueSetServices.transformEntityToRCR(entity, params);
 	}
 	
 	public String getEntityCodeFromValueSetDefinition(String uri) {
