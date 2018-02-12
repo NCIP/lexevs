@@ -226,6 +226,12 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
 		assertNotNull(docs);
 		assertTrue(docs.size() > 0);
+		ScoreDoc sd = docs.get(0);
+		Document doc = service.getById(sd.doc);
+		assertNotNull(doc);
+		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
+		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
+				.anyMatch(y -> y.stringValue().equals("3675309")));
 	}
 
 	@Test
@@ -253,29 +259,6 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
 		assertNotNull(docs);
 		assertTrue(docs.size() == 0);
-	}
-
-	@Test
-	@Order(4)
-	public void queryUpdateTest() throws ParseException {
-		BooleanQuery.Builder builder = new BooleanQuery.Builder();
-		builder.add(new TermQuery(new Term("code", "3675309")), Occur.MUST);
-		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
-		Query query = builder.build();
-		QueryBitSetProducer parentFilter;
-		parentFilter = new QueryBitSetProducer(
-					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
-		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
-
-		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
-		assertNotNull(docs);
-		assertTrue(docs.size() > 0);
-		ScoreDoc sd = docs.get(0);
-		Document doc = service.getById(sd.doc);
-		assertNotNull(doc);
-		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
-		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
-				.anyMatch(y -> y.stringValue().equals("3675309")));
 	}
 	
 	@Test
