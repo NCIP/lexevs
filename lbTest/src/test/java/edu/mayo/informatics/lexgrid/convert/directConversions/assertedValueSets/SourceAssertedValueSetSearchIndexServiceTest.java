@@ -35,6 +35,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.springframework.core.annotation.Order;
 
 public class SourceAssertedValueSetSearchIndexServiceTest {
 	static SourceAssertedValueSetSearchIndexService service;
@@ -48,6 +49,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 
 
 	@Test
+	@Order(1)
 	public void updateIndexForEntityTest() {
 		Entity entity = new Entity();
 		entity.setEntityCode("BR549");
@@ -137,6 +139,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 
 	@Test
+	@Order(2)
 	public void addEntityToIndexTest() {
 		Entity entity = new Entity();
 		entity.setEntityCode("3675309");
@@ -226,6 +229,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 
 	@Test
+	@Order(3)
 	public void deleteEntityFromIndexTest() {
 		Entity entity = new Entity();
 		entity.setEntityCode("BR549");
@@ -252,6 +256,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 
 	@Test
+	@Order(4)
 	public void queryUpdateTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "3675309")), Occur.MUST);
@@ -274,6 +279,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
+	@Order(5)
 	public void queryPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -299,6 +305,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
+	@Order(6)
 	public void queryPublishPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -324,6 +331,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
+	@Order(6)
 	public void queryPreferredPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
