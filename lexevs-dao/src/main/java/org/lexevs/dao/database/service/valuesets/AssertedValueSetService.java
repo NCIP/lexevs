@@ -9,7 +9,7 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 
 public interface  AssertedValueSetService {
 	
-	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode) throws LBException;
+	List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode) throws LBException;
 
 	public List<String> getAllValueSetTopNodeCodes(String rootCode);
 	
@@ -20,5 +20,13 @@ public interface  AssertedValueSetService {
 	List<String> getSourceAssertedValueSetEntityUidsforPredicateUid( int start, int pageSize);
 
 	List<Entity> getEntitiesForUidMap(List<String> entityUids);
+
+	int getVSEntityCountForTopNodeCode(String code);
+
+	List<Entity> getPagedSourceAssertedValueSetEntities(String rootCode, int start, int pageSize);
+
+	List<CodingScheme> getSourceAssertedValueSetforMemberEntityCode(String matchCode);
+
+
 
 }

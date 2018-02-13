@@ -182,6 +182,10 @@
 		<result property="propertyName" column="propertyName"/>
 		<result property="value.content" column="propertyValue"/>
 	</resultMap>
+	
+	<resultMap id="vsEntityCount" class="string">
+		<result property="java.util.String" column="vsEntityCount" />
+	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
@@ -1447,9 +1451,36 @@
 		ON 
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
-			assns.associationPredicateGuid  = #param1#
+			assns.associationPredicateGuid = #param1#
 		AND
 		 	assns.targetEntityCode = #param2#
+	</select>
+	
+	<select id="getValueSetTopNodesFromMemberCode"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" resultMap="vsEntityResult">
+		SELECT
+			ent.entityGuid, 
+			ent.entityCode, 
+			ent.entityCodeNamespace,
+			 ent.isDefined, 
+			 ent.isAnonymous, 
+			 ent.description, 
+			 ent.isActive, 
+			 ent.owner, 
+			 ent.status, 
+			 ent.effectiveDate, 
+			 ent.expirationDate
+		FROM
+		 	$prefix$entityAssnsToEntity  assns 
+		JOIN 
+			$prefix$entity ent 
+		ON 
+			assns.targetEntityCode = ent.entityCode
+		WHERE
+			assns.associationPredicateGuid = #param1#
+		AND
+		 	assns.sourceEntityCode = #param2#
 	</select>
 	
 	<select id="getVSEntityUids"
@@ -1465,6 +1496,25 @@
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
 			assns.associationPredicateGuid  = #param1#
+		GROUP BY
+			ent.entityGuid
+	</select>
+	
+	<select id="getVSEntityUidsForTopNodeCode"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		remapResults="true" resultMap="Common.uidResult">
+		SELECT
+			ent.entityGuid AS uidKey
+		FROM
+		 	$prefix$entityAssnsToEntity  assns 
+		JOIN 
+			$prefix$entity ent 
+		ON 
+			assns.sourceEntityCode = ent.entityCode
+		WHERE
+			assns.associationPredicateGuid  = #param1#
+		AND
+			assns.targetEntityCode = #param2#
 		GROUP BY
 			ent.entityGuid
 	</select>
@@ -1498,6 +1548,21 @@
 		AND
 			entityCode = #param2#
    </select>
+   
+   <select id="getVSEntityCount"
+   		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultMap="vsEntityCount"
+		remapResults="true">
+		SELECT 
+			 count(*) AS vsEntityCount
+			FROM
+		 	$prefix$entityAssnsToEntity  assns 
+		WHERE
+			assns.associationPredicateGuid  = #param1#
+		AND
+			assns.targetEntityCode = #param2#
+   </select>
+   
    
    <select id="getAllValidValueSetTopNodes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
 		remapResults="true" resultMap="definedNodeResolution">

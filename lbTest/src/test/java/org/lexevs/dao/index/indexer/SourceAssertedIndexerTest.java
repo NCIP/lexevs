@@ -1,6 +1,7 @@
 package org.lexevs.dao.index.indexer;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,8 +18,6 @@ import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
 import org.junit.Before;
 import org.junit.Test;
-import org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 public class SourceAssertedIndexerTest {
 	AssertedValueSetEntityIndexer indexer;

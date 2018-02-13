@@ -13,4 +13,14 @@ public interface SourceAssertedValueSetDao extends LexGridSchemaVersionAwareDao 
 
 	List<String> getValueSetEntityUids(String codingSchemeUid, String predUid, int start, int pageSize);
 
+	List<String> getValueSetEntityUidForTopNodeEntityCode(String codingSchemeUid, String predUid, String code, int start,
+			int pageSize);
+
+	List<Entity> getPagedValueSetEntities(String matchCode, String csUID, String predicateUID, int start, int pageSize);
+
+	int getValueSetEntityCount(String matchCode, String csUID, String predicateUID);
+
+	List<Entity> getSourceAssertedValueSetsForVSMemberEntityCode(String matchCode, String assertedValueSetRelation,
+			String predUid, String csUID);
+
 }

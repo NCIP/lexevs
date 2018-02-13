@@ -43,8 +43,6 @@ public class EntityToRVSTransformer {
     private LexBIGService svc;
     private String baseUri;
 
-    private LexEvsServiceLocator locator = LexEvsServiceLocator.getInstance();
-
     private String propertyName;
 
     public EntityToRVSTransformer( 
@@ -83,7 +81,7 @@ public class EntityToRVSTransformer {
         HashMap<String, String> definedSources = new HashMap<String, String>();
         List<Property> sourcelist = AssertedValueSetServices.getPropertiesForPropertyName(props, source);
 
-        sourcelist.stream().forEach(s -> definedSources.put(s.getValue().getContent(),
+        sourcelist.stream().forEachOrdered(s -> definedSources.put(s.getValue().getContent(),
                 AssertedValueSetServices.getPropertyQualifierValueForSource(s.getPropertyQualifierAsReference()) != null
                         ? AssertedValueSetServices.getPropertyQualifierValueForSource(
                                 s.getPropertyQualifierAsReference())
@@ -197,24 +195,10 @@ public class EntityToRVSTransformer {
         for(Property p: props){
         p.getPropertyQualifierAsReference().stream().
         filter(pq -> pq.getPropertyQualifierName().equals(AssertedValueSetServices.SOURCE)).
-        map(PropertyQualifier::getValue).forEach(qual -> sources.add(AssertedValueSetServices.createSupportedSource(qual.getContent(), codingSchemeUri)));
+        map(PropertyQualifier::getValue).forEachOrdered(qual -> sources.add(AssertedValueSetServices.createSupportedSource(qual.getContent(), codingSchemeUri)));
         }
         return sources;
     }
-
-//    protected String truncateDefNameforCodingSchemeName(String name, HashMap<String, String> truncatedNames){
-//        if (StringUtils.isNotEmpty(name) && name.length() > 50) {
-//            String shortName = name.substring(0, 49);
-//            String remainder = name.substring(49);
-//            shortName = name.substring(0,name.lastIndexOf(" "));
-//            if(truncatedNames.containsKey(shortName)){
-//                shortName = AssertedValueSetServices.processForDiff(shortName, name, truncatedNames);
-//            }
-//            truncatedNames.put(shortName, name);
-//            return shortName;
-//        }
-//        return name;
-//    }
 
 
     public Entities getEntities(String topNodeCode) throws LBException {

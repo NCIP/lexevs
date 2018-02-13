@@ -35,19 +35,38 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	}
 
 	@Override
-	public List<CodingScheme> getSourceAssertedValueSetforEntityCode(String matchCode)
+	public List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode)
 			throws LBException {
 		if(matchCode == null){throw new RuntimeException("Entity code cannot be null!");}
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
+		String csUID = getCsUid();
 		List<Entity> entities = ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(matchCode,
-				params.getAssertedValueSetRelation(), predUID.get(0), csUID);
+				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
 		List<Entity> entity = ibatisAssertedValueSetDao.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
 		CodingScheme scheme = transformToCodingScheme(entity, entities);
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
 		schemes.add(scheme);
+		return schemes;
+	}
+	
+	@Override
+	public List<CodingScheme> getSourceAssertedValueSetforMemberEntityCode(String matchCode) {
+		if(matchCode == null){throw new RuntimeException("Entity code cannot be null!");}
+		String csUID = getCsUid();
+		List<Entity> entities = ibatisAssertedValueSetDao.getSourceAssertedValueSetsForVSMemberEntityCode(matchCode,
+				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
+		for(Entity entity: entities) { 
+			List<Entity> vsEntities = ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(entity.getEntityCode(),
+					params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+			
+			List<Entity> topNodeListOfOne = new ArrayList<Entity>();
+			topNodeListOfOne.add(entity);
+					try {
+						schemes.add(transformToCodingScheme(topNodeListOfOne, vsEntities));
+					} catch (LBException e) {
+						throw new RuntimeException("Failed to retrieve value set for: " + entity.getEntityCode(), e);
+					}
+		}
 		return schemes;
 	}
 	
@@ -76,29 +95,45 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	@Override
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
 		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
-		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode == null? params.getRootConcept(): rootCode, 
-				params.getAssertedValueSetRelation(), predUID.get(0), csUID);
+		String csUID = getCsUid();
+		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode, 
+				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+	}
+	
+	@Override
+	public List<Entity> getPagedSourceAssertedValueSetEntities(String rootCode, int start, int pageSize) {
+		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
+		String csUID = getCsUid();
+		return ibatisAssertedValueSetDao.getPagedValueSetEntities(rootCode, csUID, getPredUid(csUID), start, pageSize);
 	}
 	
 	@Override
 	public List<String> getSourceAssertedValueSetEntityUidsforPredicateUid(int start, int pageSize) {
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		List<String> predUID = this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation());
-		return ibatisAssertedValueSetDao.getValueSetEntityUids(csUID, predUID.get(0), start, pageSize);
+		String csUID = getCsUid();
+		return ibatisAssertedValueSetDao.getValueSetEntityUids(csUID, getPredUid(csUID), start, pageSize);
 	}
 	
 	@Override
 	public List<Entity> getEntitiesForUidMap(List<String> entityUids){
 		if(entityUids == null || entityUids.size() == 0){throw new RuntimeException("Must have entity indentifiers to proceed!");}
-		String csUID = this.getDaoManager().getCodingSchemeDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
-				getCodingSchemeUIdByUriAndVersion(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
-		return entityDao.getEntities(csUID, entityUids);
+
+		return entityDao.getEntities(getCsUid(), entityUids);
+	}
+	
+	@Override
+	public int getVSEntityCountForTopNodeCode(String code){
+		if(code == null ){throw new RuntimeException("Must have entity indentifiers to proceed!");}
+		String csUid = getCsUid();
+		return ibatisAssertedValueSetDao.getValueSetEntityCount(code, csUid, getPredUid(csUid));
+	}
+	
+	public String getCsUid() {
+		return this.getCodingSchemeUId(params.getCodingSchemeURI(), params.getCodingSchemeVersion());
+	}
+	
+	public String getPredUid(String csUID) {
+		return this.getDaoManager().getAssociationDao(params.getCodingSchemeURI(), params.getCodingSchemeVersion()).
+				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation()).get(0);
 	}
 
 	/**
@@ -144,8 +179,5 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public void setEntityDao(EntityDao entityDao) {
 		this.entityDao = entityDao;
 	}
-
-
-
 
 }

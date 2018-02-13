@@ -29,7 +29,7 @@ private AssertedValueSetService svc;
 	}
 
 	@Test
-	public void testSupportServiceAVS() {
+	public void testgetUids() {
 		List<String> uids = svc.getSourceAssertedValueSetEntityUidsforPredicateUid(0, 2);
 		assertNotNull(uids);
 		assertTrue(uids.size() > 0);
@@ -39,6 +39,12 @@ private AssertedValueSetService svc;
 		assertNotNull(entities);
 		assertTrue(entities.size() > 0);
 		assertEquals(entities.size(), 2);
+	}
+	
+	@Test
+	public void testGetEntityCountForTopNodeCodt() {
+		int count = svc.getVSEntityCountForTopNodeCode("C99999");
+		assertEquals(count, 2);
 	}
 
 }

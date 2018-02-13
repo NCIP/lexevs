@@ -137,7 +137,7 @@ public class SourceAssertedVSLoadTest {
 	
 	@Test
 	public void testGetSourceAssertedValueSetforEntityCode() throws LBException {
-		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforEntityCode("C48323");
+		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		assertNotNull(schemes);
 		assertTrue(schemes.size() > 0);
 		assertEquals("Black", schemes.get(0).getCodingSchemeName());
@@ -147,7 +147,7 @@ public class SourceAssertedVSLoadTest {
 	
 	@Test
 	public void testGetListOfCodingSchemeVersionsUsedInResolution() throws LBException {
-		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforEntityCode("C48323");
+		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		CodingScheme scheme = schemes.get(0);
 		AbsoluteCodingSchemeVersionReferenceList list = svc.getListOfCodingSchemeVersionsUsedInResolution(scheme);
 		assertTrue(list.getAbsoluteCodingSchemeVersionReferenceCount() == 1);
