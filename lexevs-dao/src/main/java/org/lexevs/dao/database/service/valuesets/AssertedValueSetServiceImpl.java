@@ -81,6 +81,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	}
 
 	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
+		if(entity == null || entity.size() == 0) { return null;}
 		Entities list = new Entities();
 		list.getEntityAsReference().addAll(entities);
 		Entity ent = entity.iterator().next();

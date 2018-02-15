@@ -20,6 +20,7 @@ package org.LexGrid.valueset.impl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -37,6 +38,7 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
@@ -57,7 +59,13 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 
 	public void setUp() {
 		lbs = getLexBIGService();
-		service = new LexEVSResolvedValueSetServiceImpl(lbs);
+		AssertedValueSetParameters params =
+		new AssertedValueSetParameters.Builder("0.1.5").
+		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+		codingSchemeName("owl2lexevs").
+		codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl")
+		.build();
+		service = new LexEVSResolvedValueSetServiceImpl(lbs, params);
 	}
 
 	@Test
@@ -67,32 +75,25 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving full scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(list.size() > 0);
-		assertTrue(list.size() == 8);
-		CodingScheme scheme = list.get(0);
+		assertEquals(list.size(), 11);
+//		CodingScheme scheme = list.get(0);
 		
-		// no coding scheme version or tag was passed in, so retrieve the PRODUCTION tag (version 1.1)
-		for (Property prop : scheme.getProperties().getPropertyAsReference()) {
-			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
-				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
-						"Automobiles"));
-//				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
-				System.out.println("Coding Scheme: "
-						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop));
-				System.out.println("Version: "
-						+ getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop));
-			}
-		}
-		LexBIGService lbs = getLexBIGService();
-		CodedNodeSet set = lbs.getCodingSchemeConcepts(scheme.getCodingSchemeName(),
-				Constructors.createCodingSchemeVersionOrTag(null, scheme.getRepresentsVersion()));
-		ResolvedConceptReferencesIterator refs = set.resolve(null, null, null);
+		assertEquals(list.stream().
+		filter(scheme -> scheme.getProperties().getPropertyAsReference().
+			stream().filter(
+			prop -> prop.getPropertyName().
+			equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)).
+				findAny().isPresent()).count(), 11);
+		
+		ResolvedConceptReferenceList refList = service.getValueSetEntitiesForURI(list.get(0).getCodingSchemeURI());
+
+		Iterator<ResolvedConceptReference> refs = (Iterator<ResolvedConceptReference>) refList.iterateResolvedConceptReference();
 		while (refs.hasNext()) {
 
 			ResolvedConceptReference ref = refs.next();
 			System.out.println("Namespace: " + ref.getEntity().getEntityCodeNamespace());
 			System.out.println("Code: " + ref.getCode());
 			System.out.println("Description: " + ref.getEntityDescription().getContent());
-
 		}
 	}
 	
@@ -103,7 +104,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving mini scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(schemes.size() > 0);
-		assertTrue(schemes.size() == 8);
+		assertEquals(schemes.size(), 11);
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
 				+ "as many characters as it takes to exceed 50 chars but not 250 chars and that "
@@ -121,38 +122,22 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	
 	@Test
 	public void testResolveDuplicateValueSetsWithTestSource() throws Exception {
-		CodingScheme ref = service.getResolvedValueSetForValueSetURI(new URI("http://evs.nci.nih.gov/valueset/TEST/C48323"));
+		URI uri = new URI("http://evs.nci.nih.gov/valueset/TEST/C48323");
+		CodingScheme ref = service.getResolvedValueSetForValueSetURI(uri);
 		assertNotNull(ref);
-		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(ref.getCodingSchemeURI(), 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getRepresentsVersion()));
-		ResolvedConceptReferencesIterator refs = null;
-		try{
-			refs = set.resolve(null, null, null);
-		}
-		catch(Exception e){
-			System.out.println(e);
-			fail();
-		}
+		ResolvedConceptReferenceList refs = service.getValueSetEntitiesForURI(uri.toString());
 		assertNotNull(refs);
-		assertTrue(refs.hasNext());
+		assertTrue(refs.getResolvedConceptReferenceCount() > 0);
 	}
 	
 	@Test
 	public void testResolveDuplicateValueSetsWithFDASource() throws Exception {
-		CodingScheme ref = service.getResolvedValueSetForValueSetURI(new URI("http://evs.nci.nih.gov/valueset/FDA/C48323"));
+		URI uri = new URI("http://evs.nci.nih.gov/valueset/FDA/C48323");
+		CodingScheme ref = service.getResolvedValueSetForValueSetURI(uri);
 		assertNotNull(ref);
-		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(ref.getCodingSchemeURI(), 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getRepresentsVersion()));
-		ResolvedConceptReferencesIterator refs = null;
-		try{
-			refs = set.resolve(null, null, null);
-		}
-		catch(Exception e){
-			System.out.println(e);
-			fail();
-		}
+		ResolvedConceptReferenceList refs = service.getValueSetEntitiesForURI(uri.toString());
 		assertNotNull(refs);
-		assertTrue(refs.hasNext());
+		assertTrue(refs.getResolvedConceptReferenceCount() > 0);
 	}
 
 	@Test

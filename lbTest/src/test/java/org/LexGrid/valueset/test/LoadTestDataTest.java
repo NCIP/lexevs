@@ -324,12 +324,12 @@ public class LoadTestDataTest {
 	    Thread.sleep(1000);
 	}
 	
-	@Test
-	@Order(16)
-	public void testloadSourceAssertedResolvedValueSet() throws URISyntaxException, Exception{
-	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs","0.1.5","Concept_In_Subset", 
-			 true, "http://evs.nci.nih.gov/valueset/", "NCI","Semantic_Type").run("Contributing_Source");
-     }
+//	@Test
+//	@Order(16)
+//	public void testloadSourceAssertedResolvedValueSet() throws URISyntaxException, Exception{
+//	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs","0.1.5","Concept_In_Subset", 
+//			 true, "http://evs.nci.nih.gov/valueset/", "NCI","Semantic_Type").run("Contributing_Source");
+//     }
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
