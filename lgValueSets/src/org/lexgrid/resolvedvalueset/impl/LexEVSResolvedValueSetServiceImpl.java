@@ -261,14 +261,14 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	}
     
     public Set<CodingSchemeReference> getReferenceForSchemes(List<CodingScheme> schemes){
-    	
-    	return schemes.parallelStream().map(x -> {
+    Set<CodingSchemeReference> refs = schemes.parallelStream().map(x -> {
     		CodingSchemeReference ref = new CodingSchemeReference();
     		ref.setCodingScheme(x.getCodingSchemeURI());
     		ref.setVersionOrTag(Constructors.createCodingSchemeVersionOrTagFromVersion(x.getRepresentsVersion()));
     		return ref;
     	}).collect(Collectors.toSet());
-    	
+    Set<CodingSchemeReference> assertedRefs = getSourceAssertedReferenceForSchemes(schemes);
+    return refs.stream().filter(scheme -> !assertedRefs.contains(scheme)).collect(Collectors.toSet());
     }
     
     private Set<CodingSchemeReference> getSourceAssertedReferenceForSchemes(List<CodingScheme> schemes){
@@ -278,6 +278,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 			  ref = new CodingSchemeReference();
 			CodingScheme cs = vsSvc.getSourceAssertedValueSetForValueSetURI(
 					new URI(scheme.getCodingSchemeURI()));
+			if(cs == null) {return null;}
 			ref.setCodingScheme(cs.getCodingSchemeURI());
 			ref.setVersionOrTag(Constructors.
 					createCodingSchemeVersionOrTagFromVersion(cs.getRepresentsVersion()));

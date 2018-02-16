@@ -53,13 +53,13 @@ import junit.framework.TestCase;
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
  */
 public class LexEVSResolvedValueSetTest extends TestCase {
-
+	AssertedValueSetParameters params;
 	LexEVSResolvedValueSetService service;
 	private LexBIGService lbs;
 
 	public void setUp() {
 		lbs = getLexBIGService();
-		AssertedValueSetParameters params =
+		params =
 		new AssertedValueSetParameters.Builder("0.1.5").
 		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
 		codingSchemeName("owl2lexevs").
@@ -250,6 +250,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 	
 	@Test
 	public void testGetSourceAssertedResolvedValueSets(){
+		((LexBIGServiceImpl)lbs).setAssertedValueSetConfiguration(params);
 		List<CodingScheme> schemes = lbs.getSourceAssertedResolvedVSCodingSchemes();
 		assertTrue(schemes.size() > 0);
 		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("http://evs.nci.nih.gov/valueset/FDA/C99999")));
