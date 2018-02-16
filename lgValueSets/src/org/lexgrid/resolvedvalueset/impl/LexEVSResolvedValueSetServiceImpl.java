@@ -163,29 +163,48 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException{
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
 		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		SourceAssertedValueSetSearchExtension assertedValueSetSearch = (SourceAssertedValueSetSearchExtension) lbs.getGenericExtension("AssertedValueSetSearchExtension");
 		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getMinimalResolvedValueSetSchemes());
 		ResolvedConceptReferencesIterator itr = search.search(matchText, refs,matchType);
+		ResolvedConceptReferencesIterator asVsItr = assertedValueSetSearch.search(matchText, matchType);
+		while(asVsItr.hasNext()) {
+		ResolvedConceptReference ref = asVsItr.next();
+		List<CodingScheme> schemes = vsSvc.getSourceAssertedValueSetsForConceptReference(ref);
+		List<AbsoluteCodingSchemeVersionReference> mappedList = schemes.stream().map(toRef ->
+					Constructors.createAbsoluteCodingSchemeVersionReference(
+							toRef.getCodingSchemeURI(), toRef.getRepresentsVersion())).
+				collect(Collectors.toList());
+		list.addAll(mappedList);
+		}
 		while(itr.hasNext()){
 			ResolvedConceptReference ref = itr.next();
 			list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
 					ref.getCodingSchemeVersion()));
 		}
-		return list;
+		//Clean list of duplicates and return
+		return list.stream().map(
+				refer-> refer.getCodingSchemeURN()).distinct().map(
+				uri -> list.stream().filter(
+				uriPick -> uriPick.getCodingSchemeURN() == uri ).
+				findAny().get()).
+				collect(Collectors.toList());
 	}
 	
 	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforEntityCode(String matchCode) throws LBException{
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-		SourceAssertedValueSetSearchExtension assertedValueSetSearch = (SourceAssertedValueSetSearchExtension) lbs.getGenericExtension("AssertedValueSetSearchExtension");
+
 		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
-		ResolvedConceptReferencesIterator asVsItr = assertedValueSetSearch.search(matchCode, MatchAlgorithm.CODE_EXACT);
+
 		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getMinimalResolvedValueSetSchemes());
 		ResolvedConceptReferencesIterator itr = search.search(matchCode, refs, MatchAlgorithm.CODE_EXACT);
-		while(asVsItr.hasNext()) {
-			ResolvedConceptReference ref = itr.next();
-			list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
-					ref.getCodingSchemeVersion()));
-		}
+
+			List<CodingScheme> schemes = vsSvc.getSourceAssertedValueSetforValueSetMemberEntityCode(matchCode);
+			List<AbsoluteCodingSchemeVersionReference> tempList = schemes.stream().map(scheme -> 
+			Constructors.createAbsoluteCodingSchemeVersionReference(
+					scheme.getCodingSchemeURI(), scheme.getRepresentsVersion())).
+					collect(Collectors.toList());
+			list.addAll(tempList);
 		while(itr.hasNext()){
 		ResolvedConceptReference ref = itr.next();
 		list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 

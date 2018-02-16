@@ -76,14 +76,16 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		System.out.println("Retrieving full scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(list.size() > 0);
 		assertEquals(list.size(), 11);
-//		CodingScheme scheme = list.get(0);
-		
 		assertEquals(list.stream().
 		filter(scheme -> scheme.getProperties().getPropertyAsReference().
 			stream().filter(
 			prop -> prop.getPropertyName().
 			equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)).
 				findAny().isPresent()).count(), 11);
+		//Source asserted value set
+		assertTrue(list.stream().filter(scheme -> scheme.getCodingSchemeName().equals("Black")).findAny().isPresent());
+		//Resolved value set coding scheme
+		assertTrue(list.stream().filter(scheme -> scheme.getCodingSchemeName().equals("All Domestic Autos But GM")).findAny().isPresent());
 		
 		ResolvedConceptReferenceList refList = service.getValueSetEntitiesForURI(list.get(0).getCodingSchemeURI());
 
@@ -105,6 +107,7 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		System.out.println("Retrieving mini scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(schemes.size() > 0);
 		assertEquals(schemes.size(), 11);
+		//Resolved value set coding schemes
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
 				+ "as many characters as it takes to exceed 50 chars but not 250 chars and that "
@@ -116,6 +119,11 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("12.03test")));
 		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("1.0")));
 		assertTrue(schemes.stream().anyMatch(x -> x.isIsActive()));
+		
+		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("Black")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getRepresentsVersion().equals("0.1.5")));
+//		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("http://evs.nci.nih.gov/valueset/FDA/C48323")));
+		assertTrue(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("http://evs.nci.nih.gov/valueset/TEST/C48323")));
 		final int count[] = {0};
 		schemes.forEach(x ->{ count[0]++; System.out.println(x.getFormalName() + " count: " +  count[0]);});
 	}
@@ -142,12 +150,21 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 
 	@Test
 	public void testGetResolvedValueSetsforConceptReference() {
+		//Resolved value set coding scheme
 		ConceptReference ref = new ConceptReference();
 		ref.setCode("005");
 		ref.setCodeNamespace("Automobiles");
 		ref.setCodingSchemeName("Automobiles");
 		List<CodingScheme> schemes = service.getResolvedValueSetsForConceptReference(ref);
 		assertTrue(schemes.size() > 0);
+		
+		//Resolved value set coding scheme
+		ConceptReference asVSref = new ConceptReference();
+		asVSref.setCode("C48323");
+		asVSref.setCodeNamespace("owl2lexevs");
+		asVSref.setCodingSchemeName("Black");
+		List<CodingScheme> asVsSchemes = service.getResolvedValueSetsForConceptReference(ref);
+		assertTrue(asVsSchemes.size() > 0);
 	}
 
 	@Test
@@ -162,6 +179,17 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
 						"Automobiles"));
 				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("1.1"));
+			}
+		}
+		
+		// No coding scheme version or tag defined.  This will resolve against RPODCUTION tag of automobiles.
+		URI asVSuri = new URI("http://evs.nci.nih.gov/valueset/FDA/C48323");
+		CodingScheme asVSscheme = service.getResolvedValueSetForValueSetURI(asVSuri);
+		for (Property prop : asVSscheme.getProperties().getPropertyAsReference()) {
+			if (prop.getPropertyName().equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)) {
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.CS_NAME, prop).equals(
+						"Black"));
+				assertTrue(getPropertyQualifierValue(LexEVSValueSetDefinitionServices.VERSION, prop).equals("0.1.5"));
 			}
 		}
 	}
@@ -193,6 +221,12 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
 		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
+		
+		List<AbsoluteCodingSchemeVersionReference> asVSrefs = service.getResolvedValueSetsforEntityCode("C48323");
+		assertNotNull(asVSrefs);
+		assertTrue(asVSrefs.size() > 0);
+		AbsoluteCodingSchemeVersionReference asVSref = asVSrefs.get(0);
+		assertEquals(asVSref.getCodingSchemeURN(), "http://evs.nci.nih.gov/valueset/C54453");
 	}
 	
 	@Test
@@ -207,6 +241,17 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
 		assertEquals(ref.getCodingSchemeURN(), "XTEST:One.Node.ValueSet");
+		
+		long start1 = System.currentTimeMillis();
+		List<AbsoluteCodingSchemeVersionReference> asVSrefs = 
+				service.getResolvedValueSetsforTextSearch("Black", 
+						MatchAlgorithm.PRESENTATION_EXACT);
+		long end1 = System.currentTimeMillis();
+		System.out.println("Exact Match: " + (end1 - start1) + " mseconds");
+		assertNotNull(asVSrefs);
+		assertTrue(asVSrefs.size() > 0);
+		AbsoluteCodingSchemeVersionReference asVSref = asVSrefs.get(0);
+		assertEquals(asVSref.getCodingSchemeURN(), "http://evs.nci.nih.gov/valueset/C54453");
 	}
 	
 	@Test
@@ -222,6 +267,17 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
 		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
 				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+		
+		long start1 = System.currentTimeMillis();
+		List<AbsoluteCodingSchemeVersionReference> asVSrefs = 
+				service.getResolvedValueSetsforTextSearch("Black", 
+						MatchAlgorithm.LUCENE);
+		long end1 = System.currentTimeMillis();
+		System.out.println("Lucene Search: " + (end1 - start1) + " mseconds");
+		assertNotNull(asVSrefs);
+		assertTrue(asVSrefs.size() > 0);
+		AbsoluteCodingSchemeVersionReference asVsref = asVSrefs .get(0);
+		assertTrue(asVsref.getCodingSchemeURN().equals( "http://evs.nci.nih.gov/valueset/C54453"));
 
 	}
 	
@@ -232,12 +288,27 @@ public class LexEVSResolvedValueSetTest extends TestCase {
 				service.getResolvedValueSetsforTextSearch("Domestic", 
 						MatchAlgorithm.PRESENTATION_CONTAINS);
 		long end = System.currentTimeMillis();
-		System.out.println("Contians search: " + (end - start) + " mseconds");
+		System.out.println("Contains search: " + (end - start) + " mseconds");
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		AbsoluteCodingSchemeVersionReference ref = refs.get(0);
 		assertTrue(ref.getCodingSchemeURN().equals( "SRITEST:AUTO:AllDomesticButGM") || 
 				ref.getCodingSchemeURN().equals("SRITEST:AUTO:AllDomesticButGMWithlt250charName"));
+		
+		long start1 = System.currentTimeMillis();
+		List<AbsoluteCodingSchemeVersionReference> asVSrefs = 
+				service.getResolvedValueSetsforTextSearch("Bl", 
+						MatchAlgorithm.PRESENTATION_CONTAINS);
+		long end1 = System.currentTimeMillis();
+		System.out.println("Contains search: " + (end1 - start1) + " mseconds");
+		assertNotNull(asVSrefs);
+		assertTrue(asVSrefs.size() > 0);
+		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C54453")));
+		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C99999")));
+		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C48323")));
+		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C48325")));
+		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C117743")));
+		assertFalse(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C99996")));
 	}
 	
 	@Test
