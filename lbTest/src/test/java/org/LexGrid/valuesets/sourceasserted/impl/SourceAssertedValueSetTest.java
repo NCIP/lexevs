@@ -55,11 +55,6 @@ public class SourceAssertedValueSetTest{
 	}
 	
 	
-//	@Before
-//	public void setUp() {
-//
-//		
-//	}
 	@Test
 	public void testListAllSourceAssertedValueSets() throws LBException {
 		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();

@@ -20,7 +20,6 @@ import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Extensions.Generic.SourceAssertedValueSetSearchExtension;
-import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -28,7 +27,6 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
-import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
@@ -42,7 +40,21 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	private SourceAssertedValueSetServiceImpl vsSvc;
 	
 	public LexEVSResolvedValueSetServiceImpl(){
-		//local constructor
+		lbs = LexBIGServiceImpl.defaultInstance();
+		try {
+			vsSvc = (SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
+					getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder(
+							lbs.resolveCodingScheme(AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI, null).
+							getRepresentsVersion()).build());
+		} catch (LBException e) {
+			LogFactory.getLog(LexEVSResolvedValueSetServiceImpl.class).
+			warn("Could not find value sets for default asserted value set scheme: " + e);
+		}
+	}
+	
+	public LexEVSResolvedValueSetServiceImpl(AssertedValueSetParameters  params){
+		vsSvc = (SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
+				getDefaultValueSetServiceForVersion(params);
 	}
 	
 	public LexEVSResolvedValueSetServiceImpl(LexBIGService lbs){
@@ -68,7 +80,9 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
 		LexBIGService lbs= getLexBIGService();
 		List<CodingScheme> minSchemeList = lbs.getMinimalResolvedVSCodingSchemes();
-		List<CodingScheme> assertVSList = vsSvc.listAllSourceAssertedValueSets();
+		List<CodingScheme> assertVSList = new ArrayList<CodingScheme>();
+		if(vsSvc != null) {
+		assertVSList = vsSvc.listAllSourceAssertedValueSets();}
 		assertVSList.addAll(minSchemeList.stream().map(x -> 
 						{ CodingScheme cs = null;
 							try {
@@ -83,9 +97,12 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	}
 
 	@Override
-	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException {    
-        //return lbs.getMinimalResolvedVSCodingSchemes() ;
+	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException {   
+		if(vsSvc == null)
+        {return lbs.getMinimalResolvedVSCodingSchemes();}
+		else {
 		return vsSvc.getMinimalSourceAssertedValueSetSchemes();
+		}
 	}
 	
 	/**
@@ -136,7 +153,10 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
 
 			try {
-				CodingScheme scheme = vsSvc.getSourceAssertedValueSetForValueSetURI(new URI(uri));
+				CodingScheme scheme = null;
+				if(vsSvc != null) {
+				 scheme = vsSvc.getSourceAssertedValueSetForValueSetURI(new URI(uri));
+				}
 
 				if (scheme != null) {
 					if (scheme.getEntities().getEntityAsReference().stream()
@@ -169,12 +189,14 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		ResolvedConceptReferencesIterator asVsItr = assertedValueSetSearch.search(matchText, matchType);
 		while(asVsItr.hasNext()) {
 		ResolvedConceptReference ref = asVsItr.next();
-		List<CodingScheme> schemes = vsSvc.getSourceAssertedValueSetsForConceptReference(ref);
-		List<AbsoluteCodingSchemeVersionReference> mappedList = schemes.stream().map(toRef ->
+		if(vsSvc != null) {
+			List<CodingScheme> schemes = vsSvc.getSourceAssertedValueSetsForConceptReference(ref);
+			List<AbsoluteCodingSchemeVersionReference> mappedList = schemes.stream().map(toRef ->
 					Constructors.createAbsoluteCodingSchemeVersionReference(
 							toRef.getCodingSchemeURI(), toRef.getRepresentsVersion())).
 				collect(Collectors.toList());
-		list.addAll(mappedList);
+			list.addAll(mappedList);
+			}
 		}
 		while(itr.hasNext()){
 			ResolvedConceptReference ref = itr.next();
@@ -191,33 +213,44 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	}
 	
 	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforEntityCode(String matchCode) throws LBException{
-		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
-
-		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
 		
-
+		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
+		//Set up search for regular code system based concept references
+		SearchExtension search = (SearchExtension) lbs.getGenericExtension("SearchExtension");
+		//Get a complete set of references for both kinds of value sets
 		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getMinimalResolvedValueSetSchemes());
+		//Searching on all references for code system type search
 		ResolvedConceptReferencesIterator itr = search.search(matchCode, refs, MatchAlgorithm.CODE_EXACT);
-
-			List<CodingScheme> schemes = vsSvc.getSourceAssertedValueSetforValueSetMemberEntityCode(matchCode);
-			List<AbsoluteCodingSchemeVersionReference> tempList = schemes.stream().map(scheme -> 
-			Constructors.createAbsoluteCodingSchemeVersionReference(
-					scheme.getCodingSchemeURI(), scheme.getRepresentsVersion())).
+		//Searching source asserted value set index and adding results to list
+		List<CodingScheme> schemes = null;
+			if(vsSvc != null) {
+				schemes = vsSvc.getSourceAssertedValueSetforValueSetMemberEntityCode(matchCode);
+				List<AbsoluteCodingSchemeVersionReference> tempList = schemes.stream().map(scheme -> 
+					Constructors.createAbsoluteCodingSchemeVersionReference(
+							scheme.getCodingSchemeURI(), scheme.getRepresentsVersion())).
+						collect(Collectors.toList());
+				list.addAll(tempList);}
+		//adding code system types to reference list if not a duplicate
+			while(itr.hasNext()){
+				ResolvedConceptReference ref = itr.next();
+				list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
+						ref.getCodingSchemeVersion()));
+			}
+			return list.stream().map(
+					refer-> refer.getCodingSchemeURN()).distinct().map(
+					uri -> list.stream().filter(
+					uriPick -> uriPick.getCodingSchemeURN() == uri ).
+					findAny().get()).
 					collect(Collectors.toList());
-			list.addAll(tempList);
-		while(itr.hasNext()){
-		ResolvedConceptReference ref = itr.next();
-		list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
-				ref.getCodingSchemeVersion()));
-		}
-		return list;
 	}
 	
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri){
 		LexBIGService lbs = getLexBIGService();
-		CodingScheme scheme;
+		CodingScheme scheme = null;
 		try {
+			if(vsSvc != null) {
 			scheme = vsSvc.getSourceAssertedValueSetForValueSetURI(uri);
+			}
 			if(scheme == null) {
 			scheme = lbs.resolveCodingScheme(uri.toString(), null);
 			}
@@ -240,9 +273,11 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	
 	public ResolvedConceptReferenceList getValueSetEntitiesForURI(String uri){
 		LexBIGService lbs = getLexBIGService();
-		ResolvedConceptReferenceList list;
+		ResolvedConceptReferenceList list = null;
 		try {
+			if(vsSvc != null) {
 			list = vsSvc.getSourceAssertedValueSetEntitiesForURI(uri);
+			}
 			if(list == null || list.getResolvedConceptReferenceCount() == 0) {		
 			CodedNodeSet set = lbs.getCodingSchemeConcepts(uri, null);
 			list = set.resolveToList(null, null, null, -1);
@@ -292,18 +327,20 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
     
     private Set<CodingSchemeReference> getSourceAssertedReferenceForSchemes(List<CodingScheme> schemes){
     return schemes.stream().map(scheme -> {
-    	CodingSchemeReference ref = null;
+    	CodingSchemeReference ref = new CodingSchemeReference();
 		try {
-			  ref = new CodingSchemeReference();
-			CodingScheme cs = vsSvc.getSourceAssertedValueSetForValueSetURI(
+
+			 CodingScheme cs = null;
+			if(vsSvc != null) {
+			cs = vsSvc.getSourceAssertedValueSetForValueSetURI(
 					new URI(scheme.getCodingSchemeURI()));
+			}
 			if(cs == null) {return null;}
 			ref.setCodingScheme(cs.getCodingSchemeURI());
 			ref.setVersionOrTag(Constructors.
 					createCodingSchemeVersionOrTagFromVersion(cs.getRepresentsVersion()));
 		} catch (LBException | URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Cannot resolve references");
 		}
 		return ref;
 	}).collect(Collectors.toSet());
