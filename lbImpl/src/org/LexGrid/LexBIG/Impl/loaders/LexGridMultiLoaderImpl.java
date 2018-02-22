@@ -21,11 +21,14 @@ package org.LexGrid.LexBIG.Impl.loaders;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -35,7 +38,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.LgXMLCommon.LexGri
 import edu.mayo.informatics.lexgrid.convert.options.BooleanOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
 
-public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader {
+public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader, LoaderPostProcessor {
 
     private static final long serialVersionUID = 5405545553067402760L;
     public final static String name = "LexGrid_Loader";
@@ -158,6 +161,13 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
             e.printStackTrace();
         }
         loader.load(uri);
+    }
+
+    @Override
+    public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
+        // TODO Auto-generated method stub
+        
+        System.out.println("in runPostProcess()");
     }
 
 
