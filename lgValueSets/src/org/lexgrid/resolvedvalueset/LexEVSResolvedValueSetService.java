@@ -1,5 +1,6 @@
 package org.lexgrid.resolvedvalueset;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 
-public interface LexEVSResolvedValueSetService {
+public interface LexEVSResolvedValueSetService extends Serializable {
        
    	public List<CodingScheme> listAllResolvedValueSets() throws LBException;
    	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException;

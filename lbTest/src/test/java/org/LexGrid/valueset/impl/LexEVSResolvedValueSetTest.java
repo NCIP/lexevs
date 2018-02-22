@@ -285,7 +285,6 @@ public class LexEVSResolvedValueSetTest {
 			}
 		}
 		
-		// No coding scheme version or tag defined.  This will resolve against RPODCUTION tag of automobiles.
 		URI asVSuri = new URI("http://evs.nci.nih.gov/valueset/FDA/C48323");
 		CodingScheme asVSscheme = service.getResolvedValueSetForValueSetURI(asVSuri);
 		for (Property prop : asVSscheme.getProperties().getPropertyAsReference()) {
@@ -537,6 +536,7 @@ public class LexEVSResolvedValueSetTest {
 	}
 	
 	@AfterClass
+	 @Category(RemoveFromDistributedTests.class)
 	public static void tearDown() {
 		vsSvc.dropIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));

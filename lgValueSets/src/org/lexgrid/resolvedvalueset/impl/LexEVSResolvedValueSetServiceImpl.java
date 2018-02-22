@@ -36,8 +36,12 @@ import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.sourceasserted.impl.SourceAssertedValueSetServiceImpl;
 
 public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSetService {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5438158832122711604L;
 	private transient LexBIGService lbs;
-	private SourceAssertedValueSetServiceImpl vsSvc;
+	private transient SourceAssertedValueSetServiceImpl vsSvc;
 	
 	public LexEVSResolvedValueSetServiceImpl(){
 		lbs = LexBIGServiceImpl.defaultInstance();
@@ -73,7 +77,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public LexEVSResolvedValueSetServiceImpl(LexBIGService lbs, AssertedValueSetParameters params){
 		this.lbs = lbs;
 		vsSvc = (SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
-				getDefaultValueSetServiceForVersion(params);
+				getDefaultValueSetServiceForVersion(params, lbs);
 	}
 	
 	@Override
@@ -230,12 +234,13 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 							scheme.getCodingSchemeURI(), scheme.getRepresentsVersion())).
 						collect(Collectors.toList());
 				list.addAll(tempList);}
-		//adding code system types to reference list if not a duplicate
+
 			while(itr.hasNext()){
 				ResolvedConceptReference ref = itr.next();
 				list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
 						ref.getCodingSchemeVersion()));
 			}
+			//removing duplicates
 			return list.stream().map(
 					refer-> refer.getCodingSchemeURN()).distinct().map(
 					uri -> list.stream().filter(
