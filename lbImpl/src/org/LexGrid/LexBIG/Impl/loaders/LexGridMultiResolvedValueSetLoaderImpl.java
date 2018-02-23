@@ -40,7 +40,6 @@ public class LexGridMultiResolvedValueSetLoaderImpl extends LexGridMultiLoaderIm
     
     @Override
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
-        System.out.println("LexGridMultiResolvedValueSetLoaderImpl runPostProcess called");
         
     }
 }

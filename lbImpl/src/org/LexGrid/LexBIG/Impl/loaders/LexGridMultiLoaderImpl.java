@@ -165,9 +165,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
 
     @Override
     public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
-        // TODO Auto-generated method stub
-        
-        System.out.println("in runPostProcess()");
+
     }
 
 
