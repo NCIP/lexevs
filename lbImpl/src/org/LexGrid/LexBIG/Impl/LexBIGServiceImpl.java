@@ -89,6 +89,7 @@ import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiResolvedValueSetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
@@ -592,6 +593,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new TextLoaderImpl().register();
 
         new LexGridMultiLoaderImpl().register();
+        new LexGridMultiResolvedValueSetLoaderImpl().register();
         new OWLLoaderImpl().register();
         new OWL2LoaderImpl().register();
         new OBOLoaderImpl().register();
