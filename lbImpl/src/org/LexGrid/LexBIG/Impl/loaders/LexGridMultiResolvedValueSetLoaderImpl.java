@@ -1,11 +1,9 @@
 package org.LexGrid.LexBIG.Impl.loaders;
 
-import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
-import org.LexGrid.LexBIG.Extensions.Load.postprocessor.LoaderPostProcessor;
 
-public class LexGridMultiResolvedValueSetLoaderImpl extends LexGridMultiLoaderImpl implements LoaderPostProcessor {
+public class LexGridMultiResolvedValueSetLoaderImpl extends LexGridMultiLoaderImpl {
 
     private static final long serialVersionUID = 1L;
     public final static String name = "LexGrid_ResolvedValueSetLoader";
@@ -30,7 +28,7 @@ public class LexGridMultiResolvedValueSetLoaderImpl extends LexGridMultiLoaderIm
     @Override
     protected ExtensionDescription buildExtensionDescription() {
         ExtensionDescription temp = new ExtensionDescription();
-        temp.setExtensionBaseClass(LexGridMultiResolvedValueSetLoaderImpl.class.getInterfaces()[0].getName());
+        temp.setExtensionBaseClass(LexGridMultiResolvedValueSetLoaderImpl.class.getName());
         temp.setExtensionClass(LexGridMultiResolvedValueSetLoaderImpl.class.getName());
         temp.setDescription(LexGridMultiResolvedValueSetLoaderImpl.description);
         temp.setName(LexGridMultiResolvedValueSetLoaderImpl.name);
@@ -38,8 +36,4 @@ public class LexGridMultiResolvedValueSetLoaderImpl extends LexGridMultiLoaderIm
         return temp;
     }
     
-    @Override
-    public void runPostProcess(AbsoluteCodingSchemeVersionReference reference, OntologyFormat ontFormat) {
-        
-    }
 }
