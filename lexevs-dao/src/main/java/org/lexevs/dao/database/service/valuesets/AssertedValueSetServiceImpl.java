@@ -20,17 +20,21 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 public class AssertedValueSetServiceImpl extends AbstractDatabaseService implements AssertedValueSetService {
 	
-	private SourceAssertedValueSetDao ibatisAssertedValueSetDao;
-	private EntityDao entityDao;
-	private ValueSetHierarchyService valueSetHeirarchyService;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4003462128156213331L;
+//	private SourceAssertedValueSetDao ibatisAssertedValueSetDao;
+//	private EntityDao entityDao;
+//	private ValueSetHierarchyService valueSetHeirarchyService;
 	
 	private AssertedValueSetParameters params;
 
 	
 	public void init(AssertedValueSetParameters params){
-		ibatisAssertedValueSetDao = this.getDaoManager().getCurrentAssertedValueSetDao();
-		entityDao = this.getDaoManager().getCurrentEntityDao();
-		valueSetHeirarchyService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
+//		ibatisAssertedValueSetDao = this.getDaoManager().getCurrentAssertedValueSetDao();
+//		entityDao = this.getDaoManager().getCurrentEntityDao();
+//		valueSetHeirarchyService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
 		this.params = params;
 	}
 
@@ -39,9 +43,9 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 			throws LBException {
 		if(matchCode == null){throw new RuntimeException("Entity code cannot be null!");}
 		String csUID = getCsUid();
-		List<Entity> entities = ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(matchCode,
+		List<Entity> entities = getDaoManager().getCurrentAssertedValueSetDao().getSourceAssertedValueSetEntitiesForEntityCode(matchCode,
 				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
-		List<Entity> entity = ibatisAssertedValueSetDao.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
+		List<Entity> entity = getDaoManager().getCurrentAssertedValueSetDao().getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
 		CodingScheme scheme = transformToCodingScheme(entity, entities);
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
 		schemes.add(scheme);
@@ -52,11 +56,11 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public List<CodingScheme> getSourceAssertedValueSetforMemberEntityCode(String matchCode) {
 		if(matchCode == null){throw new RuntimeException("Entity code cannot be null!");}
 		String csUID = getCsUid();
-		List<Entity> entities = ibatisAssertedValueSetDao.getSourceAssertedValueSetsForVSMemberEntityCode(matchCode,
+		List<Entity> entities = getDaoManager().getCurrentAssertedValueSetDao().getSourceAssertedValueSetsForVSMemberEntityCode(matchCode,
 				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
 		for(Entity entity: entities) { 
-			List<Entity> vsEntities = ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(entity.getEntityCode(),
+			List<Entity> vsEntities = getDaoManager().getCurrentAssertedValueSetDao().getSourceAssertedValueSetEntitiesForEntityCode(entity.getEntityCode(),
 					params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
 			
 			List<Entity> topNodeListOfOne = new ArrayList<Entity>();
@@ -73,9 +77,9 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	@Override
 	public List<String> getAllValueSetTopNodeCodes(String rootCode){
 		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
-		valueSetHeirarchyService.preprocessSourceHierarchyData(params.getCodingSchemeURI(), params.getCodingSchemeVersion()
+		getValueSetHeirarchyService().preprocessSourceHierarchyData(params.getCodingSchemeURI(), params.getCodingSchemeVersion()
 				, params.getDefaultHierarchyVSRelation(), params.getSourceName(), params.getPublishName(), rootCode);
-		List<DefinedNode> list = ((ValueSetHierarchyServiceImpl) valueSetHeirarchyService).
+		List<DefinedNode> list = ((ValueSetHierarchyServiceImpl) getValueSetHeirarchyService()).
 				getAllValueSetNodesWithoutSource(params.getDefaultHierarchyVSRelation(), params.getPublishName(), params.getPublishValue());
 		return list.stream().map(x -> x.getEntityCode()).collect(Collectors.toList());
 	}
@@ -97,7 +101,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode) {
 		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
 		String csUID = getCsUid();
-		return ibatisAssertedValueSetDao.getSourceAssertedValueSetEntitiesForEntityCode(rootCode, 
+		return getDaoManager().getCurrentAssertedValueSetDao().getSourceAssertedValueSetEntitiesForEntityCode(rootCode, 
 				params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
 	}
 	
@@ -105,27 +109,27 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	public List<Entity> getPagedSourceAssertedValueSetEntities(String rootCode, int start, int pageSize) {
 		if(rootCode == null){throw new RuntimeException("Root value set code cannot be null!");}
 		String csUID = getCsUid();
-		return ibatisAssertedValueSetDao.getPagedValueSetEntities(rootCode, csUID, getPredUid(csUID), start, pageSize);
+		return getDaoManager().getCurrentAssertedValueSetDao().getPagedValueSetEntities(rootCode, csUID, getPredUid(csUID), start, pageSize);
 	}
 	
 	@Override
 	public List<String> getSourceAssertedValueSetEntityUidsforPredicateUid(int start, int pageSize) {
 		String csUID = getCsUid();
-		return ibatisAssertedValueSetDao.getValueSetEntityUids(csUID, getPredUid(csUID), start, pageSize);
+		return getDaoManager().getCurrentAssertedValueSetDao().getValueSetEntityUids(csUID, getPredUid(csUID), start, pageSize);
 	}
 	
 	@Override
 	public List<Entity> getEntitiesForUidMap(List<String> entityUids){
 		if(entityUids == null || entityUids.size() == 0){throw new RuntimeException("Must have entity indentifiers to proceed!");}
 
-		return entityDao.getEntities(getCsUid(), entityUids);
+		return getDaoManager().getCurrentEntityDao().getEntities(getCsUid(), entityUids);
 	}
 	
 	@Override
 	public int getVSEntityCountForTopNodeCode(String code){
 		if(code == null ){throw new RuntimeException("Must have entity indentifiers to proceed!");}
 		String csUid = getCsUid();
-		return ibatisAssertedValueSetDao.getValueSetEntityCount(code, csUid, getPredUid(csUid));
+		return getDaoManager().getCurrentAssertedValueSetDao().getValueSetEntityCount(code, csUid, getPredUid(csUid));
 	}
 	
 	public String getCsUid() {
@@ -138,32 +142,12 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	}
 
 	/**
-	 * @return the ibatisAssertedValueSetDao
-	 */
-	public SourceAssertedValueSetDao getIbatisAssertedValueSetDao() {
-		return ibatisAssertedValueSetDao;
-	}
-
-	/**
-	 * @param ibatisAssertedValueSetDao the ibatisAssertedValueSetDao to set
-	 */
-	public void setIbatisAssertedValueSetDao(SourceAssertedValueSetDao ibatisAssertedValueSetDao) {
-		this.ibatisAssertedValueSetDao = ibatisAssertedValueSetDao;
-	}
-
-	/**
 	 * @return the valueSetHeirarchyService
 	 */
 	public ValueSetHierarchyService getValueSetHeirarchyService() {
-		return valueSetHeirarchyService;
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
 	}
 
-	/**
-	 * @param valueSetHeirarchyService the valueSetHeirarchyService to set
-	 */
-	public void setValueSetHeirarchyService(ValueSetHierarchyService valueSetHeirarchyService) {
-		this.valueSetHeirarchyService = valueSetHeirarchyService;
-	}
 
 	public AssertedValueSetParameters getParams() {
 		return params;
@@ -173,12 +157,5 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		this.params = params;
 	}
 
-	public EntityDao getEntityDao() {
-		return entityDao;
-	}
-
-	public void setEntityDao(EntityDao entityDao) {
-		this.entityDao = entityDao;
-	}
 
 }

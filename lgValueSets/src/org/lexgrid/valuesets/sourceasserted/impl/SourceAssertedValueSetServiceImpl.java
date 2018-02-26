@@ -37,20 +37,29 @@ import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 
 public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSetService {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7172345965840590934L;
 	private transient LexBIGService svc;
 	AssertedValueSetParameters params;
+	
+	public SourceAssertedValueSetServiceImpl() {
+		//Spring Required Constructor
+	}
 
 	private SourceAssertedValueSetServiceImpl(AssertedValueSetParameters params) {
 		this.params = params;
-//		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
-//		assVSSvc.init(params);
 		svc = LexBIGServiceImpl.defaultInstance();
-//		vsds = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 	}
 	
 	private SourceAssertedValueSetServiceImpl(AssertedValueSetParameters params, LexBIGService lbsvc) {
 		this.params = params;
 		svc = lbsvc;
+	}
+	
+	public void init(AssertedValueSetParameters params) {
+		this.params = params;
 	}
 	
 	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(AssertedValueSetParameters params){
@@ -80,7 +89,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public List<CodingScheme> getMinimalSourceAssertedValueSetSchemes() throws LBException {
 		List<CodingScheme> assertedVS = listAllSourceAssertedValueSets();
-		assertedVS.addAll(svc.getMinimalResolvedVSCodingSchemes());
+		assertedVS.addAll(getSvc().getMinimalResolvedVSCodingSchemes());
 		return assertedVS;
 	}
 
@@ -167,7 +176,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText,
 			MatchAlgorithm matchType) throws LBException {
 		SourceAssertedValueSetSearchExtensionImpl saVSSearch =  (SourceAssertedValueSetSearchExtensionImpl) 
-				svc.getGenericExtension("AssertedValueSetSearchExtension");
+				getSvc().getGenericExtension("AssertedValueSetSearchExtension");
 		ResolvedConceptReferencesIterator itr = saVSSearch.search(matchText, matchType);
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
 		while(itr.hasNext()) {
@@ -245,13 +254,5 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		assVSDS.init(this.params);
 		return assVSDS;
 	}
-
-	
-//	private ValueSetDefinitionService getVSDefinitionService() {
-//		return getDatabaseServiceManager().getValueSetDefinitionService();
-//	}
-
-
-	
 
 }

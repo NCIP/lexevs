@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.service.valuesets;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -7,7 +8,7 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 
-public interface  AssertedValueSetService {
+public interface  AssertedValueSetService extends Serializable {
 	
 	List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode) throws LBException;
 

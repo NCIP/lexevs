@@ -42,18 +42,19 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	private static final long serialVersionUID = -5438158832122711604L;
 	private transient LexBIGService lbs;
 	private transient SourceAssertedValueSetServiceImpl vsSvc;
+	private AssertedValueSetParameters params;
 	
 	public LexEVSResolvedValueSetServiceImpl(){
-		lbs = LexBIGServiceImpl.defaultInstance();
-		try {
-			vsSvc = (SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
-					getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder(
-							lbs.resolveCodingScheme(AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI, null).
-							getRepresentsVersion()).build());
-		} catch (LBException e) {
-			LogFactory.getLog(LexEVSResolvedValueSetServiceImpl.class).
-			warn("Could not find value sets for default asserted value set scheme: " + e);
-		}
+//		lbs = LexBIGServiceImpl.defaultInstance();
+//		try {
+//			vsSvc = (SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
+//					getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder(
+//							lbs.resolveCodingScheme(AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI, null).
+//							getRepresentsVersion()).build());
+//		} catch (LBException e) {
+//			LogFactory.getLog(LexEVSResolvedValueSetServiceImpl.class).
+//			warn("Could not find value sets for default asserted value set scheme: " + e);
+//		}
 	}
 	
 	public LexEVSResolvedValueSetServiceImpl(AssertedValueSetParameters  params){
@@ -63,15 +64,8 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	
 	public LexEVSResolvedValueSetServiceImpl(LexBIGService lbs){
 		this.lbs = lbs;
-		try {
-			vsSvc = (SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
-					getDefaultValueSetServiceForVersion(new AssertedValueSetParameters.Builder(
-							lbs.resolveCodingScheme(AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI, null).
-							getRepresentsVersion()).build());
-		} catch (LBException e) {
-			LogFactory.getLog(LexEVSResolvedValueSetServiceImpl.class).
-			warn("Could not find value sets for default asserted value set scheme: " + e);
-		}
+		vsSvc = (SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
+				getDefaultValueSetServiceForVersion(params);
 	}
 	
 	public LexEVSResolvedValueSetServiceImpl(LexBIGService lbs, AssertedValueSetParameters params){
@@ -82,7 +76,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	
 	@Override
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
-		LexBIGService lbs= getLexBIGService();
+//		LexBIGService lbs= getLexBIGService();
 		List<CodingScheme> minSchemeList = lbs.getMinimalResolvedVSCodingSchemes();
 		List<CodingScheme> assertVSList = new ArrayList<CodingScheme>();
 		if(vsSvc != null) {
@@ -145,7 +139,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public List<CodingScheme> getResolvedValueSetsForConceptReference(ConceptReference ref) {
 		List<CodingScheme> filteredSchemes = new ArrayList<CodingScheme>();
 		List<CodingScheme> allRVSSchemes = null;
-		lbs = getLexBIGService();
+//		lbs = getLexBIGService();
 		try {
 			allRVSSchemes = listAllResolvedValueSets();
 		} catch (LBException e) {
@@ -250,7 +244,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	}
 	
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri){
-		LexBIGService lbs = getLexBIGService();
+//		LexBIGService lbs = getLexBIGService();
 		CodingScheme scheme = null;
 		try {
 			if(vsSvc != null) {
@@ -266,7 +260,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	}
 	
 	CodingScheme getResolvedCodingScheme(CodingSchemeRendering csr) throws LBException {
-		LexBIGService lbs= getLexBIGService();
+//		LexBIGService lbs= getLexBIGService();
 		CodingSchemeSummary css= csr.getCodingSchemeSummary();
 		String codingSchemeURI= css.getCodingSchemeURI();
     	String version = css.getRepresentsVersion();
@@ -277,7 +271,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	}
 	
 	public ResolvedConceptReferenceList getValueSetEntitiesForURI(String uri){
-		LexBIGService lbs = getLexBIGService();
+//		LexBIGService lbs = getLexBIGService();
 		ResolvedConceptReferenceList list = null;
 		try {
 			if(vsSvc != null) {
@@ -295,7 +289,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	}
 	
 	public ResolvedConceptReferencesIterator getValueSetIteratorForURI(String uri){
-		LexBIGService lbs = getLexBIGService();
+//		LexBIGService lbs = getLexBIGService();
 		ResolvedConceptReferencesIterator list;
 		try {
 			CodedNodeSet set = lbs.getCodingSchemeConcepts(uri, null);
@@ -360,6 +354,21 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
         if (lbs == null)
             lbs = LexBIGServiceImpl.defaultInstance();
         return lbs;
+    }
+    
+	/**
+     * Return the associated LexBIGService instance; lazy initialized as
+     * required.
+     */
+    @LgClientSideSafe
+    public void setLexBIGService(LexBIGService lbsvc) {
+        this.lbs = lbsvc;
+    }
+    
+    
+    public void initSourceAssertedValueSet(AssertedValueSetParameters params) {
+    		this.params = params;
+    		this.vsSvc = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(params, lbs);
     }
     
     
