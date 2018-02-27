@@ -1,5 +1,6 @@
 package org.lexgrid.valuesets.sourceasserted.impl;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -13,8 +14,12 @@ import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-public class AssertedValueSetEntityResolver {
+public class AssertedValueSetEntityResolver implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2108382187250742000L;
 	AssertedValueSetService vsSvc;
 	
 	public AssertedValueSetEntityResolver(AssertedValueSetService svc) {

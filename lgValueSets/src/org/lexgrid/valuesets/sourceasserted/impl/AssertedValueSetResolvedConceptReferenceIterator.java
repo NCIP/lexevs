@@ -20,7 +20,7 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
 	private List<ResolvedConceptReference> refs;
 	private AssertedValueSetService vsSvc;
 	private String topNode;
-	private final int maxValueSets;
+	private int maxValueSets;
 	private int remaining;
 	private int position = 0;
 	private AssertedValueSetEntityResolver assertedValueSetEntityResolver;
@@ -28,6 +28,8 @@ public class AssertedValueSetResolvedConceptReferenceIterator implements Resolve
 	 * 
 	 */
 	private static final long serialVersionUID = 4182443658366514327L;
+	
+	public AssertedValueSetResolvedConceptReferenceIterator() {};
 
 	public AssertedValueSetResolvedConceptReferenceIterator(final String code, AssertedValueSetParameters params) {
 		topNode = code;

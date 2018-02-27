@@ -1,5 +1,6 @@
 package org.lexgrid.valuesets.sourceasserted;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 
-public interface SourceAssertedValueSetService {
+public interface SourceAssertedValueSetService extends Serializable{
 	
 			
 	

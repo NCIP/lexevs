@@ -6,12 +6,13 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.apache.lucene.search.ScoreDoc;
 
+@LgClientSideSafe
 public class SourceAssertedValueSetScoreDocIteratorWrapper extends SearchScoreDocIterator {
 
     /**

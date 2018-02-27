@@ -22,11 +22,13 @@ import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAsserte
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.annotations.LgProxyClass;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
@@ -35,28 +37,43 @@ import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 
 public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSetService {
 	
-	LexBIGService svc;
-	ValueSetDefinitionService vsds;
-	AssertedValueSetService assVSSvc;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7172345965840590934L;
+	private transient LexBIGService svc;
 	AssertedValueSetParameters params;
+	
+	public SourceAssertedValueSetServiceImpl() {
+		//Spring Required Constructor
+	}
 
 	private SourceAssertedValueSetServiceImpl(AssertedValueSetParameters params) {
 		this.params = params;
-		assVSSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
-		assVSSvc.init(params);
 		svc = LexBIGServiceImpl.defaultInstance();
-		vsds = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
+	}
+	
+	private SourceAssertedValueSetServiceImpl(AssertedValueSetParameters params, LexBIGService lbsvc) {
+		this.params = params;
+		svc = lbsvc;
+	}
+	
+	public void init(AssertedValueSetParameters params) {
+		this.params = params;
 	}
 	
 	public static SourceAssertedValueSetService getDefaultValueSetServiceForVersion(AssertedValueSetParameters params){
 		return new SourceAssertedValueSetServiceImpl(params);
 	}
+	
+	public static SourceAssertedValueSetServiceImpl getDefaultValueSetServiceForVersion(
+			AssertedValueSetParameters params, LexBIGService lbs) {
+		return new SourceAssertedValueSetServiceImpl(params, lbs);
+	}
 
 	@Override
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
-		List<String> list = ((SourceAssertedValueSetServiceImpl) SourceAssertedValueSetServiceImpl.
-				getDefaultValueSetServiceForVersion(params)).
-				getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
+		List<String> list = getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
 		return list.stream().map(code ->
 			{CodingScheme scheme = null;
 				try {
@@ -72,7 +89,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public List<CodingScheme> getMinimalSourceAssertedValueSetSchemes() throws LBException {
 		List<CodingScheme> assertedVS = listAllSourceAssertedValueSets();
-		assertedVS.addAll(svc.getMinimalResolvedVSCodingSchemes());
+		assertedVS.addAll(getSvc().getMinimalResolvedVSCodingSchemes());
 		return assertedVS;
 	}
 
@@ -87,7 +104,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	
 	@Override
 	public List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode){
-		return assVSSvc.getAllValueSetTopNodeCodes(rootCode);	
+		return getAssertedValueSetService().getAllValueSetTopNodeCodes(rootCode);	
 	}
 
 	@Override
@@ -101,11 +118,10 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		
 		List<Entity> entities = null;
 		try {
-			entities = assVSSvc.getSourceAssertedValueSetEntitiesForEntityCode(
+			entities = getAssertedValueSetService().getSourceAssertedValueSetEntitiesForEntityCode(
 					AssertedValueSetServices.getConceptCodeForURI(new URI(uri)));
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Uri is not properly constructed: " + e);
 		}
 		ResolvedConceptReferenceList referenceList = new ResolvedConceptReferenceList();
 		entities.stream().forEach(x -> referenceList.addResolvedConceptReference(transformEntityToRCR(x)));
@@ -119,7 +135,8 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	public String getEntityCodeFromValueSetDefinition(String uri) {
 		ValueSetDefinition vsDef = null;
 		try {
-			vsDef = vsds.getValueSetDefinitionByUri(new URI(uri));
+			vsDef = getDatabaseServiceManager().getValueSetDefinitionService().
+					getValueSetDefinitionByUri(new URI(uri));
 		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,20 +163,20 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode)
 			throws LBException {
-		return assVSSvc.getSourceAssertedValueSetforTopNodeEntityCode(matchCode);
+		return getAssertedValueSetService().getSourceAssertedValueSetforTopNodeEntityCode(matchCode);
 	}
 	
 	@Override
 	public List<CodingScheme> getSourceAssertedValueSetforValueSetMemberEntityCode(String matchCode)
 			throws LBException {
-		return assVSSvc.getSourceAssertedValueSetforMemberEntityCode(matchCode);
+		return getAssertedValueSetService().getSourceAssertedValueSetforMemberEntityCode(matchCode);
 	}
 
 	@Override
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText,
 			MatchAlgorithm matchType) throws LBException {
 		SourceAssertedValueSetSearchExtensionImpl saVSSearch =  (SourceAssertedValueSetSearchExtensionImpl) 
-				svc.getGenericExtension("AssertedValueSetSearchExtension");
+				getSvc().getGenericExtension("AssertedValueSetSearchExtension");
 		ResolvedConceptReferencesIterator itr = saVSSearch.search(matchText, matchType);
 		List<AbsoluteCodingSchemeVersionReference> list = new ArrayList<AbsoluteCodingSchemeVersionReference>();
 		while(itr.hasNext()) {
@@ -186,7 +203,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		Comparator<Entity> entityCompare = Comparator.comparing(Entity::getEntityCode); 
 		Set<Entity> entitySet = new TreeSet<Entity>(entityCompare);
 		for(String matchCode: roots) {
-			List<Entity> temp = assVSSvc.getSourceAssertedValueSetEntitiesForEntityCode(matchCode);
+			List<Entity> temp = getAssertedValueSetService().getSourceAssertedValueSetEntitiesForEntityCode(matchCode);
 			entitySet.addAll(temp);
 		}
 		return entitySet.stream().collect(Collectors.toList());
@@ -227,8 +244,15 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		}
 		scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
 	}
-
-
 	
+	private DatabaseServiceManager getDatabaseServiceManager() {
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+	}
+	
+	private AssertedValueSetService getAssertedValueSetService() {
+		AssertedValueSetService assVSDS = getDatabaseServiceManager().getAssertedValueSetService();
+		assVSDS.init(this.params);
+		return assVSDS;
+	}
 
 }
