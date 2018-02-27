@@ -37,9 +37,6 @@ import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 
 public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSetService {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7172345965840590934L;
 	private transient LexBIGService svc;
 	AssertedValueSetParameters params;
@@ -115,7 +112,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(String uri) {
-		
+
 		List<Entity> entities = null;
 		try {
 			entities = getAssertedValueSetService().getSourceAssertedValueSetEntitiesForEntityCode(
@@ -138,8 +135,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 			vsDef = getDatabaseServiceManager().getValueSetDefinitionService().
 					getValueSetDefinitionByUri(new URI(uri));
 		} catch (URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+				throw new RuntimeException("URI not properly formatted: " + uri);
 		}
 		if(vsDef == null || 
 				vsDef.getDefinitionEntry(0) == null || 
@@ -209,20 +205,25 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		return entitySet.stream().collect(Collectors.toList());
 	}
 
-	/**
-	 * @return the svc
-	 */
 	public LexBIGService getSvc() {
 		if(svc == null)
 		{return LexBIGServiceImpl.defaultInstance();}
 		else{return svc;}
 	}
 
-	/**
-	 * @param svc the svc to set
-	 */
 	public void setSvc(LexBIGService svc) {
 		this.svc = svc;
+	}
+	
+	
+	private DatabaseServiceManager getDatabaseServiceManager() {
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+	}
+	
+	private AssertedValueSetService getAssertedValueSetService() {
+		AssertedValueSetService assVSDS = getDatabaseServiceManager().getAssertedValueSetService();
+		assVSDS.init(this.params);
+		return assVSDS;
 	}
 	
 	public static void main(String[] args){
@@ -237,22 +238,12 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 					new AssertedValueSetParameters.Builder("17.08d").build()).
 					getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetParameters.ROOT_URI + s));
 		} catch (LBException | URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("name :" + scheme.getCodingSchemeName());
 		}
 		scheme.getEntities().getEntityAsReference().stream().forEach(x-> System.out.println(x.getEntityCode() + " : " + x.getEntityDescription().getContent()));
 	}
-	
-	private DatabaseServiceManager getDatabaseServiceManager() {
-		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-	}
-	
-	private AssertedValueSetService getAssertedValueSetService() {
-		AssertedValueSetService assVSDS = getDatabaseServiceManager().getAssertedValueSetService();
-		assVSDS.init(this.params);
-		return assVSDS;
-	}
+
 
 }
