@@ -289,7 +289,7 @@ public class CleanUpTest extends TestCase {
 	
 	private LexEVSResolvedValueSetService getResovledVSService(){
 		if (rvs_ == null) {
-			rvs_ = new LexEVSResolvedValueSetServiceImpl(LexBIGServiceImpl.defaultInstance());
+			rvs_ = new LexEVSResolvedValueSetServiceImpl();
 		}
 		return rvs_;
 	}
