@@ -49,6 +49,10 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		this.params = params;
 	}
 	
+	public LexEVSResolvedValueSetServiceImpl(LexBIGService lbs){
+		this.lbs = lbs;
+	}
+	
 	@Override
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
 		SourceAssertedValueSetService vsSvc = getSourceAssertedValueSetService(this.params);
