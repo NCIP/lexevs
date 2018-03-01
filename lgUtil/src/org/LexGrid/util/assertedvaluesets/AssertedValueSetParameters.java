@@ -1,8 +1,14 @@
 package org.LexGrid.util.assertedvaluesets;
 
-public final class AssertedValueSetParameters {
+import java.io.Serializable;
+
+public final class AssertedValueSetParameters implements Serializable {
    
     
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 4425605180121824876L;
     public static final String DEFAULT_DO_PUBLISH_NAME ="Publish_Value_Set";
     public static final String DEFAULT_DO_PUBLISH_VALUE = "Yes";
     public static final String BROWSER_VS_DEFINITION = "Term_Browser_Value_Set_Description";

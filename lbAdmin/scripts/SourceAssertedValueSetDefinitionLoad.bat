@@ -14,7 +14,7 @@ REM    -t", --target", usage="Target to Source resolution."
 REM    
 REM    -uri", --uri", usage="Base uri to build the conding scheme uri upon" 
 REM    
-REM    -o", --owner", usage="Owener of the value set assertioin" 
+REM    -o", --owner", usage="Owner of the value set assertioin" 
 REM    
 REM    -s", --sourceName", usage="Gives the name of the property to resolve the source value against" 
 REM

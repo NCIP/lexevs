@@ -19,7 +19,6 @@
 package org.LexGrid.LexBIG.Impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,12 +41,10 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
-import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
-import org.LexGrid.LexBIG.Extensions.Load.SourceAssertedVStoCodingSchemeLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
@@ -118,8 +115,10 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -147,6 +146,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     private CodedNodeGraphFactory codedNodeGraphFactory = new CodedNodeGraphFactory();
     private CodedNodeSetFactory codedNodeSetFactory = new CodedNodeSetFactory();
     private HistoryServiceFactory historyServiceFactory = new HistoryServiceFactory();
+    private AssertedValueSetParameters params;
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -738,14 +738,29 @@ public class LexBIGServiceImpl implements LexBIGService {
 
     @Override
     public List<CodingScheme> getSourceAssertedResolvedVSCodingSchemes() {
-        List<RegistryEntry> entries =  registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
-        return entries.stream().filter(x -> x.getDbName() != null &&
-        x.getDbName().equals(OntologyFormat.SOURCEASSERTEDRESOLVEDVS.name())).map(x -> {
-            CodingScheme ref = new CodingScheme();
-            ref.setCodingSchemeURI(x.getResourceUri());
-            ref.setRepresentsVersion(x.getResourceVersion());
-            ref.setCodingSchemeName(x.getDbUri());
-            return ref;
-        }).collect(Collectors.toList());
+        if(params == null) {try {
+            this.params = new AssertedValueSetParameters.Builder(resolveCodingScheme(AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI, null).
+                    getRepresentsVersion()).build();
+        } catch (LBInvocationException | LBParameterException e) {
+            throw new RuntimeException("Unable to find a default or resolve a source asserted value set scheme" + e);
+        }}
+       AssertedValueSetService vsSvc = LexEvsServiceLocator.getInstance().
+               getDatabaseServiceManager().getAssertedValueSetService();
+       vsSvc.init(this.params);
+       List<String> list = vsSvc.
+               getAllValueSetTopNodeCodes(params.getRootConcept());
+       return list.stream().map(code ->
+           {CodingScheme scheme = null;
+               try {
+                   scheme = vsSvc.getSourceAssertedValueSetforTopNodeEntityCode(code).get(0);
+               } catch (LBException e) {
+                   throw new RuntimeException("Mapping value set to root code: " + code + " failed");
+               }
+               return scheme;
+           }).collect(Collectors.toList());
+    }
+    
+    public void setAssertedValueSetConfiguration(AssertedValueSetParameters params) {
+        this.params = params;
     }
 }

@@ -365,7 +365,6 @@
 	
 	<bean id="valueSetService" class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
 		parent="abstractService">
-		<property name="entityDao" ref="ibatisEntityDao"/>
 	</bean>
 	
 	<bean id="codedNodeGraphService"
