@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.annotations.LgProxyClass;
 import org.springframework.util.Assert;
 
@@ -135,6 +137,31 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		}
 	}
 	
+
+	public List<T> protoNext(int size) {
+//		pageIfNecessary(size);
+		List<T> returnItem = new ArrayList<T>();
+//		if(size > cache.size()) {
+			pageOnSize(size);
+			returnItem.addAll(cache);
+//		}else if(size == cache.size())
+//		{
+//			returnItem.addAll(cache);
+//		}
+//		else {
+//			returnItem.addAll(returnCachePortion(cache));
+//		}
+		globalPosition = globalPosition + size > cache.size()? 
+				globalPosition + cache.size():globalPosition + size ;
+			return  returnItem;
+	}
+
+
+	private List<T> returnCachePortion(List<? extends T> cache2) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/**
 	 * Page if necessary.
 	 */
@@ -142,6 +169,14 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		if(isPageNeeded()) {
 			page();
 		}
+	}
+	
+	
+	protected void  pageIfNecessary(int size) {
+		if(inCachePosition > size) {
+			pageOnSize(size);
+		}
+		
 	}
 
 	/* (non-Javadoc)
@@ -172,6 +207,12 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		inCachePosition = 0;
 	}
 	
+	
+	protected final void pageOnSize(int size) {
+		cache = doExecutePageOnSize(size);
+		inCachePosition = 0;
+	}
+	
 	/**
 	 * Do execute page.
 	 * 
@@ -179,6 +220,17 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	 */
 	protected List<? extends T> doExecutePage(){
 		List<? extends T> returnList = this.pager.doPage(this, globalPosition, pageSize);
+
+		return returnList;
+	}
+	
+	/**
+	 * Do execute page.
+	 * 
+	 * @return the list<? extends t>
+	 */
+	protected List<? extends T> doExecutePageOnSize(int size){
+		List<? extends T> returnList = this.pager.doPage(this, globalPosition, size);
 
 		return returnList;
 	}

@@ -16,6 +16,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
@@ -269,6 +270,16 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 	public ResolvedConceptReferencesIterator getValueSetIteratorForURI(String uri){
 		SourceAssertedValueSetService vsSvc =  getSourceAssertedValueSetService(this.params);
 		ResolvedConceptReferencesIterator list;
+		if(vsSvc != null) {
+			list = vsSvc.getSourceAssertedValueSetIteratorForURI(uri);
+			try {
+				if(list != null && list.hasNext()) {
+					return list;
+				}
+			} catch (LBResourceUnavailableException e) {
+				throw new RuntimeException("There was problem retrieving the source asserted entities for resolved value set: " + uri);
+			}
+		}
 		try {
 			CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts(uri, null);
 			list = set.resolve(null, null, null);
