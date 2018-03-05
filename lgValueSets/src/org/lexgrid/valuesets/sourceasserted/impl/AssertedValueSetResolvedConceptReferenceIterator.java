@@ -52,10 +52,11 @@ implements ResolvedConceptReferencesIterator{
 		return remaining;
 	}
 
-//	@Override
-//	public ResolvedConceptReference next() throws LBResourceUnavailableException, LBInvocationException {
-//		return next(1).getResolvedConceptReference(0);
-//	}
+	@Override
+	public ResolvedConceptReference next() {
+		remaining = remaining - 1 < 0?0:remaining -1;
+		return super.next();
+	}
 
 	@Override
 	public ResolvedConceptReferenceList next(int pageSize)
@@ -117,7 +118,7 @@ implements ResolvedConceptReferencesIterator{
 				// setting a default size
 				max = this.getGlobalPosition() + 100;
 			} else {
-				max = end + this.getGlobalPosition();
+				max = end;
 			}
 
 			if (max > maxValueSets) {

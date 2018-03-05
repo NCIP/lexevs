@@ -20,19 +20,21 @@ public class AssertedValueSetEntityResolver implements Serializable {
 	 */
 	private static final long serialVersionUID = -2108382187250742000L;
 	AssertedValueSetService vsSvc;
-//	int maxValueSets = 0;
+    AssertedValueSetParameters params;
 	String code;
 	
 	public AssertedValueSetEntityResolver(AssertedValueSetParameters params, String code) {
+		this.params = params;
 		vsSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
 		vsSvc.init(params);
 		this.code = code;
-//		maxValueSets = vsSvc.getVSEntityCountForTopNodeCode(code);
 	}
 
 	public ResolvedConceptReferenceList getResolvedConceptReferenceByCursorAndCode(String topNode, int position,
 			int maxToReturn) {
-		List<Entity> list = vsSvc.getPagedSourceAssertedValueSetEntities(topNode, position, maxToReturn);
+		AssertedValueSetService avss = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
+		avss.init(this.params);
+		List<Entity> list = avss.getPagedSourceAssertedValueSetEntities(topNode, position, maxToReturn);
 		ResolvedConceptReferenceList refList = new ResolvedConceptReferenceList();
 		list.stream().map((entity -> resolvedConceptReferenceFromEntityTransform(entity))).forEachOrdered(refList::addResolvedConceptReference);
 		return refList;
@@ -40,7 +42,9 @@ public class AssertedValueSetEntityResolver implements Serializable {
 	
 	public List<ResolvedConceptReference> getPagedConceptReferenceByCursorAndCode(String topNode, int position,
 			int maxToReturn) {
-		List<Entity> list = vsSvc.getPagedSourceAssertedValueSetEntities(topNode, position, maxToReturn);
+		AssertedValueSetService avss = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
+		avss.init(this.params);
+		List<Entity> list = avss.getPagedSourceAssertedValueSetEntities(topNode, position, maxToReturn);
 		return list.stream().map((entity -> resolvedConceptReferenceFromEntityTransform(entity))).collect(Collectors.toList());
 	}
 	
