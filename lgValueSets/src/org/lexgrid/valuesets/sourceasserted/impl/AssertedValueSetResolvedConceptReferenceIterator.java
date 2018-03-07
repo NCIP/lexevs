@@ -12,10 +12,11 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.lexevs.logging.LoggerFactory;
+import org.lexevs.paging.AbstractAssertedVSResolvedConceptReferenceIterator;
 import org.lexevs.paging.AbstractPageableIterator;
 
 public class AssertedValueSetResolvedConceptReferenceIterator 
-extends AbstractPageableIterator<ResolvedConceptReference>
+extends AbstractAssertedVSResolvedConceptReferenceIterator<ResolvedConceptReference>
 implements ResolvedConceptReferencesIterator{
 	private String topNode;
 	private int maxValueSets;
@@ -102,34 +103,38 @@ implements ResolvedConceptReferencesIterator{
     }
 
 	@Override
-	protected List<? extends ResolvedConceptReference> doPage(int start, int end) {
+	protected List<? extends ResolvedConceptReference> doPage(int skip, int maxToReturn) {
 
 		try {
-			if (end == 0) {
+			if (maxToReturn == 0) {
 				return new ArrayList<ResolvedConceptReference>();
 			}
 
-			if (start == maxValueSets) {
+			if (skip == maxValueSets) {
 				return new ArrayList<ResolvedConceptReference>();
 			}
 
 			int max = 0;
-			if (end < 0) {
+			if (maxToReturn < 0) {
 				// setting a default size
 				max = this.getGlobalPosition() + 100;
 			} else {
-				max = end;
+				max = maxToReturn;
 			}
 
 			if (max > maxValueSets) {
 				max = maxValueSets;
 			}
-			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, start, max);
+			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max);
 
 		} catch (Exception e) {
 			String id = getLogger().error("Implementation problem in the resolved concept reference iterator next(int)",
 					e);
 			throw new RuntimeException("Unexpected system error: " + e.getMessage() + "Log ID: " + id);
+		}
+		finally {
+			this.setGlobalPostion(this.getGlobalPosition() > maxValueSets || this.getGlobalPosition() + maxToReturn  > maxValueSets? maxValueSets: maxToReturn);
+			//this.setGlobalPostion(maxToReturn);
 		}
 	}
 	
