@@ -121,14 +121,10 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	@Override
 	public T next() {
 		pageIfNecessary();
-		
-		T returnItem = cache.get( inCachePosition );
-		
+		T returnItem = cache.get( inCachePosition );		
 		globalPosition++;
 		inCachePosition++;
-		
-
-			return returnItem;
+		return returnItem;
 
 	}
 	

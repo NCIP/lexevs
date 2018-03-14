@@ -58,6 +58,7 @@ implements ResolvedConceptReferencesIterator{
 
 
 	@Override
+	@LgClientSideSafe
 	public ResolvedConceptReference next() {
 		remaining = remaining - 1 < 0?0:remaining -1;
 		return super.next();
