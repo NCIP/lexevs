@@ -168,7 +168,6 @@ implements ResolvedConceptReferencesIterator{
 		}
 		finally {
 			this.setGlobalPostion(this.getGlobalPosition() > maxValueSets || this.getGlobalPosition() + maxToReturn  > maxValueSets? maxValueSets: maxToReturn);
-//		    this.refreshRemaining(remains - maxToReturn <= 0? 0: remains - maxToReturn); 
 		}
 	}
 	
