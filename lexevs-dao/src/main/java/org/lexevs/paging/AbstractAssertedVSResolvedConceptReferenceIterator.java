@@ -43,7 +43,7 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	private List<? extends T> cache = new ArrayList<T>();
 	
 	/** The page size. */
-	private int pageSize;
+	protected int pageSize;
 	
 	/** The global position. */
 	private int globalPosition = 0;
@@ -52,7 +52,7 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	private int inCachePosition = 0;
 	
 	/** The pager. */
-	private Pager<T> pager;
+	protected Pager<T> pager;
 	
 	private RemainingRefresher<T> remainingRefresher;
 	
@@ -306,7 +306,7 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 		public List<? extends T> doPage(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator,
 				int currentPosition, int pageSize, int remains) {
 			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize, remains);
-			abstractPageableIterator.refreshRemaining(remains - pageSize == 0? 0: remains - pageSize);
+			abstractPageableIterator.refreshRemaining(remains - pageSize <= 0? 0: remains - pageSize);
 			return returnList;
 		}
 	}

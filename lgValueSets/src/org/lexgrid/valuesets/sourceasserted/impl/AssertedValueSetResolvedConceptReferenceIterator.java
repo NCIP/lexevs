@@ -1,5 +1,6 @@
 package org.lexgrid.valuesets.sourceasserted.impl;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,7 +75,9 @@ implements ResolvedConceptReferencesIterator{
 		ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
 		if(this.getRefreshedRemaining() == 0) {return list;}
 		List<ResolvedConceptReference> refs = protoNext(pageSize, remaining);
+		if(isPagerProxied()) {
 		this.refreshRemaining(remaining - pageSize <= 0? 0: remaining - pageSize);
+		}
 		refs.stream().forEachOrdered(list::addResolvedConceptReference);
 		return list;
 	}
@@ -160,7 +163,7 @@ implements ResolvedConceptReferencesIterator{
 			if (max > maxValueSets) {
 				max = maxValueSets;
 			}
-			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max);
+			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max > remains? remains: max );
 
 		} catch (Exception e) {
 			String id = getLogger().error(
@@ -170,6 +173,18 @@ implements ResolvedConceptReferencesIterator{
 		finally {
 			this.setGlobalPostion(this.getGlobalPosition() > maxValueSets || this.getGlobalPosition() + maxToReturn  > maxValueSets? maxValueSets: maxToReturn);
 		}
+	}
+	
+	public boolean isPagerProxied() {
+		Field f = null;
+		 try {
+			 f =	pager.getClass().getDeclaredField("CGLIB$BOUND");
+		} catch (NoSuchFieldException | SecurityException e) {
+			System.out.println("No proxy declared");
+		}
+		if(f != null) {
+		return true;
+		}else { return false;}
 	}
 	
 }
