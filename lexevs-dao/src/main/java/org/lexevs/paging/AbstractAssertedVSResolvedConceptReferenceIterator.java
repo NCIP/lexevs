@@ -20,19 +20,16 @@ package org.lexevs.paging;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.annotations.LgProxyClass;
 import org.springframework.util.Assert;
 
 /**
- * The Class AbstractPageableIterator.
+ *
  * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * @author <a href="mailto:bauer.scott@mayo.edu">Scott Bauer</a>
  */
 public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> implements Iterator<T>, Iterable<T>, Serializable{
 
@@ -57,8 +54,7 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	/** The pager. */
 	private Pager<T> pager;
 	
-	/** The next decorator. */
-	private NextDecorator<T> nextDecorator;
+	private RemainingRefresher<T> remainingRefresher;
 	
 	/** The decorate next. */
 	private boolean decorateNext = false;
@@ -90,7 +86,7 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 		this.pageSize = pageSize;
 		
 		this.pager = new Pager<T>();
-		this.nextDecorator = new NextDecorator<T>();
+		this.remainingRefresher = new RemainingRefresher<T>();
 	}
 	
 	/* (non-Javadoc)
@@ -131,29 +127,19 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 		globalPosition++;
 		inCachePosition++;
 		
-		if(this.decorateNext) {
-			return this.nextDecorator.decorateNext(this, returnItem);
-		} else {
+
 			return returnItem;
-		}
+
 	}
 	
 
-	public List<T> protoNext(int size) {
-//		pageIfNecessary(size);
+	public List<T> protoNext(final int size, int remains) {
+
 		List<T> returnItem = new ArrayList<T>();
-//		if(size > cache.size()) {
-			pageOnSize(size);
+
+			pageOnSize(size, remains);
 			returnItem.addAll(cache);
-//		}else if(size == cache.size())
-//		{
-//			returnItem.addAll(cache);
-//		}
-//		else {
-//			returnItem.addAll(returnCachePortion(cache));
-//		}
-//		globalPosition = globalPosition + size > cache.size()? 
-//				globalPosition + cache.size():globalPosition + size ;
+
 			return  returnItem;
 	}
 
@@ -167,9 +153,9 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	}
 	
 	
-	protected void  pageIfNecessary(int size) {
+	protected void  pageIfNecessary(int size, int remains) {
 		if(inCachePosition > size) {
-			pageOnSize(size);
+			pageOnSize(size, remains);
 		}
 		
 	}
@@ -203,8 +189,8 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	}
 	
 	
-	protected final void pageOnSize(int size) {
-		cache = doExecutePageOnSize(size);
+	protected final void pageOnSize(int size, int remains) {
+		cache = doExecutePageOnSize(size, remains);
 		inCachePosition = 0;
 	}
 	
@@ -224,9 +210,8 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	 * 
 	 * @return the list<? extends t>
 	 */
-	protected List<? extends T> doExecutePageOnSize(int size){
-		List<? extends T> returnList = this.pager.doPage(this, globalPosition, size);
-
+	protected List<? extends T> doExecutePageOnSize(int size, int remains){
+		List<? extends T> returnList = this.pager.doPage(this, globalPosition, size, remains);
 		return returnList;
 	}
 	
@@ -247,7 +232,8 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	 * @return the list<? extends t>
 	 */
 	protected abstract List<? extends T> doPage(int currentPosition, int pageSize);
-	
+	protected abstract List<? extends T> doPage(int currentPosition, int pageSize, int remains);
+	protected abstract int refreshNumberRemaining(int remaining);
 	/**
 	 * Decorate next.
 	 * 
@@ -277,6 +263,14 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	protected boolean isDecorateNext() {
 		return decorateNext;
 	}
+	
+	public int getRefreshedRemaining() {
+		return this.remainingRefresher.getRemaining();
+	}
+	
+	public void refreshRemaining(int refreshRemain) {
+		this.remainingRefresher.doRefreshRemaining(this, refreshRemain);
+	}
 
 	/**
 	 * The Class Pager.
@@ -293,6 +287,50 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 		public Pager() {
 			super();
 		}
+
+		/**
+		 * Do page.
+		 * 
+		 * @param abstractPageableIterator
+		 *            the abstract pageable iterator
+		 * @param currentPosition
+		 *            the current position
+		 * @param pageSize
+		 *            the page size
+		 * 
+		 * @return the list<? extends t>
+		 */
+		public List<? extends T> doPage(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator,
+				int currentPosition, int pageSize) {
+			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize);
+			return returnList;
+		}
+		
+
+		public List<? extends T> doPage(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator,
+				int currentPosition, int pageSize, int remains) {
+			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize, remains);
+			abstractPageableIterator.refreshRemaining(remains - pageSize == 0? 0: remains - pageSize);
+			return returnList;
+		}
+	}
+	
+
+	public static class RemainingRefresher<T> implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5132659905928838406L;
+		
+		private int remainingNumber;
+
+		/**
+		 * Instantiates a new pager.
+		 */
+		public RemainingRefresher() {
+			super();
+		}
 		
 		/**
 		 * Do page.
@@ -303,40 +341,14 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 		 * 
 		 * @return the list<? extends t>
 		 */
-		public List<? extends T> doPage(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator, int currentPosition, int pageSize){
-			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize);
+		public int doRefreshRemaining(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator, int remaining){
+			remainingNumber = abstractPageableIterator.refreshNumberRemaining(remaining);
 			
-			return returnList;
-		}
-	}
-	
-	
-	/**
-	 * The Class NextDecorator.
-	 */
-	@LgProxyClass
-	public static class NextDecorator<T> implements Serializable {
-
-		/** The Constant serialVersionUID. */
-		private static final long serialVersionUID = 6142588013131141095L;
-
-		/**
-		 * Instantiates a new next decorator.
-		 */
-		public NextDecorator() {
-			super();
+			return remainingNumber;
 		}
 		
-		/**
-		 * Decorate next.
-		 * 
-		 * @param abstractPageableIterator the abstract pageable iterator
-		 * @param item the item
-		 * 
-		 * @return the t
-		 */
-		public T decorateNext(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator, T item){
-			return abstractPageableIterator.decorateNext(item);
+		public int getRemaining() {
+			return remainingNumber;
 		}
 	}
 
@@ -371,4 +383,6 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	protected List<? extends T> getCache(){
 		return this.cache;
 	}
+	
+	
 }

@@ -10,10 +10,10 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.paging.AbstractAssertedVSResolvedConceptReferenceIterator;
-import org.lexevs.paging.AbstractPageableIterator;
 
 public class AssertedValueSetResolvedConceptReferenceIterator 
 extends AbstractAssertedVSResolvedConceptReferenceIterator<ResolvedConceptReference>
@@ -30,28 +30,32 @@ implements ResolvedConceptReferencesIterator{
 	public AssertedValueSetResolvedConceptReferenceIterator() {super();}
 
 	public AssertedValueSetResolvedConceptReferenceIterator(final String code, AssertedValueSetParameters params) {
+		super();
 		topNode = code;
 		assertedValueSetEntityResolver = new AssertedValueSetEntityResolver(params, code);
 		this.maxValueSets = assertedValueSetEntityResolver.getTotalEntityCount();
 		remaining = maxValueSets;
+		this.refreshRemaining(remaining);
 	}
-
-//	@Override
-//	public boolean hasNext() throws LBResourceUnavailableException {
-//		return numberRemaining() > 0;
-//	}
 
 	@Override
 	public void release() throws LBResourceUnavailableException {
-//		refs = null;
 		topNode = null;
 		assertedValueSetEntityResolver = null;
+		remaining = 0;
 	}
 
 	@Override
 	public int numberRemaining() throws LBResourceUnavailableException {
+		return this.remaining;
+	}
+
+	@Override
+	public int refreshNumberRemaining(int remaining) {
+		this.remaining = remaining;
 		return remaining;
 	}
+
 
 	@Override
 	public ResolvedConceptReference next() {
@@ -60,14 +64,16 @@ implements ResolvedConceptReferencesIterator{
 	}
 
 	@Override
+	@LgClientSideSafe
 	public ResolvedConceptReferenceList next(int pageSize)
 			throws LBResourceUnavailableException, LBInvocationException {
 		if(pageSize < 0) {
 			pageSize = maxValueSets;
 		}
 		ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
-		List<ResolvedConceptReference> refs = protoNext(pageSize);
-		remaining = remaining -  pageSize < 0?0:remaining - pageSize;
+		if(this.getRefreshedRemaining() == 0) {return list;}
+		List<ResolvedConceptReference> refs = protoNext(pageSize, remaining);
+		this.refreshRemaining(remaining - pageSize <= 0? 0: remaining - pageSize);
 		refs.stream().forEachOrdered(list::addResolvedConceptReference);
 		return list;
 	}
@@ -76,7 +82,7 @@ implements ResolvedConceptReferencesIterator{
 	public ResolvedConceptReferenceList get(int start, int end)
 			throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
 		ResolvedConceptReferenceList refList = new ResolvedConceptReferenceList();
-		this.doPage(start, end).stream().forEachOrdered(refList::addResolvedConceptReference);
+		this.doPage(start, end, this.numberRemaining()).stream().forEachOrdered(refList::addResolvedConceptReference);
 		return refList;
 	}
 
@@ -91,19 +97,47 @@ implements ResolvedConceptReferencesIterator{
 		throw new UnsupportedOperationException("GetNext unsupported.");
 	}
 	
-//	private int getPageSizeSelectAll(int size) {
-//		return size >= 0?size:maxValueSets;
-//	}
-	
-//	private int sizeRemaining(int remain, int size) {
-//		return remaining - getPageSizeSelectAll(size) < 0?0: remaining - getPageSizeSelectAll(size); 
-//	}
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
     }
 
 	@Override
 	protected List<? extends ResolvedConceptReference> doPage(int skip, int maxToReturn) {
+		int max = 0;
+		try {
+			if (maxToReturn == 0) {
+				return new ArrayList<ResolvedConceptReference>();
+			}
+
+			if (skip == maxValueSets) {
+				return new ArrayList<ResolvedConceptReference>();
+			}
+
+
+			if (maxToReturn < 0) {
+				// setting a default size
+				max = this.getGlobalPosition() + 100;
+			} else {
+				max = maxToReturn;
+			}
+
+			if (max > maxValueSets) {
+				max = maxValueSets;
+			}
+			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max);
+
+		} catch (Exception e) {
+			String id = getLogger().error(
+					"Implementation problem in the resolved concept reference iterator next(int)",e);
+			throw new RuntimeException("Unexpected system error: " + e.getMessage() + "Log ID: " + id);
+		}
+		finally {
+			this.setGlobalPostion(this.getGlobalPosition() > maxValueSets || this.getGlobalPosition() + maxToReturn  > maxValueSets? maxValueSets: maxToReturn);
+		}
+	}
+	
+	@Override
+	protected List<? extends ResolvedConceptReference> doPage(int skip, int maxToReturn, int remains) {
 
 		try {
 			if (maxToReturn == 0) {
@@ -128,13 +162,13 @@ implements ResolvedConceptReferencesIterator{
 			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max);
 
 		} catch (Exception e) {
-			String id = getLogger().error("Implementation problem in the resolved concept reference iterator next(int)",
-					e);
+			String id = getLogger().error(
+					"Implementation problem in the resolved concept reference iterator next(int)",e);
 			throw new RuntimeException("Unexpected system error: " + e.getMessage() + "Log ID: " + id);
 		}
 		finally {
 			this.setGlobalPostion(this.getGlobalPosition() > maxValueSets || this.getGlobalPosition() + maxToReturn  > maxValueSets? maxValueSets: maxToReturn);
-			//this.setGlobalPostion(maxToReturn);
+//		    this.refreshRemaining(remains - maxToReturn <= 0? 0: remains - maxToReturn); 
 		}
 	}
 	
