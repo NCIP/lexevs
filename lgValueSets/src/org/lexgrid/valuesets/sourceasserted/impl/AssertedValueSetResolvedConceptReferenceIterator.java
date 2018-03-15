@@ -178,7 +178,7 @@ implements ResolvedConceptReferencesIterator{
 	public boolean isPagerProxied() {
 		Field f = null;
 		 try {
-			 f =	pager.getClass().getDeclaredField("CGLIB$BOUND");
+			 f =	 pager.getClass().getDeclaredField("CGLIB$BOUND");
 		} catch (NoSuchFieldException | SecurityException e) {
 			System.out.println("No proxy declared");
 		}

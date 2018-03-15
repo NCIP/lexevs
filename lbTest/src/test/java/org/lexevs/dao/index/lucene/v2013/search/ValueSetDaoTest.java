@@ -32,7 +32,7 @@ public class ValueSetDaoTest {
 	@Before
 	public void setUp() throws Exception {
 		vsdao = LexEvsServiceLocator.getInstance().getIndexDaoManager()
-				.getValueSetEntityDao("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+				.getValueSetEntityDao("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1");
 	}
 
 	@Test
@@ -71,12 +71,12 @@ public class ValueSetDaoTest {
 
 	@Test
 	@Order(2)
-	public void testDeleteEntityFromIndex() {
+	public void testDeleteEntityFromIndex() throws InterruptedException {
 		Term term = new Term(LuceneLoaderCode.CODING_SCHEME_URI_VERSION_CODE_NAMESPACE_KEY_FIELD,
 				LuceneLoaderCode.createCodingSchemeUriVersionCodeNamespaceKey(
-						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5", "C37927", "owl2lexevs"));
-		vsdao.deleteDocuments("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5", new TermQuery(term));
-
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", "C37927", "owl2lexevs"));
+		vsdao.deleteDocuments("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", new TermQuery(term));
+		Thread.sleep(3000);
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "C37927")), Occur.MUST);
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -90,6 +90,6 @@ public class ValueSetDaoTest {
 		}
 		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
 		List<ScoreDoc> docs = vsdao.query(blockJoinQuery);
-		assertTrue(docs.size() == 0);
+		assertEquals(docs.size(), 0);
 	}
 }
