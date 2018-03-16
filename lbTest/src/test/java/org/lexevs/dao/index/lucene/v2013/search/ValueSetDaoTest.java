@@ -76,7 +76,6 @@ public class ValueSetDaoTest {
 				LuceneLoaderCode.createCodingSchemeUriVersionCodeNamespaceKey(
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", "C37927", "owl2lexevs"));
 		vsdao.deleteDocuments("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", new TermQuery(term));
-		Thread.sleep(3000);
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "C37927")), Occur.MUST);
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
