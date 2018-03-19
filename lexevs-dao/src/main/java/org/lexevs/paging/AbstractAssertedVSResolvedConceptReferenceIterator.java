@@ -23,17 +23,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.annotations.LgProxyClass;
 import org.springframework.util.Assert;
 
 /**
- * The Class AbstractPageableIterator.
+ *
  * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * @author <a href="mailto:bauer.scott@mayo.edu">Scott Bauer</a>
  */
-public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterable<T>, Serializable{
+public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> implements Iterator<T>, Iterable<T>, Serializable{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5398591025205732109L;
@@ -45,7 +43,7 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	private List<? extends T> cache = new ArrayList<T>();
 	
 	/** The page size. */
-	private int pageSize;
+	protected int pageSize;
 	
 	/** The global position. */
 	private int globalPosition = 0;
@@ -54,10 +52,9 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	private int inCachePosition = 0;
 	
 	/** The pager. */
-	private Pager<T> pager;
+	protected Pager<T> pager;
 	
-	/** The next decorator. */
-	private NextDecorator<T> nextDecorator;
+	private RemainingRefresher<T> remainingRefresher;
 	
 	/** The decorate next. */
 	private boolean decorateNext = false;
@@ -67,7 +64,7 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	/**
 	 * Instantiates a new abstract pageable iterator.
 	 */
-	protected AbstractPageableIterator(){
+	protected AbstractAssertedVSResolvedConceptReferenceIterator(){
 		this(DEFAULT_PAGE_SIZE);
 	}
 	
@@ -84,12 +81,12 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	 * 
 	 * @param pageSize the page size
 	 */
-	public AbstractPageableIterator(int pageSize){
+	public AbstractAssertedVSResolvedConceptReferenceIterator(int pageSize){
 		Assert.isTrue(pageSize > 0, "Cannot specify a Page Size less than 0.");
 		this.pageSize = pageSize;
 		
 		this.pager = new Pager<T>();
-		this.nextDecorator = new NextDecorator<T>();
+		this.remainingRefresher = new RemainingRefresher<T>();
 	}
 	
 	/* (non-Javadoc)
@@ -124,42 +121,22 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	@Override
 	public T next() {
 		pageIfNecessary();
-		
-		T returnItem = cache.get( inCachePosition );
-		
+		T returnItem = cache.get( inCachePosition );		
 		globalPosition++;
 		inCachePosition++;
-		
-		if(this.decorateNext) {
-			return this.nextDecorator.decorateNext(this, returnItem);
-		} else {
-			return returnItem;
-		}
+		return returnItem;
+
 	}
 	
 
-	public List<T> protoNext(int size) {
-//		pageIfNecessary(size);
+	public List<T> protoNext(final int size, int remains) {
+
 		List<T> returnItem = new ArrayList<T>();
-//		if(size > cache.size()) {
-			pageOnSize(size);
+
+			pageOnSize(size, remains);
 			returnItem.addAll(cache);
-//		}else if(size == cache.size())
-//		{
-//			returnItem.addAll(cache);
-//		}
-//		else {
-//			returnItem.addAll(returnCachePortion(cache));
-//		}
-		globalPosition = globalPosition + size > cache.size()? 
-				globalPosition + cache.size():globalPosition + size ;
+
 			return  returnItem;
-	}
-
-
-	private List<T> returnCachePortion(List<? extends T> cache2) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
@@ -172,9 +149,9 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	}
 	
 	
-	protected void  pageIfNecessary(int size) {
+	protected void  pageIfNecessary(int size, int remains) {
 		if(inCachePosition > size) {
-			pageOnSize(size);
+			pageOnSize(size, remains);
 		}
 		
 	}
@@ -208,8 +185,8 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	}
 	
 	
-	protected final void pageOnSize(int size) {
-		cache = doExecutePageOnSize(size);
+	protected final void pageOnSize(int size, int remains) {
+		cache = doExecutePageOnSize(size, remains);
 		inCachePosition = 0;
 	}
 	
@@ -229,9 +206,8 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	 * 
 	 * @return the list<? extends t>
 	 */
-	protected List<? extends T> doExecutePageOnSize(int size){
-		List<? extends T> returnList = this.pager.doPage(this, globalPosition, size);
-
+	protected List<? extends T> doExecutePageOnSize(int size, int remains){
+		List<? extends T> returnList = this.pager.doPage(this, globalPosition, size, remains);
 		return returnList;
 	}
 	
@@ -252,35 +228,15 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	 * @return the list<? extends t>
 	 */
 	protected abstract List<? extends T> doPage(int currentPosition, int pageSize);
+	protected abstract List<? extends T> doPage(int currentPosition, int pageSize, int remains);
+	protected abstract int refreshNumberRemaining(int remaining);
 	
-	/**
-	 * Decorate next.
-	 * 
-	 * @param item the item
-	 * 
-	 * @return the t
-	 */
-	protected T decorateNext(T item) {
-		//no-op -- for sublcasses
-		return item;
+	public int getRefreshedRemaining() {
+		return this.remainingRefresher.getRemaining();
 	}
 	
-	/**
-	 * Sets the decorate next.
-	 * 
-	 * @param decorateNext the new decorate next
-	 */
-	protected void setDecorateNext(boolean decorateNext) {
-		this.decorateNext = decorateNext;
-	}
-
-	/**
-	 * Checks if is decorate next.
-	 * 
-	 * @return true, if is decorate next
-	 */
-	protected boolean isDecorateNext() {
-		return decorateNext;
+	public void refreshRemaining(int refreshRemain) {
+		this.remainingRefresher.doRefreshRemaining(this, refreshRemain);
 	}
 
 	/**
@@ -298,6 +254,50 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		public Pager() {
 			super();
 		}
+
+		/**
+		 * Do page.
+		 * 
+		 * @param abstractPageableIterator
+		 *            the abstract pageable iterator
+		 * @param currentPosition
+		 *            the current position
+		 * @param pageSize
+		 *            the page size
+		 * 
+		 * @return the list<? extends t>
+		 */
+		public List<? extends T> doPage(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator,
+				int currentPosition, int pageSize) {
+			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize);
+			return returnList;
+		}
+		
+
+		public List<? extends T> doPage(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator,
+				int currentPosition, int pageSize, int remains) {
+			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize, remains);
+			abstractPageableIterator.refreshRemaining(remains - pageSize <= 0? 0: remains - pageSize);
+			return returnList;
+		}
+	}
+	
+
+	public static class RemainingRefresher<T> implements Serializable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -5132659905928838406L;
+		
+		private int remainingNumber;
+
+		/**
+		 * Instantiates a new pager.
+		 */
+		public RemainingRefresher() {
+			super();
+		}
 		
 		/**
 		 * Do page.
@@ -308,43 +308,16 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 		 * 
 		 * @return the list<? extends t>
 		 */
-		public List<? extends T> doPage(AbstractPageableIterator<T> abstractPageableIterator, int currentPosition, int pageSize){
-			List<? extends T> returnList = abstractPageableIterator.doPage(currentPosition, pageSize);
+		public int doRefreshRemaining(AbstractAssertedVSResolvedConceptReferenceIterator<T> abstractPageableIterator, int remaining){
+			remainingNumber = abstractPageableIterator.refreshNumberRemaining(remaining);
 			
-			return returnList;
-		}
-	}
-	
-	
-	/**
-	 * The Class NextDecorator.
-	 */
-	@LgProxyClass
-	public static class NextDecorator<T> implements Serializable {
-
-		/** The Constant serialVersionUID. */
-		private static final long serialVersionUID = 6142588013131141095L;
-
-		/**
-		 * Instantiates a new next decorator.
-		 */
-		public NextDecorator() {
-			super();
+			return remainingNumber;
 		}
 		
-		/**
-		 * Decorate next.
-		 * 
-		 * @param abstractPageableIterator the abstract pageable iterator
-		 * @param item the item
-		 * 
-		 * @return the t
-		 */
-		public T decorateNext(AbstractPageableIterator<T> abstractPageableIterator, T item){
-			return abstractPageableIterator.decorateNext(item);
+		public int getRemaining() {
+			return remainingNumber;
 		}
 	}
-
 
 	/**
 	 * Gets the page size.
@@ -363,4 +336,20 @@ public abstract class AbstractPageableIterator<T> implements Iterator<T>, Iterab
 	protected int getGlobalPosition() {
 		return globalPosition;
 	}	
+	
+//	protected void setGlobalPosition(int increment, int maximum) {
+//		globalPosition = globalPosition + increment > maximum? 
+//				maximum:globalPosition + increment ;
+//	}
+	
+	protected void setGlobalPostion(int increment) {
+		globalPosition = increment > cache.size()? 
+				globalPosition + cache.size():globalPosition + increment ;
+	}
+	
+	protected List<? extends T> getCache(){
+		return this.cache;
+	}
+	
+	
 }

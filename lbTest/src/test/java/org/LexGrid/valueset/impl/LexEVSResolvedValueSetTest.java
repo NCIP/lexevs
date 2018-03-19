@@ -22,6 +22,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
@@ -39,6 +40,7 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
@@ -228,6 +230,25 @@ public class LexEVSResolvedValueSetTest {
 		ResolvedConceptReferenceList refs = nullVsService.getValueSetEntitiesForURI(uri.toString());
 		assertNotNull(refs);
 		assertTrue(refs.getResolvedConceptReferenceCount() == 0);
+	}
+	
+	@Test
+	public void getValueSetEntitiesFromIterator() throws Exception {
+		URI uri = new URI("http://evs.nci.nih.gov/valueset/TEST/C48323");
+		ResolvedConceptReferencesIterator refs = service.getValueSetIteratorForURI(uri.toString());
+		assertNotNull(refs);
+		assertTrue(refs.numberRemaining() > 0);
+		assertNotNull(refs.next());
+	}
+	
+	@Test(expected=RuntimeException.class)
+	public void getValueSetEntitiesWithNoAssertedSchemeFromIterator() throws Exception {
+		LexEVSResolvedValueSetServiceImpl nullVsService = new LexEVSResolvedValueSetServiceImpl();
+		URI uri = new URI("http://evs.nci.nih.gov/valueset/TEST/C48323");
+		ResolvedConceptReferencesIterator refs = nullVsService.getValueSetIteratorForURI(uri.toString());
+		assertNotNull(refs);
+		assertTrue(refs.numberRemaining() == 0);
+		assertNull(refs.next());
 	}
 
 	@Test
