@@ -6,10 +6,12 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Impl.helpers.ResolvedConceptReferenceTransformer;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.annotations.LgProxyClass;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.document.Document;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+@LgProxyClass
 public class SourceAssertedScoreDocTransformer implements ResolvedConceptReferenceTransformer {
     
     /**
