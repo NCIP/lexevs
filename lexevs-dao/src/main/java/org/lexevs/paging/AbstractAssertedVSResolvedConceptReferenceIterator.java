@@ -230,35 +230,6 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	protected abstract List<? extends T> doPage(int currentPosition, int pageSize);
 	protected abstract List<? extends T> doPage(int currentPosition, int pageSize, int remains);
 	protected abstract int refreshNumberRemaining(int remaining);
-	/**
-	 * Decorate next.
-	 * 
-	 * @param item the item
-	 * 
-	 * @return the t
-	 */
-	protected T decorateNext(T item) {
-		//no-op -- for sublcasses
-		return item;
-	}
-	
-	/**
-	 * Sets the decorate next.
-	 * 
-	 * @param decorateNext the new decorate next
-	 */
-	protected void setDecorateNext(boolean decorateNext) {
-		this.decorateNext = decorateNext;
-	}
-
-	/**
-	 * Checks if is decorate next.
-	 * 
-	 * @return true, if is decorate next
-	 */
-	protected boolean isDecorateNext() {
-		return decorateNext;
-	}
 	
 	public int getRefreshedRemaining() {
 		return this.remainingRefresher.getRemaining();
