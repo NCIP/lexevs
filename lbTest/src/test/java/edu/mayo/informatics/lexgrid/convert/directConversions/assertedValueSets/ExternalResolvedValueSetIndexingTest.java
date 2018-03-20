@@ -1,21 +1,43 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URISyntaxException;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.concepts.Entity;
-import org.junit.Before;
+import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.util.CharArraySet;
+import org.apache.lucene.document.Document;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Query;
+import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.TermQuery;
+import org.apache.lucene.search.join.QueryBitSetProducer;
+import org.apache.lucene.search.join.ScoreMode;
+import org.apache.lucene.search.join.ToParentBlockJoinQuery;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.resolvedvalueset.impl.ExternalResolvedValueSetIndexService;
 
 public class ExternalResolvedValueSetIndexingTest {
 	ExternalResolvedValueSetIndexService service;
-	@Before
+	SourceAssertedValueSetSearchIndexService vsSvc;
+	
+	@BeforeClass
 	public void setUp() throws Exception {
+		vsSvc = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
 		service = new ExternalResolvedValueSetIndexService();
+		service.indexExternalResolvedValueSetsToAssertedValueSetIndex();
 	}
 
 	@Test
@@ -41,8 +63,25 @@ public class ExternalResolvedValueSetIndexingTest {
 	}
 	
 	@Test
-	public void testIndexExternalEntitiesForExternalRVSets() {
-		service.indexExternalResolvedValueSetsToAssertedValueSetIndex();
+	public void testSearchExternalRVSets() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("code", "005")), Occur.MUST);
+		Query query = builder.build();
+		QueryBitSetProducer parentFilter;
+		parentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
+
+		List<ScoreDoc> docs = vsSvc.query(null, blockJoinQuery);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 0);
+		ScoreDoc sd = docs.get(0);
+		Document doc = vsSvc.getById(sd.doc);
+		assertNotNull(doc);
+		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
+		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
+				.anyMatch(y -> y.stringValue().equals("005")));
 	}
 
 }
