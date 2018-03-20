@@ -272,15 +272,16 @@ public class AssertedValueSetServices {
         return ref;
     }
     
-    public static Entity transformRCRtoEntity(Entity entity, AssertedValueSetParameters params) {
-        ResolvedConceptReference ref = new ResolvedConceptReference();
-         entity.setEntityCode(ref.getCode());
+    public static Entity transformRCRtoEntity(ResolvedConceptReference ref, AssertedValueSetParameters params) {
+        Entity entity = new Entity();
+        entity.setEntityCode(ref.getCode());
          entity.setEntityCodeNamespace(ref.getCodeNamespace());
          entity.setEntityType(ref.getEntityType());
-        if(StringUtils.isNotBlank(entity.getEntityDescription().getContent())){
+        if(entity.getEntityDescription() != null && StringUtils.isNotBlank(entity.getEntityDescription().getContent())){
             entity.setEntityDescription(
                     ref.getEntityDescription());
         }
+        entity.setProperty(ref.getEntity().getAllProperties());
         return entity;
     }
 
