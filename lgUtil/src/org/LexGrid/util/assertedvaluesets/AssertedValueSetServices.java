@@ -277,7 +277,7 @@ public class AssertedValueSetServices {
         entity.setEntityCode(ref.getCode());
          entity.setEntityCodeNamespace(ref.getCodeNamespace());
          entity.setEntityType(ref.getEntityType());
-        if(entity.getEntityDescription() != null && StringUtils.isNotBlank(entity.getEntityDescription().getContent())){
+        if(ref.getEntityDescription() != null && StringUtils.isNotBlank(ref.getEntityDescription().getContent())){
             entity.setEntityDescription(
                     ref.getEntityDescription());
         }

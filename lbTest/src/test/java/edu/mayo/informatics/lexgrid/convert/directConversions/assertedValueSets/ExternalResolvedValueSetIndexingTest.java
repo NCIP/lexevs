@@ -3,11 +3,21 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.core.AnyOf.*;
+import static org.hamcrest.core.Is.is;
 
 import java.net.URISyntaxException;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAssertedValueSetSearchExtensionImpl;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -23,6 +33,7 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.join.QueryBitSetProducer;
 import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
@@ -30,14 +41,19 @@ import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.resolvedvalueset.impl.ExternalResolvedValueSetIndexService;
 
 public class ExternalResolvedValueSetIndexingTest {
-	ExternalResolvedValueSetIndexService service;
-	SourceAssertedValueSetSearchIndexService vsSvc;
+	static ExternalResolvedValueSetIndexService service;
+	static SourceAssertedValueSetSearchIndexService vsSvc;
+	private static LexBIGServiceImpl lbsvc;
+	private static SourceAssertedValueSetSearchExtensionImpl assertedVSsvc;
 	
 	@BeforeClass
-	public void setUp() throws Exception {
+	public static void setUp() throws Exception {
 		vsSvc = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
 		service = new ExternalResolvedValueSetIndexService();
 		service.indexExternalResolvedValueSetsToAssertedValueSetIndex();
+		lbsvc = LexBIGServiceImpl.defaultInstance();
+		assertedVSsvc = (SourceAssertedValueSetSearchExtensionImpl) lbsvc
+				.getGenericExtension("AssertedValueSetSearchExtension");
 	}
 
 	@Test
@@ -83,5 +99,91 @@ public class ExternalResolvedValueSetIndexingTest {
 		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
 				.anyMatch(y -> y.stringValue().equals("005")));
 	}
+	
+	@Test
+	public void testExternalCodeExact() throws LBException {
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("005", null, null, MatchAlgorithm.CODE_EXACT,
+				false, false);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertNotNull(ref);
+		assertEquals(ref.getEntityDescription().getContent(), "Domestic Auto Makers");
+	}
+	
+	@Test
+	public void testPresentationExact() throws LBException {
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("Domestic Auto Makers", null, null,
+				MatchAlgorithm.PRESENTATION_EXACT, false, false);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertNotNull(ref);
+		assertEquals(ref.getEntityDescription().getContent(), "Domestic Auto Makers");
+	}
+	
+	@Test
+	public void testPresentationContains() throws LBException {
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("Auto", null, null,
+				MatchAlgorithm.PRESENTATION_CONTAINS, false, false);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertNotNull(ref);
+		assertEquals(ref.getEntityDescription().getContent(), "Domestic Auto Makers");
+	}
+	
+	@Test
+	public void testPropertyExact() throws LBException {
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("American Car Companies", null, null,
+				MatchAlgorithm.PROPERTY_EXACT, false, false);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertNotNull(ref);
+		assertEquals(ref.getEntityDescription().getContent(), "Domestic Auto Makers");
+	}
+	
+	@Test
+	public void testPropertyContains() throws LBException {
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("Car", null, null,
+				MatchAlgorithm.PRESENTATION_CONTAINS, false, false);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertNotNull(ref);
+		assertEquals(ref.getEntityDescription().getContent(), "Domestic Auto Makers");
+	}
+	
+	@Test
+	public void testLuceneQuery() throws LBException {
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("F150", null, null,
+				MatchAlgorithm.LUCENE, false, false);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertNotNull(ref);
+		assertEquals(ref.getEntityDescription().getContent(), "Ford F150");
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testLuceneQueryManyResults() throws LBException {
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("FORD", null, null,
+				MatchAlgorithm.LUCENE, false, false);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertThat(ref.getEntityDescription().getContent(), anyOf(is("Ford Motor Company"), is("Ford F150")));
+		ref = itr.next();
+		assertThat(ref.getEntityDescription().getContent(), anyOf(is("Ford Motor Company"), is("Ford F150")));
+	}
+	
+	@AfterClass
+	public static void dropIndex() {
+		vsSvc.dropIndex(Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+	}
+	
 
 }
