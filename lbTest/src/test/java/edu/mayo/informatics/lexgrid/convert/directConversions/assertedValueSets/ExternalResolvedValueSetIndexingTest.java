@@ -172,7 +172,7 @@ public class ExternalResolvedValueSetIndexingTest {
 				search("FORD", null, null,
 				MatchAlgorithm.LUCENE, false, false);
 		assertTrue(itr.hasNext());
-		ResolvedConceptReferenceList refs = itr.next(-1);
+		ResolvedConceptReferenceList refs = itr.next(10);
 		Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(ref -> ref.getEntityDescription().getContent().equals("Ford Motor Company"));
 		Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(ref -> ref.getEntityDescription().getContent().equals("Ford F150"));
 	}
