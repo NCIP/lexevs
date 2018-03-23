@@ -4,8 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.core.AnyOf.*;
-import static org.hamcrest.core.Is.is;
+import static org.hamcrest.CoreMatchers.*;
 
 import java.net.URISyntaxException;
 import java.util.List;
