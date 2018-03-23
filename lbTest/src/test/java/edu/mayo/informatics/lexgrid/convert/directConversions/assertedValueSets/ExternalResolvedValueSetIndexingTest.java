@@ -4,11 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.CoreMatchers.*;
 
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -166,17 +167,15 @@ public class ExternalResolvedValueSetIndexingTest {
 	}
 	
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testLuceneQueryManyResults() throws LBException {
 		ResolvedConceptReferencesIterator itr = assertedVSsvc.
 				search("FORD", null, null,
 				MatchAlgorithm.LUCENE, false, false);
 		assertTrue(itr.hasNext());
-		ResolvedConceptReference ref = itr.next();
-		assertThat(ref.getEntityDescription().getContent(), anyOf(is("Ford Motor Company"), is("Ford F150")));
-		ref = itr.next();
-		assertThat(ref.getEntityDescription().getContent(), anyOf(is("Ford Motor Company"), is("Ford F150")));
+		ResolvedConceptReferenceList refs = itr.next(-1);
+		Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(ref -> ref.getEntityDescription().getContent().equals("Ford Motor Company"));
+		Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(ref -> ref.getEntityDescription().getContent().equals("Ford F150"));
 	}
 	
 	@AfterClass
