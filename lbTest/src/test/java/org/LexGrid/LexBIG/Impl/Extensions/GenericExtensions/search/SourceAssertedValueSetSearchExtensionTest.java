@@ -83,8 +83,8 @@ public class SourceAssertedValueSetSearchExtensionTest {
 	@Test
 	public void testLuceneQuery() throws LBException {
 		ResolvedConceptReferencesIterator itr = assertedVSsvc.
-				search("Blinding White", null, null,
-				MatchAlgorithm.PRESENTATION_CONTAINS, false, false);
+				search("BlindingWhite", null, null,
+				MatchAlgorithm.LUCENE, false, false);
 		assertTrue(itr.hasNext());
 		ResolvedConceptReference ref = itr.next();
 		assertNotNull(ref);

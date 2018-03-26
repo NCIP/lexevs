@@ -69,7 +69,7 @@ List<Document> returnList = new ArrayList<Document>();
 		generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
 		generator_.addTextField("entityCode", entity.getEntityCode(), true, true, false);
 		generator_.addTextField("entityCodeNamespace", entity.getEntityCodeNamespace(), true, true, false);
-		generator_.addTextField("entityDescription",
+		generator_.addTextField("entityDescription", entity.getEntityDescription() != null &&
 				entity.getEntityDescription().getContent() != null ? entity.getEntityDescription().getContent() : "ENTITY DESCRIPTION ABSENT", true, true,
 				false);
 

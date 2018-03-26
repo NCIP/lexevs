@@ -530,12 +530,9 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchIndexServiceTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSIteratorTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(BuildMatchAlgorithmQueryTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexCreation.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedIndexerTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         mainSuite.addTest(assertedValueSetUpdates);

@@ -5,10 +5,12 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.annotations.LgAdminFunction;
 import org.LexGrid.concepts.Entity;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -30,12 +32,14 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 	private EntityIndexer entityIndexer;
 
 	@Override
+	@LgAdminFunction
 	public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
 		this.deleteEntityFromIndex(codingSchemeUri, codingSchemeVersion, entity);
 		this.addEntityToIndex(codingSchemeUri, codingSchemeVersion, entity);
 	}
 
 	@Override
+	@LgAdminFunction
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(codingSchemeUri);
@@ -54,6 +58,7 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 	}
 
 	@Override
+	@LgAdminFunction
 	public void deleteEntityFromIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
 
 		Term term = new Term(
@@ -70,6 +75,7 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 	}
 
 	@Override
+	@LgAdminFunction
 	public void dropIndex(AbsoluteCodingSchemeVersionReference reference) {
 		String codingSchemeUri = reference.getCodingSchemeURN();
 		String codingSchemeVersion = reference.getCodingSchemeVersion();
@@ -84,6 +90,18 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 				codingSchemeUri, 
 				codingSchemeVersion, 
 				new TermQuery(term));
+	}
+	
+
+	@LgAdminFunction
+	public void dropIndexForAllValueSets(String codingSchemeUri, String codingSchemeVersion){
+		
+		indexDaoManager.getValueSetEntityDao(codingSchemeUri, codingSchemeVersion).
+		deleteDocuments(
+			codingSchemeUri, 
+			codingSchemeVersion, 
+			new MatchAllDocsQuery());
+		
 	}
 
 	@Override
@@ -115,6 +133,7 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 	}
 
 	@Override
+	@LgAdminFunction
 	public void createIndex(AbsoluteCodingSchemeVersionReference ref) {
 		if(ref == null) {throw new RuntimeException("CodingScheme Reference cannot be null");}
 		indexCreator.index(ref, IndexOption.SEARCH);

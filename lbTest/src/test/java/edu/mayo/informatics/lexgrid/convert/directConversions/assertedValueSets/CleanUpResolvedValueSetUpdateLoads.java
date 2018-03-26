@@ -1,5 +1,7 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
 
+import static org.junit.Assert.assertFalse;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -12,16 +14,21 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 public class CleanUpResolvedValueSetUpdateLoads {
 LexBIGServiceManager lbsm;
+private SourceAssertedValueSetSearchIndexService service;
 	@Before
 	public void setUp() throws Exception {
 	lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+	service = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
 	}
 
 	@Test
@@ -63,8 +70,13 @@ LexBIGServiceManager lbsm;
 	}
 	
 	@Test
-	public void testRemoveHistory() throws LBException{
-		lbsm.removeHistoryService("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+	public void dropAssertedValueSetIndex() {
+		service.dropIndexForAllValueSets(
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1");
+		boolean doesExist = service.doesIndexExist(Constructors.
+				createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1"));
+		assertFalse(doesExist);
 	}
 	
 

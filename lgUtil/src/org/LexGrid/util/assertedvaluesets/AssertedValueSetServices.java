@@ -271,6 +271,19 @@ public class AssertedValueSetServices {
         }
         return ref;
     }
+    
+    public static Entity transformRCRtoEntity(ResolvedConceptReference ref, AssertedValueSetParameters params) {
+        Entity entity = new Entity();
+        entity.setEntityCode(ref.getCode());
+         entity.setEntityCodeNamespace(ref.getCodeNamespace());
+         entity.setEntityType(ref.getEntityType());
+        if(ref.getEntityDescription() != null && StringUtils.isNotBlank(ref.getEntityDescription().getContent())){
+            entity.setEntityDescription(
+                    ref.getEntityDescription());
+        }
+        entity.setProperty(ref.getEntity().getAllProperties());
+        return entity;
+    }
 
     private static Mappings createMappings(Entity entity) {
         nullEntityCheck(entity);

@@ -73,7 +73,7 @@ public class SourceAssertedValueSetTest{
 		List<CodingScheme> schemes = svc.getMinimalSourceAssertedValueSetSchemes();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 15L);
+		assertEquals(count, 9L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 
