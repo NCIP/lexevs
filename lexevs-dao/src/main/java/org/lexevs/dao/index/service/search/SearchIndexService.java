@@ -40,6 +40,8 @@ public interface SearchIndexService {
 	
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity);
 
+	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, String vsURI, String vsName, Entity entity);
+	
 	public void deleteEntityFromIndex(
 			String codingSchemeUri,
 			String codingSchemeVersion, 

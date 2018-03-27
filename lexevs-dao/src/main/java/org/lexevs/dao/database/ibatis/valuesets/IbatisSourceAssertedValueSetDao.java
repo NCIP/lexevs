@@ -2,18 +2,15 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.util.List;
 
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
+import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.valuesets.SourceAssertedValueSetDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad;
-import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.locator.LexEvsServiceLocator;
 
 public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implements SourceAssertedValueSetDao {
 	
@@ -26,6 +23,7 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	private static final String GET_VS_ENTITY_UIDS = ASSOCIATION_NAMESPACE + "getVSEntityUids";
 	private static final String GET_VS_ENTITY_UIDS_FOR_TOPNODE_CODE = ASSOCIATION_NAMESPACE + "getVSEntityUidsForTopNodeCode";
 	private static final String GET_VS_ENTITY_COUNT_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSEntityCount";
+	private static final String GET_VS_TRIPLES_OF_VS_SQL = ASSOCIATION_NAMESPACE + "getAllValidValueSetTopNodes";
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 
@@ -111,6 +109,16 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 		return this.getSqlMapClientTemplate().queryForList(
 		GET_VS_FROM_MEMBER_CODE,
 		new PrefixedParameterTuple(prefix, predUid, matchCode));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<DefinedNode> getAllValidValueSetTopNodeCodes(
+			String propertyName, String propertyValue, String predUid, String csUID){
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_VS_TRIPLES_OF_VS_SQL, 
+				new PrefixedParameterTriple(prefix, predUid, propertyName, propertyValue));
 	}
 
 }

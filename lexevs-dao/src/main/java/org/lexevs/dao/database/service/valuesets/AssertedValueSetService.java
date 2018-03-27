@@ -28,6 +28,8 @@ public interface  AssertedValueSetService extends Serializable {
 
 	List<CodingScheme> getSourceAssertedValueSetforMemberEntityCode(String matchCode);
 
+	List<String> getAllValidValueSetTopNodeCodes();
+
 
 
 }

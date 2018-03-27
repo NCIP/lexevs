@@ -75,6 +75,13 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 						params.getPublishValue());
 		return list.stream().map(x -> x.getEntityCode()).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<String> getAllValidValueSetTopNodeCodes(){
+		List<DefinedNode> nodes = getDaoManager().getCurrentAssertedValueSetDao().getAllValidValueSetTopNodeCodes(
+				params.getPublishName(), params.getPublishValue(), getPredUid(getCsUid()), getCsUid());
+		return nodes.stream().map(node -> node.getEntityCode()).collect(Collectors.toList());
+	}
 
 	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
 		if (entity == null || entity.size() == 0) {

@@ -41,6 +41,13 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 	@Override
 	@LgAdminFunction
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
+		throw new UnsupportedOperationException("value set URI and Name are required for value set indexing");
+	}
+	
+	@Override
+	@LgAdminFunction
+	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion,
+			String vsURI, String vsName, Entity entity) {
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(codingSchemeUri);
 		ref.setCodingSchemeVersion(codingSchemeVersion);
@@ -51,11 +58,13 @@ public class SourceAssertedValueSetSearchIndexService implements SearchIndexServ
 			 throw new RuntimeException("Index Name for value set index source could not be resolved");
 		}
 		List<Document> docs = 
-				((AssertedValueSetEntityIndexer)entityIndexer).indexEntity(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity);
+				((AssertedValueSetEntityIndexer)entityIndexer).indexEntity(codingSchemeName, codingSchemeUri, codingSchemeVersion, vsURI, vsName, entity);
 			
 			indexDaoManager.getValueSetEntityDao(codingSchemeUri, codingSchemeVersion).
 				addDocuments(codingSchemeUri, codingSchemeVersion, docs, entityIndexer.getAnalyzer());
 	}
+	
+	
 
 	@Override
 	@LgAdminFunction

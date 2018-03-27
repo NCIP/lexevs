@@ -17,7 +17,8 @@ import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 public class AssertedValueSetEntityIndexer extends LuceneLoaderCodeIndexer implements EntityIndexer {
 	
 
-	public List<Document> indexEntity(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, Entity entity) {
+	public List<Document> indexEntity(String codingSchemeName, String codingSchemeUri,
+			String codingSchemeVersion, String vsURI, String vsName, Entity entity) {
 List<Document> returnList = new ArrayList<Document>();
 		
 		try {
@@ -30,6 +31,8 @@ List<Document> returnList = new ArrayList<Document>();
 			Document parentDoc = createParentDocument(
 					codingSchemeName, 
 					codingSchemeUri, 
+					vsURI,
+					vsName,
 					codingSchemeVersion, 
 					entity,
 					entityUid);
@@ -60,13 +63,15 @@ List<Document> returnList = new ArrayList<Document>();
 		return null;
 	}
 	
-	protected Document createParentDocument(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
+	protected Document createParentDocument(String codingSchemeName, String codingSchemeUri, String vsURI, String vsName, String codingSchemeVersion,
 			Entity entity, String entityUid) {
 
 		generator_.startNewDocument(codingSchemeName + "-" + entity.getEntityCode());
-		generator_.addTextField("codingSchemeName", codingSchemeName, true, true, false);
-		generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
-		generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
+		generator_.addTextField("codingSchemeName", vsName, true, true, false);
+		generator_.addTextField("codingSchemeUri", vsURI, true, true, false);
+		for(int i = 0; i < 5; i++) {
+		generator_.addTextField("codingSchemeVersion", codingSchemeVersion + i, true, true, false);
+		}
 		generator_.addTextField("entityCode", entity.getEntityCode(), true, true, false);
 		generator_.addTextField("entityCodeNamespace", entity.getEntityCodeNamespace(), true, true, false);
 		generator_.addTextField("entityDescription", entity.getEntityDescription() != null &&
