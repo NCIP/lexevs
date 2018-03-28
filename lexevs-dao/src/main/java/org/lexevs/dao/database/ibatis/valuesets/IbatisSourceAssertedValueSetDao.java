@@ -2,6 +2,7 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.util.List;
 
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.valuesets.SourceAssertedValueSetDao;
@@ -17,6 +18,7 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 
 	public static final String ENTITY_NAMESPACE = "Entity.";
 	public static final String ASSOCIATION_NAMESPACE = "Association.";
+	public static final String VS_PROPERTY = "VSProperty.";
 	private static final String GET_VS_ENTITIES_FROM_CODE = ASSOCIATION_NAMESPACE + "getValueSetEntitiesFromCode";
 	private static final String GET_VS_ENTITY_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSTopNodeEntityByCode";
 	private static final String GET_VS_FROM_MEMBER_CODE = ASSOCIATION_NAMESPACE + "getValueSetTopNodesFromMemberCode";
@@ -24,6 +26,7 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	private static final String GET_VS_ENTITY_UIDS_FOR_TOPNODE_CODE = ASSOCIATION_NAMESPACE + "getVSEntityUidsForTopNodeCode";
 	private static final String GET_VS_ENTITY_COUNT_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSEntityCount";
 	private static final String GET_VS_TRIPLES_OF_VS_SQL = ASSOCIATION_NAMESPACE + "getAllValidValueSetTopNodes";
+	private static final String GET_VS_PROPERTIES = VS_PROPERTY + "getAssertedValueSetPropertyByCode";
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 
@@ -119,6 +122,15 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_VS_TRIPLES_OF_VS_SQL, 
 				new PrefixedParameterTriple(prefix, predUid, propertyName, propertyValue));
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Property> getValueSetEntityProperties(String entityCode, String csUid) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUid);
+		return this.getSqlMapClientTemplate().queryForList(
+		GET_VS_PROPERTIES,
+		new PrefixedParameter(prefix, entityCode));
 	}
 
 }

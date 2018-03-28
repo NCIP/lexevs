@@ -91,7 +91,8 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 			Entities entities = cs.getEntities();
 
 		System.out.println("Indexing " + entities.getEntityCount() + " entities");
-		for (Entity entity : entities.getAssociationEntityAsReference()) {
+		for (Entity entity : entities.getEntityAsReference()) {
+			entity = addPropertiesToEntity(entity);
 			documents.addAll(entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(),
 					reference.getCodingSchemeVersion(), cs.getCodingSchemeURI(), cs.getCodingSchemeName(), entity));
 		}
@@ -101,6 +102,11 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		entityIndexService.addDocuments(indexName, reference.getCodingSchemeVersion(), documents,
 				entityIndexer.getAnalyzer());
 		return indexName;
+	}
+
+	private Entity addPropertiesToEntity(Entity entity) {
+		entity.addAnyProperties(valueSetService.getEntityProperties(entity.getEntityCode()));
+		return entity;
 	}
 
 	private String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {

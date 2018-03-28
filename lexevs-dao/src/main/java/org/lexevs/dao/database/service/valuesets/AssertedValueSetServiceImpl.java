@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
@@ -143,6 +144,12 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		}
 		String csUid = getCsUid();
 		return getDaoManager().getCurrentAssertedValueSetDao().getValueSetEntityCount(code, csUid, getPredUid(csUid));
+	}
+	
+	@Override
+	public List<Property> getEntityProperties(String entityCode) {
+		// TODO Auto-generated method stub
+		return getDaoManager().getCurrentAssertedValueSetDao().getValueSetEntityProperties(entityCode, getCsUid());
 	}
 	
 	public String getCsUid() {

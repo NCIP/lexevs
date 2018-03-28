@@ -2,6 +2,7 @@ package org.lexevs.dao.database.access.valuesets;
 
 import java.util.List;
 
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
@@ -25,5 +26,7 @@ public interface SourceAssertedValueSetDao extends LexGridSchemaVersionAwareDao 
 			String predUid, String csUID);
 
 	List<DefinedNode> getAllValidValueSetTopNodeCodes(String propertyName, String propertyValue, String predUid, String csUID);
+
+	List<Property> getValueSetEntityProperties(String entityCode, String csUid);
 
 }

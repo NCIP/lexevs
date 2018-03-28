@@ -69,9 +69,7 @@ List<Document> returnList = new ArrayList<Document>();
 		generator_.startNewDocument(codingSchemeName + "-" + entity.getEntityCode());
 		generator_.addTextField("codingSchemeName", vsName, true, true, false);
 		generator_.addTextField("codingSchemeUri", vsURI, true, true, false);
-		for(int i = 0; i < 5; i++) {
-		generator_.addTextField("codingSchemeVersion", codingSchemeVersion + i, true, true, false);
-		}
+		generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
 		generator_.addTextField("entityCode", entity.getEntityCode(), true, true, false);
 		generator_.addTextField("entityCodeNamespace", entity.getEntityCodeNamespace(), true, true, false);
 		generator_.addTextField("entityDescription", entity.getEntityDescription() != null &&
@@ -135,7 +133,7 @@ List<Document> returnList = new ArrayList<Document>();
 
 	        String tempPropertyType;
 	        if (prop.getPropertyType() == null || prop.getPropertyType().length() == 0) {
-	            if (prop.getPropertyName().equalsIgnoreCase("textualPresentation")) {
+	            if (prop.getPropertyName().equalsIgnoreCase("presentation")) {
 	                tempPropertyType = "presentation";
 	            } else if (prop.getPropertyName().equals("definition")) {
 	                tempPropertyType = "definition";
