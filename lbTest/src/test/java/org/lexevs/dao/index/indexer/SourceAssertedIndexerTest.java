@@ -104,7 +104,7 @@ public class SourceAssertedIndexerTest {
 		assertTrue(parentDoc.getFields().stream().anyMatch(x -> x.name().equals("isParentDoc")));
 		assertTrue(parentDoc.getFields().stream().filter(x->x.name().equals("isParentDoc")).anyMatch(x->x.stringValue().equals("true")));
 
-		Document property = indexer.addProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity, prop1);
+		Document property = indexer.addProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, vsURI, entity, prop1);
 		assertNotNull(property);
 		assertTrue(property.getFields().stream().anyMatch(x -> x.name().equals(SQLTableConstants.TBLCOL_PROPERTYNAME)));
 		assertTrue(property.getFields().stream().filter(x->x.name().equals(SQLTableConstants.TBLCOL_PROPERTYTYPE)).

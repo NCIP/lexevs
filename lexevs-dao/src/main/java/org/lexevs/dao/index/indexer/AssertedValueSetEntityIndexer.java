@@ -43,7 +43,7 @@ List<Document> returnList = new ArrayList<Document>();
 			}
 			for(Property prop : entity.getAllProperties()) {
 				returnList.add(
-						indexProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity, prop));
+						indexProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, vsURI, entity, prop));
 			}
 			
 			returnList.add(parentDoc);
@@ -88,7 +88,7 @@ List<Document> returnList = new ArrayList<Document>();
 		return generator_.getDocument();
 	}
 	
-	private Document indexProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, Entity entity, Property prop) {
+	private Document indexProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, String vsURI, Entity entity, Property prop) {
 		
 		if(prop instanceof Presentation) {
 			Presentation pres = (Presentation)prop;
@@ -102,13 +102,14 @@ List<Document> returnList = new ArrayList<Document>();
 				codingSchemeName, 
 				codingSchemeUri, 
 				codingSchemeVersion,
+				vsURI,
 				entity,
 				prop);
 	}
 
 
 
-	protected Document addProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
+	protected Document addProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, String vsURI,
 			Entity entity,
 			Property prop) {
 		 if(entity.getEntityCode() == null || entity.getEntityCodeNamespace() == null) {throw new RuntimeException("Entity code or namespace cannot be null for " + entity.getEntityCode());}
@@ -130,7 +131,8 @@ List<Document> returnList = new ArrayList<Document>();
 	        				entity.getEntityCode(), entity.getEntityCodeNamespace()), false, true, false);
 	     // must be analyzed with KeywordAnalyzer
 	        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entity.getEntityCodeNamespace(), false, true, false);
-
+			generator_.addTextField("codingSchemeUri", vsURI, false, true, false);
+			generator_.addTextField("codingSchemeVersion", codingSchemeVersion, false, true, false);
 	        String tempPropertyType;
 	        if (prop.getPropertyType() == null || prop.getPropertyType().length() == 0) {
 	            if (prop.getPropertyName().equalsIgnoreCase("presentation")) {
