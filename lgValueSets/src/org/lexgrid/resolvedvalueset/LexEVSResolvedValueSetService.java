@@ -12,9 +12,12 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 
 public interface LexEVSResolvedValueSetService extends Serializable {
-       
+      
+	public void initParams(AssertedValueSetParameters params);
+	
    	public List<CodingScheme> listAllResolvedValueSets() throws LBException;
    	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException;
 	public List<CodingScheme> getResolvedValueSetsForConceptReference(ConceptReference ref);
