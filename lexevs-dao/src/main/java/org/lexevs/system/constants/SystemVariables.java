@@ -82,7 +82,11 @@ public class SystemVariables {
     private String autoLoadDBPassword_;
     private String relativePathStart_;
     
-
+    private String assertedValueSetVersion;
+	private String assertedValueSetHierarchyVSRelation;
+    private String assertedValueSetCodingSchemeName;
+    private String assertedValueSetCodingSchemeURI;
+    
 	private String graphdbUser;
     private String graphdbpwd;
     private String graphdbUrl;
@@ -110,6 +114,18 @@ public class SystemVariables {
     private String currentPersistenceScheme;
     private static String CURRENT_PERSISTENCE_SCHEME_PROP = "CURRENT_PERSISTENCE_SCHEME";
     private static String DEFAULT_PERSISTENCE_SCHEME = "2.0";
+
+    private static String SOURCE_ASSERTED_VALUE_SET_VERSION = "SOURCE_ASSERTED_VALUE_SET_VERSION";
+    private static String SOURCE_ASSERTED_VALUE_SET_VERSION_DEFAULT = "18.01e";
+    
+    private static String SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_RELATION = "SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_REATION";
+    private static String SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_RELATION_DEFAULT = "Concept_In_Subset";
+    
+    private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME = "SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME";
+    private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME_DEFAULT = "NCI Thesaurus";
+
+    private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI = "SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI";
+    private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI_DEFAULT = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
 
     private boolean emailErrors_ = false;
     private String SMTPServer_;
@@ -454,6 +470,11 @@ public class SystemVariables {
             if( autoLoadSingleDBMode )
                 historyDBSchema_ = props.getProperty("HISTORY_DB_SCHEMA");
             
+            assertedValueSetVersion = getNullableProperty(props, SOURCE_ASSERTED_VALUE_SET_VERSION, SOURCE_ASSERTED_VALUE_SET_VERSION_DEFAULT);
+            assertedValueSetHierarchyVSRelation = getNullableProperty(props, SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_RELATION, SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_RELATION_DEFAULT);
+            assertedValueSetCodingSchemeName = getNullableProperty(props, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME_DEFAULT);
+            assertedValueSetCodingSchemeURI = getNullableProperty(props, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI_DEFAULT);
+            
             logger.finishLogConfig(this);
 
         } catch (Exception e) {
@@ -794,6 +815,39 @@ public class SystemVariables {
 		this.graphdbUrl = graphdbUrl;
 	}
 	
+	public void setAssertedValueSetVersion(String assertedValueSetVersion) {
+		this.assertedValueSetVersion = assertedValueSetVersion;
+	}
+	
+	public String getAssertedValueSetVersion() {
+		return assertedValueSetVersion;
+	}
+	
+	public String getAssertedValueSetHierarchyVSRelation() {
+		return assertedValueSetHierarchyVSRelation;
+	}
+
+	public void setAssertedValueSetHierarchyVSRelation(String assertedValueSetHierarchyVSRelation) {
+		this.assertedValueSetHierarchyVSRelation = assertedValueSetHierarchyVSRelation;
+	}
+
+	public String getAssertedValueSetCodingSchemeName() {
+		return assertedValueSetCodingSchemeName;
+	}
+
+	public void setAssertedValueSetCodingSchemeName(String assertedValueSetCodingSchemeName) {
+		this.assertedValueSetCodingSchemeName = assertedValueSetCodingSchemeName;
+	}
+
+	public String getAssertedValueSetCodingSchemeURI() {
+		return assertedValueSetCodingSchemeURI;
+	}
+
+	public void setAssertedValueSetCodingSchemeURI(String assertedValueSetCodingSchemeURI) {
+		this.assertedValueSetCodingSchemeURI = assertedValueSetCodingSchemeURI;
+	}
+
+	
     public static String getAbsoluteIndexLocation(){
     	String location =  PropertiesUtility.locatePropFile("config" + System.getProperty("file.separator")
         + CONFIG_FILE_NAME, SystemVariables.class.getName());
@@ -803,5 +857,6 @@ public class SystemVariables {
     	tempFile = new File(tempFile, "lbIndex");
     	return tempFile.getAbsolutePath();
     }
+    
 
 }

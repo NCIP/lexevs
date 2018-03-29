@@ -354,17 +354,18 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
     public void setLexBIGService(LexBIGService lbsvc) {
         this.lbs = lbsvc;
     }
-    
-    public void initParams(AssertedValueSetParameters params) {
-    	this.params = params;
-    }
-    
+        
     //Remote Method Invocation helper
 	public SourceAssertedValueSetService getSourceAssertedValueSetService(AssertedValueSetParameters params) {
 		if (params == null) {
 			return null;
 		}
 		return SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(params, getLexBIGService());
+	}
+
+	@Override
+	public void initParams(AssertedValueSetParameters params) {
+		this.params = params;		
 	}
 
 }
