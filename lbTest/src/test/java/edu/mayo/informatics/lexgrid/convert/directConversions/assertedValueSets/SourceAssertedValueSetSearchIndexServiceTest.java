@@ -286,7 +286,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(4)
 	public void queryPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -349,7 +349,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(6)
 	public void queryOnValueSetMembershipAndText() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -382,7 +382,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(7)
 	public void queryOnValueSetMembershipAndTextForOneValueSet() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -414,7 +414,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(6)
+	@Order(8)
 	public void queryPublishPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -440,7 +440,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(7)
+	@Order(9)
 	public void queryPreferredPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -480,7 +480,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 //	}
 	
 	@Test
-	@Order(8)
+	@Order(10)
 	public void testListAllSourceAssertedValueSets() throws LBException {
 		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();
 		long count = schemes.stream().count();
@@ -501,7 +501,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 
 	@Test
-	@Order(9)
+	@Order(11)
 	public void testgetSourceAssertedValueSetsForConceptReference() throws LBException {
 		ConceptReference reference = Constructors.createConceptReference("C48323", "owl2lexevs");
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetsForConceptReference(reference );
@@ -513,7 +513,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	
 	
 	@Test
-	@Order(10)
+	@Order(12)
 	public void testSchemeData() throws LBException, URISyntaxException {
 		CodingScheme scheme = svc.getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetServices.BASE + "C54453"));
 		assertNotNull(scheme);
@@ -529,7 +529,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	
 	
 	@Test
-	@Order(11)
+	@Order(13)
 	public void testGetSourceAssertedValueSetTopNodesForRootCode() {
 		List<String> roots = svc.getSourceAssertedValueSetTopNodesForRootCode("C54453");
 		assertNotNull(roots);
@@ -546,7 +546,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(12)
+	@Order(14)
 	public void testGetSourceAssertedValueSetEntitiesForURI() {
 		ResolvedConceptReferenceList list = svc.getSourceAssertedValueSetEntitiesForURI(AssertedValueSetServices.BASE + "C99999");
 		List<ResolvedConceptReference> refs = Arrays.asList(list.getResolvedConceptReference());
@@ -557,7 +557,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(13)
+	@Order(15)
 	public void testGetSourceAssertedValueSetforEntityCode() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		assertNotNull(schemes);
@@ -568,7 +568,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(14)
+	@Order(16)
 	public void testGetSourceAssertedValueSetIteratorForURI() throws LBResourceUnavailableException {
 		ResolvedConceptReferencesIterator itr = svc.getSourceAssertedValueSetIteratorForURI(AssertedValueSetServices.BASE + "FDA/" + "C54453");
 		assertTrue(itr.hasNext());
@@ -577,7 +577,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(15)
+	@Order(17)
 	public void testGetListOfCodingSchemeVersionsUsedInResolution() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		CodingScheme scheme = schemes.get(0);
@@ -588,7 +588,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(16)
+	@Order(18)
 	public void testGetSourceAssertedValueSetforValueSetMemberEntityCode() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforValueSetMemberEntityCode("C99988");
 		assertNotNull(schemes);
@@ -603,7 +603,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(17)
+	@Order(19)
 	public void testGetSourceAssertedValueSetsforTextSearch() throws LBException {
 		List<AbsoluteCodingSchemeVersionReference> acsvr = svc.getSourceAssertedValueSetsforTextSearch("Black", MatchAlgorithm.LUCENE);
 		assertTrue(acsvr.stream().filter(x -> x.getCodingSchemeURN().equals(AssertedValueSetServices.BASE + "C54453")).findAny().isPresent());
@@ -612,7 +612,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(18)
+	@Order(20)
 	public void testGetAllSourceAssertedValueSetEntities() {
 		@SuppressWarnings("unchecked")
 		List<Entity> entities = (List<Entity>) svc.getAllSourceAssertedValueSetEntities();
@@ -622,7 +622,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(19)
+	@Order(21)
 	public void testGetValueSetCodeForUri() {
 		String code = ((SourceAssertedValueSetServiceImpl) svc).
 		getEntityCodeFromValueSetDefinition(AssertedValueSetServices.BASE + "FDA/" + "C54453");
@@ -630,7 +630,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertEquals(code, "C54453");
 	}
 	@Test
-	@Order(20)
+	@Order(22)
 	public void getAnalyzerTest() {
 		Analyzer an = service.getAnalyzer();
 		assertNotNull(an);

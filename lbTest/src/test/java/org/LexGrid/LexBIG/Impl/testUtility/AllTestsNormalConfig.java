@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplT
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.BuildMatchAlgorithmQueryTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.ScoreDocIteratoSerializationTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchScoreDocIteratorTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAssertedValueSetSearchExtensionTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.AbstractSearchTest;
 import org.LexGrid.LexBIG.Impl.Extensions.Sort.AbstractSortTest;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.PagingChildNodeIteratorTest;
@@ -530,6 +531,7 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchIndexServiceTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchExtensionTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSIteratorTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(BuildMatchAlgorithmQueryTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
