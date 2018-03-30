@@ -404,4 +404,23 @@ public class SourceAssertedValueSetSearchExtensionTest {
 		}
 	}
 	
+	@Test
+	public void testRestrictToAssertedSchemePopulatedExternal() throws LBException {
+		Set<CodingSchemeReference> refs = new HashSet<CodingSchemeReference>();
+		CodingSchemeReference r = new CodingSchemeReference();
+		r.setCodingScheme("OWL2LEXEVS:VerySickCancerPatient");
+
+		refs.add(r);
+		
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("Patient", refs, null,
+				MatchAlgorithm.PROPERTY_CONTAINS, false, false);
+		assertTrue(itr.hasNext());
+
+			ResolvedConceptReference ref2 = itr.next();
+			assertTrue(ref2.getCodingSchemeURI().equals("OWL2LEXEVS:VerySickCancerPatient")) ;
+			assertTrue(ref2.getEntityDescription().getContent().equals("Patient"));
+
+	}
+	
 }

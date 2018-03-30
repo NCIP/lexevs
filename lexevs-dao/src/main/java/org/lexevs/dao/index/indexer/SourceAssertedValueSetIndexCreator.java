@@ -78,15 +78,10 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		try {
 			valueSets = valueSetService.getSourceAssertedValueSetforTopNodeEntityCode(s);
 		} catch (LBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException("Problem getting value sets from top node: " + s
+					+ "  " + e);
 		}
 		
-//		List<String> entityUids = valueSetService.getSourceAssertedValueSetEntityUidsforPredicateUid(position,
-//				-1);
-//
-//		List<Entity> entities = valueSetService.getEntitiesForUidMap(entityUids);
-
 		for(CodingScheme cs : valueSets) {
 			Entities entities = cs.getEntities();
 

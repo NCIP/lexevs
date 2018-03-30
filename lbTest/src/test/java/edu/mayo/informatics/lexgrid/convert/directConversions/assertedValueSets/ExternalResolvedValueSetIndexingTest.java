@@ -70,11 +70,11 @@ public class ExternalResolvedValueSetIndexingTest {
 	
 	@Test
 	public void testGetEntitiesForResolvedVSReferences() throws URISyntaxException {
-	List<Entity> entities = service.getEntitiesForExternalResolvedValueSet("SRITEST:AUTO:AllDomesticButGM", "12.03test");
+	List<ResolvedConceptReference> entities = service.getResolvedConceptReferencesForExternalResolvedValueSet("SRITEST:AUTO:AllDomesticButGM", "12.03test");
 	assertNotNull(entities);
 	assertTrue(entities.size() > 0);
 	assertEquals(entities.size(), 6);
-	assertTrue(entities.stream().anyMatch(x -> x.getEntityCode().equals("005")));
+	assertTrue(entities.stream().anyMatch(x -> x.getCode().equals("005")));
 	}
 	
 	@Test
