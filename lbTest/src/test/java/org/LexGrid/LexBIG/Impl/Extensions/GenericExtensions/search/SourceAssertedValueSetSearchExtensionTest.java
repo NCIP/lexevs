@@ -212,6 +212,27 @@ public class SourceAssertedValueSetSearchExtensionTest {
 	}
 	
 	@Test
+	public void testRestrictToAssertedSchemesCodeExactMatchAppearsInOneOfTwoSchemes() throws LBException {
+		Set<CodingSchemeReference> refs = new HashSet<CodingSchemeReference>();
+		CodingSchemeReference r = new CodingSchemeReference();
+		r.setCodingScheme("http://evs.nci.nih.gov/valueset/FDA/C111112");
+		CodingSchemeReference s = new CodingSchemeReference();
+		s.setCodingScheme("http://evs.nci.nih.gov/valueset/FDA/C54453");
+
+		refs.add(r);
+		refs.add(s);
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.
+				search("C99996", refs, null,
+				MatchAlgorithm.CODE_EXACT, false, false);
+		assertTrue(itr.hasNext());
+
+		ResolvedConceptReference ref = itr.next();
+		assertTrue(ref.getEntityDescription().getContent().equals("BlindingWhite"));
+		assertFalse(ref.getEntityDescription().getContent().equals("Whiter Shade of Grey"));	
+		assertNull(itr.next());
+	}
+	
+	@Test
 	public void testPresentationExactRestrictToOneScheme() throws LBException {
 		Set<CodingSchemeReference> refs = new HashSet<CodingSchemeReference>();
 		CodingSchemeReference r = new CodingSchemeReference();
