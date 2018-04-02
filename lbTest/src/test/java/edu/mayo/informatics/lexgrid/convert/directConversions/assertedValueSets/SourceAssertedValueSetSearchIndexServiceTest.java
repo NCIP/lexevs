@@ -59,6 +59,8 @@ import org.springframework.core.annotation.Order;
 public class SourceAssertedValueSetSearchIndexServiceTest {
 	static SourceAssertedValueSetSearchIndexService service;
 	static SourceAssertedValueSetService svc;
+	String codingSchemeName = "phonyPhoneNumbers";
+	String codingSchemeURI = AssertedValueSetServices.BASE + codingSchemeName;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -142,7 +144,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		pres.setPropertyQualifier(quals);
 
 		service.updateIndexForEntity(
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", entity);
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", codingSchemeURI, codingSchemeName, entity);
 
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "BR549")), Occur.MUST);
@@ -232,7 +234,8 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		pres.setPropertyQualifier(quals);
 
 		service.addEntityToIndex(
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", entity);
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", 
+				codingSchemeURI, codingSchemeName, entity);
 
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "3675309")), Occur.MUST);
@@ -265,7 +268,8 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		entity.setEntityCode("BR549");
 		entity.setEntityCodeNamespace("ontology");
 		service.deleteEntityFromIndex(
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", entity);
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", 
+				codingSchemeURI, codingSchemeName, entity);
 
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "BR549")), Occur.MUST);
@@ -283,6 +287,23 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
 		assertNotNull(docs);
 		assertTrue(docs.size() == 0);
+		
+
+		BooleanQuery.Builder remainsbuilder = new BooleanQuery.Builder();
+		remainsbuilder.add(new TermQuery(new Term("code", "3675309")), Occur.MUST);
+		remainsbuilder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		Query remainsquery = remainsbuilder.build();
+		QueryBitSetProducer remainsparentFilter;
+		try {
+			remainsparentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		} catch (ParseException e) {
+			throw new RuntimeException("Query Parser Failed against parent query: ", e);
+		}
+		ToParentBlockJoinQuery remainsblockJoinQuery = new ToParentBlockJoinQuery(remainsquery, remainsparentFilter, ScoreMode.Total);
+		List<ScoreDoc> remainsdocs = service.query(null, remainsblockJoinQuery);
+		assertNotNull(remainsdocs);
+		assertTrue(remainsdocs.size() > 0);
 	}
 	
 	@Test
@@ -485,7 +506,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 10L);
+		assertEquals(count, 6L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 	
@@ -496,7 +517,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<CodingScheme> schemes = svc.getMinimalSourceAssertedValueSetSchemes();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 11L);
+		assertEquals(count, 7L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 
@@ -535,14 +556,11 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertNotNull(roots);
 		assertTrue(roots.size() > 0);
 		assertTrue(roots.stream().filter(x -> x.equals("C99999")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99998")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99997")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99996")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99989")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99988")).findAny().isPresent());
+		assertTrue(roots.stream().filter(x -> x.equals("C117743")).findAny().isPresent());
+		assertTrue(roots.stream().filter(x -> x.equals("C54453")).findAny().isPresent());
+		assertTrue(roots.stream().filter(x -> x.equals("C111112")).findAny().isPresent());
 		assertTrue(roots.stream().filter(x -> x.equals("C48323")).findAny().isPresent());
 		assertTrue(roots.stream().filter(x -> x.equals("C48325")).findAny().isPresent());
-		assertFalse(roots.stream().filter(x -> x.equals("C37927")).findAny().isPresent());
 	}
 	
 	@Test
@@ -618,7 +636,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<Entity> entities = (List<Entity>) svc.getAllSourceAssertedValueSetEntities();
 		assertNotNull(entities);
 		assertTrue(entities.size() > 0);
-		assertEquals(entities.size(), 11);
+		assertEquals(entities.size(), 13);
 	}
 	
 	@Test
@@ -629,11 +647,65 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertNotNull(code);
 		assertEquals(code, "C54453");
 	}
+	
 	@Test
 	@Order(22)
 	public void getAnalyzerTest() {
 		Analyzer an = service.getAnalyzer();
 		assertNotNull(an);
+	}
+	
+	@Test
+	@Order(23)
+	public void DeleteFromOneVSButNotTheOther() {
+		Entity entity = new Entity();
+	    entity.setEntityCode("C99997");
+	    entity.setEntityCodeNamespace("owl2lexevs");
+		service.deleteEntityFromIndex("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				"0.1.5.1","http://evs.nci.nih.gov/valueset/FDA/C111112", "Whiter Shade of Grey", entity);
+		
+		//Entity still exists in another coding scheme
+		BooleanQuery.Builder remainsbuilder = new BooleanQuery.Builder();
+		remainsbuilder.add(new TermQuery(new Term("code", "C99997")), Occur.MUST);
+		remainsbuilder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		Query remainsquery = remainsbuilder.build();
+		QueryBitSetProducer remainsparentFilter;
+		try {
+			remainsparentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		} catch (ParseException e) {
+			throw new RuntimeException("Query Parser Failed against parent query: ", e);
+		}
+		ToParentBlockJoinQuery remainsblockJoinQuery = new ToParentBlockJoinQuery(remainsquery, remainsparentFilter, ScoreMode.Total);
+		List<ScoreDoc> remainsdocs = service.query(null, remainsblockJoinQuery);
+		assertNotNull(remainsdocs);
+		assertTrue(remainsdocs.size() > 0);
+		Document doc = service.getById(remainsdocs.get(0).doc);
+		assertTrue(doc.getFields().stream().filter(
+				x -> x.name().equals("codingSchemeUri")).anyMatch(
+				y -> y.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C48325")));
+		
+		//All values of Coding Scheme in delete are not wiped from the index
+		BooleanQuery.Builder remainsBuilder2 = new BooleanQuery.Builder();
+		remainsBuilder2.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C111112")), Occur.MUST);
+		remainsBuilder2.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		Query remainsQuery2 = remainsBuilder2.build();
+		QueryBitSetProducer remainsparentFilter2;
+		try {
+			remainsparentFilter2 = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		} catch (ParseException e) {
+			throw new RuntimeException("Query Parser Failed against parent query: ", e);
+		}
+		ToParentBlockJoinQuery remainsblockJoinQuery2 = new ToParentBlockJoinQuery(remainsQuery2, remainsparentFilter2, ScoreMode.Total);
+		List<ScoreDoc> remainsdocs2 = service.query(null, remainsblockJoinQuery2);
+		assertNotNull(remainsdocs2);
+		assertTrue(remainsdocs2.size() > 0);
+		Document doc2 = service.getById(remainsdocs2.get(0).doc);
+		assertTrue(doc2.getFields().stream().filter(
+				x -> x.name().equals("codingSchemeUri")).anyMatch(
+				y -> y.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C111112")));
+		
 	}
 
 }

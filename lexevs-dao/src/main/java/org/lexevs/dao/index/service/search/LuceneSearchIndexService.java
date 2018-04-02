@@ -237,11 +237,4 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	public void setIndexCreator(IndexCreator indexCreator) {
 		this.indexCreator = indexCreator;
 	}
-
-	@Override
-	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, String vsURI, String vsName,
-			Entity entity) {
-		this.addEntityToIndex(codingSchemeUri, codingSchemeVersion, entity);
-	}
-
 }

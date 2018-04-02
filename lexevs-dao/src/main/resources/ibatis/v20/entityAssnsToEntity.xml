@@ -1567,15 +1567,15 @@
    <select id="getAllValidValueSetTopNodes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
 		remapResults="true" resultMap="definedNodeResolution">
 		SELECT
-			assns.sourceEntityCode AS entityCode,
-			assns.sourceEntityCodeNamespace AS namespace,
+			assns.targetEntityCode AS entityCode,
+			assns.targetEntityCodeNamespace AS namespace,
 			ent.description AS description
 		FROM 
 			$prefix$entityAssnsToEntity assns
 		LEFT JOIN
 			$prefix$entity ent
 		ON
-			ent.entityCode = assns.sourceEntityCode
+			ent.entityCode = assns.targetEntityCode
 		LEFT JOIN 
 			$prefix$property prop 
 		ON
