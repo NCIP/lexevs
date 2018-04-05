@@ -254,13 +254,19 @@ public class AssertedValueSetServices {
         return cs;
     }
     
-    public static ResolvedConceptReference transformEntityToRCR(Entity entity, AssertedValueSetParameters params) {
+    public static ResolvedConceptReference transformEntityToRCR(Entity topNode, Entity entity, 
+            AssertedValueSetParameters params) {
         ResolvedConceptReference ref = new ResolvedConceptReference();
         ref.setCode(entity.getEntityCode());
         ref.setCodeNamespace(entity.getEntityCodeNamespace());
         ref.setEntityType(entity.getEntityType());
-        ref.setCodingSchemeName(params.getCodingSchemeName());
-        ref.setCodingSchemeURI(params.getCodingSchemeURI());
+        ref.setCodingSchemeName(topNode.getEntityDescription().getContent());
+        ref.setCodingSchemeURI(
+                createUri(
+                        params.getBaseValueSetURI(),
+                        getDefinedSource(
+                                params.getSourceName(), topNode), 
+                        topNode.getEntityCode()));
         ref.setCodingSchemeVersion(params.getCodingSchemeVersion());
         ref.setConceptCode(ref.getCode());
         ref.setCode(ref.getCode());

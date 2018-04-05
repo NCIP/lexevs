@@ -27,10 +27,6 @@ public class ExternalResolvedValueSetIndexService  {
 	public void updateIndexForEntity(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
 		service.updateIndexForEntity(codingSchemeUri, codingSchemeVersion, entity);
 	}
-
-//	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
-//		service.addEntityToIndex(codingSchemeUri, codingSchemeVersion, entity);
-//	}
 	
 	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, String vsURI, String vsName, Entity entity) {
 		service.addEntityToIndex(codingSchemeUri, codingSchemeVersion, vsURI, vsName, entity);

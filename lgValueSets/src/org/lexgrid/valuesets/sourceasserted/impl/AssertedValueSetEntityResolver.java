@@ -9,6 +9,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
+import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -22,10 +23,12 @@ public class AssertedValueSetEntityResolver implements Serializable {
 	AssertedValueSetService vsSvc;
     AssertedValueSetParameters params;
 	String code;
+	private EntityService entityService;
 	
 	public AssertedValueSetEntityResolver(AssertedValueSetParameters params, String code) {
 		this.params = params;
 		vsSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
+		entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
 		vsSvc.init(params);
 		this.code = code;
 	}
@@ -36,7 +39,7 @@ public class AssertedValueSetEntityResolver implements Serializable {
 		avss.init(this.params);
 		List<Entity> list = avss.getPagedSourceAssertedValueSetEntities(topNode, position, maxToReturn);
 		ResolvedConceptReferenceList refList = new ResolvedConceptReferenceList();
-		list.stream().map((entity -> resolvedConceptReferenceFromEntityTransform(entity))).forEachOrdered(refList::addResolvedConceptReference);
+		list.stream().map((entity -> resolvedConceptReferenceFromEntityTransform(topNode, entity))).forEachOrdered(refList::addResolvedConceptReference);
 		return refList;
 	}
 	
@@ -45,16 +48,18 @@ public class AssertedValueSetEntityResolver implements Serializable {
 		AssertedValueSetService avss = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
 		avss.init(this.params);
 		List<Entity> list = avss.getPagedSourceAssertedValueSetEntities(topNode, position, maxToReturn);
-		return list.stream().map((entity -> resolvedConceptReferenceFromEntityTransform(entity))).collect(Collectors.toList());
+		return list.stream().map((entity -> resolvedConceptReferenceFromEntityTransform(topNode, entity))).collect(Collectors.toList());
 	}
 	
 	public int getTotalEntityCount() {
 		return vsSvc.getVSEntityCountForTopNodeCode(this.code);
 	}
 
-	private ResolvedConceptReference resolvedConceptReferenceFromEntityTransform(Entity entity) {
+	private ResolvedConceptReference resolvedConceptReferenceFromEntityTransform(String topNode, Entity entity) {
         AssertedValueSetParameters params = ((AssertedValueSetServiceImpl) vsSvc).getParams();
-        return AssertedValueSetServices.transformEntityToRCR(entity, params);
+        Entity topNodeEntity = entityService.getEntity(params.getCodingSchemeURI(), 
+        		params.getCodingSchemeVersion(), topNode, null);
+        return AssertedValueSetServices.transformEntityToRCR(topNodeEntity, entity, params);
 	}
 	
 	

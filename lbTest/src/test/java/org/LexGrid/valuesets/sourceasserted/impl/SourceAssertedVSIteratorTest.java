@@ -1,17 +1,18 @@
 package org.LexGrid.valuesets.sourceasserted.impl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
-import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.impl.AssertedValueSetResolvedConceptReferenceIterator;
@@ -247,6 +248,18 @@ public class SourceAssertedVSIteratorTest {
 
 		assertNotNull(list);
 		assertEquals(0, list.getResolvedConceptReferenceCount());
+	}
+	
+	@Test
+	public void testTransformationFromDBToRCR() {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		ResolvedConceptReference ref = itr.next();
+
+		assertNotNull(ref);
+		assertEquals(ref.getCodingSchemeName(), "Structured Product Labeling Color Terminology");
+		assertEquals(ref.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/FDA/C54453");
+		
 	}
 
 }
