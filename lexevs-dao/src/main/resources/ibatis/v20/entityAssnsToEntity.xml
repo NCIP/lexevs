@@ -1587,7 +1587,9 @@
 		AND 
 			prop.propertyValue = #param3#
 		GROUP BY
-			ent.entityCode
+			assns.sourceEntityCode,
+			assns.sourceEntityCodeNamespace,
+			ent.description
    </select>
 	
 	<select id="getEntryStateUidByAssociationTarget"
