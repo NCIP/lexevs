@@ -1587,8 +1587,8 @@
 		AND 
 			prop.propertyValue = #param3#
 		GROUP BY
-			assns.sourceEntityCode,
-			assns.sourceEntityCodeNamespace,
+			assns.targetEntityCode,
+			assns.targetEntityCodeNamespace,
 			ent.description
    </select>
 	

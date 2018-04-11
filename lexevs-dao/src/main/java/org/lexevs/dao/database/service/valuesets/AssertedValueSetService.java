@@ -33,6 +33,8 @@ public interface  AssertedValueSetService extends Serializable {
 
 	List<Property> getEntityProperties(String entityCode);
 
+	Entity getEntityforTopNodeEntityCode(String matchCode) throws LBException;
+
 
 
 }

@@ -3,7 +3,6 @@ package org.lexgrid.valuesets.sourceasserted.impl;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +21,6 @@ import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAsserte
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.LexGrid.annotations.LgProxyClass;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
@@ -30,7 +28,6 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
-import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
@@ -111,7 +108,8 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	}
 
 	@Override
-	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(String uri) {
+	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(final String uri) {
+
 
 		List<Entity> entities = null;
 		try {
@@ -120,13 +118,25 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 		} catch (URISyntaxException e) {
 			throw new RuntimeException("Uri is not properly constructed: " + e);
 		}
+		
 		ResolvedConceptReferenceList referenceList = new ResolvedConceptReferenceList();
-		entities.stream().forEach(x -> referenceList.addResolvedConceptReference(transformEntityToRCR(x)));
+		entities.stream().forEach(x -> {
+			try {
+				referenceList.addResolvedConceptReference(transformEntityToRCR(getTopNodeEntityFromURI(new URI(uri)), x));
+			} catch (IndexOutOfBoundsException | LBException | URISyntaxException e) {
+				throw new RuntimeException("Problems getting Asserted Value Set entities for URI: " + e);
+			}
+		});
 		return referenceList;
 	}
 
-	private ResolvedConceptReference transformEntityToRCR(Entity entity) {
-		return AssertedValueSetServices.transformEntityToRCR(entity, params);
+	private Entity getTopNodeEntityFromURI(URI uri) throws LBException {
+		return getAssertedValueSetService()
+				.getEntityforTopNodeEntityCode(AssertedValueSetServices.getConceptCodeForURI(uri));
+	}
+
+	private ResolvedConceptReference transformEntityToRCR(Entity topNode, Entity entity) {
+		return AssertedValueSetServices.transformEntityToRCR(topNode, entity, params);
 	}
 	
 	public String getEntityCodeFromValueSetDefinition(String uri) {
