@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -58,6 +59,8 @@ import org.springframework.core.annotation.Order;
 public class SourceAssertedValueSetSearchIndexServiceTest {
 	static SourceAssertedValueSetSearchIndexService service;
 	static SourceAssertedValueSetService svc;
+	String codingSchemeName = "phonyPhoneNumbers";
+	String codingSchemeURI = AssertedValueSetServices.BASE + codingSchemeName;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -141,7 +144,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		pres.setPropertyQualifier(quals);
 
 		service.updateIndexForEntity(
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", entity);
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", codingSchemeURI, codingSchemeName, entity);
 
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "BR549")), Occur.MUST);
@@ -231,7 +234,8 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		pres.setPropertyQualifier(quals);
 
 		service.addEntityToIndex(
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", entity);
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", 
+				codingSchemeURI, codingSchemeName, entity);
 
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "3675309")), Occur.MUST);
@@ -264,7 +268,8 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		entity.setEntityCode("BR549");
 		entity.setEntityCodeNamespace("ontology");
 		service.deleteEntityFromIndex(
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", entity);
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1", 
+				codingSchemeURI, codingSchemeName, entity);
 
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("code", "BR549")), Occur.MUST);
@@ -282,10 +287,27 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
 		assertNotNull(docs);
 		assertTrue(docs.size() == 0);
+		
+
+		BooleanQuery.Builder remainsbuilder = new BooleanQuery.Builder();
+		remainsbuilder.add(new TermQuery(new Term("code", "3675309")), Occur.MUST);
+		remainsbuilder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		Query remainsquery = remainsbuilder.build();
+		QueryBitSetProducer remainsparentFilter;
+		try {
+			remainsparentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		} catch (ParseException e) {
+			throw new RuntimeException("Query Parser Failed against parent query: ", e);
+		}
+		ToParentBlockJoinQuery remainsblockJoinQuery = new ToParentBlockJoinQuery(remainsquery, remainsparentFilter, ScoreMode.Total);
+		List<ScoreDoc> remainsdocs = service.query(null, remainsblockJoinQuery);
+		assertNotNull(remainsdocs);
+		assertTrue(remainsdocs.size() > 0);
 	}
 	
 	@Test
-	@Order(5)
+	@Order(4)
 	public void queryPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -308,10 +330,112 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("entityCode")));
 		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
 				.anyMatch(y -> y.stringValue().equals("C99998")));
+		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("codingSchemeUri")));
+		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("codingSchemeUri"))
+				.anyMatch(y -> y.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C48323")));
+	}
+	
+	@Test
+	@Order(5)
+	public void queryPropertyFromTwoValueSetsTest() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("code", "C99996")), Occur.MUST);
+		builder.add(new TermQuery(new Term("propertyName", "Contributing_Source")), Occur.MUST);
+		QueryParser propValueParser = new QueryParser("propertyValue", service.getAnalyzer());
+		builder.add(propValueParser.createBooleanQuery("propertyValue", "FDA"), Occur.MUST);
+		Query query = builder.build();
+		QueryBitSetProducer parentFilter;
+		parentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
+
+		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 1);
+		List<Document> documents = docs.stream().map(scoredoc ->service.getById(scoredoc.doc)).collect(Collectors.toList());
+		assertTrue(documents.size() > 0);
+		assertTrue(documents.stream().anyMatch(
+				doc -> doc.getFields().stream().anyMatch(
+						x -> x.name().equals("entityCode") && x.stringValue().equals("C99996"))));
+		assertTrue(documents.stream().anyMatch(
+				doc2 -> doc2.getFields().stream().anyMatch(
+						x -> x.name().equals("codingSchemeUri") && 
+						x.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C48325"))));
+		assertTrue(documents.stream().anyMatch(
+				doc2 -> doc2.getFields().stream().anyMatch(
+						x -> x.name().equals("codingSchemeUri") &&
+						x.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C111112"))));
+
 	}
 	
 	@Test
 	@Order(6)
+	public void queryOnValueSetMembershipAndText() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("propertyValue", "BlindingWhite")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C48325")), Occur.SHOULD);
+		builder.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C111112")), Occur.SHOULD);
+		Query query = builder.build();
+		QueryBitSetProducer parentFilter;
+		parentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
+
+		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 1);
+		List<Document> documents = docs.stream().map(scoredoc ->service.getById(scoredoc.doc)).collect(Collectors.toList());
+		assertTrue(documents.size() > 0);
+		assertTrue(documents.stream().anyMatch(
+				doc -> doc.getFields().stream().anyMatch(
+						x -> x.name().equals("entityCode") && x.stringValue().equals("C99996"))));
+		assertTrue(documents.stream().anyMatch(
+				doc2 -> doc2.getFields().stream().anyMatch(
+						x -> x.name().equals("codingSchemeUri") && 
+						x.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C48325"))));
+		assertTrue(documents.stream().anyMatch(
+				doc2 -> doc2.getFields().stream().anyMatch(
+						x -> x.name().equals("codingSchemeUri") &&
+						x.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C111112"))));
+
+	}
+	
+	@Test
+	@Order(7)
+	public void queryOnValueSetMembershipAndTextForOneValueSet() throws ParseException {
+		BooleanQuery.Builder builder = new BooleanQuery.Builder();
+		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("propertyValue", "BlindingWhite")), Occur.MUST_NOT);
+		builder.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C48325")), Occur.SHOULD);;
+		Query query = builder.build();
+		QueryBitSetProducer parentFilter;
+		parentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		ToParentBlockJoinQuery blockJoinQuery = new ToParentBlockJoinQuery(query, parentFilter, ScoreMode.Total);
+
+		List<ScoreDoc> docs = service.query(null, blockJoinQuery);
+		assertNotNull(docs);
+		assertTrue(docs.size() > 1);
+		List<Document> documents = docs.stream().map(scoredoc ->service.getById(scoredoc.doc)).collect(Collectors.toList());
+		assertTrue(documents.size() > 0);
+		assertTrue(documents.stream().anyMatch(
+				doc -> doc.getFields().stream().anyMatch(
+						x -> x.name().equals("entityCode") && x.stringValue().equals("C99996"))));
+		assertTrue(documents.stream().anyMatch(
+				doc2 -> doc2.getFields().stream().anyMatch(
+						x -> x.name().equals("codingSchemeUri") && 
+						x.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C48325"))));
+		assertFalse(documents.stream().anyMatch(
+				doc2 -> doc2.getFields().stream().anyMatch(
+						x -> x.name().equals("codingSchemeUri") &&
+						x.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C111112"))));
+
+	}
+	
+	@Test
+	@Order(8)
 	public void queryPublishPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -337,7 +461,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(6)
+	@Order(9)
 	public void queryPreferredPropertyTest() throws ParseException {
 		BooleanQuery.Builder builder = new BooleanQuery.Builder();
 		builder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
@@ -377,12 +501,12 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 //	}
 	
 	@Test
-	@Order(7)
+	@Order(10)
 	public void testListAllSourceAssertedValueSets() throws LBException {
 		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 10L);
+		assertEquals(count, 6L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 	
@@ -393,12 +517,12 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<CodingScheme> schemes = svc.getMinimalSourceAssertedValueSetSchemes();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 11L);
+		assertEquals(count, 7L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 
 	@Test
-	@Order(9)
+	@Order(11)
 	public void testgetSourceAssertedValueSetsForConceptReference() throws LBException {
 		ConceptReference reference = Constructors.createConceptReference("C48323", "owl2lexevs");
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetsForConceptReference(reference );
@@ -410,7 +534,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	
 	
 	@Test
-	@Order(10)
+	@Order(12)
 	public void testSchemeData() throws LBException, URISyntaxException {
 		CodingScheme scheme = svc.getSourceAssertedValueSetForValueSetURI(new URI(AssertedValueSetServices.BASE + "C54453"));
 		assertNotNull(scheme);
@@ -426,24 +550,21 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	
 	
 	@Test
-	@Order(11)
+	@Order(13)
 	public void testGetSourceAssertedValueSetTopNodesForRootCode() {
 		List<String> roots = svc.getSourceAssertedValueSetTopNodesForRootCode("C54453");
 		assertNotNull(roots);
 		assertTrue(roots.size() > 0);
 		assertTrue(roots.stream().filter(x -> x.equals("C99999")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99998")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99997")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99996")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99989")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99988")).findAny().isPresent());
+		assertTrue(roots.stream().filter(x -> x.equals("C117743")).findAny().isPresent());
+		assertTrue(roots.stream().filter(x -> x.equals("C54453")).findAny().isPresent());
+		assertTrue(roots.stream().filter(x -> x.equals("C111112")).findAny().isPresent());
 		assertTrue(roots.stream().filter(x -> x.equals("C48323")).findAny().isPresent());
 		assertTrue(roots.stream().filter(x -> x.equals("C48325")).findAny().isPresent());
-		assertFalse(roots.stream().filter(x -> x.equals("C37927")).findAny().isPresent());
 	}
 	
 	@Test
-	@Order(12)
+	@Order(14)
 	public void testGetSourceAssertedValueSetEntitiesForURI() {
 		ResolvedConceptReferenceList list = svc.getSourceAssertedValueSetEntitiesForURI(AssertedValueSetServices.BASE + "C99999");
 		List<ResolvedConceptReference> refs = Arrays.asList(list.getResolvedConceptReference());
@@ -454,7 +575,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(13)
+	@Order(15)
 	public void testGetSourceAssertedValueSetforEntityCode() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		assertNotNull(schemes);
@@ -465,7 +586,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(14)
+	@Order(16)
 	public void testGetSourceAssertedValueSetIteratorForURI() throws LBResourceUnavailableException {
 		ResolvedConceptReferencesIterator itr = svc.getSourceAssertedValueSetIteratorForURI(AssertedValueSetServices.BASE + "FDA/" + "C54453");
 		assertTrue(itr.hasNext());
@@ -474,7 +595,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(15)
+	@Order(17)
 	public void testGetListOfCodingSchemeVersionsUsedInResolution() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforTopNodeEntityCode("C48323");
 		CodingScheme scheme = schemes.get(0);
@@ -485,7 +606,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(16)
+	@Order(18)
 	public void testGetSourceAssertedValueSetforValueSetMemberEntityCode() throws LBException {
 		List<CodingScheme> schemes = svc.getSourceAssertedValueSetforValueSetMemberEntityCode("C99988");
 		assertNotNull(schemes);
@@ -500,7 +621,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(17)
+	@Order(19)
 	public void testGetSourceAssertedValueSetsforTextSearch() throws LBException {
 		List<AbsoluteCodingSchemeVersionReference> acsvr = svc.getSourceAssertedValueSetsforTextSearch("Black", MatchAlgorithm.LUCENE);
 		assertTrue(acsvr.stream().filter(x -> x.getCodingSchemeURN().equals(AssertedValueSetServices.BASE + "C54453")).findAny().isPresent());
@@ -509,28 +630,82 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 	}
 	
 	@Test
-	@Order(18)
+	@Order(20)
 	public void testGetAllSourceAssertedValueSetEntities() {
 		@SuppressWarnings("unchecked")
 		List<Entity> entities = (List<Entity>) svc.getAllSourceAssertedValueSetEntities();
 		assertNotNull(entities);
 		assertTrue(entities.size() > 0);
-		assertEquals(entities.size(), 11);
+		assertEquals(entities.size(), 13);
 	}
 	
 	@Test
-	@Order(19)
+	@Order(21)
 	public void testGetValueSetCodeForUri() {
 		String code = ((SourceAssertedValueSetServiceImpl) svc).
 		getEntityCodeFromValueSetDefinition(AssertedValueSetServices.BASE + "FDA/" + "C54453");
 		assertNotNull(code);
 		assertEquals(code, "C54453");
 	}
+	
 	@Test
-	@Order(20)
+	@Order(22)
 	public void getAnalyzerTest() {
 		Analyzer an = service.getAnalyzer();
 		assertNotNull(an);
+	}
+	
+	@Test
+	@Order(23)
+	public void DeleteFromOneVSButNotTheOther() {
+		Entity entity = new Entity();
+	    entity.setEntityCode("C99997");
+	    entity.setEntityCodeNamespace("owl2lexevs");
+		service.deleteEntityFromIndex("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				"0.1.5.1","http://evs.nci.nih.gov/valueset/FDA/C111112", "Whiter Shade of Grey", entity);
+		
+		//Entity still exists in another coding scheme
+		BooleanQuery.Builder remainsbuilder = new BooleanQuery.Builder();
+		remainsbuilder.add(new TermQuery(new Term("code", "C99997")), Occur.MUST);
+		remainsbuilder.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		Query remainsquery = remainsbuilder.build();
+		QueryBitSetProducer remainsparentFilter;
+		try {
+			remainsparentFilter = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		} catch (ParseException e) {
+			throw new RuntimeException("Query Parser Failed against parent query: ", e);
+		}
+		ToParentBlockJoinQuery remainsblockJoinQuery = new ToParentBlockJoinQuery(remainsquery, remainsparentFilter, ScoreMode.Total);
+		List<ScoreDoc> remainsdocs = service.query(null, remainsblockJoinQuery);
+		assertNotNull(remainsdocs);
+		assertTrue(remainsdocs.size() > 0);
+		Document doc = service.getById(remainsdocs.get(0).doc);
+		assertTrue(doc.getFields().stream().filter(
+				x -> x.name().equals("codingSchemeUri")).anyMatch(
+				y -> y.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C48325")));
+		
+		//All values of Coding Scheme in delete are not wiped from the index
+		BooleanQuery.Builder remainsBuilder2 = new BooleanQuery.Builder();
+		remainsBuilder2.add(new TermQuery(new Term("codingSchemeUri", "http://evs.nci.nih.gov/valueset/FDA/C111112")), Occur.MUST);
+		remainsBuilder2.add(new TermQuery(new Term("isParentDoc", "true")), Occur.MUST_NOT);
+		Query remainsQuery2 = remainsBuilder2.build();
+		QueryBitSetProducer remainsparentFilter2;
+		try {
+			remainsparentFilter2 = new QueryBitSetProducer(
+					new QueryParser("isParentDoc", new StandardAnalyzer(new CharArraySet(0, true))).parse("true"));
+		} catch (ParseException e) {
+			throw new RuntimeException("Query Parser Failed against parent query: ", e);
+		}
+		ToParentBlockJoinQuery remainsblockJoinQuery2 = new ToParentBlockJoinQuery(remainsQuery2, remainsparentFilter2, ScoreMode.Total);
+		List<ScoreDoc> remainsdocs2 = service.query(null, remainsblockJoinQuery2);
+		assertNotNull(remainsdocs2);
+		assertTrue(remainsdocs2.size() > 0);
+		Document doc2 = service.getById(remainsdocs2.get(0).doc);
+		assertTrue(doc2.getFields().stream().filter(
+				x -> x.name().equals("codingSchemeUri")).anyMatch(
+				y -> y.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C111112")));
+		
 	}
 
 }

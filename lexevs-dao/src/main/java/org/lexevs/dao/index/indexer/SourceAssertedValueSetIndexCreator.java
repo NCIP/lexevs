@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.index.access.IndexDaoManager;
@@ -65,23 +69,39 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 			throw new RuntimeException("Problems getting coding scheme name. uri = " + reference.getCodingSchemeURN()
 					+ " version = " + reference.getCodingSchemeVersion(), e);
 		}
-		int position = 0;
+//		int position = 0;
 		System.out.println("Processing entities");
-		List<String> entityUids = valueSetService.getSourceAssertedValueSetEntityUidsforPredicateUid(position,
-				-1);
-
-		List<Entity> entities = valueSetService.getEntitiesForUidMap(entityUids);
-
+		List<String> topNodes = valueSetService.getAllValidValueSetTopNodeCodes();
+		List<CodingScheme> valueSets = null;
 		List<Document> documents = new ArrayList<Document>();
-		System.out.println("Indexing " + entities.size() + " entities");
-		for (Entity entity : entities) {
+		for(String s: topNodes) {
+		try {
+			valueSets = valueSetService.getSourceAssertedValueSetforTopNodeEntityCode(s);
+		} catch (LBException e) {
+			throw new RuntimeException("Problem getting value sets from top node: " + s
+					+ "  " + e);
+		}
+		
+		for(CodingScheme cs : valueSets) {
+			Entities entities = cs.getEntities();
+
+		System.out.println("Indexing " + entities.getEntityCount() + " entities");
+		for (Entity entity : entities.getEntityAsReference()) {
+			entity = addPropertiesToEntity(entity);
 			documents.addAll(entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(),
-					reference.getCodingSchemeVersion(), entity));
+					reference.getCodingSchemeVersion(), cs.getCodingSchemeURI(), cs.getCodingSchemeName(), entity));
+		}
+		}
 		}
 
 		entityIndexService.addDocuments(indexName, reference.getCodingSchemeVersion(), documents,
 				entityIndexer.getAnalyzer());
 		return indexName;
+	}
+
+	private Entity addPropertiesToEntity(Entity entity) {
+		entity.addAnyProperties(valueSetService.getEntityProperties(entity.getEntityCode()));
+		return entity;
 	}
 
 	private String getIndexName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {

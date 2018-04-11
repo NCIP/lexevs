@@ -13,7 +13,7 @@ public class BuildMatchAlgorithmQueryTest {
 
 	@Test
 	public void testAddOneTestOnly() {
-		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false);
+		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false, null);
 		builder.codeExact().lucene();
 		BuildMatchAlgorithmQuery bmq = builder.buildMatchQuery();
 		Query query = bmq.getQuery();
@@ -24,7 +24,7 @@ public class BuildMatchAlgorithmQueryTest {
 	
 	@Test
 	public void testLuceneQuerySelection() {
-		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false);
+		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false, null);
 		builder.lucene();
 		assertNotNull(builder.getLucene());
 		builder.codeExact();
@@ -44,7 +44,7 @@ public class BuildMatchAlgorithmQueryTest {
 	
 	@Test
 	public void testPresentationExactQuerySelection() {
-		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false);
+		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false, null);
 		builder.presentationExact();
 		assertNotNull(builder.getPresentationExact());
 		builder.codeExact();
@@ -64,7 +64,7 @@ public class BuildMatchAlgorithmQueryTest {
 	
 	@Test
 	public void testPresentationContainsQuerySelection() {
-		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false);
+		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false, null);
 		builder.presentationContains();
 		assertNotNull(builder.getPresentationContains());
 		builder.codeExact();
@@ -84,7 +84,7 @@ public class BuildMatchAlgorithmQueryTest {
 	
 	@Test
 	public void testPropertyExactQuerySelection() {
-		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false);
+		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false, null);
 		builder.propertyExact();
 		assertNotNull(builder.getPropertyExact());
 		builder.codeExact();
@@ -104,7 +104,7 @@ public class BuildMatchAlgorithmQueryTest {
 	
 	@Test
 	public void testPropertyContainsQuerySelection() {
-		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false);
+		BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder("C48323", false, false, null);
 		builder.propertyContains();
 		assertNotNull(builder.getPropertyContains());
 		builder.codeExact();

@@ -28,25 +28,25 @@ public class ExternalResolvedValueSetIndexService  {
 		service.updateIndexForEntity(codingSchemeUri, codingSchemeVersion, entity);
 	}
 
-	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
-		service.addEntityToIndex(codingSchemeUri, codingSchemeVersion, entity);
+//	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
+//		service.addEntityToIndex(codingSchemeUri, codingSchemeVersion, entity);
+//	}
+	
+	public void addEntityToIndex(String codingSchemeUri, String codingSchemeVersion, String vsURI, String vsName, Entity entity) {
+		service.addEntityToIndex(codingSchemeUri, codingSchemeVersion, vsURI, vsName, entity);
 	}
 
 	public void deleteEntityFromIndex(String codingSchemeUri, String codingSchemeVersion, Entity entity) {
 		service.deleteEntityFromIndex(codingSchemeUri, codingSchemeVersion, entity);
 	}
 	
-	public List<Entity> getEntitiesForExternalResolvedValueSet(String codingSchemeUri, String codingSchemeVersion) throws URISyntaxException{
+	public List<ResolvedConceptReference> getResolvedConceptReferencesForExternalResolvedValueSet(
+			String codingSchemeUri, String codingSchemeVersion) throws URISyntaxException{
 		LexEVSResolvedValueSetServiceImpl rvsSvc = new LexEVSResolvedValueSetServiceImpl();
 		ResolvedConceptReferenceList list =  rvsSvc.getValueSetEntitiesForURI(codingSchemeUri);
 		return Arrays.asList(
 				list.getResolvedConceptReference()).stream().
-				map(rcr -> transFormRCRToEntity(rcr)).
 				collect(Collectors.toList());
-	}
-	
-	private Entity transFormRCRToEntity(ResolvedConceptReference rcr) {
-		return AssertedValueSetServices.transformRCRtoEntity(rcr, null);
 	}
 
 	public List<AbsoluteCodingSchemeVersionReference> getExternalResolvedValueSetCodingSchemes(){
@@ -64,12 +64,12 @@ public class ExternalResolvedValueSetIndexService  {
 		List<AbsoluteCodingSchemeVersionReference> refs =  getExternalResolvedValueSetCodingSchemes();
 		refs.stream().forEach(ref -> {
 			try {
-				getEntitiesForExternalResolvedValueSet(
+				getResolvedConceptReferencesForExternalResolvedValueSet(
 								ref.getCodingSchemeURN(), ref.getCodingSchemeVersion())
-				.stream().forEach(entity -> 
+				.stream().forEach(rcr -> 
 				this.addEntityToIndex(
 						ref.getCodingSchemeURN(), 
-						ref.getCodingSchemeVersion(), entity));
+						ref.getCodingSchemeVersion(), rcr.getCodingSchemeURI(), rcr.getCodingSchemeName(), rcr.getEntity()));
 			} catch (URISyntaxException e) {
 				throw new RuntimeException("Uri is not well formed: " + e);
 			}

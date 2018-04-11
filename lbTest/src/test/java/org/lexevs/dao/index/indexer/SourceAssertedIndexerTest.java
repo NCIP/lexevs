@@ -14,6 +14,7 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.Presentation;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.lucene.document.Document;
 import org.junit.Before;
@@ -96,13 +97,14 @@ public class SourceAssertedIndexerTest {
 		PropertyQualifier[] quals = {qual1, qual2};
 		pres.setSource(sources);
 		pres.setPropertyQualifier(quals);
-
-		Document parentDoc = indexer.createParentDocument(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity, entityUid);
+		String vsURI = AssertedValueSetServices.createUri(AssertedValueSetServices.BASE,"CDISH", entity.getEntityCode());
+		String vsName = entity.getEntityDescription().getContent();
+		Document parentDoc = indexer.createParentDocument(codingSchemeName, codingSchemeUri, codingSchemeVersion, vsURI, vsName, entity, entityUid);
 		assertNotNull(parentDoc);
 		assertTrue(parentDoc.getFields().stream().anyMatch(x -> x.name().equals("isParentDoc")));
 		assertTrue(parentDoc.getFields().stream().filter(x->x.name().equals("isParentDoc")).anyMatch(x->x.stringValue().equals("true")));
 
-		Document property = indexer.addProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity, prop1);
+		Document property = indexer.addProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, vsURI, entity, prop1);
 		assertNotNull(property);
 		assertTrue(property.getFields().stream().anyMatch(x -> x.name().equals(SQLTableConstants.TBLCOL_PROPERTYNAME)));
 		assertTrue(property.getFields().stream().filter(x->x.name().equals(SQLTableConstants.TBLCOL_PROPERTYTYPE)).

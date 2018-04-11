@@ -61,11 +61,16 @@ public class BuildMatchAlgorithmQuery {
         private boolean isInActive;
         private boolean querySelected;
         private String matchText;
+        private List<String> uris;
         
-        public Builder(String matchText, boolean includeAnonymous, boolean isInActive) {
+        public Builder(String matchText, 
+                boolean includeAnonymous, 
+                boolean isInActive,
+                List<String> uris) {
             isAnon = includeAnonymous;
             this.isInActive = isInActive;
             this.matchText = matchText;
+            this.uris = uris;
         }
         
         public BuildMatchAlgorithmQuery buildMatchQuery() {
@@ -146,12 +151,13 @@ public class BuildMatchAlgorithmQuery {
             } catch (IOException e) {
                throw new RuntimeException("Tokenizing query text failed", e);
             }
-            QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
+
             for(String token : tokens){
                 queryBuilder.add(new PrefixQuery(new Term(
                         LuceneLoaderCode.LITERAL_PROPERTY_VALUE_FIELD, token)), 
                         Occur.MUST);
             }
+            QueryParser parser = new QueryParser(LuceneLoaderCode.PROPERTY_VALUE_FIELD, LuceneLoaderCode.getAnaylzer());
             matchText = QueryParser.escape(matchText);
             try {
                 queryBuilder.add(parser.parse(matchText), Occur.SHOULD);
@@ -165,7 +171,7 @@ public class BuildMatchAlgorithmQuery {
             querySelected = true;
             return this;
         }
-        
+
 
         public Builder propertyExact() {
             if(querySelected) {return this;}
@@ -259,6 +265,15 @@ public class BuildMatchAlgorithmQuery {
             return builder;
         }
         
+        private BooleanQuery.Builder addValueSetCodingSchemeRestrictions(BooleanQuery.Builder builder) {
+            if(uris == null || uris.size() == 0) {return builder;}
+            BooleanQuery.Builder uriBuilder = new BooleanQuery.Builder();
+            uris.forEach(uri -> uriBuilder.add(new TermQuery(
+                    new Term("codingSchemeUri", uri)), Occur.SHOULD));
+            builder.add(uriBuilder.build(), Occur.MUST);
+            return builder;
+        }
+        
         private void setActiveAndAnonymousQueries(BooleanQuery.Builder builder, Query currentQuery) {
             if(! isAnon || ! isInActive){
                 
@@ -289,6 +304,7 @@ public class BuildMatchAlgorithmQuery {
         
         private ToParentBlockJoinQuery finalizeQuery(BooleanQuery.Builder builder, Query query){
             setActiveAndAnonymousQueries(builder, query);
+            addValueSetCodingSchemeRestrictions(builder);
             return getParentFilteredBlockJoinQuery(builder, query);
         }
 

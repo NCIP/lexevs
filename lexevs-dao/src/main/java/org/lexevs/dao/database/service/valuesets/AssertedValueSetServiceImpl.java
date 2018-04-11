@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
@@ -75,6 +76,13 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 						params.getPublishValue());
 		return list.stream().map(x -> x.getEntityCode()).collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<String> getAllValidValueSetTopNodeCodes(){
+		List<DefinedNode> nodes = getDaoManager().getCurrentAssertedValueSetDao().getAllValidValueSetTopNodeCodes(
+				params.getPublishName(), params.getPublishValue(), getPredUid(getCsUid()), getCsUid());
+		return nodes.stream().map(node -> node.getEntityCode()).collect(Collectors.toList());
+	}
 
 	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
 		if (entity == null || entity.size() == 0) {
@@ -136,6 +144,12 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		}
 		String csUid = getCsUid();
 		return getDaoManager().getCurrentAssertedValueSetDao().getValueSetEntityCount(code, csUid, getPredUid(csUid));
+	}
+	
+	@Override
+	public List<Property> getEntityProperties(String entityCode) {
+		// TODO Auto-generated method stub
+		return getDaoManager().getCurrentAssertedValueSetDao().getValueSetEntityProperties(entityCode, getCsUid());
 	}
 	
 	public String getCsUid() {

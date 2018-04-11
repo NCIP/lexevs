@@ -1,7 +1,9 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -61,7 +63,12 @@ public class SourceAssertedValueSetSearchExtensionImpl extends AbstractExtendabl
             Set<CodingSchemeReference> resolvedValueSets, MatchAlgorithm matchAlgorithm, boolean includeAnonymous,
             boolean includeInactive) throws LBParameterException {
         
-        BuildMatchAlgorithmQuery.Builder builder = new BuildMatchAlgorithmQuery.Builder(text, includeAnonymous, includeInactive);
+        BuildMatchAlgorithmQuery.Builder builder = 
+                new BuildMatchAlgorithmQuery.Builder(text, 
+                        includeAnonymous, 
+                        includeInactive, 
+                        getURISFromReferences(sourceAssertedValueSetSchemeReferences,resolvedValueSets));
+        
         switch(matchAlgorithm){
         
         case CODE_EXACT:
@@ -105,6 +112,14 @@ public class SourceAssertedValueSetSearchExtensionImpl extends AbstractExtendabl
                     getQueryResults(LexEVSSourceAssertedSearchServices.
                             resolveCodeSystemReferences(resolvedValueSets));
         }
+    }
+
+    private List<String> getURISFromReferences(Set<CodingSchemeReference> valueSets,
+            Set<CodingSchemeReference> references) {
+        if(valueSets == null) {return null;}
+        if(references != null) {valueSets.addAll(references);}
+        return valueSets.stream().map(schemes -> schemes.
+                getCodingScheme()).collect(Collectors.toList());
     }
 
     @Override

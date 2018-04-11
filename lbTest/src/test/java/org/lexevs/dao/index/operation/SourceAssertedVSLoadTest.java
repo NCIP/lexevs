@@ -124,15 +124,10 @@ public class SourceAssertedVSLoadTest {
 		List<String> roots = svc.getSourceAssertedValueSetTopNodesForRootCode("C54453");
 		assertNotNull(roots);
 		assertTrue(roots.size() > 0);
-		assertTrue(roots.stream().filter(x -> x.equals("C99999")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99998")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99997")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99996")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99989")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C99988")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C48323")).findAny().isPresent());
-		assertTrue(roots.stream().filter(x -> x.equals("C48325")).findAny().isPresent());
-		assertFalse(roots.stream().filter(x -> x.equals("C37927")).findAny().isPresent());
+		assertTrue(roots.stream().anyMatch(x -> x.equals("C99999")));
+		assertTrue(roots.stream().anyMatch(x -> x.equals("C54453")));
+		assertTrue(roots.stream().anyMatch(x -> x.equals("C48323")));
+		assertTrue(roots.stream().anyMatch(x -> x.equals("C48325")));
 	}
 	
 	@Test

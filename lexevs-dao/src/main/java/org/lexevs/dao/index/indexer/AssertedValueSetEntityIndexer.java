@@ -17,7 +17,8 @@ import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 public class AssertedValueSetEntityIndexer extends LuceneLoaderCodeIndexer implements EntityIndexer {
 	
 
-	public List<Document> indexEntity(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, Entity entity) {
+	public List<Document> indexEntity(String codingSchemeName, String codingSchemeUri,
+			String codingSchemeVersion, String vsURI, String vsName, Entity entity) {
 List<Document> returnList = new ArrayList<Document>();
 		
 		try {
@@ -30,6 +31,8 @@ List<Document> returnList = new ArrayList<Document>();
 			Document parentDoc = createParentDocument(
 					codingSchemeName, 
 					codingSchemeUri, 
+					vsURI,
+					vsName,
 					codingSchemeVersion, 
 					entity,
 					entityUid);
@@ -40,7 +43,7 @@ List<Document> returnList = new ArrayList<Document>();
 			}
 			for(Property prop : entity.getAllProperties()) {
 				returnList.add(
-						indexProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, entity, prop));
+						indexProperty(codingSchemeName, codingSchemeUri, codingSchemeVersion, vsURI, entity, prop));
 			}
 			
 			returnList.add(parentDoc);
@@ -60,12 +63,12 @@ List<Document> returnList = new ArrayList<Document>();
 		return null;
 	}
 	
-	protected Document createParentDocument(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
+	protected Document createParentDocument(String codingSchemeName, String codingSchemeUri, String vsURI, String vsName, String codingSchemeVersion,
 			Entity entity, String entityUid) {
 
 		generator_.startNewDocument(codingSchemeName + "-" + entity.getEntityCode());
-		generator_.addTextField("codingSchemeName", codingSchemeName, true, true, false);
-		generator_.addTextField("codingSchemeUri", codingSchemeUri, true, true, false);
+		generator_.addTextField("codingSchemeName", vsName, true, true, false);
+		generator_.addTextField("codingSchemeUri", vsURI, true, true, false);
 		generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
 		generator_.addTextField("entityCode", entity.getEntityCode(), true, true, false);
 		generator_.addTextField("entityCodeNamespace", entity.getEntityCodeNamespace(), true, true, false);
@@ -85,7 +88,7 @@ List<Document> returnList = new ArrayList<Document>();
 		return generator_.getDocument();
 	}
 	
-	private Document indexProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, Entity entity, Property prop) {
+	private Document indexProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, String vsURI, Entity entity, Property prop) {
 		
 		if(prop instanceof Presentation) {
 			Presentation pres = (Presentation)prop;
@@ -99,13 +102,14 @@ List<Document> returnList = new ArrayList<Document>();
 				codingSchemeName, 
 				codingSchemeUri, 
 				codingSchemeVersion,
+				vsURI,
 				entity,
 				prop);
 	}
 
 
 
-	protected Document addProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion,
+	protected Document addProperty(String codingSchemeName, String codingSchemeUri, String codingSchemeVersion, String vsURI,
 			Entity entity,
 			Property prop) {
 		 if(entity.getEntityCode() == null || entity.getEntityCodeNamespace() == null) {throw new RuntimeException("Entity code or namespace cannot be null for " + entity.getEntityCode());}
@@ -127,10 +131,11 @@ List<Document> returnList = new ArrayList<Document>();
 	        				entity.getEntityCode(), entity.getEntityCodeNamespace()), false, true, false);
 	     // must be analyzed with KeywordAnalyzer
 	        generator_.addTextField(SQLTableConstants.TBLCOL_ENTITYCODENAMESPACE, entity.getEntityCodeNamespace(), false, true, false);
-
+			generator_.addTextField("codingSchemeUri", vsURI, false, true, false);
+			generator_.addTextField("codingSchemeVersion", codingSchemeVersion, false, true, false);
 	        String tempPropertyType;
 	        if (prop.getPropertyType() == null || prop.getPropertyType().length() == 0) {
-	            if (prop.getPropertyName().equalsIgnoreCase("textualPresentation")) {
+	            if (prop.getPropertyName().equalsIgnoreCase("presentation")) {
 	                tempPropertyType = "presentation";
 	            } else if (prop.getPropertyName().equals("definition")) {
 	                tempPropertyType = "definition";

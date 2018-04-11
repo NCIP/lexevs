@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 
@@ -27,6 +28,10 @@ public interface  AssertedValueSetService extends Serializable {
 	List<Entity> getPagedSourceAssertedValueSetEntities(String rootCode, int start, int pageSize);
 
 	List<CodingScheme> getSourceAssertedValueSetforMemberEntityCode(String matchCode);
+
+	List<String> getAllValidValueSetTopNodeCodes();
+
+	List<Property> getEntityProperties(String entityCode);
 
 
 

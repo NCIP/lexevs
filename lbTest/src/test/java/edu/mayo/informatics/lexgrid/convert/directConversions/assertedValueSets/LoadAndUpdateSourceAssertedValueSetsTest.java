@@ -26,18 +26,21 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexgrid.resolvedvalueset.impl.ExternalResolvedValueSetIndexService;
 import org.springframework.core.annotation.Order;
 
 @RunWith(OrderingTestRunner.class)
 public class LoadAndUpdateSourceAssertedValueSetsTest {
 	LexBIGServiceManager lbsm;
 	private SourceAssertedValueSetSearchIndexService service;
+	private ExternalResolvedValueSetIndexService extService;
 
 
 @Before
 public void setUp() throws LBException{
 	lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 	service = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
+	extService = new ExternalResolvedValueSetIndexService();
 }
 
 @Order(1)
@@ -186,6 +189,12 @@ public void loadCurrentCodingSchemeTest() throws LBException, InterruptedExcepti
 				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5.1"));
 		Thread.sleep(1000);
 		assertTrue(doesExist);
+	}
+	
+	@Order(10)
+	@Test
+	public void createIndexForExternalValueSets() {
+		extService.indexExternalResolvedValueSetsToAssertedValueSetIndex();
 	}
 	
 	
