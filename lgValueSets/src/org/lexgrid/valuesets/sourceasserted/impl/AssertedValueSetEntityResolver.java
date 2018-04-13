@@ -23,12 +23,12 @@ public class AssertedValueSetEntityResolver implements Serializable {
 	AssertedValueSetService vsSvc;
     AssertedValueSetParameters params;
 	String code;
-	private EntityService entityService;
+	//private EntityService entityService;
 	
 	public AssertedValueSetEntityResolver(AssertedValueSetParameters params, String code) {
 		this.params = params;
 		vsSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
-		entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
+		//entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
 		vsSvc.init(params);
 		this.code = code;
 	}
@@ -57,7 +57,7 @@ public class AssertedValueSetEntityResolver implements Serializable {
 
 	private ResolvedConceptReference resolvedConceptReferenceFromEntityTransform(String topNode, Entity entity) {
         AssertedValueSetParameters params = ((AssertedValueSetServiceImpl) vsSvc).getParams();
-        Entity topNodeEntity = entityService.getEntity(params.getCodingSchemeURI(), 
+        Entity topNodeEntity = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService().getEntity(params.getCodingSchemeURI(), 
         		params.getCodingSchemeVersion(), topNode, null);
         return AssertedValueSetServices.transformEntityToRCR(topNodeEntity, entity, params);
 	}
