@@ -23,12 +23,10 @@ public class AssertedValueSetEntityResolver implements Serializable {
 	AssertedValueSetService vsSvc;
     AssertedValueSetParameters params;
 	String code;
-	//private EntityService entityService;
 	
 	public AssertedValueSetEntityResolver(AssertedValueSetParameters params, String code) {
 		this.params = params;
 		vsSvc = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getAssertedValueSetService();
-		//entityService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getEntityService();
 		vsSvc.init(params);
 		this.code = code;
 	}
