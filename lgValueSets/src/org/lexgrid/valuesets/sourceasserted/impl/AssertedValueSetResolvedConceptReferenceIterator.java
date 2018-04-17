@@ -20,7 +20,7 @@ public class AssertedValueSetResolvedConceptReferenceIterator
 extends AbstractAssertedVSResolvedConceptReferenceIterator<ResolvedConceptReference>
 implements ResolvedConceptReferencesIterator{
 	private String topNode;
-	private int maxValueSets;
+//	private int maxValueSets;
 	private int remaining;
 	private AssertedValueSetEntityResolver assertedValueSetEntityResolver;
 	/**
@@ -73,12 +73,13 @@ implements ResolvedConceptReferencesIterator{
 			pageSize = maxValueSets;
 		}
 		ResolvedConceptReferenceList list = new ResolvedConceptReferenceList();
-		if(this.getRefreshedRemaining() == 0) {return list;}
+		if(this.getRefreshedRemaining() == 0) {isExhausted = true; return list;}
 		List<ResolvedConceptReference> refs = protoNext(pageSize, remaining);
 		if(isPagerProxied()) {
 		this.refreshRemaining(remaining - pageSize <= 0? 0: remaining - pageSize);
 		}
 		refs.stream().forEachOrdered(list::addResolvedConceptReference);
+		inPagingNext = true;
 		return list;
 	}
 
@@ -129,7 +130,6 @@ implements ResolvedConceptReferencesIterator{
 				max = maxValueSets;
 			}
 			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max);
-
 		} catch (Exception e) {
 			String id = getLogger().error(
 					"Implementation problem in the resolved concept reference iterator next(int)",e);
@@ -163,8 +163,13 @@ implements ResolvedConceptReferencesIterator{
 			if (max > maxValueSets) {
 				max = maxValueSets;
 			}
-			return assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max > remains? remains: max );
-
+			List<ResolvedConceptReference> refs = assertedValueSetEntityResolver.getPagedConceptReferenceByCursorAndCode(topNode, skip, max > remains? remains: max );
+			if(refs == null || refs.size() == 0) {
+				emptyCache();
+				inCachePosition = maxValueSets;
+				isExhausted = true;
+			}
+			return refs;
 		} catch (Exception e) {
 			String id = getLogger().error(
 					"Implementation problem in the resolved concept reference iterator next(int)",e);

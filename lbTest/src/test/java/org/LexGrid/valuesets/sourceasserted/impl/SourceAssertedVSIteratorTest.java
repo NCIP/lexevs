@@ -5,6 +5,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
@@ -261,5 +265,27 @@ public class SourceAssertedVSIteratorTest {
 		assertEquals(ref.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/FDA/C54453");
 		
 	}
+	
+	@Test
+	public void testHasNext() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		while(itr.hasNext()) {
+			itr.next();
+		}
+	}
+	
+	@Test
+	public void testHasNextPage() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		List<ResolvedConceptReference> list = new ArrayList<ResolvedConceptReference>();
+		while(itr.hasNext()) {
+			list.addAll(Arrays.asList(itr.next(2).getResolvedConceptReference()));
+		}
+		assertTrue(list.size() > 0);
+		assertEquals(list.size(), 5);
+	}
+	
 
 }
