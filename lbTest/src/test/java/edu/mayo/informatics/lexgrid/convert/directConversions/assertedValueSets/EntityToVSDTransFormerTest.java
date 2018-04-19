@@ -50,8 +50,8 @@ public class EntityToVSDTransFormerTest extends TestCase{
 	
 	@Test
     public void testInitValueSetDefintion(){
-		ValueSetDefinition def = transformer.initValueSetDefintion(CODING_SCHEME, true, "1", "NCI");
-		assertTrue(def.getDefaultCodingScheme().equals(CODING_SCHEME));
+		ValueSetDefinition def = transformer.initValueSetDefintion("CodingSchemeStandin", CODING_SCHEME, true, "1", "NCI");
+		assertTrue(def.getDefaultCodingScheme().equals("CodingSchemeStandin"));
 		assertTrue(def.getIsActive());
 		assertTrue(def.getStatus().equals("1"));
 		assertTrue(def.getOwner().equals("NCI"));

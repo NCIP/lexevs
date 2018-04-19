@@ -7,6 +7,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
@@ -34,25 +35,19 @@ public class SourceAssertedValueSetBatchLoader {
     
 
     
-    public SourceAssertedValueSetBatchLoader(String codingScheme, 
-            String version, 
-            String associationName, 
-            boolean targetToSource, 
-            String baseUri, 
-            String owner,
-            String conceptDomainIndicator) throws LBParameterException{
+    public SourceAssertedValueSetBatchLoader(AssertedValueSetParameters params, String owner, String conceptDomainIndicator) throws LBParameterException{
         codedNodeGraphDao = LexEvsServiceLocator.getInstance().
                 getDatabaseServiceManager().getCodedNodeGraphService();
         entityService = LexEvsServiceLocator.getInstance().
                 getDatabaseServiceManager().getEntityService();
         resourceService = LexEvsServiceLocator.getInstance().getSystemResourceService();
-        this.codingSchemeUri = resourceService.getUriForUserCodingSchemeName(codingScheme, version);
+        this.codingSchemeUri = resourceService.getUriForUserCodingSchemeName(params.getCodingSchemeName(), params.getCodingSchemeVersion());
         valueSetDefinitionService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
-        this.codingSchemeVersion = version;
-        this.codingSchemeName = codingScheme;
-        this.associationName = associationName;
-        this.targetToSource = targetToSource;
-        this.transformer = new EntityToVSDTransformer(baseUri, codingSchemeUri, version, codingSchemeName, owner, associationName, conceptDomainIndicator);
+        this.codingSchemeVersion = params.getCodingSchemeVersion();
+        this.codingSchemeName = params.getCodingSchemeName();
+        this.associationName = params.getAssertedValueSetRelation();
+        this.targetToSource = true;
+        this.transformer = new EntityToVSDTransformer(params.getBaseValueSetURI(), codingSchemeUri, params.getCodingSchemeVersion(), codingSchemeName, owner, associationName, conceptDomainIndicator);
         messages_ = LoggerFactory.getLogger();
     }
     
@@ -111,7 +106,14 @@ public class SourceAssertedValueSetBatchLoader {
 
     public static void main(String[] args) {
       try {
-        new SourceAssertedValueSetBatchLoader("NCI_Thesaurus", "17.02d", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI", "Semantic_Type").run("Contributing_Source");
+        AssertedValueSetParameters.Builder builder = new AssertedValueSetParameters.Builder("17.02d");
+        AssertedValueSetParameters params = builder.
+                codingSchemeName("NCI_Thesaurus").
+                assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+                baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+                sourceName("Contributing_Source").
+                build();
+        new SourceAssertedValueSetBatchLoader( params ,"NCI", "Semantic_Type").run(params.getSourceName());
     } catch (LBParameterException e) {
         e.printStackTrace();
     }

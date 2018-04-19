@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -51,8 +52,14 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		try {
 			loader = new SourceAssertedValueSetToSchemeBatchLoader(codingScheme, version, association,
 					Boolean.parseBoolean(target), uri, owner, conceptDomainIndicator);
-			vsDefLoader = new SourceAssertedValueSetBatchLoader(codingScheme, version, association,
-					Boolean.parseBoolean(target), uri, owner, conceptDomainIndicator);
+            AssertedValueSetParameters params = new AssertedValueSetParameters.Builder(version).
+                    codingSchemeName("NCI_Thesaurus").
+                    assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+                    baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+                    sourceName("Contributing_Source").
+                    build();
+            vsDefLoader = new SourceAssertedValueSetBatchLoader(params,
+                     owner, conceptDomainIndicator);
 			lbs = LexBIGServiceImpl.defaultInstance();
 		} catch (LBParameterException e) {
 			// TODO Auto-generated catch block
@@ -64,8 +71,14 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		try {
 			loader = new SourceAssertedValueSetToSchemeBatchLoader(codingScheme, userDeterminedVersion, association,
 					Boolean.parseBoolean(target), uri, owner, conceptDomainIndicator);
-			vsDefLoader = new SourceAssertedValueSetBatchLoader(codingScheme, userDeterminedVersion, association,
-					Boolean.parseBoolean(target), uri, owner, conceptDomainIndicator);
+	         AssertedValueSetParameters params = new AssertedValueSetParameters.Builder(userDeterminedVersion).
+	                    codingSchemeName("NCI_Thesaurus").
+	                    assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+	                    baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+	                    sourceName("Contributing_Source").
+	                    build();
+	            vsDefLoader = new SourceAssertedValueSetBatchLoader(params,
+	                     owner, conceptDomainIndicator);
 			this.version = userDeterminedVersion;
 			lbs = LexBIGServiceImpl.defaultInstance();
 		} catch (LBParameterException e) {
@@ -88,8 +101,14 @@ public class NCItSourceAssertedValueSetUpdateServiceImpl implements NCItSourceAs
 		try {
 			loader = new SourceAssertedValueSetToSchemeBatchLoader(codingScheme, version, association,
 					Boolean.parseBoolean(target), uri, owner, conceptDomainIndicator);
-			vsDefLoader = new SourceAssertedValueSetBatchLoader(codingScheme, version, association,
-					Boolean.parseBoolean(target), uri, owner, conceptDomainIndicator);
+	        AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("17.02d").
+	                codingSchemeName("NCI_Thesaurus").
+	                assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+	                baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+	                sourceName("Contributing_Source").
+	                build();
+			vsDefLoader = new SourceAssertedValueSetBatchLoader(params,
+					 owner, conceptDomainIndicator);
 			lbs = LexBIGServiceImpl.defaultInstance();
 		} catch (LBParameterException e) {
 			// TODO Auto-generated catch block

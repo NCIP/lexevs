@@ -82,7 +82,7 @@ public class EntityToVSDTransformer{
 
     
     private ValueSetDefinition tranformEntityToValueSet(Entity entity, String source, String definition) {
-        ValueSetDefinition def = initValueSetDefintion(entity.getEntityCodeNamespace(), true, "ACTIVE", owner);
+        ValueSetDefinition def = initValueSetDefintion(codingSchemeName, entity.getEntityCodeNamespace(), true, "ACTIVE", owner);
         def.setValueSetDefinitionName(entity.getEntityDescription().getContent());
         DefinitionEntry entry = initDefinitionEntry(0, DefinitionOperator.OR);
         Mappings mappings = new Mappings();
@@ -124,10 +124,10 @@ public class EntityToVSDTransformer{
                 findFirst().get().getResourceVersion();
     }
     
-    protected ValueSetDefinition initValueSetDefintion(String namespace, boolean isActive, 
+    protected ValueSetDefinition initValueSetDefintion(String codingSchemeName, String namespace, boolean isActive, 
             String status, String owner){
         ValueSetDefinition def = new ValueSetDefinition();
-        def.setDefaultCodingScheme(namespace);
+        def.setDefaultCodingScheme(codingSchemeName == null? namespace: codingSchemeName);
         def.setIsActive(isActive);
         def.setStatus(status);
         def.setOwner(owner);
