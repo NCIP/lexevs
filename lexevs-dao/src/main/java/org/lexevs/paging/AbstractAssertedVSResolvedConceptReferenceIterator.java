@@ -49,17 +49,18 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	private int globalPosition = 0;
 	
 	/** The in cache position. */
-	private int inCachePosition = 0;
+	protected int inCachePosition = 0;
+	
+	protected int maxValueSets = 0;
 	
 	/** The pager. */
 	protected Pager<T> pager;
 	
 	private RemainingRefresher<T> remainingRefresher;
 	
-	/** The decorate next. */
-	private boolean decorateNext = false;
+	protected boolean inPagingNext = false;
 	
-	private boolean isExhausted = false;
+	protected boolean isExhausted = false;
 	
 	/**
 	 * Instantiates a new abstract pageable iterator.
@@ -97,8 +98,12 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 		if(isExhausted){
 			return false;
 		}
-		
+		if(inPagingNext) {
+			//pageIfNecessary(globalPosition, pageSize); Do Nothing
+		}
+		else {
 		pageIfNecessary();
+		}
 		
 		if(cache == null || cache.size() == 0) {
 			isExhausted = true;
@@ -150,10 +155,7 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	
 	
 	protected void  pageIfNecessary(int size, int remains) {
-		if(inCachePosition > size) {
 			pageOnSize(size, remains);
-		}
-		
 	}
 
 	/* (non-Javadoc)
@@ -345,10 +347,15 @@ public abstract class AbstractAssertedVSResolvedConceptReferenceIterator<T> impl
 	protected void setGlobalPostion(int increment) {
 		globalPosition = increment > cache.size()? 
 				globalPosition + cache.size():globalPosition + increment ;
+		globalPosition = globalPosition > maxValueSets? maxValueSets: globalPosition;
 	}
 	
 	protected List<? extends T> getCache(){
 		return this.cache;
+	}
+	
+	protected void emptyCache() {
+		cache = new ArrayList<T>();
 	}
 	
 	
