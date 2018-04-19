@@ -21,6 +21,7 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,9 +65,14 @@ public void loadFirstValueSetCodingSchemeTest() throws LBException, InterruptedE
 @Order(2)
 @Test
 public void loadSourceAssertedValueSetDefinitionsTest() throws LBParameterException, InterruptedException{
-    new SourceAssertedValueSetBatchLoader("owl2lexevs", "0.1.5",
-    		"Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/",
-    		"NCI", "Semantic_Type").run("Contributing_Source");
+    AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
+    		codingSchemeName("owl2lexevs").
+    		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+    		baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+    		sourceName("Contributing_Source").
+    		build();
+	new SourceAssertedValueSetBatchLoader(params,
+    		"NCI", "Semantic_Type").run(params.getSourceName());
     Thread.sleep(1000);
 }
 

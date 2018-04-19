@@ -2,6 +2,7 @@ package org.LexGrid.LexBIG.admin;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -48,9 +49,15 @@ public class SourceAssertedValueSetDefinitionLauncher {
     
     public void run(String[] args) throws LBParameterException, CmdLineException{
         CmdLineParser parser = new CmdLineParser(this);
-        parser.parseArgument(args);    
-        new SourceAssertedValueSetBatchLoader(codingScheme, version, association, 
-                Boolean.valueOf(target).booleanValue(), uri, owner, conceptDomainName).run(sourceName);
+        parser.parseArgument(args);
+        AssertedValueSetParameters params = new AssertedValueSetParameters.Builder(version).
+                codingSchemeName(codingScheme).
+                assertedDefaultHierarchyVSRelation(association).
+                baseValueSetURI(uri).
+                sourceName(sourceName).
+                build();
+        new SourceAssertedValueSetBatchLoader(params,
+                owner, conceptDomainName).run(params.getSourceName());
     }
 
 }

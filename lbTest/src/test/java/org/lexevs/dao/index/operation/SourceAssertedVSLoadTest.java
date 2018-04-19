@@ -61,11 +61,7 @@ public class SourceAssertedVSLoadTest {
 
 	        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 	        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-	        
-	        SourceAssertedValueSetBatchLoader vsdbatchLoader = 
-	        		new SourceAssertedValueSetBatchLoader("owl2lexevs", 
-	        				"0.1.5", "Concept_In_Subset", true, "http://evs.nci.nih.gov/valueset/", "NCI", "Semantic_Type");
-	        vsdbatchLoader.run("Contributing_Source");
+
 			transformer = new EntityToVSDTransformer(null, null, null, null, null, ASSOCIATION_NAME, null);
 			
 			AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
