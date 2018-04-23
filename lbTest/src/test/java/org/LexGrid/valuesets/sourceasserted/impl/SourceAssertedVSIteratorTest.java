@@ -270,9 +270,12 @@ public class SourceAssertedVSIteratorTest {
 	public void testHasNext() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
 		AssertedValueSetResolvedConceptReferenceIterator itr = new 
 				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		List<ResolvedConceptReference> list = new ArrayList<ResolvedConceptReference>();
 		while(itr.hasNext()) {
-			itr.next();
+			list.add(itr.next());
 		}
+		assertTrue(list.size() > 0);
+		assertEquals(list.size(), 5);
 	}
 	
 	@Test
@@ -282,6 +285,53 @@ public class SourceAssertedVSIteratorTest {
 		List<ResolvedConceptReference> list = new ArrayList<ResolvedConceptReference>();
 		while(itr.hasNext()) {
 			list.addAll(Arrays.asList(itr.next(2).getResolvedConceptReference()));
+		}
+		assertTrue(list.size() > 0);
+		assertEquals(list.size(), 5);
+	}
+	
+	@Test
+	public void testHasNextPageLowerBoundary() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		List<ResolvedConceptReference> list = new ArrayList<ResolvedConceptReference>();
+		while(itr.hasNext()) {
+			list.addAll(Arrays.asList(itr.next(1).getResolvedConceptReference()));
+		}
+		assertTrue(list.size() > 0);
+		assertEquals(list.size(), 5);
+	}
+	
+	@Test
+	public void testHasNextPageLowerBoundaryBadRequest() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		List<ResolvedConceptReference> list = new ArrayList<ResolvedConceptReference>();
+		while(itr.hasNext()) {
+			list.addAll(Arrays.asList(itr.next(0).getResolvedConceptReference()));
+		}
+		assertEquals(list.size(), 0);
+	}
+	
+	@Test
+	public void testHasNextPageUpperBoundary() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		List<ResolvedConceptReference> list = new ArrayList<ResolvedConceptReference>();
+		while(itr.hasNext()) {
+			list.addAll(Arrays.asList(itr.next(5).getResolvedConceptReference()));
+		}
+		assertTrue(list.size() > 0);
+		assertEquals(list.size(), 5);
+	}
+	
+	@Test
+	public void testHasNextPageUpperBoundaryOverFlow() throws LBResourceUnavailableException, LBInvocationException, LBParameterException {
+		AssertedValueSetResolvedConceptReferenceIterator itr = new 
+				AssertedValueSetResolvedConceptReferenceIterator("C54453", params);
+		List<ResolvedConceptReference> list = new ArrayList<ResolvedConceptReference>();
+		while(itr.hasNext()) {
+			list.addAll(Arrays.asList(itr.next(6).getResolvedConceptReference()));
 		}
 		assertTrue(list.size() > 0);
 		assertEquals(list.size(), 5);
