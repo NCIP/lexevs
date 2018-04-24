@@ -261,7 +261,7 @@ public class SourceAssertedVSIteratorTest {
 		ResolvedConceptReference ref = itr.next();
 
 		assertNotNull(ref);
-		assertEquals(ref.getCodingSchemeName(), "Structured Product Labeling Color Terminology");
+		assertEquals(ref.getCodingSchemeName(), "owl2lexevs");
 		assertEquals(ref.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/FDA/C54453");
 		
 	}
