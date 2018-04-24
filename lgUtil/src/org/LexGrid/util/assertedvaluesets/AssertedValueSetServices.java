@@ -260,7 +260,7 @@ public class AssertedValueSetServices {
         ref.setCode(entity.getEntityCode());
         ref.setCodeNamespace(entity.getEntityCodeNamespace());
         ref.setEntityType(entity.getEntityType());
-        ref.setCodingSchemeName(topNode.getEntityDescription().getContent());
+        ref.setCodingSchemeName(params.getCodingSchemeName());
         ref.setCodingSchemeURI(
                 createUri(
                         params.getBaseValueSetURI(),

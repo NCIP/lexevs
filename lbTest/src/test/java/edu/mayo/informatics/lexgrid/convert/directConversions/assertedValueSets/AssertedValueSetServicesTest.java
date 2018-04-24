@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.codingSchemes.CodingScheme;
@@ -24,6 +25,7 @@ import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedConceptDomain;
 import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedSource;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -326,15 +328,63 @@ public class AssertedValueSetServicesTest extends TestCase {
 			assertEquals(scheme.getEntities().getEntityAsReference().stream().filter(e -> e.getEntityCode().equals("C11")).findFirst().get().getEntityDescription().getContent(), "description3" );
 		}
 		
+		@Test
+		public void testTransformEntityToRCR() throws ParseException, LBException {
+			Entity entity = new Entity();
+			entity.setEntityCode("C010101");
+			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+			java.util.Date d = sdf.parse("21/12/2012");
+			entity.setEffectiveDate(d);
+			
+			java.util.Date expd = sdf.parse("21/12/2021");
+			entity.setExpirationDate(expd);
+			
+			entity.setEntityDescription(Constructors.createEntityDescription("This is where we describe the entity"));
+			entity.setIsActive(true);
+			Property prop = new Property();
+			prop.setPropertyName(AssertedValueSetServices.CONCEPT_DOMAIN);
+			prop.setValue(Constructors.createText("Intellectual Product"));
+			entity.getPropertyAsReference().add(prop);
+			Property p1 = new Property();
+			p1.setPropertyName("Contributing_Source");
+			p1.setValue(Constructors.createText("CDISC"));
+			entity.getPropertyAsReference().add(p1);
+			entity.setEntityCodeNamespace("NCI_Thesaurus");
+			entity.setOwner("NCI");
+			entity.setStatus("Complete");
+			
+			Entity subent1 = new Entity();
+			
+			subent1.setEntityCode("C1");
+			subent1.setEntityDescription(Constructors.createEntityDescription("description1"));
+			Property property = new Property();
+			property.setPropertyName("Contributing_Source");
+			property.setValue(Constructors.createText("CDISC"));
+			subent1.addAnyProperty(property);
+			List<String> entityType = new ArrayList<String>();
+			entityType.add("concept");
+			subent1.setEntityType(entityType);
+			subent1.setEntityCode("C1");
+			
+			Entities ents = new Entities();
+			ents.getEntityAsReference().add(subent1);
+			
+			AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
+					build();
+			ResolvedConceptReference rcr = AssertedValueSetServices.transformEntityToRCR(entity, subent1, params);
+			assertEquals(rcr.getCode(), "C1");
+			assertEquals(rcr.getEntityDescription().getContent(), "description1");
+			assertEquals(rcr.getEntityType()[0], "concept");
+			assertEquals(rcr.getConceptCode(), "C1");
+			assertEquals(rcr.getCodingSchemeName(), "NCI_Thesaurus");
+			assertEquals(rcr.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/CDISC/C010101" );
+		}
+		
 		
 		@Test
 		public void testGetDiff(){
 			List<String> diff = AssertedValueSetServices.getDiff(TEST_STRING_STAGING_ADULTS_CODE, TEST_STRING_STAGING_CHILD_NAME);
 			assertTrue(diff.contains("Adults") && diff.contains("and") && diff.contains("Adolescents") && diff.contains("Code"));	
-			
-//			String diff1 = AssertedValueSetServices.getDiff(
-//					"some string with something in it", "some string with a difference in it");
-//			assertEquals("a difference", diff1);
 		}
 		
 		public void testGetCanonicalValue(){
