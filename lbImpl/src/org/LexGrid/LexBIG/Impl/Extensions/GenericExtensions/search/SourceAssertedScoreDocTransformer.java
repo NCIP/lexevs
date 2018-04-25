@@ -31,7 +31,7 @@ public class SourceAssertedScoreDocTransformer implements ResolvedConceptReferen
             String[] types = doc.getValues("type");
             String description = doc.get("entityDescription");
             String codingSchemeUri = doc.get("codingSchemeUri");
-            String codingSchemeName = doc.get("codingSchemeName");
+            String codingSchemeName = doc.get("sourceCodingSchemeName");
             String codingSchemeVersion = doc.get("codingSchemeVersion");
             
             ResolvedConceptReference ref = new ResolvedConceptReference();

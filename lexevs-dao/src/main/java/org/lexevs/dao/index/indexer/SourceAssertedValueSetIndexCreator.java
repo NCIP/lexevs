@@ -64,12 +64,12 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 
 		String indexName;
 		try {
-			indexName = this.getIndexName(reference);
+			indexName = Utility.getSourceCodingSchemeName(reference);
 		} catch (LBParameterException e) {
 			throw new RuntimeException("Problems getting coding scheme name. uri = " + reference.getCodingSchemeURN()
 					+ " version = " + reference.getCodingSchemeVersion(), e);
 		}
-//		int position = 0;
+
 		System.out.println("Processing entities");
 		List<String> topNodes = valueSetService.getAllValidValueSetTopNodeCodes();
 		List<CodingScheme> valueSets = null;

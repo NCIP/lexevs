@@ -67,6 +67,7 @@ List<Document> returnList = new ArrayList<Document>();
 			Entity entity, String entityUid) {
 
 		generator_.startNewDocument(codingSchemeName + "-" + entity.getEntityCode());
+		generator_.addTextField("sourceCodingSchemeName", codingSchemeName, true, true, false);
 		generator_.addTextField("codingSchemeName", vsName, true, true, false);
 		generator_.addTextField("codingSchemeUri", vsURI, true, true, false);
 		generator_.addTextField("codingSchemeVersion", codingSchemeVersion, true, true, false);
