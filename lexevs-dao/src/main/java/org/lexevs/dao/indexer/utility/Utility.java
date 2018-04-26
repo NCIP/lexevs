@@ -102,6 +102,13 @@ public class Utility {
 	    return indexName;
 	}
     
+    public static String getSourceCodingSchemeName(AbsoluteCodingSchemeVersionReference reference) throws LBParameterException {
+    	return LexEvsServiceLocator.getInstance().
+    			getSystemResourceService().
+    			getInternalCodingSchemeNameForUserCodingSchemeName(
+    			reference.getCodingSchemeURN(), reference.getCodingSchemeVersion());
+	}
+    
     public static Analyzer getAnalyzer(){
     	return new StandardAnalyzer();
     }
