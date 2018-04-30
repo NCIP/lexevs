@@ -1,6 +1,7 @@
 package org.lexevs.dao.database.service.valuesets;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
@@ -59,6 +61,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		schemeUID = this.getSchemeUid(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
+		System.out.println("scheme: " + scheme);
 		return this;
 	}
 
@@ -88,6 +91,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	protected void recurseFromRootsToUpdateMap(LexEVSTreeItem ti) {
 		String reducedCode = reduceToCodeFromUri(ti.get_code());
 		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(reducedCode);
+		if(nodes != null) {nodes.addAll(getAnyExternallyDefinedNodes(reducedCode));}
 		if(nodes != null && nodes.size() > 0){ ti._expandable= true;}
 		sort(nodes);
 		List<LexEVSTreeItem> items = new ArrayList<LexEVSTreeItem>();
@@ -99,6 +103,14 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 			this.getSourceValueSetTreeBranch(node, item);
 		}
 		ti.addAll(INVERSE_IS_A, items);
+	}
+
+	private Collection<VSHierarchyNode> getAnyExternallyDefinedNodes(String reducedCode) {
+		ValueSetDefinitionService vsDef =  LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
+		List<String> uris = vsDef.getVSURIsForContextURI(
+				AssertedValueSetServices.createUri(
+						AssertedValueSetParameters.ROOT_URI, null, reducedCode));
+		return uris.stream().map(uri -> transformUriToHeirarchyNode(uri)).collect(Collectors.toList());
 	}
 
 	protected String reduceToCodeFromUri(String get_code) {
@@ -164,6 +176,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		if (version == null) {
 			version = getProductionVersionFromTargetScheme(Uri);
 		}
+		System.out.println("version: " + version);
 		return this.getCodingSchemeUId(Uri, version);
 	}
 
@@ -243,6 +256,12 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	public List<DefinedNode> getAllValueSetNodesWithoutSource(String association, String publishName, String publishValue){
 		return vsDao.getAllVSTriples(schemeUID, associationPredicateGuid, publishName, publishValue, 0, -1);
 	}
+	
+    
+    public static VSHierarchyNode transformUriToHeirarchyNode(String URI) {
+		return null;
+        
+    }
 	
 
 	/**

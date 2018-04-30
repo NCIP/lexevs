@@ -131,7 +131,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 
 	@Test
 	public void testGetValueSetDefinition() throws LBException, URISyntaxException {
-		ValueSetDefinition vdDef = getValueSetDefinitionService().getValueSetDefinition(new URI("SRITEST:FA:MicrobialStructureOntologyAndHyphaInMycelium"), null);
+		ValueSetDefinition vdDef = getValueSetDefinitionService().getValueSetDefinition(new URI("http://ncit:Neoplasm"), null);
 		
 		assertTrue(vdDef.getDefaultCodingScheme().equals("fungal_anatomy"));
 		assertTrue(vdDef.getDefinitionEntry().length == 2);
