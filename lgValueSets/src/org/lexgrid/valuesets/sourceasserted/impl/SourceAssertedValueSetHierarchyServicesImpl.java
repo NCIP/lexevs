@@ -81,12 +81,16 @@ public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssert
 	
 
 	private List<LexEVSTreeItem> getTreeItemListFromSchemes(List<CodingScheme> schemes, boolean expandable) {
-		return schemes.stream().map(x -> { 
+		List<CodingScheme> filteredSchemes = schemes.stream().
+				filter(scheme -> !this.getVSHierarchyService().getVsExternalURIs().contains(
+								scheme.getCodingSchemeURI())).collect(Collectors.toList());
+		List<LexEVSTreeItem> treeItems = filteredSchemes.stream().map(x -> { 
 			LexEVSTreeItem item = 
 				new LexEVSTreeItem(x.getCodingSchemeURI(), x.getCodingSchemeName());
 				item.set_expandable(expandable);
 				return item;}).
 					collect(Collectors.toList());
+		return treeItems;
 	}
 
 	@Override

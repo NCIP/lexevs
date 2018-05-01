@@ -1,6 +1,9 @@
 package org.lexevs.dao.database.service.valuesets;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,11 +13,14 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
@@ -37,7 +43,17 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	String root_code = ROOT_CODE;
 	String schemeUID;
 	String associationPredicateGuid;
+	List<String> vsExternalURIs;
+	public List<String> getVsExternalURIs() {
+		return vsExternalURIs;
+	}
+
+	public void setVsExternalURIs(List<String> vsExternalURIs) {
+		this.vsExternalURIs = vsExternalURIs;
+	}
+
 	ValueSetHierarchyDao vsDao;
+	private ValueSetDefinitionService vsDef;
 
 	public ValueSetHierarchyServiceImpl() {
 	}
@@ -51,6 +67,8 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		this.publishName = publishName;
 		this.root_code = root_code;
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
+		vsDef = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
+		vsExternalURIs = getExternallyDefinedValueSetsForAssertedSource(root_code);
 		schemeUID = this.getCodingSchemeUId(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
 		return this;
@@ -61,8 +79,31 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		schemeUID = this.getSchemeUid(scheme, version);
 		this.associationPredicateGuid = this.getPredicateUid();
+		vsDef = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
+		vsExternalURIs = getExternallyDefinedValueSetsForAssertedSource(root_code);
 		System.out.println("scheme: " + scheme);
 		return this;
+	}
+
+	private List<String> getExternallyDefinedValueSetsForAssertedSource(String root) {
+		List<String> uris = new ArrayList<String>();
+		 this.getRootCodes(root).stream().forEachOrdered(rootCode -> uris.
+				 addAll(vsDef.getVSURIsForContextURI(rootCode)));
+		 return uris;
+	}
+	
+	private List<String> getRootCodes(String root){
+		List<String> roots = null;
+		try {
+			roots = this.getHierarchyValueSetRoots(root_code)
+			.get(ROOT).
+			_assocToChildMap.
+			get(INVERSE_IS_A).stream().map(treeItem -> treeItem.get_code()).collect(Collectors.toList());
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return roots;
 	}
 
 	@Override
@@ -258,8 +299,24 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 	
     
-    public static VSHierarchyNode transformUriToHeirarchyNode(String URI) {
-		return null;
+    public VSHierarchyNode transformUriToHeirarchyNode(String uri) {
+    	ValueSetDefinition vsd = null;
+    	try {
+			vsd = LexEvsServiceLocator.getInstance().
+			getDatabaseServiceManager().getValueSetDefinitionService().
+			getValueSetDefinitionByUri(new URI(uri));
+		} catch (URISyntaxException e) {
+			throw new RuntimeException("Problem URI for to transform "
+					+ "value set definition to heirarchy node" + e);
+		}
+    	VSHierarchyNode node = new VSHierarchyNode();
+    	node.setDescription(vsd.getValueSetDefinitionName());
+    	//should be only one definition entry
+    	node.setEntityCode(vsd.getDefinitionEntry()[0].getEntityReference().getEntityCode());
+    	node.setNamespace(vsd.getDefinitionEntry()[0].getEntityReference().getEntityCodeNamespace());
+    	//should have only one source since we are tying it to the source via the context
+    	node.setSource(vsd.getSource()[0].getContent());
+		return node;
         
     }
 	

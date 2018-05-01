@@ -1164,6 +1164,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		return valueSetDefinition;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getValueSetURIsForContext(String contextURI) {
 		return  this
