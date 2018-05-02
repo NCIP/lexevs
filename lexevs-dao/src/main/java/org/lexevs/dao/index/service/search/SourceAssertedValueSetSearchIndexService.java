@@ -74,7 +74,7 @@ public class SourceAssertedValueSetSearchIndexService implements AssertedValueSe
 		ref.setCodingSchemeVersion(codingSchemeVersion);
 		String codingSchemeName = null;
 		try {
-			codingSchemeName = Utility.getIndexName(ref);
+			codingSchemeName = Utility.getSourceCodingSchemeName(ref);
 		} catch (LBParameterException e) {
 			 throw new RuntimeException("Index Name for value set index source could not be resolved");
 		}
