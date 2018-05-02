@@ -74,7 +74,8 @@ public class LexEVSResolvedValueSetTest {
 		new AssertedValueSetParameters.Builder("0.1.5").
 		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
 		codingSchemeName("owl2lexevs").
-		codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl")
+		codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl").
+		rootConcept("C54453")
 		.build();
 		service = new LexEVSResolvedValueSetServiceImpl(params);
 		vsSvc = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();

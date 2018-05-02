@@ -67,7 +67,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
-		List<String> list = getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
+		List<String> list = getSourceAssertedValueSetTopNodesForRootCode(params.getRootConcept());
 		return list.stream().map(code ->
 			{CodingScheme scheme = null;
 				try {

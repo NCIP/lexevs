@@ -6,10 +6,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
@@ -149,6 +151,37 @@ public class ValueSetHierarchyServiceTest {
 		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/C234235"), "C234235");
 		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/FDA/C234235"), "C234235");
 		assertEquals(service.reduceToCodeFromUri("http://evs.nci.nih.gov/valueset/CDISC/C234235"), "C234235");
+	}
+	
+	@Test 
+	public void getExternallyDefinedValueSetsForAssertedSourceTest() {
+		List<String> externalRoots = service.getExternallyDefinedValueSetsForAssertedSource(ValueSetHierarchyService.ROOT);
+		assertNotNull(externalRoots);
+		assertTrue(externalRoots.size() > 0);
+		assertEquals(externalRoots.get(0), AssertedValueSetServices.BASE + "Cwhatiwanttobe");
+	}
+	
+	@Test 
+	public void getRootCodesTest() {
+		List<String> roots = service.getRootCodes(ValueSetHierarchyService.ROOT);
+		assertNotNull(roots);
+		assertTrue(roots.size() > 0);
+		assertEquals(roots.get(0),"Cwhatiwanttobe");
+	}
+	
+	@Test
+	public void getAnyExternallyDefinedNodesTest() {
+		Collection<VSHierarchyNode> nodes = service.getAnyExternallyDefinedNodes("C544351");
+		assertNotNull(nodes);
+		assertTrue(nodes.size() > 0);
+		assertEquals(nodes.iterator().next().getEntityCode(),"Cwhatiwanttobe");
+	}
+	
+	@Test
+	public void transformUriToHeirarchyNodeTest() {
+		VSHierarchyNode node = service.transformUriToHeirarchyNode("some vs uri");
+		assertNotNull(node);
+		assertEquals(node.getEntityCode(), "C544351");
 	}
 	
 	private void printTree(List<LexEVSTreeItem> items, int counter){
