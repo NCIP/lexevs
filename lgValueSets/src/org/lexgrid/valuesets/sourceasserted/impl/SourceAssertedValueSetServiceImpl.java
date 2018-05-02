@@ -205,7 +205,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	
 	@Override
 	public List<Entity> getAllSourceAssertedValueSetEntities() {
-		List<String> roots = this.getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
+		List<String> roots = this.getSourceAssertedValueSetTopNodesForRootCode(params.getRootConcept());
 		Comparator<Entity> entityCompare = Comparator.comparing(Entity::getEntityCode); 
 		Set<Entity> entitySet = new TreeSet<Entity>(entityCompare);
 		for(String matchCode: roots) {

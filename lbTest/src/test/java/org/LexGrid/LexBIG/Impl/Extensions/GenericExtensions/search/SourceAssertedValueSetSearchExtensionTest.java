@@ -44,19 +44,6 @@ public class SourceAssertedValueSetSearchExtensionTest {
 		assertNotNull(ref);
 		assertEquals(ref.getEntityDescription().getContent(), "Black");
 	}
-	
-	@Test
-	public void testCodeExactCodingSchemeNameCorrect() throws LBException {
-		ResolvedConceptReferencesIterator itr = assertedVSsvc.
-				search("C48323", null, null, MatchAlgorithm.CODE_EXACT,
-				false, false);
-		assertTrue(itr.hasNext());
-		ResolvedConceptReference ref = itr.next();
-		assertNotNull(ref);
-		assertEquals(ref.getEntityDescription().getContent(), "Black");
-		assertEquals(ref.getCodingSchemeName(), "owl2lexevs");
-		
-	}
 
 	@Test
 	public void testParams1() throws LBParameterException, LBResourceUnavailableException, LBInvocationException {
