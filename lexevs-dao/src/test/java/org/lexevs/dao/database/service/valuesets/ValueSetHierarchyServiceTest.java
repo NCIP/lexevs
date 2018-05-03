@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -122,7 +123,7 @@ public class ValueSetHierarchyServiceTest {
 		assertTrue(items.size() > 0);
 		List<LexEVSTreeItem> roots =  item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A);
 		assertTrue(roots.size() > 0);
-		assertEquals(roots.get(0)._text,"Black");
+		assertEquals(roots.get(0)._text,"Black_FDA");
 		assertTrue(roots.get(0)._expandable);
 		assertTrue(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
 		assertEquals(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0)._text, "Blacker");
@@ -137,12 +138,12 @@ public class ValueSetHierarchyServiceTest {
 				_assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._expandable);
 		assertEquals(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._text, "UberBlack");
 		assertFalse(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._expandable);
-		assertEquals(roots.get(1)._text, "White");
+		assertEquals(roots.get(1)._text, "Black_TEST");
 		assertTrue(roots.get(1)._expandable);
 		assertTrue(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
-		assertEquals(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0)._text, "ArchWhite");
-		assertFalse(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0)._expandable);
-		assertEquals(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._text, "BlindingWhite");
+		assertEquals(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0)._text, "Blacker");
+		assertTrue(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0)._expandable);
+		assertEquals(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._text, "UberBlack");
 		assertFalse(roots.get(1)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1)._expandable);
 	}
 	
@@ -155,33 +156,33 @@ public class ValueSetHierarchyServiceTest {
 	
 	@Test 
 	public void getExternallyDefinedValueSetsForAssertedSourceTest() {
-		List<String> externalRoots = service.getExternallyDefinedValueSetsForAssertedSource(ValueSetHierarchyService.ROOT);
+		List<String> externalRoots = service.getExternallyDefinedValueSetsForAssertedSource(service.root_code);
 		assertNotNull(externalRoots);
 		assertTrue(externalRoots.size() > 0);
-		assertEquals(externalRoots.get(0), AssertedValueSetServices.BASE + "Cwhatiwanttobe");
+		assertEquals(externalRoots.get(0), "OWL2LEXEVS:VerySickCancerPatient");
 	}
 	
 	@Test 
 	public void getRootCodesTest() {
-		List<String> roots = service.getRootCodes(ValueSetHierarchyService.ROOT);
+		List<String> roots = service.getRootCodes(service.root_code);
 		assertNotNull(roots);
 		assertTrue(roots.size() > 0);
-		assertEquals(roots.get(0),"Cwhatiwanttobe");
+		assertEquals(roots.get(0),"http://evs.nci.nih.gov/valueset/FDA/C48323");
 	}
 	
 	@Test
-	public void getAnyExternallyDefinedNodesTest() {
-		Collection<VSHierarchyNode> nodes = service.getAnyExternallyDefinedNodes("C544351");
+	public void getAnyExternallyDefinedNodesTest() throws URISyntaxException {
+		Collection<VSHierarchyNode> nodes = service.getAnyExternallyDefinedNodes("C48323", "http://evs.nci.nih.gov/valueset/FDA/C48323");
 		assertNotNull(nodes);
 		assertTrue(nodes.size() > 0);
-		assertEquals(nodes.iterator().next().getEntityCode(),"Cwhatiwanttobe");
+		assertEquals(nodes.iterator().next().getEntityCode(),"VerySickCancerPatient");
 	}
 	
 	@Test
 	public void transformUriToHeirarchyNodeTest() {
-		VSHierarchyNode node = service.transformUriToHeirarchyNode("some vs uri");
+		VSHierarchyNode node = service.transformUriToHeirarchyNode("http://evs.nci.nih.gov/valueset/FDA/C48323");
 		assertNotNull(node);
-		assertEquals(node.getEntityCode(), "C544351");
+		assertEquals(node.getEntityCode(), "C48323");
 	}
 	
 	private void printTree(List<LexEVSTreeItem> items, int counter){

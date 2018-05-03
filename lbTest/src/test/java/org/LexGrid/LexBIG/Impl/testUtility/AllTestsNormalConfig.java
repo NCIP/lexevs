@@ -187,6 +187,7 @@ import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedVSIteratorTest;
 import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedValueSetTest;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
+import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceTest;
 import org.lexevs.dao.index.indexer.SourceAssertedIndexerTest;
 import org.lexevs.dao.index.lucene.v2013.search.ValueSetDaoTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
@@ -535,8 +536,9 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSIteratorTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(BuildMatchAlgorithmQueryTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(ValueSetHierarchyServiceTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         mainSuite.addTest(assertedValueSetUpdates);
 
         

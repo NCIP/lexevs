@@ -23,15 +23,16 @@
         <lgVD:valueSetDefinition valueSetDefinitionURI="OWL2LEXEVS:VerySickCancerPatient" valueSetDefinitionName="Very Sick Cancer Patient" defaultCodingScheme="owl2lexevs" conceptDomain="Owl2" effectiveDate="2016-01-01T11:00:00Z" isActive="true" status="ACTIVE">
             <lgVD:mappings>
                 <lgNaming:supportedConceptDomain localId="Owl2" uri="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl">Owl2</lgNaming:supportedConceptDomain>
-                <lgNaming:supportedContext localId="VerySickCancerPatient">VerySickCancerPatient</lgNaming:supportedContext>                
+                <lgNaming:supportedContext localId="Black" uri="http://evs.nci.nih.gov/valueset/FDA/C48323">Black</lgNaming:supportedContext>                
             </lgVD:mappings>
+            <lgVD:representsRealmOrContext>Black</lgVD:representsRealmOrContext>
             <lgVD:properties>
                 <lgCommon:property propertyName="textualPresentation">
                     <lgCommon:value>Very Sick Cancer Patients</lgCommon:value>
                 </lgCommon:property>
             </lgVD:properties>
             <lgVD:definitionEntry ruleOrder="1" operator="OR">
-                <lgVD:entityReference entityCode="VerySickCancerPatient" referenceAssociation="subClassOf" transitiveClosure="true"  targetToSource="false" leafOnly="false"/>
+                <lgVD:entityReference entityCode="VerySickCancerPatient" entityCodeNamespace ="owl2lexevs" referenceAssociation="subClassOf" transitiveClosure="true"  targetToSource="false" leafOnly="false"/>
             </lgVD:definitionEntry>
         </lgVD:valueSetDefinition>
          

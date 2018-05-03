@@ -40,14 +40,6 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	String schemeUID;
 	String associationPredicateGuid;
 	List<String> vsExternalURIs;
-	public List<String> getVsExternalURIs() {
-		return vsExternalURIs;
-	}
-
-	public void setVsExternalURIs(List<String> vsExternalURIs) {
-		this.vsExternalURIs = vsExternalURIs;
-	}
-
 	ValueSetHierarchyDao vsDao;
 	private ValueSetDefinitionService vsDef;
 
@@ -127,7 +119,12 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	protected void recurseFromRootsToUpdateMap(LexEVSTreeItem ti) {
 		String reducedCode = reduceToCodeFromUri(ti.get_code());
 		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(reducedCode);
-		if(nodes != null) {nodes.addAll(getAnyExternallyDefinedNodes(reducedCode));}
+		if(nodes != null) {try {
+			nodes.addAll(getAnyExternallyDefinedNodes(reducedCode, ti.get_code()));
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}}
 		if(nodes != null && nodes.size() > 0){ ti._expandable= true;}
 		sort(nodes);
 		List<LexEVSTreeItem> items = new ArrayList<LexEVSTreeItem>();
@@ -141,11 +138,21 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		ti.addAll(INVERSE_IS_A, items);
 	}
 
-	protected Collection<VSHierarchyNode> getAnyExternallyDefinedNodes(String reducedCode) {
+	protected Collection<VSHierarchyNode> getAnyExternallyDefinedNodes(String reducedCode, String fullCode) throws URISyntaxException {
 		ValueSetDefinitionService vsDef =  LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
-		List<String> uris = vsDef.getVSURIsForContextURI(
+		List<String> sources = vsDef.getValueSetDefinitionByUri(new URI(fullCode)).
+				getMappings().
+				getSupportedSourceAsReference().stream().
+				map(x -> x.getContent()).collect(Collectors.toList());
+		List<String> uris = new ArrayList<String>();
+		for(String s : sources) {
+			uris.addAll(vsDef.getVSURIsForContextURI(
 				AssertedValueSetServices.createUri(
-						AssertedValueSetParameters.ROOT_URI, null, reducedCode));
+						AssertedValueSetParameters.ROOT_URI, s, reducedCode)));
+		}
+		uris.addAll(vsDef.getVSURIsForContextURI(
+				AssertedValueSetServices.createUri(
+						AssertedValueSetParameters.ROOT_URI, null, reducedCode)));
 		return uris.stream().map(uri -> transformUriToHeirarchyNode(uri)).collect(Collectors.toList());
 	}
 
@@ -309,8 +316,8 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
     	//should be only one definition entry
     	node.setEntityCode(vsd.getDefinitionEntry()[0].getEntityReference().getEntityCode());
     	node.setNamespace(vsd.getDefinitionEntry()[0].getEntityReference().getEntityCodeNamespace());
-    	//should have only one source since we are tying it to the source via the context
-    	node.setSource(vsd.getSource()[0].getContent());
+    	//should have only one source or no sourcesince we are tying it to the source via the context
+    	node.setSource(vsd.getSource() == null || vsd.getSource().length == 0? null: vsd.getSource()[0].getContent());
 		return node;
         
     }
@@ -344,5 +351,14 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	 */
 	public String getAssociation() {
 		return this.association;
+	}
+	
+	
+	public List<String> getVsExternalURIs() {
+		return vsExternalURIs;
+	}
+
+	public void setVsExternalURIs(List<String> vsExternalURIs) {
+		this.vsExternalURIs = vsExternalURIs;
 	}
 }
