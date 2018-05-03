@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entities;
@@ -20,8 +21,13 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	private static final long serialVersionUID = -4003462128156213331L;
 	private AssertedValueSetParameters params;
 	
-	public void init(AssertedValueSetParameters params){
+	public void init(AssertedValueSetParameters params) {
 		this.params = params;
+		
+		String version = this.params.getCodingSchemeVersion();
+		if (version == null || version.equals("")) {
+			this.params.setCodingSchemeVersion(getCodingSchemeVersionFromTag());
+		}	
 	}
 
 	@Override
@@ -183,5 +189,28 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		this.params = params;
 	}
 
+	/**
+	 * Retrieve the coding scheme version based on the name and tag
+	 * @return coding scheme version
+	 */
+	private String getCodingSchemeVersionFromTag() {
+		String version = null;
+		
+		try {
+			version = LexEvsServiceLocator.getInstance().getSystemResourceService().
+				getInternalVersionStringForTag(
+						this.params.getCodingSchemeName(), 
+						this.params.getCodingSchemeTag());
+		} catch (LBParameterException e) {
+			// do nothing
+		}
+		
+		if(version == null) {
+			throw new RuntimeException("AssertedValueSetParameters - Version was not found for coding scheme: " +
+					this.params.getCodingSchemeName() + " and tag: " + this.params.getCodingSchemeTag());
+		}
+		
+		return version;
+	}
 
 }

@@ -60,6 +60,7 @@ public void loadFirstValueSetCodingSchemeTest() throws LBException, InterruptedE
     assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
     lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+    lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 }
 
 @Order(2)

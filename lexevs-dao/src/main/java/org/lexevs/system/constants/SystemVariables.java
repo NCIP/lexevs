@@ -86,6 +86,7 @@ public class SystemVariables {
 	private String assertedValueSetHierarchyVSRelation;
     private String assertedValueSetCodingSchemeName;
     private String assertedValueSetCodingSchemeURI;
+    private String assertedValueSetCodingSchemeTag;
     
 	private String graphdbUser;
     private String graphdbpwd;
@@ -126,6 +127,9 @@ public class SystemVariables {
 
     private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI = "SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI";
     private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI_DEFAULT = "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
+
+    private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_TAG = "SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_TAG";
+    private static String SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_TAG_DEFAULT = "PRODUCTION";
 
     private boolean emailErrors_ = false;
     private String SMTPServer_;
@@ -475,6 +479,9 @@ public class SystemVariables {
             assertedValueSetCodingSchemeName = getNullableProperty(props, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME_DEFAULT);
             assertedValueSetCodingSchemeURI = getNullableProperty(props, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI, SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI_DEFAULT);
             
+            // if tag isn't set, then return null.
+            assertedValueSetCodingSchemeTag = props.getProperty("SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_TAG");
+            	           
             logger.finishLogConfig(this);
 
         } catch (Exception e) {
@@ -845,6 +852,14 @@ public class SystemVariables {
 
 	public void setAssertedValueSetCodingSchemeURI(String assertedValueSetCodingSchemeURI) {
 		this.assertedValueSetCodingSchemeURI = assertedValueSetCodingSchemeURI;
+	}
+	
+	public String getAssertedValueSetCodingSchemeTag() {
+		return assertedValueSetCodingSchemeTag;
+	}
+
+	public void setAssertedValueSetCodingSchemeTag(String assertedValueSetCodingSchemeTag) {
+		this.assertedValueSetCodingSchemeTag = assertedValueSetCodingSchemeTag;
 	}
 
 	

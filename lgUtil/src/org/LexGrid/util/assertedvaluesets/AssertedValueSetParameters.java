@@ -23,6 +23,7 @@ public final class AssertedValueSetParameters implements Serializable {
     public static final String ASSERTED_VALUESET_RELATION = "Concept_In_Subset";
     public static final String DEFAULT_VS_HIERARCHY_RELATION = "subClassOf";
     public static final String ROOT_CONCEPT = "C54443";
+    public static final String DEFAULT_CODINGSCHEME_TAG = "PRODUCTION";
     
     private final String publishName;
     private final String publishValue;
@@ -35,15 +36,16 @@ public final class AssertedValueSetParameters implements Serializable {
     private final String baseValueSetURI;
     private final String codingSchemeURI;
     private final String codingSchemeName;
-    private final String codingSchemeVersion;
     private final String assertedValueSetRelation;
     private final String defaultHierarchyVSRelation;
     private final String rootConcept;
+    private final String codingSchemeTag;
+    private String codingSchemeVersion;
 
     
     public static class Builder{
         
-        private final String codingSchemeVersion;
+        private String codingSchemeVersion = "";
         
         private String publishName = DEFAULT_DO_PUBLISH_NAME;
         private String publishValue = DEFAULT_DO_PUBLISH_VALUE ;
@@ -59,6 +61,11 @@ public final class AssertedValueSetParameters implements Serializable {
         private String assertedValueSetRelation = ASSERTED_VALUESET_RELATION;
         private String defaultHierarchyVSRelation = DEFAULT_VS_HIERARCHY_RELATION;
         private String rootConcept = ROOT_CONCEPT;
+        private String codingSchemeTag; 
+        
+        public Builder() {
+            this.codingSchemeTag = DEFAULT_CODINGSCHEME_TAG;
+        }
         
         public Builder(String version){
             if(version == null){
@@ -138,9 +145,15 @@ public final class AssertedValueSetParameters implements Serializable {
             return this;
         }
 
+        public Builder codingSchemeTag(String value) {
+            this.codingSchemeTag = value;
+            return this;
+        }
+        
         public AssertedValueSetParameters build(){
             return new AssertedValueSetParameters(this);
         }
+         
     }
     
     private AssertedValueSetParameters(Builder builder){
@@ -159,6 +172,7 @@ public final class AssertedValueSetParameters implements Serializable {
         this.assertedValueSetRelation = builder.assertedValueSetRelation;
         this.defaultHierarchyVSRelation = builder.defaultHierarchyVSRelation;
         this.rootConcept = builder.rootConcept;
+        this.codingSchemeTag = builder.codingSchemeTag;
     }
     
    
@@ -276,6 +290,17 @@ public final class AssertedValueSetParameters implements Serializable {
      */
     public String getCodingSchemeVersion() {
         return codingSchemeVersion;
+    }
+    
+    public void setCodingSchemeVersion(String version) {
+        if(version == null){
+            throw new RuntimeException("Coding Scheme version cannot be set to null");
+        }
+        codingSchemeVersion = version;
+    }
+    
+    public String getCodingSchemeTag() {
+        return codingSchemeTag;
     }
 
 

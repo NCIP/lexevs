@@ -1,5 +1,4 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -14,12 +13,14 @@ import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 
-public class AssertedValueSetIndexSupport {
+public class AssertedValueSetTagTest {
 private AssertedValueSetService svc;
 	@Before
 	public void setUp() throws Exception {
 		
-		AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
+		// don't pass in a version to the Builder().  
+		// This will force to use the default tag (PRODUCTION)
+		AssertedValueSetParameters params = new AssertedValueSetParameters.Builder().
 				assertedDefaultHierarchyVSRelation("Concept_In_Subset").
 				codingSchemeName("owl2lexevs").
 				codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl")
@@ -32,6 +33,7 @@ private AssertedValueSetService svc;
 	public void testgetUids() {
 		List<String> uids = svc.getSourceAssertedValueSetEntityUidsforPredicateUid(0, 2);
 		assertNotNull(uids);
+		assertTrue(uids.size() > 0);
 		assertEquals(uids.size(), 2);
 		
 		List<Entity> entities = svc.getEntitiesForUidMap(uids);
@@ -41,7 +43,7 @@ private AssertedValueSetService svc;
 	}
 	
 	@Test
-	public void testGetEntityCountForTopNodeCodt() {
+	public void testGetEntityCountForTopNodeCode() {
 		int count = svc.getVSEntityCountForTopNodeCode("C99999");
 		assertEquals(count, 2);
 	}
