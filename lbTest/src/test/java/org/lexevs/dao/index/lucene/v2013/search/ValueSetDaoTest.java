@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
@@ -22,10 +23,12 @@ import org.apache.lucene.search.join.ScoreMode;
 import org.apache.lucene.search.join.ToParentBlockJoinQuery;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.lexevs.dao.index.indexer.LuceneLoaderCode;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.core.annotation.Order;
 
+@RunWith(OrderingTestRunner.class)
 public class ValueSetDaoTest {
 	ValueSetEntityDao vsdao;
 

@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.service.valuesets.LexEVSTreeItem;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyService;
@@ -23,7 +24,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 		super();
 	}
 	
-	@Before
+	@BeforeClass
 	public void setUp(){
 		service = SourceAssertedValueSetHierarchyServicesImpl.defaultInstance();
 		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
