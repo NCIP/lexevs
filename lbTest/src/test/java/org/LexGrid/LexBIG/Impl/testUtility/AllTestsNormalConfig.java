@@ -208,6 +208,7 @@ import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetIndexCreation;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetIndexSupport;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetTagTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.CleanUpResolvedValueSetUpdateLoads;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToRVSTransformerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
@@ -537,6 +538,7 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(BuildMatchAlgorithmQueryTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(ValueSetHierarchyServiceTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetTagTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
 //        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         mainSuite.addTest(assertedValueSetUpdates);
