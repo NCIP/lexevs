@@ -318,7 +318,7 @@ You may obtain a copy of the License at
 	
 	<target name="temp-compile" depends="init" description="compile source in temporary directories">
 		<!-- debug <echoproperties prefix="java.vm.version"></echoproperties> -->
-		<javac srcdir="${temp.src}" destdir="${temp.bin}" debug="yes">
+		<javac srcdir="${temp.src}" destdir="${temp.bin}" debug="yes" encoding="UTF-8">
 			<classpath refid="master.classpath"/>
 		</javac>
 	</target>

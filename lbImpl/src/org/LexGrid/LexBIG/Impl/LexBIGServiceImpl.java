@@ -747,8 +747,7 @@ public class LexBIGServiceImpl implements LexBIGService {
        AssertedValueSetService vsSvc = LexEvsServiceLocator.getInstance().
                getDatabaseServiceManager().getAssertedValueSetService();
        vsSvc.init(this.params);
-       List<String> list = vsSvc.
-               getAllValueSetTopNodeCodes(params.getRootConcept());
+       List<String> list = vsSvc.getAllValidValueSetTopNodeCodes();
        return list.stream().map(code ->
            {CodingScheme scheme = null;
                try {

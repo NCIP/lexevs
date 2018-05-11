@@ -168,6 +168,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	
 	public static String GET_VALUESET_DEF_PROPERTY_LIST_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefPropertyListByValSetDefURI";
 	
+	private static final String GET_VS_URI_BY_CONTEXT = VALUESETDEFINITION_NAMESPACE +  "getValueSetURIsByContext";
+	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
 	
@@ -1160,5 +1162,14 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		valueSetDefinition.setProperties(properties);
 		
 		return valueSetDefinition;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getValueSetURIsForContext(String contextURI) {
+		return  this
+		.getSqlMapClientTemplate().queryForList(
+				GET_VS_URI_BY_CONTEXT,
+			new PrefixedParameter(getPrefix(), contextURI));
 	}
 }

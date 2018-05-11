@@ -11,10 +11,14 @@ import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.CodingSchemeReference;
 import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +44,21 @@ public class SourceAssertedValueSetSearchExtensionTest {
 		assertNotNull(ref);
 		assertEquals(ref.getEntityDescription().getContent(), "Black");
 	}
+
+	@Test
+	public void testParams1() throws LBParameterException, LBResourceUnavailableException, LBInvocationException {
+		CodingSchemeReference csRef = new CodingSchemeReference();
+		csRef.setCodingScheme("http://evs.nci.nih.gov/valueset/FDA/C54453");
+		csRef.setVersionOrTag(Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5.1"));
+		ResolvedConceptReferencesIterator itr = assertedVSsvc.search("Black", csRef,  MatchAlgorithm.PROPERTY_EXACT);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		ResolvedConceptReference ref = itr.next();
+		assertNotNull(ref);
+		assertEquals(ref.getCode(), "C48323");
+		assertEquals(ref.getEntityDescription().getContent(), "Black");
+		assertEquals(ref.getCodingSchemeName(), "owl2lexevs");
+	}
 	
 	@Test
 	public void testCodeExactCodingSchemeNameCorrect() throws LBException {
@@ -53,6 +72,7 @@ public class SourceAssertedValueSetSearchExtensionTest {
 		assertEquals(ref.getCodingSchemeName(), "owl2lexevs");
 		
 	}
+
 
 	@Test
 	public void testPresentationExact() throws LBException {

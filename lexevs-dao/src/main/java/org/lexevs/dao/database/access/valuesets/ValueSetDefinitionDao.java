@@ -170,4 +170,6 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 
 	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(
 			String entityCode);
+
+	public List<String> getValueSetURIsForContext(String uri);
 }

@@ -97,7 +97,8 @@
            target="1.8" 
            verbose="false" 
            fork="false" 
-           source="1.8">
+           source="1.8"
+    	   encoding="UTF-8">
       <src>
         <pathelement location="${build.srcDir}"/>
       </src>
@@ -125,7 +126,8 @@
            target="1.8" 
            verbose="false" 
            fork="false" 
-           source="1.8">
+           source="1.8"
+  		   encoding="UTF-8">
       <src>
         <pathelement location="${build.testDir}"/>
       </src>

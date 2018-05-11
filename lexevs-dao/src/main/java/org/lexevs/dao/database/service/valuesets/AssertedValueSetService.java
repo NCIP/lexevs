@@ -13,7 +13,7 @@ public interface  AssertedValueSetService extends Serializable {
 	
 	List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode) throws LBException;
 
-	public List<String> getAllValueSetTopNodeCodes(String rootCode);
+	//public List<String> getAllValueSetTopNodeCodes(String rootCode);
 	
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode);
 	

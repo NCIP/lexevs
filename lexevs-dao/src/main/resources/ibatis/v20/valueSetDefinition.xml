@@ -157,6 +157,24 @@
 			valueSetDefURI = #param1#
 	</select>
 	
+	<select id="getValueSetURIsByContext" 
+		resultClass="string"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT
+			vsdef.valueSetDefURI
+					valueSetDefURI
+		FROM
+			$prefix$valueSetDefinition AS vsdef
+		JOIN
+			$prefix$vsSupportedAttrib AS vssa
+		ON
+			vsdef.valueSetDefGuid = vssa.referenceGuid 
+		WHERE
+			vssa.supportedAttributeTag = "Context"
+		AND
+			vssa.uri = #param1#
+	</select>
+	
 	<select id="getValueSetDefinitionURIForValueSetName" 
 		resultClass="string" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">

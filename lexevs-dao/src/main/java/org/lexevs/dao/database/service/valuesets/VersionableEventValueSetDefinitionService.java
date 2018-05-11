@@ -500,4 +500,12 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 		return valueSetDefDao.getValueSetDefinitionByRevision(valueSetDefURI, revisionId);
 	}
 
+	@Override
+	public List<String> getVSURIsForContextURI(String uri) {
+		if(uri == null) {return null;}
+		ValueSetDefinitionDao valueSetDefDao = this.getDaoManager()
+				.getCurrentValueSetDefinitionDao();
+		return valueSetDefDao.getValueSetURIsForContext(uri);
+	}
+
 }

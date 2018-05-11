@@ -67,7 +67,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
-		List<String> list = getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
+		List<String> list = getSourceAssertedValueSetTopNodesForRootCode(params.getRootConcept());
 		return list.stream().map(code ->
 			{CodingScheme scheme = null;
 				try {
@@ -98,7 +98,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	
 	@Override
 	public List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode){
-		return getAssertedValueSetService().getAllValueSetTopNodeCodes(rootCode);	
+		return getAssertedValueSetService().getAllValidValueSetTopNodeCodes();	
 	}
 
 	@Override
@@ -205,7 +205,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	
 	@Override
 	public List<Entity> getAllSourceAssertedValueSetEntities() {
-		List<String> roots = this.getSourceAssertedValueSetTopNodesForRootCode(ValueSetHierarchyService.ROOT_CODE);
+		List<String> roots = this.getSourceAssertedValueSetTopNodesForRootCode(params.getRootConcept());
 		Comparator<Entity> entityCompare = Comparator.comparing(Entity::getEntityCode); 
 		Set<Entity> entitySet = new TreeSet<Entity>(entityCompare);
 		for(String matchCode: roots) {
