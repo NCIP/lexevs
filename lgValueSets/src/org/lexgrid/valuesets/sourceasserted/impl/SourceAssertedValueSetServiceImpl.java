@@ -98,7 +98,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	
 	@Override
 	public List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode){
-		return getAssertedValueSetService().getAllValueSetTopNodeCodes(rootCode);	
+		return getAssertedValueSetService().getAllValidValueSetTopNodeCodes();	
 	}
 
 	@Override

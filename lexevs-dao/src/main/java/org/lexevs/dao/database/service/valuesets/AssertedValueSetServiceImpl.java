@@ -80,20 +80,6 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	}
 	
 	@Override
-	public List<String> getAllValueSetTopNodeCodes(String rootCode) {
-		if (rootCode == null) {
-			throw new RuntimeException("Root value set code cannot be null!");
-		}
-		getValueSetHeirarchyService().preprocessSourceHierarchyData(params.getCodingSchemeURI(),
-				params.getCodingSchemeVersion(), params.getDefaultHierarchyVSRelation(), params.getSourceName(),
-				params.getPublishName(), rootCode);
-		List<DefinedNode> list = ((ValueSetHierarchyServiceImpl) getValueSetHeirarchyService())
-				.getAllValueSetNodesWithoutSource(params.getDefaultHierarchyVSRelation(), params.getPublishName(),
-						params.getPublishValue());
-		return list.stream().map(x -> x.getEntityCode()).collect(Collectors.toList());
-	}
-	
-	@Override
 	public List<String> getAllValidValueSetTopNodeCodes(){
 		List<DefinedNode> nodes = getDaoManager().getCurrentAssertedValueSetDao().getAllValidValueSetTopNodeCodes(
 				params.getPublishName(), params.getPublishValue(), getPredUid(getCsUid()), getCsUid());
@@ -177,9 +163,9 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 				getAssociationPredicateUidsForAssociationName(csUID, null, params.getAssertedValueSetRelation()).get(0);
 	}
 
-	public ValueSetHierarchyService getValueSetHeirarchyService() {
-		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
-	}
+//	public ValueSetHierarchyService getValueSetHeirarchyService() {
+//		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
+//	}
 
 	public AssertedValueSetParameters getParams() {
 		return params;

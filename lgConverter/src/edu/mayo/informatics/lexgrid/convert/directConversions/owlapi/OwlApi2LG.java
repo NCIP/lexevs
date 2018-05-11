@@ -284,7 +284,7 @@ public class OwlApi2LG {
                 }
             } catch (Exception e) {
                 // Exception logged by SQLReadWrite
-                return null;
+                messages_.error("Failed to Load: " + lgScheme_.getCodingSchemeName() + " **** " + e.toString());
             }
 
             initAssociationEntities();
