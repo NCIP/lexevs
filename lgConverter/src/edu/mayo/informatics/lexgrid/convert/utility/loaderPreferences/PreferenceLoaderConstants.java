@@ -28,7 +28,7 @@ public class PreferenceLoaderConstants {
     public static final String HL7_XSD = "PreferencesLoaderXSDS/HL7LoadPreferences.xsd";
     public static final String Meta_XSD = "PreferencesLoaderXSDS/MetaLoadPreferences.xsd";
     public static final String OBO_XSD = "PreferencesLoaderXSDS/OBOLoadPreferences.xsd";
-    public static final String OWL_XSD = "http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd";
+    public static final String OWL_XSD = "PreferencesLoaderXSDS/OWLLoadPreferences.xsd";
     public static final String SEMNET_XSD = "PreferencesLoaderXSDS/SemNetLoadPreferences.xsd";
     public static final String UMLS_XSD = "PreferencesLoaderXSDS/UMLSLoadPreferences.xsd";
     public static final String XML_XSD = "PreferencesLoaderXSDS/XMLLoadPreferences.xsd";

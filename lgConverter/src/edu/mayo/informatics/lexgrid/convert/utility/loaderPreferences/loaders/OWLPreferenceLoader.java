@@ -89,11 +89,7 @@ public class OWLPreferenceLoader extends BasePreferenceLoader implements Prefere
      * @return false if the XML does not validate, otherwise true.
      */
     public boolean validate() {
-        try {
-            return validate(prefs, new URL(PreferenceLoaderConstants.OWL_XSD));
-        } catch (MalformedURLException e) {
-            return false;
-        }
+        return validate(prefs, ClassLoader.getSystemResource(PreferenceLoaderConstants.OWL_XSD));
     }
 
     public LoaderPreferences load() throws LgConvertException {
