@@ -24,9 +24,9 @@ public class ValueSetHierarchyServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		service = (ValueSetHierarchyServiceImpl) LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetHierarchyService();
-// 		service.init("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
+ 		service.init("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
  		//Comment this in instead for direct to NCIt testing
-		service.init();
+//		service.init();
 	}
 
 	@Test
@@ -75,12 +75,13 @@ public class ValueSetHierarchyServiceTest {
 		nodes.add(node3);
 		nodes.add(node4);
 		nodes.add(node5);
+		//Filtering out CDISC sourced Nodes
 		List<VSHierarchyNode> complete = new ValueSetHierarchyServiceImpl().collectReducedNodes("FDA",nodes);
 
 		complete.stream()
 				.forEach(x -> System.out.println(
 						x.getDescription() + ": " + x.getEntityCode() + ": " + x.getSource()));
-		assertTrue(complete.contains(node));
+		assertFalse(complete.contains(node));
 		assertTrue(complete.contains(node2));
 		assertTrue(complete.contains(node5));
 	}
