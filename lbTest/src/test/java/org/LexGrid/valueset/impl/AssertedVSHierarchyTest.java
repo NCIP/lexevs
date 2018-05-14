@@ -27,9 +27,9 @@ public class AssertedVSHierarchyTest extends TestCase {
 	@BeforeClass
 	public void setUp(){
 		service = SourceAssertedValueSetHierarchyServicesImpl.defaultInstance();
-		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
+//		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
  		//Comment this in instead for direct to NCIt testing
-//		service.preprocessSourceHierarchyData();
+		service.preprocessSourceHierarchyData();
 	}
 
 	
@@ -47,28 +47,29 @@ public class AssertedVSHierarchyTest extends TestCase {
 		treeItems.forEach(x -> assertNotNull(x.get_text()));
 		treeItems.forEach(x -> assertNotNull(x.get_ns()));
 	}
-//	Direct to NCIt test	
-//	@Test
-//	public void testBuildTree() throws LBException{
-//		long startNano = System.currentTimeMillis();
-//		Map<String, LexEVSTreeItem> items  = service.getFullServiceValueSetTree();
-//		long endNano = System.currentTimeMillis();
-//		System.out.println("Performance output milli sec: " + (endNano - startNano));
-//		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
-//		assertTrue(items.size() > 0);
-//		int tabCounter = 0;
-//		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);		
-//	}
 	
+//	Direct to NCIt test	
 	@Test
 	public void testBuildTree() throws LBException{
-		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
+		long startNano = System.currentTimeMillis();
+		Map<String, LexEVSTreeItem> items  = service.getFullServiceValueSetTree();
+		long endNano = System.currentTimeMillis();
+		System.out.println("Performance output milli sec: " + (endNano - startNano));
 		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
 		assertTrue(items.size() > 0);
 		int tabCounter = 0;
-		System.out.println("Printing Source Only Tree");
-		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);		
 	}
+	
+//	@Test
+//	public void testBuildTree() throws LBException{
+//		Map<String, LexEVSTreeItem> items  = service.getSourceValueSetTree();
+//		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+//		assertTrue(items.size() > 0);
+//		int tabCounter = 0;
+//		System.out.println("Printing Source Only Tree");
+//		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
+//	}
 	
 	@Test
 	public void testBuildFullServiceTree() throws LBException{

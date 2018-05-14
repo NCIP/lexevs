@@ -118,7 +118,8 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	protected void recurseFromRootsToUpdateMap(LexEVSTreeItem ti) {
 		String reducedCode = reduceToCodeFromUri(ti.get_code());
-		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(reducedCode);
+		String reducedToSource = reduceToSource(ti.get_code());
+		List<VSHierarchyNode> nodes = this.getFilteredNodeChildren(reducedToSource, reducedCode);
 		if(nodes != null) {try {
 			nodes.addAll(getAnyExternallyDefinedNodes(reducedCode, ti.get_code()));
 		} catch (URISyntaxException e) {
@@ -136,6 +137,11 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 			this.getSourceValueSetTreeBranch(node, item);
 		}
 		ti.addAll(INVERSE_IS_A, items);
+	}
+
+	protected String reduceToSource(String get_code) {
+		if(AssertedValueSetParameters.ROOT_URI.length() >= get_code.lastIndexOf("/")) { return null;}
+		return get_code.substring(AssertedValueSetParameters.ROOT_URI.length() , get_code.lastIndexOf("/") );
 	}
 
 	protected Collection<VSHierarchyNode> getAnyExternallyDefinedNodes(String reducedCode, String fullCode) throws URISyntaxException {
@@ -162,7 +168,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	@Override
 	public List<VSHierarchyNode> getSourceValueSetTreeBranch(VSHierarchyNode topNode, LexEVSTreeItem ti) {
-		List<VSHierarchyNode> nextBranch = this.getFilteredSortedIndividualizedNodeChildren(topNode.getEntityCode());
+		List<VSHierarchyNode> nextBranch = this.getFilteredSortedIndividualizedNodeChildren(topNode.getSource(),topNode.getEntityCode());
 		if(nextBranch != null && nextBranch.size() > 0){ ti._expandable = true;}
 		sort(nextBranch);
 		List<LexEVSTreeItem> treeNodes = new ArrayList<LexEVSTreeItem>();
@@ -180,7 +186,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	@Override
 	public HashMap<String, LexEVSTreeItem> getHierarchyValueSetRoots(String code) throws LBException {		
 		HashMap<String, LexEVSTreeItem> master = new HashMap<String, LexEVSTreeItem>();
-		List<VSHierarchyNode> temps = getFilteredSortedIndividualizedNodeChildren(code);
+		List<VSHierarchyNode> temps = getFilteredSortedIndividualizedNodeChildren(null, code);
 		List<LexEVSTreeItem> subTrees = getSortedExpandedTreeItems(temps);
 		LexEVSTreeItem super_root = new LexEVSTreeItem(ROOT, "Root node");
 		super_root.addAll(INVERSE_IS_A, subTrees);
@@ -246,12 +252,13 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		return AssertedValueSetServices.createUri(AssertedValueSetServices.BASE, n.getSource(), n.getEntityCode());
 	}
 
-	public List<VSHierarchyNode> getFilteredNodeChildren(String code) {
-		return collectReducedNodes(getUnfilteredNodes(code));
+	public List<VSHierarchyNode> getFilteredNodeChildren(String source, String code) {
+		return collectReducedNodes(source, getUnfilteredNodes(code));
 	}
 	
-	public List<VSHierarchyNode> getFilteredSortedIndividualizedNodeChildren(String code){
-		List<VSHierarchyNode> nodes = collectReducedNodes(getUnfilteredNodes(code));
+	public List<VSHierarchyNode> getFilteredSortedIndividualizedNodeChildren(String source, String code){
+
+		List<VSHierarchyNode> nodes = collectReducedNodes(source, getUnfilteredNodes(code));
 		Map<String, List<VSHierarchyNode>> groupedNodes = groupByDescription(nodes);
 		List<VSHierarchyNode> sortedRenamedNodes = sortAndIndividuate(groupedNodes);		
 		return sortedRenamedNodes;
@@ -264,18 +271,19 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		TreeSet<String> sortedKeys =  keys.stream().collect(
 				Collectors.toCollection(TreeSet::new));
 		for(String s : sortedKeys){
-			if(groupedNodes.get(s).size() > 1){
-				groupedNodes.get(s).stream().forEach(x -> x.setDescription(x.getDescription() +
-						AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(x.getSource())));
-			}
+//			if(groupedNodes.get(s).size() > 1){
+//				groupedNodes.get(s).stream().forEach(x -> x.setDescription(x.getDescription() +
+//						AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(x.getSource())));
+//			}
 			finalNodes.addAll(groupedNodes.get(s));
 		}
 		return finalNodes;
 	}
 
-	protected List<VSHierarchyNode> collectReducedNodes(List<VSHierarchyNode> nodes) {
+	protected List<VSHierarchyNode> collectReducedNodes(String source, List<VSHierarchyNode> nodes) {
 		// Get all nodes with declared sources
-		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null).collect(Collectors.toList());
+		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null && 
+				x.getSource().equals(source == null? x.getSource(): source)).collect(Collectors.toList());
 		// Filter these from the remainder when there is a duplicate with a null
 		// source
 		List<VSHierarchyNode> complete = new ArrayList<VSHierarchyNode>();
