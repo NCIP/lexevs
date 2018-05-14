@@ -281,7 +281,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	protected List<VSHierarchyNode> collectReducedNodes(String source, List<VSHierarchyNode> nodes) {
-		// Get all nodes with declared sources
+		// Get all nodes with declared sources and filter them to the source of the top node
 		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null && 
 				x.getSource().equals(source == null? x.getSource(): source)).collect(Collectors.toList());
 		// Filter these from the remainder when there is a duplicate with a null
