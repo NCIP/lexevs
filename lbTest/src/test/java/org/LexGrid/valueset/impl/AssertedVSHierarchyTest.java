@@ -47,6 +47,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 		treeItems.forEach(x -> assertNotNull(x.get_text()));
 		treeItems.forEach(x -> assertNotNull(x.get_ns()));
 	}
+	
 //	Direct to NCIt test	
 //	@Test
 //	public void testBuildTree() throws LBException{

@@ -75,12 +75,13 @@ public class ValueSetHierarchyServiceTest {
 		nodes.add(node3);
 		nodes.add(node4);
 		nodes.add(node5);
-		List<VSHierarchyNode> complete = new ValueSetHierarchyServiceImpl().collectReducedNodes(nodes);
+		//Filtering out CDISC sourced Nodes
+		List<VSHierarchyNode> complete = new ValueSetHierarchyServiceImpl().collectReducedNodes("FDA",nodes);
 
 		complete.stream()
 				.forEach(x -> System.out.println(
 						x.getDescription() + ": " + x.getEntityCode() + ": " + x.getSource()));
-		assertTrue(complete.contains(node));
+		assertFalse(complete.contains(node));
 		assertTrue(complete.contains(node2));
 		assertTrue(complete.contains(node5));
 	}
@@ -176,6 +177,12 @@ public class ValueSetHierarchyServiceTest {
 		assertNotNull(nodes);
 		assertTrue(nodes.size() > 0);
 		assertEquals(nodes.iterator().next().getEntityCode(),"VerySickCancerPatient");
+	}
+	
+	@Test
+	public void reduceToSourceTest() {
+		assertEquals(service.reduceToSource("http://evs.nci.nih.gov/valueset/FDA/C48323"), "FDA");
+		assertEquals(service.reduceToSource("http://evs.nci.nih.gov/valueset/C48323"), null);
 	}
 	
 	@Test
