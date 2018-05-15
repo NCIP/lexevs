@@ -523,6 +523,13 @@ public class LexEVSResolvedValueSetTest {
 		assertFalse(schemes.stream().anyMatch(x -> x.getCodingSchemeURI().equals("SRITEST:AUTO:AllDomesticButGM")));
 	}
 	
+	@Test
+	public void doesServiceContainAssertedValueSetTerminology() {
+		assertTrue(service.doesServiceContainAssertedValueSetTerminology(params));
+		assertFalse(service.doesServiceContainAssertedValueSetTerminology(new AssertedValueSetParameters.Builder().build()));
+		assertFalse(service.doesServiceContainAssertedValueSetTerminology(null));
+	}
+	
 	private String getPropertyQualifierValue(String qualifierName, Property prop) {
 		for (PropertyQualifier pq : prop.getPropertyQualifier()) {
 			if (pq.getPropertyQualifierName().equals(qualifierName)) {
