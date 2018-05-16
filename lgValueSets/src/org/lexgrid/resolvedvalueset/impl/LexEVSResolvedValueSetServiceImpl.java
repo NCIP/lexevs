@@ -368,4 +368,17 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		this.params = params;		
 	}
 
+	@Override
+	public Boolean doesServiceContainAssertedValueSetTerminology(AssertedValueSetParameters params) {
+		if(params == null) {params = new AssertedValueSetParameters.Builder().build();}
+		CodingScheme scheme = null;
+		try {
+			scheme = this.getLexBIGService().resolveCodingScheme(params.getCodingSchemeURI(), null);
+		} catch (LBException e) {
+			System.out.println("No Asserted Value Set Coding Scheme Exists In the Terminology Service With This Designation:  " + params.getCodingSchemeName());
+			return false;
+		}
+		return scheme != null;
+	}
+
 }

@@ -36,6 +36,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * @throws LBException
 	 */
 	public AbsoluteCodingSchemeVersionReferenceList getListOfCodingSchemeVersionsUsedInResolution(CodingScheme cs);
+	public Boolean doesServiceContainAssertedValueSetTerminology(AssertedValueSetParameters params);
 		
 	
 }
