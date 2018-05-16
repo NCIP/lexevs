@@ -18,13 +18,75 @@ public interface SourceAssertedValueSetService extends Serializable{
 	
 			
 	
+	/**
+   	 * Returns a list of coding scheme representations of value sets.  Includes
+   	 * entities for value sets.  
+   	 * 
+   	 * @return List<CodingScheme>
+   	 * @throws LBException
+	 */
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException;
+   	/**
+   	 * Returns a minimal (i.e. no entities included) coding scheme object list
+   	 * 
+   	 * @return List<CodingScheme>
+   	 * @throws LBException
+   	 */
    	public List<CodingScheme> getMinimalSourceAssertedValueSetSchemes() throws LBException;
+	/**
+   	 * Returns a list of Coding Scheme representations of value sets for an entity represented
+   	 * as a ConceptReference
+   	 * 
+   	 * @param ConceptReference ref: Requires a coding scheme reference and unique entity id
+   	 * @return List<CodingScheme>
+	 */
 	public List<CodingScheme> getSourceAssertedValueSetsForConceptReference(ConceptReference ref);
+	/**
+	 * Gets the coding scheme representation of a value set for the unique uri of the value set
+	 * 
+	 * @param URI uri
+	 * @return CodingScheme
+	 */
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException;
+
+	/**
+	 * Returns a list of ResolvedConceptReference representations of
+	 * the entities belonging to the CodingScheme representation of 
+	 * this value set identified by its uri designation as a String
+	 * 
+	 * @param String uri
+	 * @return ResolvedConceptReferenceList
+	 */
 	public ResolvedConceptReferenceList getSourceAssertedValueSetEntitiesForURI(String uri);
+	/**
+	 * Returns an iterator over ResolvedConceptReference representations of
+	 * the entities belonging to the CodingScheme representation of 
+	 * this value set identified by its uri designation as a String
+	 * 
+	 * @param String uri
+	 * @return ResolvedConceptReferencesIterator
+	 */
 	public ResolvedConceptReferencesIterator getSourceAssertedValueSetIteratorForURI(String uri);
+	/**
+	 * Returns a list of Coding Scheme representations of a value set
+	 * with the code that has the class instance defined relationship to this value set
+	 * top node
+	 * @param String matchCode - value set top node reference
+	 * @return List<CodingScheme> - Will rarely return a list
+	 * @throws LBException
+	 */
 	public List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode) throws LBException;
+	/**
+	 * Returns a list of very minimal references to a coding scheme representation
+	 * of a value set containing an entity with a similar or exact textual representation
+	 * of the matchText parameter.
+	 * Searches on text using contains or exact match for a variety of property types
+	 * See MatchAlgorthm class for details. 
+	 * @param String matchText
+	 * @param MatchAlgorithm matchType
+	 * @return List<AbsoluteCodingSchemeVersionReference>
+	 * @throws LBException
+	 */
 	public List<AbsoluteCodingSchemeVersionReference> getSourceAssertedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException;
 	
 	/**
@@ -36,9 +98,29 @@ public interface SourceAssertedValueSetService extends Serializable{
 	 * @throws LBException
 	 */
 	public AbsoluteCodingSchemeVersionReferenceList getListOfCodingSchemeVersionsUsedInResolution(CodingScheme cs);
+	/**
+	 * Assumes a hierarchy of value sets is divided amongst a set of root nodes that have a 
+	 * relationship to this rootCode parameter which is a unique entity identifier in the system.
+	 * 
+	 * @param rootCode
+	 * @return List<String> - Enitycode unique identifier list
+	 */
 	public List<String> getSourceAssertedValueSetTopNodesForRootCode(String rootCode);
+	/**
+	 * @return List<? extends Entity> - A complete list of all entities in the source asserted
+	 * representation
+	 */
 	public List<? extends Entity> getAllSourceAssertedValueSetEntities();
-	List<CodingScheme> getSourceAssertedValueSetforValueSetMemberEntityCode(String matchCode) throws LBException;
+
+	/**
+	 * Returns a list of coding scheme representations
+	 * of a value set containing entities with this entity code.
+	 * Searches on exact match of an entity code
+	 * @param String matchCode
+	 * @return List<CodingScheme>
+	 * @throws LBException
+	 */
+	public List<CodingScheme> getSourceAssertedValueSetforValueSetMemberEntityCode(String matchCode) throws LBException;
 
 	
 	
