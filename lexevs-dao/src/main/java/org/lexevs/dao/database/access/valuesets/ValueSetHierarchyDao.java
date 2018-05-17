@@ -11,6 +11,9 @@ import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 public interface ValueSetHierarchyDao extends LexGridSchemaVersionAwareDao {
 
 	/**
+	 * Highly specialized for an asserted value set hierarchy such as that found in the 
+	 * NCIthesaurus.  Nodes are designed to carry data elements specific to this need.
+	 * 
 	 * @param codingSchemeId - database assigned guid for coding scheme
 	 * @param code - entity code that defines value set
 	 * @param associationName - database assigned guid of relation from top node to values 
@@ -25,6 +28,9 @@ public interface ValueSetHierarchyDao extends LexGridSchemaVersionAwareDao {
 			String associationName, String propertyOne, String propertyTwo, String canPublish, int start, int pagesize);
 
 	/**
+	 * Getting any values that are defined as value set members by a specified association
+	 * and a "can publish" flag
+	 * 
 	 * @param codingSchemeId - database assigned guid for coding scheme
 	 * @param associationGuid - database assigned guid of relation from top node to value
 	 * @param publishName - property name for publish or not flag

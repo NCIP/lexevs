@@ -31,7 +31,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
    	 * Returns a list of coding scheme representations of value sets.  Includes
    	 * entities for value sets.  
    	 * 
-   	 * @return List<CodingScheme>
+   	 * @return List<CodingScheme> - coding scheme representations of value set list
    	 * @throws LBException
    	 */
    	public List<CodingScheme> listAllResolvedValueSets() throws LBException;
@@ -39,7 +39,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
    	/**
    	 * Returns a minimal (i.e. no entities included) coding scheme object list
    	 * 
-   	 * @return List<CodingScheme>
+   	 * @return List<CodingScheme> - coding scheme representation of value set list
    	 * @throws LBException
    	 */
    	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException;
@@ -48,7 +48,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
    	 * Returns a list of Coding Scheme representations of value sets for an entity represented
    	 * as a ConceptReference
    	 * 
-   	 * @param ConceptReference ref: Requires a coding scheme reference and unique entity id
+   	 * @param ConceptReference - Requires a coding scheme reference and unique entity id
    	 * @return List<CodingScheme>
    	 */
    	public List<CodingScheme> getResolvedValueSetsForConceptReference(ConceptReference ref);
@@ -56,7 +56,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
    	/**
 	 * Gets the coding scheme representation of a value set for the unique uri of the value set
 	 * 
-	 * @param URI uri
+	 * @param URI - requires Uri to be constructed as canonical Java URI.  
 	 * @return CodingScheme
 	 */
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri);
@@ -76,16 +76,17 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * the entities belonging to the CodingScheme representation of 
 	 * this value set identified by its uri designation as a String
 	 * 
-	 * @param String uri
+	 * @param String uri - unique coding scheme identifier for value set representation
 	 * @return ResolvedConceptReferencesIterator
 	 */
 	public ResolvedConceptReferencesIterator getValueSetIteratorForURI(String uri);
 
 	/**
 	 * Returns a list of very minimal references to a coding scheme representation
-	 * of a value set containing entities with this entity code.
+	 * of a value sets containing entities with this entity code.
+	 * 
 	 * Searches on exact match of an entity code
-	 * @param String matchCode
+	 * @param String matchCode - unique identifier for entity code match of value set member
 	 * @return List<AbsoluteCodingSchemeVersionReference>
 	 * @throws LBException
 	 */
@@ -96,7 +97,8 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * of a value set containing an entity with a similar or exact textual representation
 	 * of the matchText parameter.
 	 * Searches on text using contains or exact match for a variety of property types
-	 * See MatchAlgorthm class for details. 
+	 * See MatchAlgorthm class for reference. 
+	 * 
 	 * @param String matchText
 	 * @param MatchAlgorithm matchType
 	 * @return List<AbsoluteCodingSchemeVersionReference>
@@ -107,17 +109,19 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	/**
 	 * Return a list of AbsoluteCodingSchemeVersionReferences used for resolving the resolvedValueSet
 	 * 
-	 * @param CodingScheme codingScheme- The resolvedValueSet CodingScheme
-	 * @return AbsoluteCodingSchemeVersionReferenceList list of codingScheme and
-	 *         version used for the resolution of the resolvedValueSet
+	 * @param CodingScheme codingScheme - The resolvedValueSet CodingScheme
+	 * @return AbsoluteCodingSchemeVersionReferenceList - list of codingScheme and
+	 *         version pairs used for the resolution of the resolvedValueSet
 	 * @throws LBException
 	 */
 	public AbsoluteCodingSchemeVersionReferenceList getListOfCodingSchemeVersionsUsedInResolution(CodingScheme cs);
 
 	/**
 	 * Use a parameter set to determine whether this terminology service contains the source asserted
-	 * value set source terminology defined in the parameter set.
-	 * @param AssertedValueSetParameters params
+	 * value set source terminology defined in the parameter set. Null or a AssertedValueSetParameters 
+	 * build with no arguments or changes returns default NCI Thesaurus defined values
+	 * 
+	 * @param AssertedValueSetParameters params - Large asserted value set parameter set with well established defaults
 	 * @return Boolean
 	 */
 	public Boolean doesServiceContainAssertedValueSetTerminology(AssertedValueSetParameters params);
