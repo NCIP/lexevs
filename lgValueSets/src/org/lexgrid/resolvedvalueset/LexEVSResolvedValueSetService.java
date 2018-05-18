@@ -98,7 +98,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * 
 	 * @param String matchText - Text to match against designated property/alorithm
 	 * @param MatchAlgorithm matchType - Property and algorithm match type
-	 * @return List<AbsoluteCodingSchemeVersionReference> list of minimal coding scheme references
+	 * @return List<AbsoluteCodingSchemeVersionReference> - list of minimal coding scheme references
 	 * @throws LBException
 	 */
 	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException;
