@@ -14,16 +14,13 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 
-/**
- * @author m029206
- *
- */
+
 public interface LexEVSResolvedValueSetService extends Serializable {
       
 	/**
 	 * This parameter set is required for asserted value set services
 	 * 
-	 * @param params
+	 * @param params - extensive asserted value set source parameter defintion
 	 */
 	public void initParams(AssertedValueSetParameters params);
 	
@@ -49,7 +46,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
    	 * as a ConceptReference
    	 * 
    	 * @param ConceptReference - Requires a coding scheme reference and unique entity id
-   	 * @return List<CodingScheme>
+   	 * @return List<CodingScheme> List of resolved value sets as coding schemes
    	 */
    	public List<CodingScheme> getResolvedValueSetsForConceptReference(ConceptReference ref);
 
@@ -99,8 +96,8 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * Searches on text using contains or exact match for a variety of property types
 	 * See MatchAlgorthm class for reference. 
 	 * 
-	 * @param String matchText
-	 * @param MatchAlgorithm matchType
+	 * @param String matchText - Text to match against designated property/alorithm
+	 * @param MatchAlgorithm matchType - Property and algorithm match type
 	 * @return List<AbsoluteCodingSchemeVersionReference>
 	 * @throws LBException
 	 */
@@ -122,7 +119,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * build with no arguments or changes returns default NCI Thesaurus defined values
 	 * 
 	 * @param AssertedValueSetParameters params - Large asserted value set parameter set with well established defaults
-	 * @return Boolean
+	 * @return Boolean - flag indicating presence of Asserted Value Set Terminology
 	 */
 	public Boolean doesServiceContainAssertedValueSetTerminology(AssertedValueSetParameters params);
 		
