@@ -136,7 +136,7 @@ import org.lexevs.system.event.SystemEventListener;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
- *  @author <A HREF="mailto:bauer.scott@mayo.edu">Scott Bauer</A>
+ *  @author <A HREF="mailto:bauer.scott@nih.gov">Scott Bauer</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class LexBIGServiceImpl implements LexBIGService {

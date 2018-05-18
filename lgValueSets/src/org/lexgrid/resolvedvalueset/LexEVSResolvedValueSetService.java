@@ -54,7 +54,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * Gets the coding scheme representation of a value set for the unique uri of the value set
 	 * 
 	 * @param URI - requires Uri to be constructed as canonical Java URI.  
-	 * @return CodingScheme
+	 * @return CodingScheme - Coding scheme representation of a value set
 	 */
 	public CodingScheme getResolvedValueSetForValueSetURI(URI uri);
 
@@ -63,8 +63,8 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * the entities belonging to the CodingScheme representation of 
 	 * this value set identified by its uri designation as a String
 	 * 
-	 * @param String uri
-	 * @return ResolvedConceptReferenceList
+	 * @param String uri - String representation of coding scheme uri
+	 * @return ResolvedConceptReferenceList - Concept reference list of value set members
 	 */
 	public ResolvedConceptReferenceList getValueSetEntitiesForURI(String uri);
 
@@ -74,7 +74,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * this value set identified by its uri designation as a String
 	 * 
 	 * @param String uri - unique coding scheme identifier for value set representation
-	 * @return ResolvedConceptReferencesIterator
+	 * @return ResolvedConceptReferencesIterator - iterator over value set members
 	 */
 	public ResolvedConceptReferencesIterator getValueSetIteratorForURI(String uri);
 
@@ -84,7 +84,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * 
 	 * Searches on exact match of an entity code
 	 * @param String matchCode - unique identifier for entity code match of value set member
-	 * @return List<AbsoluteCodingSchemeVersionReference>
+	 * @return List<AbsoluteCodingSchemeVersionReference> - list of minimal coding scheme references
 	 * @throws LBException
 	 */
 	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforEntityCode(String matchCode) throws LBException;
@@ -98,7 +98,7 @@ public interface LexEVSResolvedValueSetService extends Serializable {
 	 * 
 	 * @param String matchText - Text to match against designated property/alorithm
 	 * @param MatchAlgorithm matchType - Property and algorithm match type
-	 * @return List<AbsoluteCodingSchemeVersionReference>
+	 * @return List<AbsoluteCodingSchemeVersionReference> list of minimal coding scheme references
 	 * @throws LBException
 	 */
 	public List<AbsoluteCodingSchemeVersionReference> getResolvedValueSetsforTextSearch(String matchText, MatchAlgorithm matchType) throws LBException;
