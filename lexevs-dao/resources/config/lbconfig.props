@@ -122,7 +122,7 @@ SINGLE_TABLE_MODE=false
 # registry.xml file.
 
 # Examples for DB_URL'
-DB_URL=jdbc:mysql://localhost/lexevs_medra
+DB_URL=jdbc:mysql://localhost/lexevs_65dev
 #DB_URL=jdbc:mysql://bmidev4:3307/lexevs_medra
 #DB_URL=jdbc:mysql://bmidev4:3306/medra2
 #DB_URL=jdbc:mysql://bmidev4:3307/lexevs
@@ -185,7 +185,7 @@ DB_DRIVER=com.mysql.jdbc.Driver
 # If SINGLE_DB_MODE is set to true, the specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
 DB_USER=root
-DB_PASSWORD=root
+DB_PASSWORD=
 
 ############# Password encryption
 
@@ -269,7 +269,7 @@ GRAPH_DB_PATH=local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/data
 ##############################################################################
 # Source Asserted Value Set information.
 ##############################################################################
-SOURCE_ASSERTED_VALUE_SET_VERSION=18.01e
+#SOURCE_ASSERTED_VALUE_SET_VERSION=18.01e
 SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_RELATION=Concept_In_Subset
 SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME=NCI Thesaurus
 SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI=http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl

@@ -22,7 +22,7 @@
 	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="commonTypes.xsd"/>
 	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" schemaLocation="codingSchemes.xsd"/>
 	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="versions.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" schemaLocation="NCIHistory.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/NCIHistory" schemaLocation="NCIHistory1.xsd"/>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- Class: CodingSchemeSummary						   -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
