@@ -208,7 +208,7 @@ GRAPH_DB_PATH=
 ##############################################################################
 # Source Asserted Value Set information.
 ##############################################################################
-SOURCE_ASSERTED_VALUE_SET_VERSION=0.1.5
+#SOURCE_ASSERTED_VALUE_SET_VERSION=0.1.5
 SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_RELATION=Concept_In_Subset
 SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME=owl2lexevs
 SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI=http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl
