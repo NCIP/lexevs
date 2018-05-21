@@ -67,11 +67,6 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 			entityIndexService.updateIndexForEntity(event.getCodingSchemeUri(),
 					event.getCodingSchemeVersion(), updatedEntity);
 			
-			if(vsIndexSvc.doesIndexExist(ref)){
-				vsIndexSvc.updateIndexForEntity(event
-						.getCodingSchemeUri(), event.getCodingSchemeVersion(),
-						updatedEntity);
-			}
 		}
 		
 		
