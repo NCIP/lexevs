@@ -357,7 +357,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
         
     //Remote Method Invocation helper
 	public SourceAssertedValueSetService getSourceAssertedValueSetService(AssertedValueSetParameters params) {
-		if (params == null) {
+		if (!doesServiceContainAssertedValueSetTerminology(params)) {
 			return null;
 		}
 		return SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(params, getLexBIGService());
@@ -373,7 +373,15 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		if(params == null) {params = new AssertedValueSetParameters.Builder().build();}
 		CodingScheme scheme = null;
 		try {
-			scheme = this.getLexBIGService().resolveCodingScheme(params.getCodingSchemeURI(), null);
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			if (params.getCodingSchemeTag() != null) {
+				versionOrTag.setTag(params.getCodingSchemeTag());
+			}
+			else if (params.getCodingSchemeVersion() != null) {
+				versionOrTag.setVersion(params.getCodingSchemeVersion());
+			}
+			
+			scheme = this.getLexBIGService().resolveCodingScheme(params.getCodingSchemeURI(), versionOrTag);
 		} catch (LBException e) {
 			System.out.println("No Asserted Value Set Coding Scheme Exists In the Terminology Service With This Designation:  " + params.getCodingSchemeName());
 			return false;
