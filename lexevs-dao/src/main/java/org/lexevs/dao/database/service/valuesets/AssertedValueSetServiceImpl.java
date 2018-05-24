@@ -192,7 +192,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		}
 		
 		if(version == null) {
-			throw new RuntimeException("AssertedValueSetParameters - Version was not found for coding scheme: " +
+			System.out.println("AssertedValueSetServiceImpl: AssertedValueSetParameters - Version was not found for coding scheme: " +
 					this.params.getCodingSchemeName() + " and tag: " + this.params.getCodingSchemeTag());
 		}
 		
