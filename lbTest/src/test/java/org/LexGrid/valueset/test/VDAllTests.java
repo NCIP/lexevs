@@ -25,6 +25,7 @@ import junit.framework.TestSuite;
 import org.LexGrid.LexBIG.Impl.testUtility.AllTestsNormalConfig;
 import org.LexGrid.valueset.impl.AssertedVSHierarchyTest;
 import org.LexGrid.valueset.impl.LexEVSPickListServicesImplTest;
+import org.LexGrid.valueset.impl.LexEVSResolvedValueSetInvalidParamsTest;
 import org.LexGrid.valueset.impl.LexEVSResolvedValueSetTest;
 import org.LexGrid.valueset.impl.LexEVSValueSetDefServicesImplTest;
 
@@ -47,6 +48,7 @@ public class VDAllTests {
 		suite.addTestSuite(EntityToVSDTransFormerTest.class);
 		suite.addTestSuite(LexEVSPickListServicesImplTest.class);
 		suite.addTest(new JUnit4TestAdapter(LexEVSResolvedValueSetTest.class));
+		suite.addTest(new JUnit4TestAdapter(LexEVSResolvedValueSetInvalidParamsTest.class));
 		suite.addTest(new JUnit4TestAdapter(ExternalResolvedValueSetIndexingTest.class));
 		suite.addTestSuite(AssertedVSHierarchyTest.class);
 		suite.addTestSuite(CleanUpTest.class);
