@@ -13,7 +13,7 @@
 	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="commonTypes.xsd"/>
 	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/concepts" schemaLocation="concepts.xsd"/>
 	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/naming" schemaLocation="naming.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/valueSetss" schemaLocation="valueSets.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/valueSets" schemaLocation="valueSets.xsd"/>
 	<!-- ================================================= -->
 	<!-- Package: <<XSDschema>> Core	   				   -->
 	<!-- ================================================= -->
