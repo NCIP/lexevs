@@ -1968,7 +1968,7 @@
 			eate.entityAssnsGuid AS tripleUid,
 
 			eate.sourceEntityCode AS sourceEntityCode,
-			eate.sourceEntityCodeNamespace AS sourceEntityCodeNamespace,
+			sourceEntity.entityCodeNamespace AS sourceEntityCodeNamespace,
 			<isNotNull property="param2">
 				sourceEntity.description AS sourceEntityDescription,
 			</isNotNull>

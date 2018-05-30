@@ -100,7 +100,10 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertTrue(itr.hasNext());
-		this.checkResolvedConceptReference(itr.next());
+		ResolvedConceptReference ref = itr.next();
+		assertNotSame(ref.getCodeNamespace(), "Automobiles_Different_NS");
+		assertEquals(ref.getCodeNamespace(), "Automobiles");
+		this.checkResolvedConceptReference(ref);
 		assertFalse(itr.hasNext());
 	}
 	
