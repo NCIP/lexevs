@@ -540,7 +540,7 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(ValueSetHierarchyServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetTagTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
-//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         mainSuite.addTest(assertedValueSetUpdates);
 
         
