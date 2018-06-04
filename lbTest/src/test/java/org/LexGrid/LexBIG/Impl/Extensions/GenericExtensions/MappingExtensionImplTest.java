@@ -101,7 +101,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		assertTrue(itr.hasNext());
 		ResolvedConceptReference ref = itr.next();
-		assertNotSame(ref.getCodeNamespace(), "Automobiles_Different_NS");
+		assertFalse(ref.getCodeNamespace().equals( "Automobiles_Different_NS"));
 		assertEquals(ref.getCodeNamespace(), "Automobiles");
 		this.checkResolvedConceptReference(ref);
 		assertFalse(itr.hasNext());
@@ -123,7 +123,13 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertTrue(itr.hasNext());
-		this.checkResolvedConceptReference(itr.next());
+		ResolvedConceptReference ref = itr.next();
+		assertFalse(ref.getSourceOf().
+				getAssociation(0).getAssociatedConcepts().getAssociatedConcept(0)
+				.getCodeNamespace().equals( "GermanMadePartsNamespace_Different_NS"));
+		assertEquals(ref.getSourceOf().
+				getAssociation(0).getAssociatedConcepts().getAssociatedConcept(0)
+				.getCodeNamespace(), "GermanMadePartsNamespace");
 		this.checkResolvedConceptReference(itr.next());
 		assertFalse(itr.hasNext());
 	}
