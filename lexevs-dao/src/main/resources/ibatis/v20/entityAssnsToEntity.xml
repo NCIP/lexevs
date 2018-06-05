@@ -1977,7 +1977,7 @@
 			</isNull>
 			
 			eate.targetEntityCode AS targetEntityCode,
-			eate.targetEntityCodeNamespace AS targetEntityCodeNamespace,
+			targetEntity.entityCodeNamespace AS targetEntityCodeNamespace,
 			<isNotNull property="param4">
 				targetEntity.description AS targetEntityDescription,
 			</isNotNull>
