@@ -15,4 +15,4 @@
 # The second parameter must provide the source abbreviation (SAB) of the
 # Metathesaurus source to be evaluated (e.g. ICD9CM, MDR, SNOMEDCT).
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.ListHierarchyMetaBySource $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.ListHierarchyMetaBySource $@

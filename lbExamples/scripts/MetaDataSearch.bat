@@ -7,4 +7,4 @@ REM
 REM Example: MetaDataSearch "test string"
 REM Example "test string" input: localName,  codingSchemeURI     
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.MetaDataSearch %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.MetaDataSearch %*

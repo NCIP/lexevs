@@ -5,4 +5,4 @@ REM A list of value Set Definition available in the system will be displayed for
 REM 
 REM Example: CheckForValueSetSubSet
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.CheckForValueSetSubSet %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.CheckForValueSetSubSet %*

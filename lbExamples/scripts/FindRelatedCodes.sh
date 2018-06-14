@@ -3,4 +3,4 @@
 #
 # Example: FindRelatedCodes "C25762" "hasSubtype"
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.FindRelatedCodes $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.FindRelatedCodes $@
