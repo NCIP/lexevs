@@ -544,6 +544,13 @@ You may obtain a copy of the License at
 		<copy todir="${pkg-examples}/resources">
 			<fileset dir="${lexevs.api.dir}/lbExamples/resources" includes="**/*"/>
 		</copy>
+		
+		<copy todir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lbExamples/">
+			    <include name="target/*${vBuild}.jar"/>
+			</fileset>
+		</copy>
+		
 	</target>
 
 	<target name="lbTest" description="packages LexBIG verification tests">

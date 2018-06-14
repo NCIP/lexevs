@@ -2,4 +2,4 @@
 #
 # Example: FindPropsAndAssocForCode "C25762"
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.FindPropsAndAssocForCode $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.FindPropsAndAssocForCode $@
