@@ -546,13 +546,13 @@ public class AllTestsNormalConfig {
         
         //Broken Load Clean Up Function tests
 //
-//        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
-//        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
-//        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
+        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
+        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
 //
 //        //*******Always run this last and just before the JVM exits since ***********
 //        //*******it breaks a lot of things that are created in ServiceHolder********* 
