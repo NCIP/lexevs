@@ -544,8 +544,7 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(assertedValueSetUpdates);
 
         
-        //Broken Load Clean Up Function tests
-
+        // Clean Up Function tests
         mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
         mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
