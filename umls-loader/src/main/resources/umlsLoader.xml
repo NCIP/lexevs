@@ -136,6 +136,21 @@
 									</tasklet>
 								</step>
 							</flow>
+							<flow>
+								<step id="umlsLoadMrsatAssocQuals" parent="listenerStep">
+									<tasklet>
+										<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatAssocQualsProcessor"
+											writer="assocQualsWriter" commit-interval="1000" skip-limit="100000">
+											<streams>
+												<stream ref="mrsatReader" />
+											</streams>
+											<skippable-exception-classes>
+										 		<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+											</skippable-exception-classes>
+										</chunk>
+									</tasklet>
+								</step>
+							</flow>
 						</split>
 					</flow>
 					<flow>
@@ -525,6 +540,13 @@
 			<beans:bean class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />	
 		</beans:property>
 	</beans:bean>
+	
+	<beans:bean id="umlsMrsatQualifierProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityAssnToEQualsMrsatProcessor">
+		<beans:property name="qualifierResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.processor.support.MrsatRuiAssocQualResolver" />	
+		</beans:property>
+	</beans:bean>
 
 	<beans:bean id="umlsPresentationPropertyResolver"
 		class="org.lexgrid.loader.umls.processor.support.UmlsPropertyResolver">
@@ -672,6 +694,19 @@
 				<beans:property name="mrsatUtility">
 					<beans:ref bean="mrsatUtility" />
 				</beans:property>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrsatReader" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrsatAssociationQualsSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.MrsatAssocQualSkipPolicy">
+				<beans:property name="sab" value="${sab}" />
 			</beans:bean>
 		</beans:property>
 		<beans:property name="delegate">

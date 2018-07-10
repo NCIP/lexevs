@@ -31,7 +31,7 @@ import org.lexgrid.loader.rrf.model.Mrconso;
  */
 public class MetaSourceCodePropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrconso>{
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrconso item) {
 		return MetaLoaderConstants.SOURCE_CODE_QUALIFIER;
 	}
 
