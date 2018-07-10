@@ -60,14 +60,14 @@ public class CleanUpUtilityTest {
 		assertFalse(metaLoader.getStatus().getErrorsLogged().booleanValue());
 	}
 
-//	@Before
-//	public void setUp() throws LBParameterException {
-//		Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
-//		List<RegistryEntry> entries = registry
-//				.getEntriesForUri("urn:oid:11.11.0.1");
-//		entry = entries.get(0);
-//		LexEvsServiceLocator.getInstance().getRegistry().removeEntry(entry);
-//	}
+	@Before
+	public void setUp() throws LBParameterException {
+		Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+		List<RegistryEntry> entries = registry
+				.getEntriesForUri("urn:oid:11.11.0.1");
+		entry = entries.get(0);
+		LexEvsServiceLocator.getInstance().getRegistry().removeEntry(entry);
+	}
 
 	@Test
 	public void cleanupUtilsTest() throws LBInvocationException,
