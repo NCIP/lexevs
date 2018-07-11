@@ -20,6 +20,7 @@ package org.lexevs.dao.database.access.valuesets;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.naming.Mappings;
@@ -164,4 +165,11 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 	 * @param supportedAttributeTag supported attribute tag
 	 */
 	public void deleteURIMap(String referenceGuid, String supportedAttributeTag);
+
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionSchemeRefForTopNodeSourceCode(String code);
+
+	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(
+			String entityCode);
+
+	public List<String> getValueSetURIsForContext(String uri);
 }

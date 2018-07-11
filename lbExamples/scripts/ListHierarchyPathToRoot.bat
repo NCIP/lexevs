@@ -18,4 +18,4 @@ REM interface is to simplify the process of hierarchy discovery and navigation.
 REM These methods significantly reduce the need to understand conventions for root
 REM nodes, associations, and direction of navigation for a specific source format.
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.ListHierarchyPathToRoot %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.ListHierarchyPathToRoot %*

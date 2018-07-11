@@ -3,4 +3,4 @@
 #
 # Example: GetConceptReferencesClosure "C3262" "subClassOf"
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.GetConceptReferencesClosure $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.GetConceptReferencesClosure $@

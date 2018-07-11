@@ -22,6 +22,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.lexevs.dao.database.service.event.property.PropertyUpdateEvent;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
@@ -51,6 +52,8 @@ public class LuceneEntityPropertyInsertListener extends
 					.getInstance().getIndexServiceManager();
 			EntityIndexService entityIndexService = indexServiceManager
 					.getEntityIndexService();
+			SourceAssertedValueSetSearchIndexService vsIndexSvc = indexServiceManager.
+					getAssertedValueSetIndexService();
 
 			AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 			ref.setCodingSchemeURN(event.getCodingSchemeUri());
@@ -58,6 +61,11 @@ public class LuceneEntityPropertyInsertListener extends
 
 			if (entityIndexService.doesIndexExist(ref)) {
 				entityIndexService.updateIndexForEntity(event
+						.getCodingSchemeUri(), event.getCodingSchemeVersion(),
+						event.getEntity());
+			}
+			if(vsIndexSvc.doesIndexExist(ref)){
+				vsIndexSvc.updateIndexForEntity(event
 						.getCodingSchemeUri(), event.getCodingSchemeVersion(),
 						event.getEntity());
 			}

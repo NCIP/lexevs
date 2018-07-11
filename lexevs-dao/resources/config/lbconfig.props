@@ -267,6 +267,14 @@ GRAPH_DB_PWD=admin
 GRAPH_DB_PATH=local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData
 
 ##############################################################################
+# Source Asserted Value Set information.
+##############################################################################
+SOURCE_ASSERTED_VALUE_SET_VERSION=18.01e
+SOURCE_ASSERTED_VALUE_SET_HIERARCHY_VS_RELATION=Concept_In_Subset
+SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_NAME=NCI Thesaurus
+SOURCE_ASSERTED_VALUE_SET_CODING_SCHEME_URI=http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl
+
+##############################################################################
 # All of the following variables are for non-API compliant and unsupported
 # features, and should be commented out unless you know what they do.
 ##############################################################################

@@ -18,11 +18,11 @@
 	</xs:annotation>
 	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/InterfaceElements" schemaLocation="InterfaceElements.xsd"/>
 	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/Core" schemaLocation="Core.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/builtins.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/versions.xsd"/>
-	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory" schemaLocation="http://LexGrid.org/schema/2010/01/LexGrid/NCIHistory.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="builtins.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="commonTypes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/codingSchemes" schemaLocation="codingSchemes.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/versions" schemaLocation="versions.xsd"/>
+	<xs:import namespace="http://LexGrid.org/schema/LexBIG/2010/01/NCIHistory" schemaLocation="NCIHistory1.xsd"/>
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 	<!-- Class: CodingSchemeSummary						   -->
 	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->

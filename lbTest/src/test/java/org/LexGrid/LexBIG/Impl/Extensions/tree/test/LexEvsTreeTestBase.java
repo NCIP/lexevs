@@ -48,7 +48,7 @@ public class LexEvsTreeTestBase extends TestCase{
 		pathToRootTreeServiceImpl = (PathToRootTreeServiceImpl) ac.getBean("pathToRootTreeServiceImpl");
 		getChildrenSqlBuilder = (GetChildrenSqlBuilder) ac.getBean("getChildrenSqlBuilder");
 //		iterator = new PagingChildNodeIterator(lexEvsTreeDao, "Automobiles", null, "A0001", null, Direction.FORWARD, hierarchyAssocNames, 5);
-		getChildrenSqlBuilder.setExcludeAnonymous(false);
+		getChildrenSqlBuilder.setExcludeAnonymous(true);
 		lexEvsTreeDao = (LexEvsTreeDao) ac.getBean("lexEvsTreeDaoImpl");
 		setUpIterator();
 	}

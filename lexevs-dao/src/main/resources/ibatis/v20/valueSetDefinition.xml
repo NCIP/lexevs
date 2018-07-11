@@ -7,6 +7,7 @@
 	<typeAlias alias="definitionEntry" type="org.LexGrid.valueSets.DefinitionEntry" />
 	<typeAlias alias="entityReference" type="org.LexGrid.valueSets.EntityReference" />	
 	<typeAlias alias="codingSchemeReference" type="org.LexGrid.valueSets.CodingSchemeReference" />
+	<typeAlias alias="csVersionReference" type="org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference"/>
 	<typeAlias alias="valueSetDefinitionReference" type="org.LexGrid.valueSets.ValueSetDefinitionReference" />
 	<typeAlias alias="propertyReference" type="org.LexGrid.valueSets.PropertyReference" />
 	<typeAlias alias="propertyMatchValue" type="org.LexGrid.valueSets.PropertyMatchValue" />
@@ -102,6 +103,11 @@
 		<result property="dataType" column="format" />
 	</resultMap>
 	
+	<resultMap id="csVersionReferenceResult" class="csVersionReference">
+		<result property="codingSchemeURN" column="valueSetDefUri" />
+		<result property="codingSchemeVersion" column="resourceVersion" />
+	</resultMap>
+	
 	<select id="getValueSetDefinitionURIs" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
 		SELECT
@@ -149,6 +155,24 @@
 			$prefix$valueSetDefinition
 		WHERE
 			valueSetDefURI = #param1#
+	</select>
+	
+	<select id="getValueSetURIsByContext" 
+		resultClass="string"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+		SELECT
+			vsdef.valueSetDefURI
+					valueSetDefURI
+		FROM
+			$prefix$valueSetDefinition AS vsdef
+		JOIN
+			$prefix$vsSupportedAttrib AS vssa
+		ON
+			vsdef.valueSetDefGuid = vssa.referenceGuid 
+		WHERE
+			vssa.supportedAttributeTag = "Context"
+		AND
+			vssa.uri = #param1#
 	</select>
 	
 	<select id="getValueSetDefinitionURIForValueSetName" 
@@ -539,4 +563,26 @@
 				vs.valueSetDefURI = #param1# AND
 				vs.valueSetDefGuid = vsProp.referenceGuid
 	</select>	
+	
+	<select id="getValueSetSchemeRefForTopNodeSourceCode" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultMap="csVersionReferenceResult">
+		SELECT 
+			vsd.valueSetDefURI,
+			reg.resourceVersion
+		FROM 
+			$prefix$valueSetDefinition vsd
+		JOIN	
+			$prefix$vsdEntry ent
+		ON
+			vsd.valueSetDefGuid = ent.valueSetDefGuid
+		JOIN
+		    $prefix$registry reg
+		ON
+			vsd.valueSetDefUri = reg.resourceUri 
+		WHERE 
+			ent.entityCode = #param1#	
+		AND 
+			reg.resourceType = #param2#	
+	 </select>
 </sqlMap>

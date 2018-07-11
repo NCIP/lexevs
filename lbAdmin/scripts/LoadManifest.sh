@@ -5,7 +5,7 @@
 #  -v,--version "versionId"; Version identifier.
 #  -mf,--manifest "manifest"; location of manifest xml file.
 # 
-# Note: If the URN and version values are unspecified, a
+# Note: If either the URN or the version values are unspecified, a
 # list of available coding schemes will be presented for
 # user selection.
 # 

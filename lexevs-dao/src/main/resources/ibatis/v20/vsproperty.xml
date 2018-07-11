@@ -34,6 +34,17 @@
 		</discriminator>	
 	</resultMap>
 	
+	<resultMap id="assertedValueSetPropertyResult" class="property" groupBy="propertyId">
+		<result property="propertyType" column="propertyType" />
+		<result property="propertyName" column="propertyName" />
+		<result property="value.content" column="propertyValue" />
+		<discriminator javaType="string" column="propertyType">
+			<subMap value="presentation" resultMap="assertedVSPresentationResult" />
+			<subMap value="definition" resultMap="assertedVSDefinitionResult" />
+			<subMap value="comment" resultMap="assertedVSCommentResult" />
+		</discriminator>	
+	</resultMap>
+	
 	<resultMap id="propertyAttributeResult" class="insertOrUpdatePropertyBean" groupBy="uid">
 		<result property="uid" column="vsPropertyGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="parentUId" column="referenceGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
@@ -86,11 +97,22 @@
 		<result property="representationalForm" column="representationalForm"/>
 	</resultMap>
 	
+		<resultMap id="assertedVSPresentationResult" class="presentation" extends="assertedValueSetPropertyResult" >
+		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
+	</resultMap>
+	
 	<resultMap id="definitionResult" class="definition" extends="propertyResult" >
 		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	
+	<resultMap id="assertedVSDefinitionResult" class="definition" extends="assertedValueSetPropertyResult" >
+		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
+	</resultMap>
+	
 	<resultMap id="commentResult" class="comment" extends="propertyResult" />
+		
+	<resultMap id="assertedVSCommentResult" class="comment" extends="assertedValueSetPropertyResult" />
+
 	
 	<select id="getPropertyGuid" resultMap="Common.uidResult" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
@@ -643,5 +665,26 @@
 			ORDER BY
 				revAppliedDate DESC		
 		]]>			
-	</select>	
+	</select>
+		
+	<select id="getAssertedValueSetPropertyByCode" remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultMap="assertedValueSetPropertyResult">
+		SELECT
+  			property.propertyType,
+  			property.propertyName,
+			property.isPreferred,
+  			property.propertyValue
+  		FROM
+  			$prefix$property property
+  		LEFT JOIN
+  			$prefix$entity ent
+  		ON
+  			property.referenceGuid =
+  			ent.entityGuid
+  		WHERE
+  			ent.entityCode = #param1#
+	
+	</select>
+	
 </sqlMap>

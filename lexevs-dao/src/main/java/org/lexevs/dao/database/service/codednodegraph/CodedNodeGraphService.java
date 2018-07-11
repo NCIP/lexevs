@@ -27,6 +27,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -596,5 +597,13 @@ public interface CodedNodeGraphService {
 			List<ConceptReference> sourceConceptReferences,
 			List<ConceptReference> targetConceptReferences,
 			List<ConceptReference> sourceOrTargetConceptReferences);
+
+	List<Node> getDistinctTargetTriples(String codingSchemeUri, String version, String associationPredicateUid);
+
+	List<Node> getSourcesFromTarget(String codingSchemeUri, String version, String entityCode, String entityNamespace,
+			String associationPredicateUid);
+
+	public List<Node> getTargetsFromSource(String codingSchemeUri, String version, String code, String namespace,
+			String associationPredicateUid);
 
 }

@@ -14,4 +14,4 @@
 # Example: ProfileScheme
 # Example: ProfileScheme -u "urn:oid:2.16.840.1.113883.3.26.1.1" -v "05.09e" -r "hasSubtype"
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.ProfileScheme $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.ProfileScheme $@

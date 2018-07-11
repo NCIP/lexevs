@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:lbExtension="http://LexGrid.org/schema/LexBIG/2009/01/extensions/extension" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lgBuiltin="http://LexGrid.org/schema/2009/01/LexGrid/builtins" targetNamespace="http://LexGrid.org/schema/LexBIG/2009/01/extensions/extension" attributeFormDefault="unqualified" elementFormDefault="qualified">
-    <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="http://LexGrid.org/schema/2009/01/LexGrid/builtins.xsd"/>
+    <xs:import namespace="http://LexGrid.org/schema/2009/01/LexGrid/builtins" schemaLocation="builtins.xsd"/>
     <xs:element name="extensions" type="lbExtension:extensions"/>
     <xs:complexType name="extensions">
     <xs:annotation>
