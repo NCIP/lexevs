@@ -10,4 +10,4 @@ REM Code System Version to be used to resolve Value Set Definition.
 REM 
 REM Example: CheckForConceptInValueSet "C123456"
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.CheckForConceptInValueSet %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.CheckForConceptInValueSet %*

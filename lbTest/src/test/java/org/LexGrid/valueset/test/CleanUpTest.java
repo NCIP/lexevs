@@ -32,13 +32,18 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
+import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.lexgrid.valuesets.LexEVSPickListDefinitionServices;
 import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.admin.RemoveAllResolvedValueSets;
 import org.lexgrid.valuesets.admin.RemoveResolvedValueSet;
 import org.lexgrid.valuesets.admin.RemoveVSResolvedFromCodingSchemes;
+import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
 import org.lexgrid.valuesets.impl.LexEVSPickListDefinitionServicesImpl;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.springframework.core.annotation.Order;
@@ -56,6 +61,7 @@ public class CleanUpTest extends TestCase {
     
 	private LexEVSValueSetDefinitionServices vds_;
 	private LexEVSPickListDefinitionServices pls_;
+	private LexEVSResolvedValueSetService rvs_;
 	
 	@Test
 	@Order(0)
@@ -115,7 +121,7 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.1");
+                "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
         lbsm.removeCodingSchemeVersion(a);
@@ -252,6 +258,20 @@ public class CleanUpTest extends TestCase {
     		assertEquals(e.getMessage(), "No CodingScheme Entry for URI: XTEST:One.Node.ValueSet, Version: 1.0");
     	}
     }
+    
+    @Test 
+	@Order(12)
+    public void testRemoveAllRemainingResolvedValueSets() throws Exception{
+    	RemoveAllResolvedValueSets rm = new RemoveAllResolvedValueSets();
+    	List<CodingScheme> schemes = getResovledVSService().listAllResolvedValueSets();
+    	for(CodingScheme scheme : schemes){
+    	AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+    	ref.setCodingSchemeURN(scheme.getCodingSchemeURI());
+    	ref.setCodingSchemeVersion(scheme.getRepresentsVersion());
+    	rm.remove(ref, true);
+    	}
+    	
+    }
         
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {
@@ -265,5 +285,12 @@ public class CleanUpTest extends TestCase {
 			pls_ = LexEVSPickListDefinitionServicesImpl.defaultInstance();
 		}
 		return pls_;
+	}
+	
+	private LexEVSResolvedValueSetService getResovledVSService(){
+		if (rvs_ == null) {
+			rvs_ = new LexEVSResolvedValueSetServiceImpl();
+		}
+		return rvs_;
 	}
 }

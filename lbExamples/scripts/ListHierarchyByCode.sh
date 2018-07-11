@@ -19,4 +19,4 @@
 # These methods significantly reduce the need to understand conventions for root
 # nodes, associations, and direction of navigation for a specific source format.
 # 
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.ListHierarchyByCode $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.ListHierarchyByCode $@

@@ -2,4 +2,4 @@
 #
 # Example: GetIncomingConcepts "C14225" "Gene_Found_In_Organism"
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.GetAllIncomingConceptsForAssociation $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.GetAllIncomingConceptsForAssociation $@

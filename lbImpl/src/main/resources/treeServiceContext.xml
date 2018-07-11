@@ -20,7 +20,7 @@
 	
 
    <bean id="lexEvsTreeDaoImpl"
-		class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.JdbcLexEvsTreeDao">
+		class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.ProxyWrappedJdbcLexEvsTreeDao">
 		<qualifier value="impl" type="org.springframework.beans.factory.annotation.Qualifier"/>
 		<property name="dataSource">
 			<ref local="dataSource" />

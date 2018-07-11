@@ -37,12 +37,15 @@ import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetToSchemeBatchLoader;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.LexGrid.LexBIG.admin.Util;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -116,7 +119,7 @@ public class LoadTestDataTest {
 
 		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
         
-        //loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
+        loader.setLoaderPreferences(new File("resources/testData/owl2/OWLPrefsLoadAnonAsAssocPF2SetTopNodes.XML").toURI());
         loader.load(new File(fileName).toURI(),null,  1, false, true);
         
         while (loader.getStatus().getEndTime() == null) {
@@ -247,7 +250,7 @@ public class LoadTestDataTest {
 	@Order(9)
 	public void testLoadOWL2() throws LBParameterException,
             LBInvocationException, InterruptedException, LBException {
-		loadOWL2("resources/testData/owl2/owl2-test-cases-Primitive-Annotated.owl", 
+		loadOWL2("resources/testData/owl2/owl2-special-cases-Defined-Annotated.owl", 
 				LBConstants.KnownTags.PRODUCTION.toString());
 	}
 	
@@ -312,6 +315,27 @@ public class LoadTestDataTest {
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
         
      }
+	
+	@Order(15)
+	@Test
+	public void loadSourceAssertedValueSetDefinitionsTest() throws LBParameterException, InterruptedException{
+	    AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
+	    		codingSchemeName("owl2lexevs").
+	    		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+	    		baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+	    		sourceName("Contributing_Source").
+	    		build();
+		new SourceAssertedValueSetBatchLoader(params,
+	    		"NCI", "Semantic_Type").run(params.getSourceName());
+	    Thread.sleep(1000);
+	}
+	
+//	@Test
+//	@Order(16)
+//	public void testloadSourceAssertedResolvedValueSet() throws URISyntaxException, Exception{
+//	 new SourceAssertedValueSetToSchemeBatchLoader("owl2lexevs","0.1.5","Concept_In_Subset", 
+//			 true, "http://evs.nci.nih.gov/valueset/", "NCI","Semantic_Type").run("Contributing_Source");
+//     }
 
 	private LexEVSValueSetDefinitionServices getValueSetDefService(){
 		if (vds_ == null) {

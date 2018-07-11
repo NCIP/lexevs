@@ -24,6 +24,7 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.event.entity.EntityUpdateEvent;
 import org.lexevs.dao.index.service.IndexServiceManager;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
+import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 /**
@@ -47,6 +48,8 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 	public boolean onEntityUpdate(EntityUpdateEvent event) {
 		IndexServiceManager indexServiceManager = LexEvsServiceLocator.getInstance().getIndexServiceManager();
 		EntityIndexService entityIndexService = indexServiceManager.getEntityIndexService();
+		SourceAssertedValueSetSearchIndexService vsIndexSvc = indexServiceManager.
+				getAssertedValueSetIndexService();
 		
 		AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
 		ref.setCodingSchemeURN(event.getCodingSchemeUri());
@@ -63,7 +66,9 @@ public class LuceneEntityUpdateListener extends DefaultServiceEventListener {
 
 			entityIndexService.updateIndexForEntity(event.getCodingSchemeUri(),
 					event.getCodingSchemeVersion(), updatedEntity);
+			
 		}
+		
 		
 		return true;
 	}

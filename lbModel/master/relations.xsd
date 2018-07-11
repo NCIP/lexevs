@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:lgCommon="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" xmlns:lgCon="http://LexGrid.org/schema/2010/01/LexGrid/concepts" xmlns:lgBuiltin="http://LexGrid.org/schema/2010/01/LexGrid/builtins" xmlns="http://LexGrid.org/schema/2010/01/LexGrid/relations" targetNamespace="http://LexGrid.org/schema/2010/01/LexGrid/relations" elementFormDefault="qualified">
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/builtins" schemaLocation="builtins.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/commonTypes" schemaLocation="commonTypes.xsd"/>
+        <xs:import namespace="http://LexGrid.org/schema/2010/01/LexGrid/concepts" schemaLocation="concepts.xsd"/>
+
+        <!-- ================================================= -->
+        <!-- Package: <<XSDschema> relations  -->
+        <!-- ================================================= -->
+        <xs:annotation>
+                <xs:documentation>
+                        <h2>Semantic relationships package</h2>
+                </xs:documentation>
+                <xs:documentation>The definition of the "semantic relationships" that are defined in a coding scheme.</xs:documentation>
+        </xs:annotation>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <associationEntity  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associationEntity">
+                <xs:annotation>
+                        <xs:documentation>A binary relation from a set of entities to a set of entities and/or data. The entityType for the class concept must be "association".</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCon:entity">
+                                <xs:attribute name="forwardName" type="lgBuiltin:tsCaseIgnoreIA5String">
+                                        <xs:annotation>
+                                                <xs:documentation>The name or role that the "from" entity plays with respect to the "to" entry.  Should be phrased in terms of the default language of the association and imply direction.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="reverseName" type="lgBuiltin:tsCaseIgnoreIA5String">
+                                        <xs:annotation>
+                                                <xs:documentation>The name or role that the "to" entity plays with respect to the "from" entry.  Should be phrased in terms of the default language of the association and imply direction.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                               <xs:attribute name="isNavigable" type="lgBuiltin:tsBoolean" default="true">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that the reverse direction of the association is "navigable", meaning that it is makes sense to represent the target to source side of the association.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="isTransitive" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that association is transitive ( r(a,b), r(b,c) -&gt; r(a,c)). False means not transitive. If absent, transitivity is unknown or not applicable.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>                               
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <associationPredicate  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associationPredicate">
+                <xs:annotation>
+                        <xs:documentation>The local identifier of the relation itself.  associationName must match a local id of a supportedAssociationName in the corresponding mappings section.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="source" type="associationSource" minOccurs="0" maxOccurs="unbounded">
+                                <xs:annotation>
+                                        <xs:documentation>The "from" set of entities that appear in this relation</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+                <xs:attribute name="associationName" type="lgCommon:associationName" use="required">
+                        <xs:annotation>
+                               <xs:documentation>The local identifier of the relation itself.  associationName must match a local id of a supportedAssociationName in the corresponding mappings section.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+        </xs:complexType>        
+        
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: associationData  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associationData">
+                <xs:annotation>
+                        <xs:documentation>An instance of a target or RHS data value of an association.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="associatableElement">
+                                <xs:sequence>
+                                        <xs:element name="associationDataText" type="lgCommon:text" minOccurs="0" maxOccurs="1"/>
+                                </xs:sequence>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Choice>>  associationSource  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associationSource">
+                <xs:annotation>
+                        <xs:documentation>An entity that occurs in one or more instances of a relation on the "from" (or left hand) side of a particular relation.</xs:documentation>
+                </xs:annotation>
+                <xs:choice>
+                        <xs:element name="target" type="associationTarget" minOccurs="0" maxOccurs="unbounded">
+                                <xs:annotation>
+                                        <xs:documentation>The set of all entities  that appear on the "to" (or right hand) side of a particular relation.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                        <xs:element name="targetData" type="associationData" minOccurs="0" maxOccurs="unbounded">
+                                <xs:annotation>
+                                        <xs:documentation>The set of data instances  that appear on the "to" (or right hand) side of a particular relation.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:choice>
+                <xs:attribute name="sourceEntityCodeNamespace" type="lgCommon:namespaceName">
+                        <xs:annotation>
+                                <xs:documentation>Local name of the namespace of the sourceEntityCode. sourceEntityCodeNamespace must match a local id of a supportedNamespace in the corresponding mappings section.  If omitted, the URI of sourceEntityCode namespace is the codingSchemeURI of the containing coding scheme.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+                <xs:attribute name="sourceEntityCode" type="lgCommon:entityCode" use="required">
+                        <xs:annotation>
+                                <xs:documentation>The entity code of the source entity.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: <<Mixin>> associatableElement  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associatableElement">
+                <xs:annotation>
+                        <xs:documentation>Information common to both the entity and data form of the "to" (or right hand) side of an association.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:versionable">
+                                <xs:sequence>
+                                        <xs:element name="usageContext" type="lgCommon:context" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The local identifiers of the context(s) in which this association instance applies. Must match a local id of a supportedContext in the corresponding mappings section.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="associationQualification" type="associationQualification" minOccurs="0" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>A set of qualifers that server to modify or qualify this association instance.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="associationInstanceId" type="lgCommon:nodeId">
+                                        <xs:annotation>
+                                                <xs:documentation>The unique identifier assigned to the particular relation, from, to triple.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="isInferred" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that this association instance isn't asserted in the scheme, but is inferred by a classifier.  Default: false</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="isDefining" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that this association instance is considered to be part of the definition of source entity, false means that it is an "accidental" characteristic. If omitted, this information is not known. </xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: associationQualification  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associationQualification">
+                <xs:annotation>
+                        <xs:documentation>A modifier that further qualifies the particular association instance.</xs:documentation>
+                </xs:annotation>
+                <xs:sequence>
+                        <xs:element name="qualifierText" type="lgCommon:text" minOccurs="0" maxOccurs="1">
+                                <xs:annotation>
+                                        <xs:documentation>The value associated with this qualifier, if any.</xs:documentation>
+                                </xs:annotation>
+                        </xs:element>
+                </xs:sequence>
+                <xs:attribute name="associationQualifier" type="lgCommon:associationQualifierName" use="required">
+                        <xs:annotation>
+                                <xs:documentation>The local name of the association qualifier. codingSchemeName must match a local id of a supportedAssociationQualifier in the mappings section.</xs:documentation>
+                        </xs:annotation>
+                </xs:attribute>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: associationTarget  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="associationTarget">
+                <xs:annotation>
+                        <xs:documentation>An entity  on the "to" (or right hand) side of a relation.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="associatableElement">
+                                <xs:attribute name="targetEntityCode" type="lgCommon:entityCode" use="required">
+                                        <xs:annotation>
+                                                <xs:documentation>The entity code of the target entity.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="targetEntityCodeNamespace" type="lgCommon:namespaceName">
+                                        <xs:annotation>
+                                                <xs:documentation>Local name of the namespace of the targetEntityCode. targetEntityCodeNamespace must match a local id of a supportedNamespace in the corresponding mappings section.  If omitted, the URI of targetEntityCode namespace is the codingSchemeURI of the containing coding scheme.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <!-- Class: relations  -->
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <xs:complexType name="relations">
+                <xs:annotation>
+                        <xs:documentation>A collection of relations that represent a particular point of view or community.</xs:documentation>
+                </xs:annotation>
+                <xs:complexContent>
+                        <xs:extension base="lgCommon:versionableAndDescribable">
+                                <xs:sequence>
+                                        <xs:element name="associationPredicate" type="associationPredicate" maxOccurs="unbounded">
+                                                <xs:annotation>
+                                                        <xs:documentation>The collection of relations that are represented.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="properties" type="lgCommon:properties" minOccurs="0" maxOccurs="1" >
+                                                <xs:annotation>
+                                                        <xs:documentation>A list of propeties used in the description of this relation.</xs:documentation>
+                                                </xs:annotation>
+                                        </xs:element>
+                                </xs:sequence>
+                                <xs:attribute name="containerName" type="lgCommon:containerName">
+                                        <xs:annotation>
+                                                <xs:documentation>The unique identifier of this collection. Required if there is more than one collection of relations in a coding scheme</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="representsVersion" type="lgCommon:version">
+                                        <xs:annotation>
+                                                <xs:documentation>The version of the particular container (mapping) that the relations entry represents</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="isMapping" type="lgBuiltin:tsBoolean">
+                                        <xs:annotation>
+                                                <xs:documentation>True means that this set of relations are considered mapping between sourceCodingScheme and targetCodingScheme.</xs:documentation>
+                                        </xs:annotation>
+                                </xs:attribute>
+                                <xs:attribute name="sourceCodingScheme" type="lgCommon:codingSchemeName">
+                                        <xs:annotation>
+                                                <xs:documentation>Local name of the coding scheme that is used as a source for this set of relations. sourceCodingScheme must match a local id of a supportedCodingScheme in the mappings section.</xs:documentation>
+                                        </xs:annotation> 
+                                </xs:attribute>
+                                <xs:attribute name="sourceCodingSchemeVersion" type="lgCommon:version">
+                                        <xs:annotation>
+                                                <xs:documentation>Version of the source coding scheme used in mappings.</xs:documentation>
+                                        </xs:annotation> 
+                                </xs:attribute> 
+                                <xs:attribute name="targetCodingScheme" type="lgCommon:codingSchemeName">
+                                        <xs:annotation>
+                                                <xs:documentation>Local name of the coding scheme that is used as a target for this set of relations. targetCodingScheme must match a local id of a supportedCodingScheme in the mappings section.</xs:documentation>
+                                        </xs:annotation> 
+                                </xs:attribute> 
+                                <xs:attribute name="targetCodingSchemeVersion" type="lgCommon:version">
+                                        <xs:annotation>
+                                                <xs:documentation>Version of the target coding scheme used in mappings.</xs:documentation>
+                                        </xs:annotation> 
+                                </xs:attribute> 
+                        </xs:extension>
+                </xs:complexContent>
+        </xs:complexType>
+</xs:schema>

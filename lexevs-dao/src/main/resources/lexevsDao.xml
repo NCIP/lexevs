@@ -96,6 +96,10 @@
 		<property name="ibatisRevisionDao" ref="ibatisRevisionDao"/>
 	</bean>
 	
+	<bean id="ibatisAssertedValueSetDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisSourceAssertedValueSetDao" parent="abstractIbatisDao">
+	</bean>
+	
 	<bean id="abstractSqlInterfaceDao" abstract="true">
 		<property name="resourceManager" ref="resourceManager"/>
 	 	<property name="sqlImplementedMethodsDao" ref="sqlImplementedMethodsDao"/>
@@ -181,6 +185,16 @@
 				<ref bean="ibatisVSEntryStateDao"/>
 			</list>
 		</property>		
+		<property name="valueSetHierarchyDaos">
+			<list>
+				<ref bean="ibatisValueSetHierarchyDao"/>
+			</list>
+		</property>	
+		<property name="assertedValueSetDaos">
+			<list>
+				<ref bean="ibatisAssertedValueSetDao"/>
+			</list>
+		</property>	
 		<property name="versionsDaos">
 			<list>
 				<ref bean="ibatisVersionsDao" />
@@ -253,6 +267,10 @@
 	<bean id="ibatisNciHistoryDao"
 		class="org.lexevs.dao.database.ibatis.ncihistory.IbatisNciHistoryDao" parent="abstractIbatisDao">
 	</bean>
+	
+	<bean id="ibatisValueSetHierarchyDao"
+		class="org.lexevs.dao.database.ibatis.valuesets.IbatisValueSetHierarchyDao" parent="abstractIbatisDao">
+	</bean>
 
 	<bean id="databaseServiceManager" class="org.lexevs.dao.database.service.DatabaseServiceManager">
 		<property name="codingSchemeService" ref="codingSchemeService"/>
@@ -264,6 +282,8 @@
 		<property name="associationDataService" ref="associationDataService"/>
 		<property name="pickListDefinitionService" ref="pickListDefinitionService"/>
 		<property name="valueSetDefinitionService" ref="valueSetDefinitionService"/>
+		<property name="valueSetHierarchyService" ref="valueSetHierarchyService"/>
+		<property name="assertedValueSetService" ref="assertedValueSetService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
 		<property name="daoCallbackService" ref="daoManagerDaoCallbackService"/>
 		<property name="codedNodeGraphService" ref="codedNodeGraphService"/>
@@ -343,6 +363,10 @@
 		<property name="propertyService" ref="propertyService"/>
 	</bean>
 	
+	<bean id="valueSetService" class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
+		parent="abstractService">
+	</bean>
+	
 	<bean id="codedNodeGraphService"
 		class="org.lexevs.dao.database.service.codednodegraph.VersionableEventCodedNodeGraphService"
 		parent="abstractService"/>
@@ -381,6 +405,16 @@
 		parent="abstractService">
 		<property name="vsDefinitionEntryService" ref="vsDefinitionEntryService"/>
 		<property name="vsPropertyService" ref="vsPropertyService"/>
+	</bean>
+	
+	<bean id="valueSetHierarchyService" 
+		class="org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceImpl"
+		parent="abstractService">
+	</bean>
+	
+	<bean id="assertedValueSetService" 
+		class="org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl"
+		parent="abstractService">
 	</bean>
 	
 	<bean id="vsDefinitionEntryService" 
@@ -735,6 +769,7 @@
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="registry" ref="registry"/>
 		<property name="indexServiceManager" ref="indexServiceManager"/>
+		<property name="indexDaoManager" ref="indexDaoManager"/>
 		<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>
 		<property name="lexEvsIndexOperations" ref="defaultLexEvsIndexOperations"/>
 	</bean>
@@ -762,6 +797,12 @@
 		<property name="indexDirectoryFactory" ref="luceneMultiDirectoryFactory"/>
 		<property name="codingSchemes" ref="concurrentCodingSchemeFactory"/>
 		<property name="logger" ref="loggerFactory"/>
+	</bean>
+	
+	<bean id="assertedValueSetIndexCreator" class="org.lexevs.dao.index.indexer.SourceAssertedValueSetIndexCreator">
+		<property name="valueSetService" ref="assertedValueSetService"/>
+		<property name="entityIndexer" ref = "assertedValueSetIndexer"/>
+		<property name="indexDaoManager" ref="indexDaoManager"/>
 	</bean>
 	
 	<bean id="luceneMultiDirectoryFactory" class="org.lexevs.dao.index.lucenesupport.LuceneMultiDirectoryFactory">
@@ -796,6 +837,13 @@
 		<property name="indexCreator" ref="entityBatchingIndexCreator"/>
 	</bean>
 	
+	<bean id="assertedValueSetIndexService" class="org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService">
+		<property name="indexCreator" ref="assertedValueSetIndexCreator"/>
+		<property name="indexDaoManager" ref="indexDaoManager" />
+		<property name="concurrentMetaData" ref="concurrentCodingSchemeFactory"/>
+		<property name="entityIndexer" ref="assertedValueSetIndexer"/>
+	</bean>
+	
 	<bean id="luceneMetadataIndexService" 
 		class="org.lexevs.dao.index.service.metadata.LuceneMetadataIndexService">
 		<property name="indexDaoManager" ref="indexDaoManager"/> 
@@ -806,6 +854,7 @@
 		<property name="entityIndexService" ref="luceneEntityIndexService"/>
 		<property name="metadataIndexService" ref="luceneMetadataIndexService"/>
 		<property name="searchIndexService" ref="luceneSearchIndexService"/>
+		<property name="assertedValueSetIndexService" ref="assertedValueSetIndexService"/>
 	</bean>
 	
 	<bean id="indexDaoManager" class="org.lexevs.dao.index.access.IndexDaoManager">
@@ -826,6 +875,11 @@
 		<property name="searchDaos">
 			<list>
 				<ref bean="luceneSearch2013Dao"/>
+			</list>
+		</property>
+				<property name="valueSetEntityDaos">
+			<list>
+				<ref bean="luceneValueSetEntityDao"/>
 			</list>
 		</property>
 	</bean>
@@ -859,8 +913,20 @@
 		<property name="indexRegistry" ref="multiIndexRegistry"/>
 	</bean>
 	
+	<bean id="luceneValueSetEntityDao" class="org.lexevs.dao.index.lucene.v2013.search.ValueSetEntityDao">
+		<property name="indexRegistry" ref="multiIndexRegistry"/>
+		<property name="luceneIndexTemplate" ref="luceneIndexTemplate"/>
+	</bean>
+	
 	<bean id="commonIndexLoaderCodeIndexer" class="org.lexevs.dao.index.indexer.LuceneLoaderCodeIndexer">
 		<property name="systemResourceService" ref="delegatingResourceManagingService"/>
+		<property name="systemVariables" ref="systemVariables"/> 
+		<property name="luceneEntityDao" ref="luceneIndexEntityDao"/>
+	</bean>
+	
+	<bean id="assertedValueSetIndexer" 
+	class="org.lexevs.dao.index.indexer.AssertedValueSetEntityIndexer" parent="commonIndexLoaderCodeIndexer">
+			<property name="systemResourceService" ref="delegatingResourceManagingService"/>
 		<property name="systemVariables" ref="systemVariables"/> 
 		<property name="luceneEntityDao" ref="luceneIndexEntityDao"/>
 	</bean>
@@ -896,8 +962,19 @@
 		<property name="indexName" value="MetaDataIndex" />
 	</bean>
 	
+	<bean id="assertedValueSetIndexDirectory" parent="abstractDirectoryFactory">
+		<property name="luceneDirectoryCreator" ref="defaultLuceneDirectoryCreator"/>
+		<property name="indexDirectory" ref="assertedValueSetIndexLocation" />
+		<property name="indexName" value="AssertedValueSetIndex" />
+	</bean>
+	
 	<bean id="metadataIndexLocation" 
 		class="org.lexevs.dao.index.factory.MetadataIndexLocationFactory">
+		<property name="systemVariables" ref="systemVariables"/> 
+	</bean>
+	
+	<bean id="assertedValueSetIndexLocation" 
+		class="org.lexevs.dao.index.factory.AssertedValueSetIndexLocationFactory">
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 		
@@ -924,6 +1001,10 @@
 		<property name="namedDirectory" ref="metadataIndexDirectory"/>
 	</bean>
 	
+	<bean id="luceneIndexTemplate" class="org.lexevs.dao.index.lucenesupport.BaseLuceneIndexTemplate">
+		<property name="namedDirectory" ref="assertedValueSetIndexDirectory"/>
+	</bean>
+	
 	<bean id="luceneMultiIndexTemplate" class="org.lexevs.dao.index.lucenesupport.MultiBaseLuceneIndexTemplate">
 		<property name="metaDirectories" ref="concurrentCodingSchemeFactory"/>
 		<property name="indexReader" ref="multiReaderFactory"/>
@@ -943,5 +1024,4 @@
 		<property name="systemVariables" ref="systemVariables"/> 
 	</bean>
 
-	
 	</beans>

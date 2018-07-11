@@ -205,7 +205,7 @@ public class TestLiteralSubString extends BaseSearchAlgorithmTest {
     @Test
     public void testLiteralSubStringLeadingAndTrailingWildcard() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns = cns.restrictToMatchingDesignations("^s sp*cial co{nce]p", SearchDesignationOption.ALL, algorithm, null);
+        cns = cns.restrictToMatchingDesignations("(know/don't know)", SearchDesignationOption.ALL, algorithm, null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

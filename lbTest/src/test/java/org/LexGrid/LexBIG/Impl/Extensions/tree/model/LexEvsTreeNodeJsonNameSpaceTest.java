@@ -16,6 +16,7 @@ import org.junit.Test;
 public class LexEvsTreeNodeJsonNameSpaceTest extends LexEvsTreeTestBase {
 	
 	private LexEvsTree tree;
+	private LexEvsTree treeWithAnonymous;
 	private CodingSchemeVersionOrTag csvt;
 	private LexBIGService lbsi;
 	private TreeService service;
@@ -27,7 +28,18 @@ public class LexEvsTreeNodeJsonNameSpaceTest extends LexEvsTreeTestBase {
 				
 		csvt = new CodingSchemeVersionOrTag();
 		csvt.setVersion("TestForMultiNamespace");
+		
 		tree = pathToRootTreeServiceImpl.getTree("npo", csvt, "NPO_1607", "npo");	
+	}
+	
+	public void buildTreeWithAnonymousNode(){
+		lbsi = LexBIGServiceImpl.defaultInstance();
+		service = TreeServiceFactory.getInstance().getTreeService(lbsi);
+				
+		csvt = new CodingSchemeVersionOrTag();
+		csvt.setVersion("TestForMultiNamespace");
+		
+		treeWithAnonymous = pathToRootTreeServiceImpl.getTree("npo", csvt, "NPO_1923", "npo");	
 	}
 
 	@Test
@@ -36,7 +48,7 @@ public class LexEvsTreeNodeJsonNameSpaceTest extends LexEvsTreeTestBase {
 
 		focusNode = tree.getCurrentFocus();
 		
-		String json = service.getJsonConverter().buildJsonPathFromRootTree(focusNode);	        
+		String json = service.getJsonConverter().buildJsonPathFromRootTree(focusNode);	    
     
 		// verify that the JSON namespace npo is present 
         Pattern pattern = Pattern.compile("\"ontology_node_ns\":\"npo\""); 
@@ -53,6 +65,23 @@ public class LexEvsTreeNodeJsonNameSpaceTest extends LexEvsTreeTestBase {
         while (matcher.find()) namespaceCount++;
         
         assertTrue(namespaceCount == 9);
+	}
+	
+	@Test
+	public void testJsonNoAnymousNodes(){
+		this.buildTreeWithAnonymousNode();
+
+		focusNode = treeWithAnonymous.getCurrentFocus();
+		
+		String json = service.getJsonConverter().buildJsonPathFromRootTree(focusNode);	    
+				
+		// verify that the JSON namespace npo is present 
+        Pattern pattern = Pattern.compile("\"npo\":\"NPO_1489 or npo\""); 
+        Matcher matcher = pattern.matcher(json);
+        int anonymousCount = 0;
+        while (matcher.find()) anonymousCount++;
+        
+        assertTrue(anonymousCount == 0);
 	}
 	
 }

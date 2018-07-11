@@ -125,6 +125,26 @@ public class TestContainsLiteralContains extends BaseSearchAlgorithmTest{
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestContains#getAlgorithm()
      */
+    
+    /**
+     * Test contains and terms.
+     * 
+     * @throws Exception the exception
+     */
+    @Test
+    public void testContainsWithSpecialCharacters() throws Exception {
+        CodedNodeSet cns = super.getAutosCodedNodeSet();
+        cns = cns.restrictToMatchingDesignations("(know/don't know)", SearchDesignationOption.ALL, getAlgorithm(), null);
+
+        ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
+
+        assertTrue("Length: " + rcrl.length, rcrl.length == 1);
+    }
+
+    /* (non-Javadoc)
+     * @see org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms.TestContains#getAlgorithm()
+     */
+
 
     protected String getAlgorithm() {
         return algorithm;

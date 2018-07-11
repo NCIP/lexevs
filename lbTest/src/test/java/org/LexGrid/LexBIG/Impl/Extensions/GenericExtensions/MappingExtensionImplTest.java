@@ -100,7 +100,10 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertTrue(itr.hasNext());
-		this.checkResolvedConceptReference(itr.next());
+		ResolvedConceptReference ref = itr.next();
+		assertFalse(ref.getCodeNamespace().equals( "Automobiles_Different_NS"));
+		assertEquals(ref.getCodeNamespace(), "Automobiles");
+		this.checkResolvedConceptReference(ref);
 		assertFalse(itr.hasNext());
 	}
 	
@@ -120,7 +123,13 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 		
 		assertTrue(itr.hasNext());
-		this.checkResolvedConceptReference(itr.next());
+		ResolvedConceptReference ref = itr.next();
+		assertFalse(ref.getSourceOf().
+				getAssociation(0).getAssociatedConcepts().getAssociatedConcept(0)
+				.getCodeNamespace().equals( "GermanMadePartsNamespace_Different_NS"));
+		assertEquals(ref.getSourceOf().
+				getAssociation(0).getAssociatedConcepts().getAssociatedConcept(0)
+				.getCodeNamespace(), "GermanMadePartsNamespace");
 		this.checkResolvedConceptReference(itr.next());
 		assertFalse(itr.hasNext());
 	}
@@ -273,6 +282,20 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
+	public void testGetMappingCodingSchemesEntityWithNamespaceParticipatesIn() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+		
+		AbsoluteCodingSchemeVersionReferenceList list = mappingExtension.getMappingCodingSchemesEntityParticipatesIn(
+				"C0001", "Automobiles");
+		
+		assertEquals(1,list.getAbsoluteCodingSchemeVersionReferenceCount());
+		
+		assertEquals(MAPPING_SCHEME_URI, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeURN());
+		assertEquals(MAPPING_SCHEME_VERSION, list.getAbsoluteCodingSchemeVersionReference(0).getCodingSchemeVersion());
+	}
+	
+	@Test
 	public void testGetMapping() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -398,32 +421,32 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());	
 	}
 	
-	@Ignore
-	@Test
-	 @Category(RemoveFromDistributedTests.class)
-	public void testGetResourceSummariesTargetRestrictionCorrectNumRemaining() throws Exception {
-		
-		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-	
-		Mapping mapping = mappingExtension.getMapping(
-				MAPPING_SCHEME_URI, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
-		
-		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
-		
-		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
-		
-		int count = 0;
-		int numberRemaining = itr.numberRemaining();
-		
-		while(itr.hasNext()){
-			itr.next();
-			count++;
-		}
-		
-		assertEquals(count, numberRemaining);
-	}
+//	@Ignore
+//	@Test
+//	 @Category(RemoveFromDistributedTests.class)
+//	public void testGetResourceSummariesTargetRestrictionCorrectNumRemaining() throws Exception {
+//		
+//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+//		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+//	
+//		Mapping mapping = mappingExtension.getMapping(
+//				MAPPING_SCHEME_URI, 
+//				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
+//		
+//		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
+//		
+//		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+//		
+//		int count = 0;
+//		int numberRemaining = itr.numberRemaining();
+//		
+//		while(itr.hasNext()){
+//			itr.next();
+//			count++;
+//		}
+//		
+//		assertEquals(count, numberRemaining);
+//	}
 	
 	@Test
 	public void testResolveMappingWithRestrictionCount() throws LBException {

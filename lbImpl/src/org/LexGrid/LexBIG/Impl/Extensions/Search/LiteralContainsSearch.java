@@ -57,7 +57,7 @@ public class LiteralContainsSearch extends AbstractContainsSearch {
     @Override
     public Query buildQuery(String searchText) {
         String excapedString = AbstractLiteralSearch.excapeSpecialCharacters(searchText);
-        return super.buildQuery(excapedString);
+        return super.buildQuery(searchText);
     }
 
     /* (non-Javadoc)

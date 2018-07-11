@@ -21,6 +21,7 @@ package org.lexevs.dao.database.access.ncihistory;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.SystemRelease;
@@ -61,4 +62,10 @@ public interface NciHistoryDao extends LexGridSchemaVersionAwareDao {
 			String releaseUid);
 	
 	public void removeNciHistory(String codingSchemeUri);
+
+	public List<String> getCodeListForVersion(String currentVersion);
+
+	public Date getDateForVersion(String currentVersion);
+
+	public List<String> getVersionsForDateRange(String previousDate, String currentDate);
 }

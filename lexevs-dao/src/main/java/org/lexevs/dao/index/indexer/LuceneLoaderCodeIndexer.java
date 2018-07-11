@@ -30,6 +30,7 @@ import org.LexGrid.concepts.Presentation;
 import org.apache.lucene.document.Document;
 import org.lexevs.dao.database.ibatis.entity.model.IdableEntity;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.system.constants.SystemVariables;
@@ -51,7 +52,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	/** The current index version. */
 	private String currentIndexVersion = "2010";
 	
-	private LuceneEntityDao luceneEntityDao;
+	private EntityDao luceneEntityDao;
 
 	/**
 	 * Instantiates a new lucene loader code indexer.
@@ -203,7 +204,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	 * 
 	 * @return the qualifier[]
 	 */
-	private Qualifier[] propertyQualifiersToQualifiers(PropertyQualifier[] qualifiers) {
+	protected Qualifier[] propertyQualifiersToQualifiers(PropertyQualifier[] qualifiers) {
 		Qualifier[] quals = new Qualifier[qualifiers.length];
 		for(int i=0;i<qualifiers.length;i++) {
 			quals[i] = new Qualifier(qualifiers[i].getPropertyQualifierName(), qualifiers[i].getValue().getContent());
@@ -218,7 +219,7 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 	 * 
 	 * @return the string[]
 	 */
-	private String[] sourceToString(Source[] sources) {
+	protected String[] sourceToString(Source[] sources) {
 		String[] stringSource = new String[sources.length];
 		for(int i=0;i<sources.length;i++) {
 			stringSource[i] = sources[i].getContent();
@@ -262,11 +263,11 @@ public class LuceneLoaderCodeIndexer extends LuceneLoaderCode implements EntityI
 		this.systemVariables = systemVariables;
 	}
 
-	public LuceneEntityDao getLuceneEntityDao() {
+	public EntityDao getLuceneEntityDao() {
 		return luceneEntityDao;
 	}
 
-	public void setLuceneEntityDao(LuceneEntityDao luceneEntityDao) {
+	public void setLuceneEntityDao(EntityDao luceneEntityDao) {
 		this.luceneEntityDao = luceneEntityDao;
 	}
 
