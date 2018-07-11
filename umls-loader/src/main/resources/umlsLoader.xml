@@ -74,7 +74,7 @@
 					</tasklet>
 				</step>
 				
-				<step id="processAssociations" next="buildTransitivityTable" parent="listenerStep">	
+				<step id="processAssociations" next="umlsLoadMrsatAssocQuals" parent="listenerStep">	
 					<tasklet>
 						<chunk reader="mrdocAssociationGroupReader" processor="umlsAssociationProcessor"
 							writer="entityListWriter" commit-interval="1">
@@ -87,6 +87,21 @@
 						</listeners>
 					</tasklet>
 				</step>		
+
+				<step id="umlsLoadMrsatAssocQuals" next="buildTransitivityTable" parent="listenerStep">
+					<tasklet>
+						<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatQualifierProcessor"
+							writer="associationQualifierWriter" commit-interval="1000" skip-limit="100000">
+							<streams>
+								<stream ref="mrsatReader" />
+							</streams>
+ 							<skippable-exception-classes>
+								<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+							</skippable-exception-classes>
+						</chunk>
+					</tasklet>
+				</step>
+
 				
 				<step id="buildTransitivityTable" parent="listenerStep">
 					<tasklet ref="transitivityBuildingTasklet" />
@@ -130,21 +145,6 @@
 												<stream ref="mrsatReader" />
 											</streams>
 											<skippable-exception-classes>
-										 		<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
-											</skippable-exception-classes>
-										</chunk>
-									</tasklet>
-								</step>
-							</flow>
-							<flow>
-								<step id="umlsLoadMrsatAssocQuals" parent="listenerStep">
-									<tasklet>
-										<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatQualifierProcessor"
-											writer="associationQualifierWriter" commit-interval="1000" skip-limit="100000">
-											<streams>
-												<stream ref="mrsatReader" />
-											</streams>
- 											<skippable-exception-classes>
 										 		<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
 											</skippable-exception-classes>
 										</chunk>

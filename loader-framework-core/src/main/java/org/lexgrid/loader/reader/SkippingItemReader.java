@@ -48,9 +48,6 @@ public class SkippingItemReader<I> implements ItemReader<I>{
 			ParseException {
 		
 		for(I readItem = delegate.read(); readItem != null; readItem = delegate.read()){
-			if(readItem.toString().equals("RUI")){
-				System.out.println(readItem);
-				}
 			if(!skipPolicy.toSkip(readItem)){
 				return readItem;
 			}
