@@ -139,12 +139,12 @@
 							<flow>
 								<step id="umlsLoadMrsatAssocQuals" parent="listenerStep">
 									<tasklet>
-										<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatAssocQualsProcessor"
-											writer="assocQualsWriter" commit-interval="1000" skip-limit="100000">
+										<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatQualifierProcessor"
+											writer="associationQualifierWriter" commit-interval="1000" skip-limit="100000">
 											<streams>
 												<stream ref="mrsatReader" />
 											</streams>
-											<skippable-exception-classes>
+ 											<skippable-exception-classes>
 										 		<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
 											</skippable-exception-classes>
 										</chunk>
@@ -542,7 +542,13 @@
 	</beans:bean>
 	
 	<beans:bean id="umlsMrsatQualifierProcessor" parent="umlsDefaultPropertyProcessor"
-		class="org.lexgrid.loader.processor.EntityAssnToEQualsMrsatProcessor">
+		class="org.lexgrid.loader.processor.EntityAsscToEntityMrsatQualsProcessor">	
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+					
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrsatRuiAssociationInstanceIdResolver"/>
+		</beans:property>		
+ 
 		<beans:property name="qualifierResolver">
 			<beans:bean class="org.lexgrid.loader.rrf.processor.support.MrsatRuiAssocQualResolver" />	
 		</beans:property>

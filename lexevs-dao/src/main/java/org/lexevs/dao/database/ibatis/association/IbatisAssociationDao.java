@@ -834,7 +834,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * 
 	 * @return the key for association instance id
 	 */
-	protected String getKeyForAssociationInstanceId(String codingSchemeId, String associationInstanceId){
+	public String getKeyForAssociationInstanceId(String codingSchemeId, String associationInstanceId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
