@@ -327,6 +327,19 @@
 			#param2#
 	</select>
 	
+	<select id="getAssociationInstanceUIDFromInstanceIdOnly" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" 
+		resultMap="Common.uidResult">
+		
+		SELECT
+			eae.entityAssnsGuid AS uidKey
+		FROM 
+			$prefix$entityAssnsToEntity eae
+		WHERE
+			eae.associationInstanceId = #param1#
+	</select>	
+	
 	<select id="getAllTriplesOfCodingScheme" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.tripleResult">
 		SELECT

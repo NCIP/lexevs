@@ -99,7 +99,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/** The GE t_ associatio n_ instanc e_ ke y_ sql. */
 	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = ASSOCIATION_NAMESPACE + "getAccociationInstanceKey";
 	
-	/** The GE t_ relation s_ ke y_ sql. */
+	/** Getting a UID. */
+	private static String GET_ASSOCIATION_UID_SQL_FROM_INSTANCE_ID = ASSOCIATION_NAMESPACE + "getAssociationInstanceUIDFromInstanceIdOnly";
+	
+			/** The GE t_ relation s_ ke y_ sql. */
 	private static String GET_RELATIONS_KEY_SQL = ASSOCIATION_NAMESPACE + "getRelationsKey";
 	
 	/** The GE t_ associatio n_ predicat e_ ke y_ sql. */
@@ -839,9 +842,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				
-				GET_ASSOCIATION_INSTANCE_KEY_SQL, 
-				new PrefixedParameterTuple(prefix, codingSchemeId, associationInstanceId));
+				GET_ASSOCIATION_UID_SQL_FROM_INSTANCE_ID, 
+				new PrefixedParameter(prefix, associationInstanceId));
 	}
+	
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.AbstractBaseDao#doGetSupportedLgSchemaVersions()

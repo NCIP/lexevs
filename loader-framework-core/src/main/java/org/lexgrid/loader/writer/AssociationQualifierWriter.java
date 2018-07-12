@@ -25,12 +25,6 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 					getCodingSchemeUIdByUriAndVersion(
 							codingSchemeId.getUri(), 
 							codingSchemeId.getVersion());
-			String associationInstanceId = daoManager.
-					getAssociationDao(
-							codingSchemeId.getUri(), 
-							codingSchemeId.getVersion()).
-					getKeyForAssociationInstanceId(
-							codingSchemeIdInDb, paq.getParentId());
 			daoManager.getAssociationDao(
 					codingSchemeId.getUri(), 
 					codingSchemeId.getVersion())
