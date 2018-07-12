@@ -149,7 +149,7 @@ public class OwlApi2LGConstants {
 
     public static final String MATCH_XMLREPFORM_NAMES = "(term-group)";
     public static final String MATCH_XMLREPFORM_VALUES = "([A-Z0-9]{1,3})";
-    public static final String MATCH_XMLSOURCE_NAMES = "(term-source|def-source)";
+    public static final String MATCH_XMLSOURCE_NAMES = "(term-source|def-source|source)";
     public static final String MATCH_XMLSOURCE_VALUES = "([A-Z]*[^ISBN]:[a-z0-9_\\-\\.]*)";
     public static final String MATCH_XMLTEXT_NAMES = "(term-name|def-definition|go-term)";
 

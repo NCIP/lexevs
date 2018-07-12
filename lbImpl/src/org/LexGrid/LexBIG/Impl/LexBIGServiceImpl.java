@@ -18,8 +18,10 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeTagList;
@@ -41,6 +43,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
@@ -50,6 +53,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchExtensionImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAssertedValueSetSearchExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.supplement.SupplementExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.ContainsSearch;
 import org.LexGrid.LexBIG.Impl.Extensions.Search.DoubleMetaphoneSearch;
@@ -82,6 +86,7 @@ import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiResolvedValueSetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MetaDataLoaderImpl;
@@ -91,6 +96,7 @@ import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedVStoCodingSchemLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
@@ -109,8 +115,10 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
+import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -128,6 +136,7 @@ import org.lexevs.system.event.SystemEventListener;
  * @author <A HREF="mailto:erdmann.jesse@mayo.edu">Jesse Erdmann</A>
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  * @author <A HREF="mailto:sharma.deepak2@mayo.edu">Deepak Sharma</A>
+ *  @author <A HREF="mailto:bauer.scott@nih.gov">Scott Bauer</A>
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class LexBIGServiceImpl implements LexBIGService {
@@ -138,6 +147,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     private CodedNodeGraphFactory codedNodeGraphFactory = new CodedNodeGraphFactory();
     private CodedNodeSetFactory codedNodeSetFactory = new CodedNodeSetFactory();
     private HistoryServiceFactory historyServiceFactory = new HistoryServiceFactory();
+    private AssertedValueSetParameters params;
 
     private LgLoggerIF getLogger() {
         return LoggerFactory.getLogger();
@@ -253,6 +263,37 @@ public class LexBIGServiceImpl implements LexBIGService {
         } catch (Exception e) {
             String id = getLogger().error("There was an unexpected error", e);
             throw new LBInvocationException("There was an unexpected error", id);
+        }
+    }
+
+    /**
+     * @throws LBInvocationException
+     * @see org.LexGrid.LexBIG.LexBIGService.LexBIGService#getMinimalResolvedCodingSchemes()
+     */
+    public List<CodingScheme> getMinimalResolvedVSCodingSchemes() throws LBInvocationException {
+        getLogger().logMethod();
+        try {
+            List<CodingScheme> temp = new ArrayList<CodingScheme>();
+
+            List<RegistryEntry> entries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+            List<RegistryEntry> vsEntries = entries.stream().filter(y ->y.getDbName() != null  
+                    && (y.getDbName().equals(OntologyFormat.RESOLVEDVALUESET.name()) || 
+                    y.getDbName().equals(OntologyFormat.SOURCEASSERTEDRESOLVEDVS.name()))).
+                    collect(Collectors.toList());
+            
+            for(RegistryEntry entry : vsEntries){
+                CodingScheme  mini = new CodingScheme();
+                mini.setFormalName(entry.getDbUri());
+                mini.setCodingSchemeURI(entry.getResourceUri()); 
+                mini.setRepresentsVersion(entry.getResourceVersion());
+                mini.setExpirationDate(entry.getDeactivationDate());
+                mini.setIsActive(entry.getStatus().equals("active")? true : false);
+                temp.add(mini);  
+            }
+            return temp;
+        } catch (Exception e) {
+            String id = getLogger().error("There was a problem retrieving resolved value sets: ", e);
+            throw new LBInvocationException("There was a problem retrieving resolved value sets: ", id);
         }
     }
 
@@ -553,6 +594,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new TextLoaderImpl().register();
 
         new LexGridMultiLoaderImpl().register();
+        new LexGridMultiResolvedValueSetLoaderImpl().register();
         new OWLLoaderImpl().register();
         new OWL2LoaderImpl().register();
         new OBOLoaderImpl().register();
@@ -565,6 +607,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SemNetLoaderImpl().register();
         new MedDRALoaderImpl().register();
         new MIFVocabularyLoaderImpl().register();
+        new SourceAssertedVStoCodingSchemLoaderImpl().register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
@@ -648,6 +691,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SupplementExtensionImpl().register();
         new HierarchyCheckingPostProcessor().register();
         new SearchExtensionImpl().register();
+        new SourceAssertedValueSetSearchExtensionImpl().register();
         
         //Tree Extension (Deprecated)
         ExtensionDescription treeExt = new ExtensionDescription();
@@ -677,5 +721,46 @@ public class LexBIGServiceImpl implements LexBIGService {
             getLogger().warn(LexTreeExt.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
         
+    }
+
+    @Override
+    public List<CodingScheme> getRegularResolvedVSCodingSchemes() {
+       List<RegistryEntry> entries =  registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+       return entries.stream().filter(x -> x.getDbName() != null &&
+       x.getDbName().equals(OntologyFormat.RESOLVEDVALUESET.name())).map(x -> {
+           CodingScheme ref = new CodingScheme();
+           ref.setCodingSchemeURI(x.getResourceUri());
+           ref.setRepresentsVersion(x.getResourceVersion());
+           ref.setCodingSchemeName(x.getDbUri());
+           return ref;
+       }).collect(Collectors.toList());
+
+    }
+
+    @Override
+    public List<CodingScheme> getSourceAssertedResolvedVSCodingSchemes() {
+        if(params == null) {try {
+            this.params = new AssertedValueSetParameters.Builder(resolveCodingScheme(AssertedValueSetParameters.DEFAULT_CODINGSCHEME_URI, null).
+                    getRepresentsVersion()).build();
+        } catch (LBInvocationException | LBParameterException e) {
+            throw new RuntimeException("Unable to find a default or resolve a source asserted value set scheme" + e);
+        }}
+       AssertedValueSetService vsSvc = LexEvsServiceLocator.getInstance().
+               getDatabaseServiceManager().getAssertedValueSetService();
+       vsSvc.init(this.params);
+       List<String> list = vsSvc.getAllValidValueSetTopNodeCodes();
+       return list.stream().map(code ->
+           {CodingScheme scheme = null;
+               try {
+                   scheme = vsSvc.getSourceAssertedValueSetforTopNodeEntityCode(code).get(0);
+               } catch (LBException e) {
+                   throw new RuntimeException("Mapping value set to root code: " + code + " failed");
+               }
+               return scheme;
+           }).collect(Collectors.toList());
+    }
+    
+    public void setAssertedValueSetConfiguration(AssertedValueSetParameters params) {
+        this.params = params;
     }
 }

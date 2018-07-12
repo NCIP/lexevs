@@ -26,4 +26,4 @@
 # 
 # The selected code system must represent the full Metathesaurus.
 #
-java -Xmx1000m -cp "../runtime/lbPatch.jar:.:../runtime/lbRuntime.jar" org.LexGrid.LexBIG.example.BuildTreeForMetaCodeBySource $@
+java -Xmx1000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.example.BuildTreeForMetaCodeBySource $@

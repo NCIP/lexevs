@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.SystemRelease;
@@ -37,6 +38,12 @@ import org.lexevs.dao.database.utility.DaoUtility;
 public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistoryDao {
 	
 	private static String NCI_HISTORY_NAMESPACE = "NciHistory.";
+	
+	private static final String GET_REFERENCE_LIST_FOR_VERSION = NCI_HISTORY_NAMESPACE +  "getReferencesForVersion";
+
+	private static final String GET_DATE_FOR_VERSION = NCI_HISTORY_NAMESPACE +  "getDateForVersion";
+	
+	private static final String GET_VERSIONS_FOR_DATE_RANGE = NCI_HISTORY_NAMESPACE +  "getVersionsForDateRange";
 	
 	private static String GET_BASELINES_SQL = NCI_HISTORY_NAMESPACE + "getBaseLines";
 	
@@ -256,5 +263,30 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	public List<LexGridSchemaVersion> doGetSupportedLgSchemaVersions() {
 		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getCodeListForVersion(String currentVersion) {
+		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_REFERENCE_LIST_FOR_VERSION, 
+				new SequentialMappedParameterBean(
+						currentVersion));	
+	}
+	
+	@Override
+	public Date getDateForVersion(String currentVersion) {
+		return (Date) this.getSqlMapClientTemplate().queryForObject(GET_DATE_FOR_VERSION, 
+				new SequentialMappedParameterBean(
+						currentVersion));	
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getVersionsForDateRange(String previousDate, String currentDate) {
+		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VERSIONS_FOR_DATE_RANGE, 
+				new SequentialMappedParameterBean(
+						previousDate, currentDate));	
+	}
+	
+	
 
 }

@@ -58,7 +58,7 @@ public class TestLiteralContains extends BaseSearchAlgorithmTest {
     @Test
     public void testLiteralContains() throws Exception {
         CodedNodeSet cns = super.getAutosCodedNodeSet();
-        cns = cns.restrictToMatchingDesignations("a^s sp*cial co{nce]pt", SearchDesignationOption.ALL, getAlgorithm(), null);
+        cns = cns.restrictToMatchingDesignations("(know/don't know)", SearchDesignationOption.ALL, getAlgorithm(), null);
 
         ResolvedConceptReference[] rcrl = cns.resolveToList(null, null, null, -1).getResolvedConceptReference();
 

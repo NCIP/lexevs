@@ -237,5 +237,4 @@ public class LuceneSearchIndexService implements SearchIndexService {
 	public void setIndexCreator(IndexCreator indexCreator) {
 		this.indexCreator = indexCreator;
 	}
-
 }

@@ -1801,8 +1801,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 return true;
 
         // No luck; resolve a path ...
-        AssociationList paths = getHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, fwd, conceptCode, null,
-                rootCode, false, assocQuals, 1);
+        AssociationList paths = getHierarchyPathToRoot(codingScheme, versionOrTag, assocNames, fwd, conceptCode, rootCode,
+                null, false, assocQuals, 1);
         return paths.getAssociationCount() > 0;
     }
 

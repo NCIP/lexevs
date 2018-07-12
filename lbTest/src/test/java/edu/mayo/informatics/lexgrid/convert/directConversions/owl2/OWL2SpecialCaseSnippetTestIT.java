@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
@@ -19,12 +20,17 @@ import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.Property;
+import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedRepresentationalForm;
+import org.LexGrid.naming.SupportedSource;
 import org.apache.commons.lang.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -558,9 +564,125 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			}
 			}
 		}
+		
+		@Test
+		public void testPublishValueSet() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set = set.restrictToCodes(Constructors.createConceptReferenceList("C54453"));
+			ResolvedConceptReferenceList rcrlist = set.resolveToList(null, null, null, -1);
+			Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			ResolvedConceptReference rcr = itr.next();
+			assertTrue(rcr.getEntity().getProperty().length > 0);
+			assertTrue(rcr.getEntity().getPropertyAsReference().stream().filter(x ->
+			x.getPropertyName().equals("Publish_Value_Set")).findFirst().isPresent());
+			assertTrue(rcr.getEntity().getPropertyAsReference().stream().filter(x ->
+			x.getPropertyName().equals("Publish_Value_Set")).findFirst().get().getValue().
+					getContent().equalsIgnoreCase("yes"));
+		}
 	
+		@Test
+		public void testPopulateSupportedRepresentationalForm() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodingScheme scheme = lbs.resolveCodingScheme(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			List<SupportedRepresentationalForm> repForms = scheme.getMappings().getSupportedRepresentationalFormAsReference();
+			assertTrue(repForms.stream().anyMatch(x -> x.getContent().equals("PT")));
+			assertTrue(repForms.stream().anyMatch(x -> x.getContent().equals("SY")));
+			assertTrue(repForms.stream().anyMatch(x -> x.getContent().equals("AB")));
+		}
 	
-	
+		@Test
+		public void testPopulateSupportedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodingScheme scheme = lbs.resolveCodingScheme(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			List<SupportedSource> supportedSourceList = scheme.getMappings().getSupportedSourceAsReference();
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("NCI")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("CDISC")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("nci evs")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("ctep")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("caDSR")));
+			assertTrue(supportedSourceList.stream().anyMatch(x -> x.getContent().equals("ONC")));
+		}
+		
+		@Test
+		public void testRestrictToSupporedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set = set.restrictToCodes(Constructors.createConceptReferenceList("C117743"));
+			
+			ResolvedConceptReferenceList rcrlist = set.resolveToList(null, null, null, -1);
+			Iterator<? extends ResolvedConceptReference> itr = rcrlist.iterateResolvedConceptReference();
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			ResolvedConceptReference rcr = itr.next();
+			
+			Presentation[] presentations = rcr.getEntity().getPresentation();
+			boolean NCI_sourceFound = false;
+			boolean CDISC_sourceFound = false;
+			
+			for (int i = 0; i < presentations.length; i++) {
+				List<Source> sources = presentations[i].getSourceAsReference();
+				if (!NCI_sourceFound && sources.stream().anyMatch(x -> x.getContent().equals("NCI"))) {
+					NCI_sourceFound = true;
+				}
+				else if (!CDISC_sourceFound && sources.stream().anyMatch(x -> x.getContent().equals("CDISC"))) {
+					CDISC_sourceFound = true;
+				}
+			}
+			assertTrue(NCI_sourceFound);
+			assertTrue(CDISC_sourceFound);
+		}
+		
+		@Test
+		public void testRestrictToSupportedClassDefinedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToProperties( Constructors.createLocalNameList("definition"), null, Constructors.createLocalNameList("ctep"), null, null);
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			assertTrue(itr.next().getEntity().getDefinitionAsReference().get(0).getSourceAsReference().
+					stream().anyMatch(x -> x.getContent().equals("ctep")));
+		}
+		
+		@Test
+		public void testRestrictToSupportedAnnotationDefinedSource() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToProperties( Constructors.createLocalNameList("FULL_SYN"), null, Constructors.createLocalNameList("NCI"), null, null);
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			while(itr.hasNext()){
+				boolean found = false;
+				ResolvedConceptReference ref = itr.next();
+				if(ref.getConceptCode().equals("C117743")){
+					Presentation pres = ref.getEntity().getPresentationAsReference().stream().filter(x -> x.getValue().
+							getContent().equals("CDISC SDTM Ophthalmic Exam Test Code Terminology")).findFirst().get();
+					assertNotNull(pres);
+					assertTrue(pres.getSourceAsReference().
+							stream().anyMatch(x -> x.getContent().equals("NCI")));
+				}
+			}
 
-
+		}
+		
+		public void testCodingSchemeSourceDefinition() throws LBException{
+			CodingScheme scheme = lbs.resolveCodingScheme("owl2lexevs" , Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+			assertTrue(scheme.getSourceAsReference().stream().anyMatch(x -> x.getContent().equals("nci evs")));
+		}
 }

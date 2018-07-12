@@ -30,6 +30,7 @@ import org.lexevs.dao.index.access.metadata.MetadataDao;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.index.indexregistry.IndexRegistry;
 import org.lexevs.dao.index.lucene.v2010.entity.SingleTemplateDisposableLuceneCommonEntityDao;
+import org.lexevs.dao.index.lucene.v2013.search.ValueSetEntityDao;
 import org.lexevs.dao.index.lucenesupport.LuceneIndexTemplate;
 import org.lexevs.dao.index.version.LexEvsIndexFormatVersion;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
@@ -50,6 +51,7 @@ public class IndexDaoManager {
 	/** The entity daos. */
 	private List<SearchDao> searchDaos;
 	
+	private List<ValueSetEntityDao> valueSetEntityDaos;
 	/** The entity daos. */
 	private List<MetadataDao> metadataDaos;
 		
@@ -227,5 +229,19 @@ public class IndexDaoManager {
 
 	public void setSearchDaos(List<SearchDao> searchDaos) {
 		this.searchDaos = searchDaos;
+	}
+
+	public List<ValueSetEntityDao> getValueSetEntityDaos() {
+		return valueSetEntityDaos;
+	}
+
+	public void setValueSetEntityDaos(List<ValueSetEntityDao> valueSetEntityDaos) {
+		this.valueSetEntityDaos = valueSetEntityDaos;
+	}
+
+	public ValueSetEntityDao getValueSetEntityDao(String codingSchemeURN, String codingSchemeVersion) {
+		Assert.state(this.valueSetEntityDaos.size() == 1, "Currently Search Daos are not Versionable.");
+		
+		return this.valueSetEntityDaos.get(0);
 	}
 }

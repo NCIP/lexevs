@@ -6,7 +6,7 @@ REM  -u,--urn "urn"; URN uniquely identifying the code system.
 REM  -v,--version "versionId"; Version identifier.
 REM  -mf,--manifest "manifest"; location of manifest xml file.
 REM 
-REM Note: If the URN and version values are unspecified, a
+REM Note: If either the URN or the version values are unspecified, a
 REM list of available coding schemes will be presented for
 REM user selection.
 REM 

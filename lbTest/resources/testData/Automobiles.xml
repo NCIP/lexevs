@@ -33,6 +33,8 @@
 			uri="urn:oid:1.3.6.1.4.1.2114.108.1.8.1">hasSubtype</lgNaming:supportedAssociation>
 		<lgNaming:supportedAssociation localId="uses"
 			uri="urn:oid:11.11.0.1">uses</lgNaming:supportedAssociation>
+		<lgNaming:supportedAssociation localId="is_a"
+			uri="urn:oid:11.11.0.1">is_a</lgNaming:supportedAssociation>	
 		<lgNaming:supportedAssociation localId="A1"
 			uri="http://A1.org" entityCode="AssocEntity" entityCodeNamespace="Automobiles"
 			codingScheme="Automobiles">A1</lgNaming:supportedAssociation>
@@ -53,7 +55,7 @@
 		<lgNaming:supportedDataType localId="testhtml">test/html</lgNaming:supportedDataType>
 		<lgNaming:supportedDataType localId="textplain">text/plain</lgNaming:supportedDataType>
 		<lgNaming:supportedHierarchy localId="is_a"
-			associationNames="hasSubtype" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>
+			associationNames="hasSubtype,is_a" isForwardNavigable="true" rootCode="@">hasSubtype</lgNaming:supportedHierarchy>
 		<lgNaming:supportedLanguage localId="en"
 			uri="www.en.org/orsomething">en</lgNaming:supportedLanguage>
 		<lgNaming:supportedNamespace localId="Automobiles"
@@ -181,7 +183,7 @@
 			<lgCon:entityType>concept</lgCon:entityType>
 			<lgCon:presentation propertyName="textualPresentation"
 				propertyId="t1" isPreferred="true">
-				<lgCommon:value>a^s sp*cial co{nce]pt</lgCommon:value>
+				<lgCommon:value>a^s sp*cial co{nce]pt you (know/don't know)</lgCommon:value>
 			</lgCon:presentation>
 		</lgCon:entity>
 		<lgCon:entity entityCode="C0001" entityCodeNamespace="Automobiles"

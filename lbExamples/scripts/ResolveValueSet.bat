@@ -10,4 +10,4 @@ REM A list concepts that are member of value set definition will be displayed.
 REM 
 REM Example: ResolveValueSet
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.ResolveValueSet %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.ResolveValueSet %*

@@ -6,4 +6,4 @@ REM
 REM Example: ScoreTerm "some term to evaluate"
 REM Example: ScoreTerm "some term to evaluate" 25%
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.ScoreTerm %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.ScoreTerm %*

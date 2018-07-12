@@ -171,14 +171,16 @@ public class ChildPagingJsonConverter implements JsonConverter {
 			if(node.getPathToRootChildren() != null){	
 				int children = 0;
 				for(LexEvsTreeNode child : node.getPathToRootChildren()){
-					children++;
-					childrenArray.put(walkTreeFromRoot(child));
+				    if (!child.isAnonymous()) {
+    					children++;
+    					childrenArray.put(walkTreeFromRoot(child));
+				    }
 				} 
 				
 				ChildTreeNodeIterator itr = node.getChildIterator();
 				while(itr.hasNext() && children < MAX_CHILDREN){
 					LexEvsTreeNode child = itr.next();
-					if(!knownChildrenContainsCode(node.getPathToRootChildren(), child.getCode())){
+					if(!knownChildrenContainsCode(node.getPathToRootChildren(), child.getCode()) && !child.isAnonymous()){
 						childrenArray.put(walkTreeFromRoot(child));
 						children++;
 					}

@@ -42,6 +42,7 @@ import org.apache.lucene.analysis.standard.StandardTokenizer;
 import org.apache.lucene.analysis.util.CharArraySet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.util.AttributeFactory;
+import org.lexevs.dao.index.access.entity.EntityDao;
 import org.lexevs.dao.index.lucene.v2010.entity.LuceneEntityDao;
 import org.lexevs.dao.indexer.api.generators.DocumentFromStringsGenerator;
 
@@ -62,7 +63,7 @@ public abstract class LuceneLoaderCode {
     protected boolean useCompoundFile_ = false;
     
     /** The generator_. */
-    private DocumentFromStringsGenerator generator_;
+    protected DocumentFromStringsGenerator generator_;
     
     /** The norm enabled_. */
     protected static boolean normEnabled_ = false;
@@ -552,7 +553,7 @@ public abstract class LuceneLoaderCode {
      * 
      * @return the string
      */
-    public String reverseTermsInPropertyValue(String propertyValue){
+    public static String reverseTermsInPropertyValue(String propertyValue){
         StringBuffer buffer = new StringBuffer();
         String[] terms = propertyValue.split(" ");
         for(int i=0;i<terms.length;i++){
@@ -584,7 +585,7 @@ public abstract class LuceneLoaderCode {
 		this.luceneEntityDao = luceneEntityDao;
 	}
 
-	public LuceneEntityDao getLuceneEntityDao() {
+	public EntityDao getLuceneEntityDao() {
 		return luceneEntityDao;
 	}
 	

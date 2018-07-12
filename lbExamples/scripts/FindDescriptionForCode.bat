@@ -5,4 +5,4 @@ REM entity code.
 REM
 REM Example: FindDescriptionForCode "C43652"
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.FindDescriptionForCode %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.FindDescriptionForCode %*

@@ -45,7 +45,7 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 	 * 
 	 * @return the coding scheme id
 	 */
-	protected String getCodingSchemeUId(String codingSchemeUri, String codingSchemeVersion){
+	public String getCodingSchemeUId(String codingSchemeUri, String codingSchemeVersion){
 		return daoManager.
 			getCodingSchemeDao(codingSchemeUri, codingSchemeVersion).
 			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, codingSchemeVersion);
@@ -113,4 +113,6 @@ public class AbstractDatabaseService extends DatabaseServiceEventSupport {
 	public Logger getLogger() {
 		return logger;
 	}
+
+
 }

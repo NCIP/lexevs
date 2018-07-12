@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.ncihistory;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeVersionList;
 import org.LexGrid.LexBIG.DataModel.Collections.NCIChangeEventList;
@@ -181,4 +182,12 @@ public interface NciHistoryService {
 	 * @param codingSchemeUri the coding scheme uri
 	 */
 	public void removeNciHistory(String codingSchemeUri);
+
+	public List<String> getCodeListForVersion(String currentVersion, String uri);
+	
+	public Date getDateForVersion(String currentVersion, String uri);
+
+	public List<String> getVersionsForDateRange(Date previousDate, Date currentDate, String uri);
+
+	
 }

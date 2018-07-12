@@ -17,4 +17,4 @@ REM
 REM Example: FindCodesForDescription "blood"
 REM Example: FindCodesForDescription "breast cancer" "concept"
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.FindCodesForDescription %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.FindCodesForDescription %*

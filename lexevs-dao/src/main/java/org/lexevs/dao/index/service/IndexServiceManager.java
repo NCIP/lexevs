@@ -21,6 +21,7 @@ package org.lexevs.dao.index.service;
 import org.lexevs.dao.index.service.entity.EntityIndexService;
 import org.lexevs.dao.index.service.metadata.MetadataIndexService;
 import org.lexevs.dao.index.service.search.SearchIndexService;
+import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 
 /**
  * The Class IndexServiceManager.
@@ -36,6 +37,8 @@ public class IndexServiceManager {
 	private MetadataIndexService metadataIndexService;
 	
 	private SearchIndexService searchIndexService;
+	
+	private SourceAssertedValueSetSearchIndexService assertedValueSetIndexService;
 
 	/**
 	 * Sets the entity index service.
@@ -69,5 +72,13 @@ public class IndexServiceManager {
 
 	public void setSearchIndexService(SearchIndexService searchIndexService) {
 		this.searchIndexService = searchIndexService;
+	}
+
+	public SourceAssertedValueSetSearchIndexService getAssertedValueSetIndexService() {
+		return assertedValueSetIndexService;
+	}
+
+	public void setAssertedValueSetIndexService(SourceAssertedValueSetSearchIndexService assertedValueSetIndexService) {
+		this.assertedValueSetIndexService = assertedValueSetIndexService;
 	}
 }

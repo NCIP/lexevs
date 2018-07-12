@@ -29,6 +29,7 @@ public enum OntologyFormat {
     UMLSHISTORY,
     MRMAP,
     RESOLVEDVALUESET,
+    SOURCEASSERTEDRESOLVEDVS,
     MIFVOCABULARY,
     MEDDRA;
     

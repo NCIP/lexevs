@@ -17,4 +17,4 @@ REM hierarchies not explicitly tagged by HCD.
 REM 
 REM The selected code system must represent the full Metathesaurus.
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.FindUMLSContextsForCUI %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.FindUMLSContextsForCUI %*

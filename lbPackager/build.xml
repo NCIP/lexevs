@@ -318,7 +318,7 @@ You may obtain a copy of the License at
 	
 	<target name="temp-compile" depends="init" description="compile source in temporary directories">
 		<!-- debug <echoproperties prefix="java.vm.version"></echoproperties> -->
-		<javac srcdir="${temp.src}" destdir="${temp.bin}" debug="yes">
+		<javac srcdir="${temp.src}" destdir="${temp.bin}" debug="yes" encoding="UTF-8">
 			<classpath refid="master.classpath"/>
 		</javac>
 	</target>
@@ -544,6 +544,13 @@ You may obtain a copy of the License at
 		<copy todir="${pkg-examples}/resources">
 			<fileset dir="${lexevs.api.dir}/lbExamples/resources" includes="**/*"/>
 		</copy>
+		
+		<copy todir="${pkg-extlib}" flatten="true">
+			<fileset dir="${lexevs.api.dir}/lbExamples/">
+			    <include name="target/*${vBuild}.jar"/>
+			</fileset>
+		</copy>
+		
 	</target>
 
 	<target name="lbTest" description="packages LexBIG verification tests">

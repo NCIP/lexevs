@@ -24,4 +24,4 @@ REM techniques to navigate the Metathesaurus, please refer to other examples
 REM such as BuildTreeForMetaCodeBySource, ListHierarchyMetaBySource and
 REM FindUMLSContextsForCUI.
 REM
-java -Xmx1000m -cp "..\runtime\lbPatch.jar;.;..\runtime\lbRuntime.jar" org.LexGrid.LexBIG.example.BuildTreeForCode %*
+java -Xmx1000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.LexGrid.LexBIG.example.BuildTreeForCode %*
