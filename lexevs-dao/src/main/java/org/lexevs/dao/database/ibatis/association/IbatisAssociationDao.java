@@ -37,6 +37,7 @@ import org.lexevs.cache.annotation.ClearCache;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
+import org.lexevs.dao.database.access.association.batch.AssociationQualifierBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.association.model.Triple;
@@ -585,6 +586,55 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				batchInserter.executeBatch();
 				
 				return null;
+			}	
+		});
+	}
+	
+	@ClearCache
+	public void insertBatchAssociationQualifiers(final String codingSchemeId,
+			final List<AssociationQualifierBatchInsertItem> list) {
+		
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+					throws SQLException {
+				BatchInserter batchInserter = getBatchTemplateInserter(executor);
+				
+				batchInserter.startBatch();
+				
+				for(AssociationQualifierBatchInsertItem item : list){
+					
+					insertAssociationQualifier(
+							codingSchemeId, 
+							item.getParentId(), 
+							item.getAssociationQualifier(), 
+							batchInserter);
+				}
+				
+				batchInserter.executeBatch();
+				
+				return null;
+			}
+
+			private void insertAssociationQualifier(String codingSchemeId, String parentId,
+					AssociationQualification qual, BatchInserter batchInserter) {
+				String qualUId = createUniqueId();
+
+				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+				qualBean.setReferenceUId(parentId);
+				qualBean.setUId(qualUId);
+				qualBean.setPrefix(getPrefixResolver().resolvePrefixForCodingScheme(
+						codingSchemeId));
+				qualBean.setQualifierName(qual.getAssociationQualifier());
+				qualBean.setEntryStateUId(createUniqueId());
+
+				if (qual.getQualifierText() != null) {
+					qualBean
+							.setQualifierValue(qual.getQualifierText().getContent());
+				}
+
+				batchInserter.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				
 			}	
 		});
 	}

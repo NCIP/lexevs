@@ -25,6 +25,7 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.access.association.batch.AssociationQualifierBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
 import org.lexevs.dao.database.access.association.model.Triple;
@@ -258,6 +259,9 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 			int start, int pagesize);
 
 	public String getKeyForAssociationInstanceId(String codingSchemeIdInDb, String parentId);
+
+	public void insertBatchAssociationQualifiers(String codingSchemeIdInDb,
+			List<AssociationQualifierBatchInsertItem> batch);
 
 
 }

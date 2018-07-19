@@ -1,9 +1,13 @@
 package org.lexgrid.loader.writer;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.relations.AssociationQualification;
+import org.LexGrid.relations.AssociationSource;
 import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.association.batch.AssociationQualifierBatchInsertItem;
+import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexgrid.loader.wrappers.CodingSchemeUriVersionPair;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
@@ -13,8 +17,15 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 
 	@Override
 	public void doWrite(CodingSchemeUriVersionPair codingSchemeId, List<ParentIdHolder<AssociationQualification>> items) {
-		for(ParentIdHolder<AssociationQualification> paq: items) {
-			
+	//	for(ParentIdHolder<AssociationQualification> paq: items) {
+		
+		final List<AssociationQualifierBatchInsertItem> batch = 
+			new ArrayList<AssociationQualifierBatchInsertItem>();
+		
+		for(ParentIdHolder<AssociationQualification> holder : items){
+			batch.add(new AssociationQualifierBatchInsertItem(
+					holder.getParentId(), holder.getItem()));
+		}
 			this.getDatabaseServiceManager().getDaoCallbackService().
 		executeInDaoLayer(new DaoCallback<Object>(){
 
@@ -28,11 +39,11 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 			daoManager.getAssociationDao(
 					codingSchemeId.getUri(), 
 					codingSchemeId.getVersion())
-						.insertAssociationQualifier(codingSchemeIdInDb, paq.getParentId(), paq.getItem());
+						.insertBatchAssociationQualifiers(codingSchemeIdInDb, batch);
 			return null;
-		}
-	});	
 	}
+	});	
+//	}
 		
 	}
 
