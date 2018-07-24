@@ -1,11 +1,14 @@
 package org.lexgrid.loader.writer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.batch.AssociationQualifierBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
@@ -17,8 +20,8 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 
 	@Override
 	public void doWrite(CodingSchemeUriVersionPair codingSchemeId, List<ParentIdHolder<AssociationQualification>> items) {
-	//	for(ParentIdHolder<AssociationQualification> paq: items) {
-		
+		long start = System.nanoTime();
+		System.out.println("Processor Completed, writer started: " + TimeUnit.SECONDS.convert(start, TimeUnit.NANOSECONDS));
 		final List<AssociationQualifierBatchInsertItem> batch = 
 			new ArrayList<AssociationQualifierBatchInsertItem>();
 		
@@ -30,21 +33,24 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 		executeInDaoLayer(new DaoCallback<Object>(){
 
 		public Object execute(DaoManager daoManager) {
+			AssociationDao assocDao = daoManager.getAssociationDao(
+					codingSchemeId.getUri(), 
+					codingSchemeId.getVersion());
 			String codingSchemeIdInDb = daoManager.getCodingSchemeDao(
 					codingSchemeId.getUri(), 
 					codingSchemeId.getVersion()).
 					getCodingSchemeUIdByUriAndVersion(
 							codingSchemeId.getUri(), 
 							codingSchemeId.getVersion());
-			daoManager.getAssociationDao(
-					codingSchemeId.getUri(), 
-					codingSchemeId.getVersion())
-						.insertBatchAssociationQualifiers(codingSchemeIdInDb, batch);
+			HashMap<String, String> map = (HashMap<String, String>) assocDao.getInstanceToGuidCache(codingSchemeIdInDb);
+			assocDao.insertBatchAssociationQualifiers(codingSchemeIdInDb, batch, map);
 			return null;
 	}
 	});	
-//	}
-		
+
+		long end = System.nanoTime();
+		System.out.println("Write completed: " + TimeUnit.SECONDS.convert(end, TimeUnit.NANOSECONDS));
+		System.out.println("Write Time: " + TimeUnit.SECONDS.convert(end - start, TimeUnit.NANOSECONDS));
 	}
 
 }
