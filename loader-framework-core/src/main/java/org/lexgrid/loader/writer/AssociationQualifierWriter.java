@@ -21,7 +21,6 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 	@Override
 	public void doWrite(CodingSchemeUriVersionPair codingSchemeId, List<ParentIdHolder<AssociationQualification>> items) {
 		long start = System.nanoTime();
-		System.out.println("Processor Completed, writer started: " + TimeUnit.SECONDS.convert(start, TimeUnit.NANOSECONDS));
 		final List<AssociationQualifierBatchInsertItem> batch = 
 			new ArrayList<AssociationQualifierBatchInsertItem>();
 		
@@ -46,11 +45,7 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 			assocDao.insertBatchAssociationQualifiers(codingSchemeIdInDb, batch, map);
 			return null;
 	}
-	});	
-
-		long end = System.nanoTime();
-		System.out.println("Write completed: " + TimeUnit.SECONDS.convert(end, TimeUnit.NANOSECONDS));
-		System.out.println("Write Time: " + TimeUnit.SECONDS.convert(end - start, TimeUnit.NANOSECONDS));
+	});			
 	}
 
 }

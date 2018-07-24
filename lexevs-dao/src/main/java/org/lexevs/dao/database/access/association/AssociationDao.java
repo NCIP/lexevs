@@ -263,9 +263,9 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 
 	public String getKeyForAssociationInstanceId(String codingSchemeIdInDb, String parentId);
 
-	List<InstanceToGuid> getGuidToInstanceMap(String codingSchemeId);
+	public List<InstanceToGuid> getGuidToInstanceMap(String codingSchemeId);
 
-	Map<String, String> getInstanceToGuidCache(String schemeId);
+	public Map<String, String> getInstanceToGuidCache(String schemeId);
 
 	public void insertBatchAssociationQualifiers(String codingSchemeIdInDb,
 			List<AssociationQualifierBatchInsertItem> batch, HashMap<String, String> map);

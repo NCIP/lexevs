@@ -610,10 +610,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
-				long startBatch = System.nanoTime();
-				System.out.println("Batch load started");
-	
-//				HashMap<String, String> instanceMap = (HashMap<String, String>) getInstanceToGuidCache(codingSchemeId);
 				BatchInserter batchInserter = getBatchTemplateInserter(executor);
 				
 				batchInserter.startBatch();
@@ -627,11 +623,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 							item.getParentId(), 
 							item.getAssociationQualifier(), 
 							batchInserter);
-					System.out.println("Qual Insert: " + (System.nanoTime() - start));
-				}
+					}
 				
 				batchInserter.executeBatch();
-				System.out.println("Batch load complete in nanosecs: " + (System.nanoTime() - startBatch));
 				return null;
 			}
 
@@ -639,10 +633,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			private void insertAssociationQualifier(String codingSchemeId,  String associationTargetId, String parentId,
 					AssociationQualification qual, BatchInserter batchInserter) {
 				String qualUId = createUniqueId();
-				long start = System.nanoTime();
-//				String associationTargetId = getKeyForAssociationInstanceId(codingSchemeId, parentId);
-				System.out.println("Time getting instance Id seconds: " + TimeUnit.SECONDS.convert(System.nanoTime() - start, TimeUnit.NANOSECONDS));
-				System.out.println("Time getting instance Id nanoseconds: " + (System.nanoTime() - start));
 				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
 				qualBean.setReferenceUId(associationTargetId );
 				qualBean.setUId(qualUId);
