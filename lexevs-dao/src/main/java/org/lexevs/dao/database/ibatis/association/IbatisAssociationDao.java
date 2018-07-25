@@ -617,12 +617,17 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				for(AssociationQualifierBatchInsertItem item : list){
 					long start = System.nanoTime();
 					String associationId = instanceMap.get(item.getParentId());
+					if(associationId == null) {
+						System.out.println(item.getParentId() + "Is an associationId"
+								+ " with no loaded association"); 
+					}else {
 					insertAssociationQualifier(
 							codingSchemeId, 
 							associationId,
 							item.getParentId(), 
 							item.getAssociationQualifier(), 
 							batchInserter);
+					}
 					}
 				
 				batchInserter.executeBatch();

@@ -91,7 +91,7 @@
 				<step id="umlsLoadMrsatAssocQuals" next="buildTransitivityTable" parent="listenerStep">
 					<tasklet>
 						<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatQualifierProcessor"
-							writer="associationQualifierWriter" commit-interval="1000" skip-limit="100000">
+							writer="associationQualifierWriter" commit-interval="10000" skip-limit="100000">
 							<streams>
 								<stream ref="mrsatReader" />
 							</streams>
