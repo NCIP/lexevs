@@ -23,8 +23,6 @@ public class EntityAsscToEntityMrsatQualsProcessor<I> extends AbstractSupportedA
 	@Override
 	public ParentIdHolder<AssociationQualification> doProcess(I item) throws Exception {
 	
-		long start = System.nanoTime();
-		System.out.println("Read Completed: " + TimeUnit.SECONDS.convert(start, TimeUnit.NANOSECONDS));
 		if(!qualifierResolver.toProcess(item)) {
 			return null;
 		}
@@ -32,9 +30,7 @@ public class EntityAsscToEntityMrsatQualsProcessor<I> extends AbstractSupportedA
 		AssociationQualification qual = DataUtils.createAssociationQualifier(qualifierResolver, item);
 
 		String associationInstanceId = associationInstanceIdResolver.resolveAssociationInstanceId(item);
-		long end = System.nanoTime();
-		System.out.println("Processor completed: " + TimeUnit.SECONDS.convert(end, TimeUnit.NANOSECONDS));
-		System.out.println("Processor Time: " + TimeUnit.SECONDS.convert(end - start, TimeUnit.NANOSECONDS));
+
 		return new ParentIdHolder<AssociationQualification>(
 				this.getCodingSchemeIdSetter(),
 				 associationInstanceId, 

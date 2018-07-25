@@ -20,7 +20,6 @@ public class AssociationQualifierWriter extends AbstractParentIdHolderWriter<Ass
 
 	@Override
 	public void doWrite(CodingSchemeUriVersionPair codingSchemeId, List<ParentIdHolder<AssociationQualification>> items) {
-		long start = System.nanoTime();
 		final List<AssociationQualifierBatchInsertItem> batch = 
 			new ArrayList<AssociationQualifierBatchInsertItem>();
 		

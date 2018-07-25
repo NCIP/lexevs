@@ -615,7 +615,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				batchInserter.startBatch();
 				
 				for(AssociationQualifierBatchInsertItem item : list){
-					long start = System.nanoTime();
 					String associationId = instanceMap.get(item.getParentId());
 					if(associationId == null) {
 						System.out.println(item.getParentId() + "Is an associationId"
