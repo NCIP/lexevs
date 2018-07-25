@@ -18,15 +18,19 @@
  */
 package org.lexevs.dao.database.access.association;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.access.association.batch.AssociationQualifierBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
+import org.lexevs.dao.database.access.association.model.InstanceToGuid;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 
@@ -256,6 +260,15 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	List<GraphDbTriple> getAllDescendantTriplesTrOfCodingScheme(
 			String codingSchemeId, String associationName, String code,
 			int start, int pagesize);
+
+	public String getKeyForAssociationInstanceId(String codingSchemeIdInDb, String parentId);
+
+	public List<InstanceToGuid> getGuidToInstanceMap(String codingSchemeId);
+
+	public Map<String, String> getInstanceToGuidCache(String schemeId);
+
+	public void insertBatchAssociationQualifiers(String codingSchemeIdInDb,
+			List<AssociationQualifierBatchInsertItem> batch, HashMap<String, String> map);
 
 
 }

@@ -151,6 +151,11 @@ public class Mrsat  implements java.io.Serializable {
     public void setCvf(String cvf) {
         this.cvf = cvf;
     }
+    
+   public String toString() {
+	return stype != null?stype:"stype null";
+	   
+   }
 
 
    public boolean equals(Object other) {

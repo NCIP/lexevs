@@ -31,7 +31,7 @@ import org.lexgrid.loader.rrf.model.Mrdef;
  */
 public class MrdefAuiPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrdef>{
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrdef item) {
 		return RrfLoaderConstants.AUI_QUALIFIER;
 	}
 
