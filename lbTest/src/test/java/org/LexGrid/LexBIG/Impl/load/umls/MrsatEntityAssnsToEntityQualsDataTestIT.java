@@ -25,6 +25,8 @@ import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.DataTestUtils;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.naming.Mappings;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -72,6 +74,18 @@ public class MrsatEntityAssnsToEntityQualsDataTestIT extends DataLoadTestBase {
 	public void testRelaQualCHARTYPEID() throws Exception {	
 		NameAndValueList quals = DataTestUtils.getConceptReference(associatedConcept, "U000010").getAssociationQualifiers();
 		assertTrue(DataTestUtils.isQualifierNameAndValuePresent("CHARACTERISTIC_TYPE_ID", "900000000000011006", quals));
+	}
+	
+	@Test
+	public void testSupportedQualifierLoad() throws Exception {
+		CodingScheme scheme = lbs.resolveCodingScheme(LexBIGServiceTestCase.AIR_URN, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.AIR_VERSION));
+		Mappings mappings = scheme.getMappings();
+		assertTrue(mappings.getSupportedAssociationQualifierAsReference().stream().
+		anyMatch(x -> x.getContent().equals("MODIFIER_ID")));
+		assertTrue(mappings.getSupportedAssociationQualifierAsReference().stream().
+				anyMatch(x -> x.getContent().equals("CHARACTERISTIC_TYPE_ID")));
+		
 	}
 	
 	public static junit.framework.Test suite() {  

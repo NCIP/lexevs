@@ -43,8 +43,8 @@ public class EntityAsscToEntityMrsatQualsProcessor<I> extends AbstractSupportedA
 				super.getCodingSchemeIdSetter().getCodingSchemeUri(), 
 				super.getCodingSchemeIdSetter().getCodingSchemeVersion(),
 				item.getItem().getAssociationQualifier(),
-				null, 
-				null);
+				super.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+				item.getItem().getAssociationQualifier());
 		
 	}
 
