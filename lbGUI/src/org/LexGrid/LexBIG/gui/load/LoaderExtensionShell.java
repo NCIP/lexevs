@@ -34,6 +34,7 @@ import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
 import org.LexGrid.LexBIG.gui.LoadExportBaseShell;
 import org.LexGrid.LexBIG.gui.Utility;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -54,6 +55,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.system.constants.SystemVariables;
 import org.lexgrid.resolvedvalueset.LexEVSResolvedValueSetService;
 import org.lexgrid.resolvedvalueset.impl.LexEVSResolvedValueSetServiceImpl;
 import org.springframework.util.StringUtils;
@@ -175,9 +178,46 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
         uriChooseButton.setToolTipText(uriHelp);
+                
+        // get lbconfig properties
+        SystemVariables variables = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
+        String csTag = variables.getAssertedValueSetCodingSchemeTag();
+        String csVersion = variables.getAssertedValueSetVersion();
+        String csName = variables.getAssertedValueSetCodingSchemeName();
+        String csURI = variables.getAssertedValueSetCodingSchemeURI();
+        String hierarchyVSRelation = variables.getAssertedValueSetHierarchyVSRelation();
+            
+        AssertedValueSetParameters params = null;
+        
+        // Set the asserted value set params
+        // create parameters with tag set
+        if (csTag != null) {
+            params = new AssertedValueSetParameters.Builder().
+                    assertedDefaultHierarchyVSRelation(hierarchyVSRelation).
+                    codingSchemeName(csName).
+                    codingSchemeURI(csURI).
+                    codingSchemeTag(csTag)
+                    .build();
+        }
+        // create parameters with a version set
+        else if (csVersion != null && csVersion.length() > 0){
+            params = new AssertedValueSetParameters.Builder(csVersion).
+                    assertedDefaultHierarchyVSRelation(hierarchyVSRelation).
+                    codingSchemeName(csName).
+                    codingSchemeURI(csURI)
+                    .build();
+        }
+        // create parameters with NO tag set
+        else {
+            params = new AssertedValueSetParameters.Builder().
+                assertedDefaultHierarchyVSRelation(hierarchyVSRelation).
+                codingSchemeName(csName).
+                codingSchemeURI(csURI)
+                .build();
+        }
         
         // Get resolved value sets
-        LexEVSResolvedValueSetService resolvedValueSetService = new LexEVSResolvedValueSetServiceImpl();
+        LexEVSResolvedValueSetService resolvedValueSetService = new LexEVSResolvedValueSetServiceImpl(params);
         java.util.List<CodingScheme> resolvedValueSets = null;
         try {
             resolvedValueSets = resolvedValueSetService.listAllResolvedValueSets();
