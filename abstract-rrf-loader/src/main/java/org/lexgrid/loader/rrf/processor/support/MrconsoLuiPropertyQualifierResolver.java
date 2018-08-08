@@ -31,7 +31,7 @@ import org.lexgrid.loader.rrf.model.Mrconso;
  */
 public class MrconsoLuiPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrconso>{
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrconso item) {
 		return RrfLoaderConstants.LUI_QUALIFIER;
 	}
 

@@ -31,7 +31,7 @@ import org.lexgrid.loader.rrf.model.Mrconso;
  */
 public class MrconsoCvfPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrconso>{
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrconso item) {
 		return RrfLoaderConstants.CVF_QUALIFIER;
 	}
 

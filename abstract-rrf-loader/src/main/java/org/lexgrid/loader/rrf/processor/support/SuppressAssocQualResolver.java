@@ -36,7 +36,7 @@ public class SuppressAssocQualResolver extends AbstractAssociationQualifierResol
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierName()
 	 */
-	public String getQualifierName() {
+	public String getQualifierName(Mrrel item) {
 		return RrfLoaderConstants.SUPPRESS_QUALIFIER;
 	}
 

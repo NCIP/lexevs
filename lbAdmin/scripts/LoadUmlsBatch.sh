@@ -10,4 +10,4 @@
 #
 # Example: LoadUMLSBatch -in "file:///path/to/directory/" -s "PSY"
 #
-java -Xmx1000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher $@
+java -Xmx8000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher $@

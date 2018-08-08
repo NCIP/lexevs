@@ -11,4 +11,4 @@ REM   -s,--source vocabularies to load.
 REM
 REM Example: LoadUMLSFiles -in "file:///path/to/directory/" -s "PSY"
 REM
-java -Xmx800m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher %*
+java -Xmx8000m -cp "..\runtime\lbPatch.jar;..\runtime-components\extLib\*" org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher %*
