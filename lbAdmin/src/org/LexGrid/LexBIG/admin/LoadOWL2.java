@@ -57,17 +57,21 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *   -t, --tag &lt;id&gt; An optional tag ID (e.g. 'PRODUCTION' or 'TEST') to assign. 
  *   -meta --meatadata input &lt;uri&gt; URI or path specifying location of the metadata source file.  
  *        metadata is applied to the code system and code system version being loaded.
- *   -mv  --validate metadata &lt;int&gt; Perform validation of the metadata source file
+ *   -metav  --validate metadata &lt;int&gt; Perform validation of the metadata source file
  *         without loading data. Supported levels of validation include:
  *         0 = Verify document is valid.
  *         metadata is validated against the code system and code system version being loaded.
+ *   -metao, --overwrite If specified, existing metadata for the code system
+ *         will be erased. Otherwise, new metadata will be appended to
+ *         existing metadata (if present).  
+ *   -metaf,--force Force overwrite (no confirmation).
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
  *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a
  * -or-
  *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -v 0
  *  -or-
- *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a -meta &quot;file:///path/to/metadata.xml&quot;
+ *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a -meta &quot;file:///path/to/metadata.xml&quot; -metao
  * </pre>
  * 
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
@@ -76,8 +80,8 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
 public class LoadOWL2 {
 
     private static final String EXAMPLE_CALL =  "\n LoadOWL2 -in \"file:///path/to/somefile.owl\" -a"
-            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -mf \"file:///path/to/myCodingScheme-manifest.xml\" -a -meta \"file:///path/to/metadata.xml\" -mv 0"
-            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -v 0";
+            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -v 0"
+            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -mf \"file:///path/to/myCodingScheme-manifest.xml\" -a -meta \"file:///path/to/metadata.xml\" -metav 0 -metao";
     
     public static void main(String[] args) {
         try {
@@ -111,8 +115,8 @@ public class LoadOWL2 {
                 if (cl.hasOption("v")){
                     vl = Integer.parseInt(cl.getOptionValue("v"));
                 }
-                if (cl.hasOption("mv")) {
-                    v2 = Integer.parseInt(cl.getOptionValue("mv"));
+                if (cl.hasOption("metav")) {
+                    v2 = Integer.parseInt(cl.getOptionValue("metav"));
                 }
             } catch (ParseException e) {
                 Util.displayCommandOptions("LoadOWL2", options,
@@ -159,6 +163,11 @@ public class LoadOWL2 {
             if (v2 >= 0) {
                 Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
             } 
+           
+            // metadata force
+            boolean force = cl.hasOption("metaf");
+            // metadata overwrite
+            boolean overwrite = cl.hasOption("metao");
             
             boolean activate = vl < 0 && cl.hasOption("a");
             if (vl >= 0) {
@@ -210,13 +219,11 @@ public class LoadOWL2 {
                                    
             // If there is a metadata URI passed in, then load it.
             if (metaUri != null) {
+                CodingSchemeSummary css = null;
                 
                 // Find the registered extension handling this type of load ...               
                 MetaData_Loader metadataLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
-                
-                CodingSchemeSummary css = null;
-                boolean overwrite = true;
-           
+                                           
                 Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
                         .enumerateCodingSchemeRendering();
                 while (schemes.hasMoreElements() && css == null) {
@@ -247,10 +254,18 @@ public class LoadOWL2 {
                     Util.displayTaggedMessage("METADATA VALIDATION SUCCESSFUL");
                 }
                 else{
-                    Util.displayTaggedMessage("Loading Metadata");
-                    metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
-                            overwrite, false, true);
-                    Util.displayLoaderStatus(metadataLoader);
+                    boolean confirmed = true;
+                    if (overwrite && !force) {
+                        Util.displayMessage("OVERWRITE EXISTING METADATA? ('Y' to confirm, any other key to cancel)");
+                        char choice = Util.getConsoleCharacter();
+                        confirmed = choice == 'Y' || choice == 'y';
+                    }
+                    if (confirmed) {
+                        Util.displayTaggedMessage("Loading Metadata");
+                        metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
+                                overwrite, false, true);
+                        Util.displayLoaderStatus(metadataLoader);
+                    }
                 }
             }
         }
@@ -308,8 +323,17 @@ public class LoadOWL2 {
         o.setRequired(false);
         options.addOption(o);
         
-        o = new Option("mv", "metadata validate", true, "Validation metadata only; no load. 0 to verify well-formed xml.");
+        o = new Option("metav", "metadata validate", true, "Validation metadata only; no load. 0 to verify well-formed xml.");
         o.setArgName("int");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("metao", "overwrite", false, "If specified, existing metadata for the code system "
+                + "will be erased. Otherwise, new metadata will be appended " + "to existing metadata (if present). ");
+        o.setRequired(false);
+        options.addOption(o);
+
+        o = new Option("metaf", "force", false, "Force overwrite (no confirmation).");
         o.setRequired(false);
         options.addOption(o);
 
