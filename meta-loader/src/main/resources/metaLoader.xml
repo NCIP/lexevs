@@ -233,15 +233,6 @@
 			<beans:bean class="org.lexgrid.loader.rrf.processor.support.MrsatRuiAssocQualResolver" />	
 		</beans:property>
 	</beans:bean>
-	
-	<beans:bean id="metaDefaultPropertyProcessor" abstract="true">
-		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="umlsCodingSchemeIdSetter" />
-		</beans:property>
-		<beans:property name="supportedAttributeTemplate">
-			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
-		</beans:property>
-	</beans:bean>
 
 	<!-- Relation Processing Below -->
 
