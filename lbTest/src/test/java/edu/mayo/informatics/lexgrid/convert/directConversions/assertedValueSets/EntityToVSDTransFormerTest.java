@@ -10,12 +10,17 @@ import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Text;
 import org.LexGrid.concepts.Entity;
+import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedCodingScheme;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.EntityReference;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.LexGrid.valueSets.types.DefinitionOperator;
 import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.dao.database.utility.DaoUtility;
 
 import junit.framework.TestCase;
 
@@ -28,7 +33,7 @@ public class EntityToVSDTransFormerTest extends TestCase{
 	
 	@Before
 	public void setUp(){
-		transformer = new EntityToVSDTransformer(null, null, null, null, null, ASSOCIATION_NAME, null);
+		transformer = new EntityToVSDTransformer(null, CODING_SCHEME_URI, null, CODING_SCHEME, null, ASSOCIATION_NAME, null);
 	}
 
 	
@@ -80,6 +85,32 @@ public class EntityToVSDTransFormerTest extends TestCase{
 		assertTrue(ref.getTargetToSource());
 		assertTrue(ref.getTransitiveClosure());
     }
+	
+	@Test
+	public void testCreateMappings() throws LBParameterException{
+		Entity entity = new Entity();
+		entity.setEntityCode("C123");
+		entity.setEntityCodeNamespace("cs");
+		entity.setEntityDescription(Constructors.createEntityDescription("Description of Entity"));
+		Property[] props;
+		Property prop = new Property();
+		prop.setPropertyName("Semantic_Type");
+		prop.setValue(Constructors.createText("TestSemanticTypeValue"));
+		Property prop1 = new Property();
+		prop1.setPropertyName("Publish_Value_Set");
+		prop1.setValue(Constructors.createText("yes"));
+		props = new Property[] {prop, prop1};
+		entity.setProperty( props);		
+		
+		List<ValueSetDefinition> defs = transformer.transformEntityToValueSetDefinitions(entity, "Eqivalent");
+		SupportedCodingScheme scs = defs.get(0).getMappings().getSupportedCodingScheme(0);
+		SupportedNamespace snsp = defs.get(0).getMappings().getSupportedNamespace(0);
+		assertTrue(scs != null);
+		assertTrue(snsp != null);
+		
+		SupportedCodingScheme supCS = DaoUtility.getURIMap(defs.get(0).getMappings(), SupportedCodingScheme.class, "owl2lexevs");
+		assertNotNull(supCS);
+	}
 	
 	@Test
 	   public void testGetPropertyQualifierValueForSource(){
