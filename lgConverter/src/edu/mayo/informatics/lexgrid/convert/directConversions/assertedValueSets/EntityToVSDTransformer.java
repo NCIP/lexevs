@@ -48,7 +48,7 @@ public class EntityToVSDTransformer{
        this.owner = owner;
        this.association = definingAssociation;
        messages_ = LoggerFactory.getLogger();
-       if (conceptDomainIndicator != null) {conceptDomainPropertyName = conceptDomainIndicator;}
+       conceptDomainPropertyName = conceptDomainIndicator;
        this.codingSchemeName = codingSchemeName;
        
    }
@@ -91,7 +91,7 @@ public class EntityToVSDTransformer{
         def.addDefinitionEntry(entry);
         mappings.addSupportedNamespace(AssertedValueSetServices.createSupportedNamespace(entity.getEntityCodeNamespace(), codingSchemeName, codingSchemeURI));
         mappings.addSupportedCodingScheme(
-                AssertedValueSetServices.createSupportedCodingScheme(codingSchemeName, codingSchemeURI));
+                AssertedValueSetServices.createSupportedCodingScheme(entity.getEntityCodeNamespace(), codingSchemeURI));
         def.setMappings(mappings);
 
         String conceptDomain = AssertedValueSetServices.getConceptDomainValueFromEntityProperty(entity, conceptDomainPropertyName);
