@@ -507,7 +507,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<CodingScheme> schemes = svc.listAllSourceAssertedValueSets();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 6L);
+		assertEquals(count, 7L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
 	}
 	

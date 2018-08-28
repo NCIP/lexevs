@@ -41,9 +41,9 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 						getPredUid(csUID), csUID);
 		List<Entity> entity = getDaoManager().getCurrentAssertedValueSetDao()
 				.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
-		CodingScheme scheme = transformToCodingScheme(entity, entities);
+		List<CodingScheme> transcheme = transformToCodingScheme(entity, entities);
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
-		schemes.add(scheme);
+		schemes.addAll(transcheme);
 		return schemes;
 	}
 	
@@ -71,7 +71,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 			List<Entity> topNodeListOfOne = new ArrayList<Entity>();
 			topNodeListOfOne.add(entity);
 					try {
-						schemes.add(transformToCodingScheme(topNodeListOfOne, vsEntities));
+						schemes.addAll(transformToCodingScheme(topNodeListOfOne, vsEntities));
 					} catch (LBException e) {
 						throw new RuntimeException("Failed to retrieve value set for: " + entity.getEntityCode(), e);
 					}
@@ -86,22 +86,31 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		return nodes.stream().map(node -> node.getEntityCode()).collect(Collectors.toList());
 	}
 
-	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
+	private List<CodingScheme> transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
 		if (entity == null || entity.size() == 0) {
 			return null;
 		}
 		Entities list = new Entities();
 		list.getEntityAsReference().addAll(entities);
 		Entity ent = entity.iterator().next();
-		String source = null;
+		List<String> sources = null;
 		if (ent.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(params.getSourceName()))
 				.findAny().isPresent()) {
-			source = ent.getPropertyAsReference().stream()
+			sources = ent.getPropertyAsReference().stream()
 					.filter(x -> x.getPropertyName().equals(params.getSourceName())).map(x -> x.getValue().getContent())
-					.collect(Collectors.toList()).get(0);
+					.collect(Collectors.toList());
 		}
-		return AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(),
-				params.getCodingSchemeURI());
+		return sources.stream().map(source -> {
+			CodingScheme cs = null;
+			try {
+				cs = AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(),
+						params.getCodingSchemeURI());
+			} catch (LBException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return cs;
+		}).collect(Collectors.toList());
 	}
 	
 
