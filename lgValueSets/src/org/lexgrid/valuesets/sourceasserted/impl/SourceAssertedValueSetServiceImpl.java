@@ -104,7 +104,10 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {;
 		return getSourceAssertedValueSetforTopNodeEntityCode(
-				AssertedValueSetServices.getConceptCodeForURI(uri)).get(0);
+				AssertedValueSetServices.getConceptCodeForURI(uri)) == null
+				? null
+				:getSourceAssertedValueSetforTopNodeEntityCode(
+						AssertedValueSetServices.getConceptCodeForURI(uri)).get(0);
 	}
 
 	@Override

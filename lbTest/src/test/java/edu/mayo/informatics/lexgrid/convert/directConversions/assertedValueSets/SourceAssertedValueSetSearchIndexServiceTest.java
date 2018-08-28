@@ -332,8 +332,11 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("entityCode"))
 				.anyMatch(y -> y.stringValue().equals("C99998")));
 		assertTrue(doc.getFields().stream().anyMatch(x -> x.name().equals("codingSchemeUri")));
-		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("codingSchemeUri"))
-				.anyMatch(y -> y.stringValue().equals("http://evs.nci.nih.gov/valueset/FDA/C48323")));
+		assertTrue(doc.getFields().stream().filter(x -> x.name().equals("codingSchemeUri")
+				&& (x.stringValue().
+				equals("http://evs.nci.nih.gov/valueset/FDA/C48323") || x.stringValue().
+				equals("http://evs.nci.nih.gov/valueset/TEST/C48323"))).
+				findAny().isPresent());
 	}
 	
 	@Test
@@ -518,8 +521,12 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 		List<CodingScheme> schemes = svc.getMinimalSourceAssertedValueSetSchemes();
 		long count = schemes.stream().count();
 		assertTrue(count > 0L);
-		assertEquals(count, 7L);
+		assertEquals(count, 8L);
 		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeName().equals("Black")).findAny().isPresent());
+		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeURI().equals(
+				"http://evs.nci.nih.gov/valueset/TEST/C48323")).findAny().isPresent());
+		assertTrue(schemes.stream().filter(x -> x.getCodingSchemeURI().equals(
+				"http://evs.nci.nih.gov/valueset/FDA/C48323")).findAny().isPresent());
 	}
 
 	@Test
