@@ -35,7 +35,6 @@
 			<tasklet ref="hardcodedValuesLoadingTasklet" />
 		</step>
 
-		<!--step id="generateMrsabMetadataXml" next="loadMrsabMetadata"-->
 		<step id="generateMrsabMetadataXml" next="generateMrdocMetadataXml">
 			<tasklet>
 				<listeners>
@@ -47,11 +46,6 @@
 			</tasklet>
 		</step>
 
-		<!--step id="loadMrsabMetadata" next="generateMrdocMetadataXml">
-			<tasklet ref="mrsabMetadataLoadingTasklet" />
-		</step-->
-
-		<!--step id="generateMrdocMetadataXml" next="loadMrdocMetadata"-->
 		<step id="generateMrdocMetadataXml" next="loadEntitiesAndRelationships">
 			<tasklet>
 				<listeners>
@@ -62,10 +56,6 @@
 				</chunk>
 			</tasklet>
 		</step>
-
-		<!--step id="loadMrdocMetadata" next="loadEntitiesAndRelationships">
-			<tasklet ref="mrdocMetadataLoadingTasklet" />
-		</step-->
 
 		<split id="loadEntitiesAndRelationships" task-executor="taskExecutor">
 	
