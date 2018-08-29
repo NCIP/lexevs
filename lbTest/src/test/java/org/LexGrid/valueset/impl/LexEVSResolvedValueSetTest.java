@@ -79,8 +79,8 @@ public class LexEVSResolvedValueSetTest {
 		.build();
 		service = new LexEVSResolvedValueSetServiceImpl(params);
 		vsSvc = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
-//		vsSvc.createIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
-//				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+		vsSvc.createIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
 	}
 
 	@Test
