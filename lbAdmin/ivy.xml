@@ -12,5 +12,6 @@
 	<dependencies>
    	    <dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
    	    <dependency org="lexevs" name="meta-loader" rev="${vBuild}" conf="default"/>
+   	    <dependency org="lexevs" name="umls-loader" rev="${vBuild}" conf="default"/>
    	 </dependencies>
 </ivy-module>

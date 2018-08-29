@@ -19,13 +19,18 @@
 package org.LexGrid.LexBIG.admin;
 
 import java.net.URI;
+import java.util.Enumeration;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.annotations.LgAdminFunction;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -50,17 +55,33 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *   -a, --activate ActivateScheme on successful load; if unspecified the
  *         vocabulary is loaded but not activated
  *   -t, --tag &lt;id&gt; An optional tag ID (e.g. 'PRODUCTION' or 'TEST') to assign.
- * 
+ *   -meta --meatadata input &lt;uri&gt; URI or path specifying location of the metadata source file.  
+ *        metadata is applied to the code system and code system version being loaded.
+ *   -metav  --validate metadata &lt;int&gt; Perform validation of the metadata source file
+ *         without loading data. Supported levels of validation include:
+ *         0 = Verify document is valid.
+ *         metadata is validated against the code system and code system version being loaded.
+ *   -metao, --overwrite If specified, existing metadata for the code system
+ *         will be erased. Otherwise, new metadata will be appended to
+ *         existing metadata (if present).  
+ *   -metaf,--force Force overwrite (no confirmation).
+ *
  * Example: java -Xmx512m -cp lgRuntime.jar
  *  org.LexGrid.LexBIG.admin.LoadLgXML -in &quot;file:///path/to/file.xml&quot; -a
  * -or-
  *  org.LexGrid.LexBIG.admin.LoadLgXML -in &quot;file:///path/to/file.xml&quot; -v 0
+ *  -or-
+ *  org.LexGrid.LexBIG.admin.LoadLgXML -in &quot;file:///path/to/file.xml&quot; -a -meta &quot;file:///path/to/metadata.xml&quot; -metao
  * </pre>
  * 
  * @author <A HREF="mailto:johnson.thomas@mayo.edu">Thomas Johnson</A>
  */
 @LgAdminFunction
 public class LoadLgXML {
+    
+    private static final String EXAMPLE_CALL =  "\n LoadLgXML -in \"file:///path/to/file.xml\" -a"
+            + "\n LoadLgXML -in \"file:///path/to/file.xml\" -mf \"file:///path/to/myCodingScheme-manifest.xml\" -a"
+            + "\n LoadLgXML -in \"file:///path/to/file.xml\" -v 0 -meta \"file:///path/to/metadata.xml\" -metav 0 -metao";
 
     public static void main(String[] args) {
         try {
@@ -88,26 +109,44 @@ public class LoadLgXML {
             CommandLine cl = null;
             Options options = getCommandOptions();
             int vl = -1;
+            int v2 = -1;
             try {
                 cl = new BasicParser().parse(options, args);
-                if (cl.hasOption("v"))
+                if (cl.hasOption("v")){
                     vl = Integer.parseInt(cl.getOptionValue("v"));
+                }
+                if (cl.hasOption("metav")) {
+                    v2 = Integer.parseInt(cl.getOptionValue("metav"));
+                }
             } catch (Exception e) {
-                Util
-                        .displayCommandOptions(
-                                "LoadLgXML",
-                                options,
-                                "\n LoadLgXML -in \"file:///path/to/file.xml\" -a"
-                                        + "\n LoadLgXML -in \"file:///path/to/file.xml\" -mf \"file:///path/to/myCodingScheme-manifest.xml\" -a"
-                                        + "\n LoadLgXML -in \"file:///path/to/file.xml\" -v 0" + Util.getURIHelp(), e);
+                Util.displayCommandOptions("LoadLgXML", options,
+                        EXAMPLE_CALL + Util.getURIHelp(), e);
                 return;
-            }
+            } 
 
             // Interpret provided values ...
             URI source = Util.string2FileURI(cl.getOptionValue("in"));
             URI manifest = null;
             if (!StringUtils.isNull(cl.getOptionValue("mf")))
                 manifest = Util.string2FileURI(cl.getOptionValue("mf"));
+            
+            // metatdata - input file (optional)
+            String metaUriStr = cl.getOptionValue("meta");
+            URI metaUri = null;
+            if (!StringUtils.isNull(metaUriStr)){
+               metaUri = Util.string2FileURI(metaUriStr);
+            }
+              
+            // metatdata - validate input file (optional)
+            if (v2 >= 0) {
+                Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
+            } 
+           
+            // metadata force
+            boolean force = cl.hasOption("metaf");
+            // metadata overwrite
+            boolean overwrite = cl.hasOption("metao");
+                        
             boolean activate = vl < 0 && cl.hasOption("a");
             if (vl >= 0) {
                 Util.displayTaggedMessage("VALIDATION SOURCE URI: " + source.toString());
@@ -156,6 +195,58 @@ public class LoadLgXML {
                             + ref.getCodingSchemeVersion());
                 }
             }
+            
+            // If there is a metadata URI passed in, then load it.
+            if (metaUri != null) {
+                CodingSchemeSummary css = null;
+                
+                // Find the registered extension handling this type of load ...               
+                MetaData_Loader metadataLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
+                                           
+                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+                        .enumerateCodingSchemeRendering();
+                while (schemes.hasMoreElements() && css == null) {
+                    CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
+                    
+                    AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+                    for (int i = 0; i < refs.length; i++) {
+                        AbsoluteCodingSchemeVersionReference ref = refs[i];
+                                                
+                        if (ref.getCodingSchemeURN().equalsIgnoreCase(summary.getCodingSchemeURI())
+                                && ref.getCodingSchemeVersion().equalsIgnoreCase(summary.getRepresentsVersion())){
+                            css = summary;
+                            break;
+                        }
+                    }
+                }
+                
+                if (css == null){
+                    Util.displayTaggedMessage("Unable to apply metadata");
+                    return;
+                }
+                     
+                loader = null;
+                
+                if (v2 >=0 ){
+                    Util.displayTaggedMessage("Validating Metadata");
+                    metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v2);
+                    Util.displayTaggedMessage("METADATA VALIDATION SUCCESSFUL");
+                }
+                else{
+                    boolean confirmed = true;
+                    if (overwrite && !force) {
+                        Util.displayMessage("OVERWRITE EXISTING METADATA? ('Y' to confirm, any other key to cancel)");
+                        char choice = Util.getConsoleCharacter();
+                        confirmed = choice == 'Y' || choice == 'y';
+                    }
+                    if (confirmed) {
+                        Util.displayTaggedMessage("Loading Metadata");
+                        metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
+                                overwrite, false, true);
+                        Util.displayLoaderStatus(metadataLoader);
+                    }
+                }
+            }
         }
     }
 
@@ -191,6 +282,25 @@ public class LoadLgXML {
 
         o = new Option("mf", "manifest", true, "URI or path specifying location of the manifest file.");
         o.setArgName("uri");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("meta", "metadata", true, "URI or path specifying location of the metadata file.");
+        o.setArgName("uri");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("metav", "metadata validate", true, "Validation metadata only; no load. 0 to verify well-formed xml.");
+        o.setArgName("int");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        o = new Option("metao", "overwrite", false, "If specified, existing metadata for the code system "
+                + "will be erased. Otherwise, new metadata will be appended " + "to existing metadata (if present). ");
+        o.setRequired(false);
+        options.addOption(o);
+
+        o = new Option("metaf", "force", false, "Force overwrite (no confirmation).");
         o.setRequired(false);
         options.addOption(o);
 

@@ -13,45 +13,50 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- * 		http://www.eclipse.org/legal/epl-v10.html
+ *      http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package org.LexGrid.LexBIG.admin;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
-import org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OWL2_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.LexGrid.relations.Relations;
+import org.LexGrid.annotations.LgAdminFunction;
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.kohsuke.args4j.CmdLineParser;
 import org.lexevs.system.ResourceManager;
+import org.lexgrid.loader.umls.launch.UmlsBatchLoaderLauncher;
 
-import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MappingRelationsUtil;
 import edu.mayo.informatics.resourcereader.core.StringUtils;
 
 /**
- * Loads a mappings file(s), provided in UMLS RRF format.
+ * Loads UMLS content, provided as a collection of RRF files in a
+ * single directory.  Files may comprise the entire UMLS distribution
+ * or pruned via the MetamorphoSys tool.  A complete list of
+ * source vocabularies is available online at
+ * http://www.nlm.nih.gov/research/umls/metaa1.html.
  * 
  * <pre>
- * Example: java org.LexGrid.LexBIG.admin.LoadMrMap
- * 
- *   -inMap,--input <uri> URI or path specifying location of the MRMAP source file.
- *   -inSat,--input <uri> URI or path specifying location of the MRSAT source file. 
- *   -meta --meatadata input &lt;uri&gt; URI or path specifying location of the metadata source file.  
+ * Example: java org.LexGrid.LexBIG.admin.LoadUmlsBatchWithMetadata
+ *   -in,--input <uri> URI or path of the directory containing the NLM files. Path string must be preceded by "file:",
+ *   -s,--source vocabularies to load.
+*    -meta --meatadata input &lt;uri&gt; URI or path specifying location of the metadata source file.  
  *        metadata is applied to the code system and code system version being loaded.
  *   -metav  --validate metadata &lt;int&gt; Perform validation of the metadata source file
  *         without loading data. Supported levels of validation include:
@@ -61,22 +66,22 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *         will be erased. Otherwise, new metadata will be appended to
  *         existing metadata (if present).  
  *   -metaf,--force Force overwrite (no confirmation).
- *
+ *   
  * Example: java -Xmx512m -cp lgRuntime.jar
- *  org.LexGrid.LexBIG.admin.LoadMrMap -inMap "file:///path/to/MRMAP.RRF -inSat "file:///path/to/MRSAT.RRF"
- *  -or-
- *  org.LexGrid.LexBIG.admin.LoadMrMap -inMap "file:///path/to/MRMAP.RRF -inSat "file:///path/to/MRSAT.RRF" -meta &quot;file:///path/to/metadata.xml&quot; -metao
+ *  org.LexGrid.LexBIG.admin.LoadUmlsBatchWithMetadata -in "file:///path/to/directory/" -s "PSY"
+ * -or-
+ *  org.LexGrid.LexBIG.admin.LoadUmlsBatchWithMetadata -in "file:///path/to/directory/" -s "PSY" -meta &quot;file:///path/to/metadata.xml&quot; -metao
  * </pre>
- * 
  */
-public class LoadMrMap {
+@LgAdminFunction
+public class LoadUmlsBatchWithMetadata {
 
-    private static final String EXAMPLE_CALL =  "\n LoadMrMap -inMap \"file:///path/to/MRMAP.RRF -inSat \"file:///path/to/MRSAT.RRF\""
-            + "\n LoadMrMap -inMap \"file:///path/to/MRMAP.RRF -inSat \"file:///path/to/MRSAT.RRF\" -meta \"file:///path/to/metadata.xml\" -metav 0 -metao";
+    private static final String EXAMPLE_CALL =  "\n LoadUmlsBatchWithMetadata -in \"file:///path/to/directory/\" -s \"PSY\""
+            + "\n LoadUmlsBatchWithMetadata -in \"file:///path/to/directory/\" -s \"PSY\" -meta \"file:///path/to/metadata.xml\" -metav 0 -metao";
 
     public static void main(String[] args) {
-        try {
-            new LoadMrMap().run(args);
+        try {        
+            new LoadUmlsBatchWithMetadata().run(args);
         } catch (LBResourceUnavailableException e) {
             Util.displayTaggedMessage(e.getMessage());
         } catch (Exception e) {
@@ -84,7 +89,7 @@ public class LoadMrMap {
         }
     }
 
-    public LoadMrMap() {
+    public LoadUmlsBatchWithMetadata() {
         super();
     }
 
@@ -95,28 +100,23 @@ public class LoadMrMap {
      */
     public void run(String[] args) throws Exception {
         synchronized (ResourceManager.instance()) {
-            String uri = null;
-            String version = null;
             
             // Parse the command line ...
             CommandLine cl = null;
             Options options = getCommandOptions();
             int v1 = -1;
+    
             try {
                 cl = new BasicParser().parse(options, args);
                 if (cl.hasOption("metav")){
                     v1 = Integer.parseInt(cl.getOptionValue("metav"));
                 }
-            } catch (Exception e) {
-                Util.displayCommandOptions(
-                        "LoadMrMapp", options, EXAMPLE_CALL + Util.getURIHelp(), e);
+            } catch (ParseException e) {
+                Util.displayCommandOptions("LoadUmlsBatchWithMetadata",options,
+                        EXAMPLE_CALL + Util.getURIHelp(), e);
                 return;
             }
-
-            // Interpret provided values ...
-            URI source = Util.string2FileURI(cl.getOptionValue("inMap"));
-            URI sourceSat = Util.string2FileURI(cl.getOptionValue("inSat"));
-
+            
             // metatdata - input file (optional)
             String metaUriStr = cl.getOptionValue("meta");
             URI metaUri = null;
@@ -126,7 +126,7 @@ public class LoadMrMap {
               
             // metatdata - validate input file (optional)
             if (v1 >= 0) {
-                Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
+                Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + metaUri.toString());
             } 
            
             // metadata force
@@ -134,35 +134,18 @@ public class LoadMrMap {
             // metadata overwrite
             boolean overwrite = cl.hasOption("metao");
             
-            Util.displayTaggedMessage("LOADING FROM URI FOR MRMAP: " + source.toString());
-            Util.displayTaggedMessage("LOADING FROM URI FOR MRSAT: " + sourceSat.toString());
-            Util.displayTaggedMessage("POST LOAD AND ACTIVATION AVAILABLE ONLY ON MRMAP LOADS");
-
-            // Find the registered extension handling this type of load ...
+            // launch the UMLS loader
+            UmlsBatchLoaderLauncher launcher = new UmlsBatchLoaderLauncher();
+            CmdLineParser parser = new CmdLineParser(launcher);
+            
+            String[] umlsArgs = cleanseArgs(args);
+            
+            parser.parseArgument(umlsArgs);    
+            launcher.load();
+            
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
-            MappingRelationsUtil mapUtil = new MappingRelationsUtil();
-            HashMap<String, Relations> relations =  mapUtil.processMrSatBean(sourceSat.getPath(), source.getPath());
-            
-            for(Map.Entry<String, Relations> rel : relations.entrySet()){
-                Relations relation = rel.getValue();
-                System.out.println("relation : " + relation.getSourceCodingScheme());
-                MrMap_Loader loader = (MrMap_Loader) lbsm
-                    .getLoader(org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader.name);
-
-                loader.load(source, sourceSat, null, null, null, null, null, null, null, null, null, rel, false, true);
-                Util.displayLoaderStatus(loader);
-                
-                
-                AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
-                for (int i = 0; i < refs.length; i++) {
-                    AbsoluteCodingSchemeVersionReference ref = refs[i];
                     
-                    version = ref.getCodingSchemeVersion();
-                    uri = ref.getCodingSchemeURN();
-                }
-            }
-            
             // If there is a metadata URI passed in, then load it.
             if (metaUri != null) {
                 CodingSchemeSummary css = null;
@@ -174,11 +157,16 @@ public class LoadMrMap {
                         .enumerateCodingSchemeRendering();
                 while (schemes.hasMoreElements() && css == null) {
                     CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
-                                                  
-                    if (uri.equalsIgnoreCase(summary.getCodingSchemeURI())
-                            && version.equalsIgnoreCase(summary.getRepresentsVersion())){
-                        css = summary;
-                        break;
+                                                                     
+                    AbsoluteCodingSchemeVersionReference[] refs = launcher.getCodingSchemeRefs();
+                    for (int i = 0; i < refs.length; i++) {
+                        AbsoluteCodingSchemeVersionReference ref = refs[i];
+                                                
+                        if (ref.getCodingSchemeURN().equalsIgnoreCase(summary.getCodingSchemeURI())
+                                && ref.getCodingSchemeVersion().equalsIgnoreCase(summary.getRepresentsVersion())){
+                            css = summary;
+                            break;
+                        }
                     }
                 }
                 
@@ -186,7 +174,7 @@ public class LoadMrMap {
                     Util.displayTaggedMessage("Unable to apply metadata");
                     return;
                 }
-                                     
+                             
                 if (v1 >=0 ){
                     Util.displayTaggedMessage("Validating Metadata");
                     metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v1);
@@ -206,9 +194,33 @@ public class LoadMrMap {
                         Util.displayLoaderStatus(metadataLoader);
                     }
                 }
-            }
 
+            }
         }
+    }
+
+    private String[] cleanseArgs(String[] args) {
+        String[] umlsArgs = null;
+        ArrayList<String> argList = new ArrayList<>();
+        
+        for (int i = 0; i < args.length; i++) {
+            // don't add -meta options
+            if (!args[i].startsWith("-meta")){
+                argList.add(args[i]);
+            }
+            else{
+                i++;
+                // if -meta was found above, don't add its value, if there is one.
+                while (i < args.length && args[i].startsWith("-meta")){
+                    i++;
+                }
+                if (i < args.length && args[i].startsWith("-")){
+                    argList.add(args[i]);
+                }
+            }
+        }
+        umlsArgs = (String[])argList.toArray(new String[argList.size()]);
+        return umlsArgs;
     }
 
     /**
@@ -220,12 +232,12 @@ public class LoadMrMap {
         Options options = new Options();
         Option o;
 
-        o = new Option("inMap", "input", true, "URI or path specifying location of the source file.");
+        o = new Option("in", "input", true, "URI or path of the directory containing the NLM files. Path string must be preceded by \"file:\"");
         o.setArgName("uri");
         o.setRequired(true);
         options.addOption(o);
 
-        o = new Option("inSat", "input", true, "URI or path specifying location of the source file.");
+        o = new Option("s", "source", true, "Source vocabularies to load.");
         o.setArgName("uri");
         o.setRequired(true);
         options.addOption(o);
@@ -251,6 +263,5 @@ public class LoadMrMap {
 
         return options;
     }
-
 
 }
