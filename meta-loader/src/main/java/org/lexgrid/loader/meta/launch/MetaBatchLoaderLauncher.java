@@ -18,6 +18,7 @@
  */
 package org.lexgrid.loader.meta.launch;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.kohsuke.args4j.CmdLineParser;
@@ -43,6 +44,8 @@ public class MetaBatchLoaderLauncher {
  	@Option(name="-version")   
 	 private String version;
 
+ 	 private AbsoluteCodingSchemeVersionReference[] codingSchemeRefs;
+ 	
 	 /**
  	 * The main method.
  	 * 
@@ -75,8 +78,34 @@ public class MetaBatchLoaderLauncher {
 					uri, 
 					version);
 		}	
+		setCodingSchemeRefs(loader.getCodingSchemeReferences());
 	}
 
+	/**
+	 * Load and wait.
+	 * 
+	 * @throws Exception the exception
+	 */
+	public void loadAndWait() throws Exception {
+		MetaBatchLoader loader = (MetaBatchLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader("MetaBatchLoader");
+				
+		if(uri == null && version == null){
+			loader.loadMeta(
+					AbstractSpringBatchLoader.getURIFromPath(rrfDir));
+		} else {
+			loader.resumeMeta(
+					AbstractSpringBatchLoader.getURIFromPath(rrfDir), 
+					uri, 
+					version);
+		}	
+		
+		// wait for the load to complete, then return.
+		while (loader.getStatus().getEndTime() == null) {
+	            Thread.sleep(500);
+	    }
+		
+		setCodingSchemeRefs(loader.getCodingSchemeReferences());
+	}
 
 	/**
 	 * Gets the rrf dir.
@@ -95,5 +124,23 @@ public class MetaBatchLoaderLauncher {
 	 */
 	public void setRrfDir(String rrfDir) {
 		this.rrfDir = rrfDir;
+	}
+	
+	/**
+	 * Sets the AbsoluteCodingSchemeVersionReference.
+	 * 
+	 * @param refs the new AbsoluteCodingSchemeVersionReference
+	 */
+	private void setCodingSchemeRefs(AbsoluteCodingSchemeVersionReference[] refs ) {
+		this.codingSchemeRefs = refs;
+	}
+	
+	/**
+	 * Gets the AbsoluteCodingSchemeVersionReference.
+	 * 
+	 * @return the AbsoluteCodingSchemeVersionReference
+	 */
+	public AbsoluteCodingSchemeVersionReference[] getCodingSchemeRefs() {
+		return codingSchemeRefs;
 	}
 }
