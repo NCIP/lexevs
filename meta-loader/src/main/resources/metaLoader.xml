@@ -81,7 +81,7 @@
 						</chunk>
 					</tasklet>
 				</step>
-				<step id="processAssociations">
+				<step id="processAssociations" next="processMrSatAssocQualifiers">
 						<tasklet>
 							<chunk reader="mrdocAssociationGroupReader" processor="metaAssociationProcessor"
 								writer="entityListWriter" commit-interval="1">
@@ -90,7 +90,21 @@
 								</streams>
 							</chunk>
 						</tasklet>
-					</step>		
+					</step>	
+			  <step id="processMrSatAssocQualifiers">
+			  			<tasklet>
+							<chunk reader="metaMrsatRuiSkippingReader" processor="metasMrsatQualifierProcessor"
+								 writer="associationQualifierWriter" commit-interval="10000" skip-limit="100000">
+								<streams>
+									<stream ref="mrsatReader" />
+								</streams>
+								<skippable-exception-classes>
+									<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+								</skippable-exception-classes>
+							</chunk>
+						</tasklet>
+			  </step>
+						
 			</flow>
 		</split>
 		
@@ -198,6 +212,19 @@
 			</chunk>
 		</tasklet>
 	</step>
+	
+	<beans:bean id="metasMrsatQualifierProcessor" parent="metaDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityAsscToEntityMrsatQualsProcessor">	
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+					
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrsatRuiAssociationInstanceIdResolver"/>
+		</beans:property>		
+ 
+		<beans:property name="qualifierResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.processor.support.MrsatRuiAssocQualResolver" />	
+		</beans:property>
+	</beans:bean>
 
 	<!-- Relation Processing Below -->
 
@@ -774,6 +801,17 @@
 		</beans:property>
 		<beans:property name="delegate">
 			<beans:ref bean="mrrelReader" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="metaMrsatRuiSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.meta.reader.support.MetaMrsatAssQualSkipPolicy"/>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrsatReader" />
 		</beans:property>
 	</beans:bean>
 
