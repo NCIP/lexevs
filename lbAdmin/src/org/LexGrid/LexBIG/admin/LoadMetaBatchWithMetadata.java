@@ -76,6 +76,8 @@ public class LoadMetaBatchWithMetadata {
     private static final String EXAMPLE_CALL =  "\n LoadMetaBatchWithMetadata -in \"file:///path/to/directory/\""
             + "\n LoadMetaBatchWithMetadata -in \"file:///path/to/directory/\" -meta \"file:///path/to/metadata.xml\" -metao";
 
+    private AbsoluteCodingSchemeVersionReference ref= null;
+    
     public static void main(String[] args) {
         try {        
             new LoadMetaBatchWithMetadata().run(args);
@@ -143,8 +145,7 @@ public class LoadMetaBatchWithMetadata {
             Util.displayTaggedMessage("Metabatch load complete.");
                                     
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-            LexBIGServiceManager lbsm = lbs.getServiceManager(null);
-                    
+                               
             CodingSchemeSummary css = null;
                                                       
             Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
@@ -154,7 +155,7 @@ public class LoadMetaBatchWithMetadata {
                                                                  
                 AbsoluteCodingSchemeVersionReference[] refs = launcher.getCodingSchemeRefs();
                 for (int i = 0; i < refs.length; i++) {
-                    AbsoluteCodingSchemeVersionReference ref = refs[i];
+                    ref = refs[i];
                                             
                     if (ref.getCodingSchemeURN().equalsIgnoreCase(summary.getCodingSchemeURI())
                             && ref.getCodingSchemeVersion().equalsIgnoreCase(summary.getRepresentsVersion())){
@@ -244,6 +245,10 @@ public class LoadMetaBatchWithMetadata {
         }
         umlsArgs = (String[])argList.toArray(new String[argList.size()]);
         return umlsArgs;
+    }
+    
+    public AbsoluteCodingSchemeVersionReference getCodingSchemeRef() {
+        return ref;
     }
 
     /**

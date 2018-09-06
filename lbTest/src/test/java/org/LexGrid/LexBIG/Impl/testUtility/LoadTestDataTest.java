@@ -45,6 +45,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
+import org.LexGrid.LexBIG.admin.LoadMetaBatchWithMetadata;
 import org.LexGrid.LexBIG.mapping.MappingTestConstants;
 import org.LexGrid.LexBIG.mapping.MappingTestUtility;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
@@ -176,19 +177,13 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     @Test
     @Order(4)
     public void testLoadNCIMeta() throws Exception {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        MetaBatchLoader loader = (MetaBatchLoader) lbsm.getLoader("MetaBatchLoader");
-
-        loader.loadMeta(new File("resources/testData/sampleNciMeta").toURI());
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+    	String[] args  = {"-in",  new File("resources/testData/sampleNciMeta").toURI().toString()};
+    	
+    	LoadMetaBatchWithMetadata metaBatch = new LoadMetaBatchWithMetadata();
+    	metaBatch.run(args);
+    	
+    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
+    	lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
     }
 
     @Test
@@ -452,22 +447,14 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     @Test
     @Order(16)
     public void testLoadNCIMeta2() throws Exception {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+    	String[] args  = {"-in",  new File("resources/testData/SAMPLEMETA").toURI().toString()};
+    	
+    	LoadMetaBatchWithMetadata metaBatch = new LoadMetaBatchWithMetadata();
+    	metaBatch.run(args);
 
-        MetaBatchLoader loader = (MetaBatchLoader) lbsm.getLoader("MetaBatchLoader");
-
-        loader.loadMeta(new File("resources/testData/SAMPLEMETA").toURI());
-        
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
-        }
-
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
+        lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
+        lbsm.setVersionTag(metaBatch.getCodingSchemeRef(), LBConstants.KnownTags.PRODUCTION.toString());
     }
 
     @Test
