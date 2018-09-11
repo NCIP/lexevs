@@ -218,6 +218,8 @@ public class OwlApi2LG {
 
     private DatabaseServiceManager databaseServiceManager;
 
+    private Map<String, OWLObjectPropertyExpression> inversePropCache;
+
     final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     final static OWLDataFactory factory = manager.getOWLDataFactory();
      
@@ -2218,8 +2220,13 @@ public class OwlApi2LG {
      * ontology.
      */
     protected void initSupportedObjectProperties() {
+        inversePropCache = new HashMap<String, OWLObjectPropertyExpression>();
         for (OWLObjectProperty prop : ontology.getObjectPropertiesInSignature()) {
             addAssociation(prop);
+        }
+        //Overwrite transitive expressions of inverse with reverse traversable values
+        for(OWLObjectPropertyExpression propExp : inversePropCache.values()) {
+            addInverseHierarchyAssociation(propExp);
         }
     }
 
@@ -2322,6 +2329,17 @@ public class OwlApi2LG {
             List<String> list = new ArrayList<String>();
             list.add(label);
             if(isTransitive){
+                Set<OWLObjectPropertyExpression> propExps = 
+                        objectProp.getInverses(ontology) != null? 
+                                objectProp.getInverses(ontology): null;
+                Iterator<OWLObjectPropertyExpression> itr = propExps.iterator();
+                OWLObjectPropertyExpression propExp  = itr.next();
+                if(propExp != null && 
+                        inversePropCache.get(
+                        propExp.getNamedProperty().getIRI().toString()) == null && 
+                         inversePropCache.get(objectProp.getNamedProperty().getIRI().toString()) == null){
+                    inversePropCache.put(propExp.getNamedProperty().getIRI().toString(), propExp);
+                }
                 lgSupportedMappings_.registerSupportedHierarchy(label, 
                         owlProp.getIRI().toString(), label, "@@", list, false, true);
             }
@@ -2379,6 +2397,31 @@ public class OwlApi2LG {
                 nameSpace, true);
         return assocWrap;
 
+    }
+    
+    protected AssociationWrapper addInverseHierarchyAssociation(OWLObjectPropertyExpression propExp) {
+
+        AssociationWrapper assocWrap = new AssociationWrapper();
+        String propertyName = getLocalName(propExp.getNamedProperty());
+        assocWrap.setEntityCode(propertyName);
+        String label = resolveLabel(propExp.getNamedProperty());
+        assocWrap.setAssociationName(label);
+        assocWrap.setForwardName(getAssociationLabel(label, true));
+        String nameSpace = getNameSpace(propExp.getNamedProperty());
+        assocWrap.setEntityCodeNamespace(nameSpace);
+        assocWrap = assocManager.addAssociation(lgRelationsContainer_Assoc, assocWrap);
+        boolean isTransitive = propExp.isTransitive(ontology);
+        resolveAssociationProperty(assocWrap.getAssociationEntity(), propExp.getNamedProperty());
+        assocWrap.setIsTransitive(isTransitive);
+        List<String> list = new ArrayList<String>();
+        list.add(label);
+        lgSupportedMappings_.registerSupportedHierarchy(label, 
+                propExp.getNamedProperty().getIRI().toString(), label, "@", list, true, true);
+
+        lgSupportedMappings_.registerSupportedAssociation(label, propExp.getNamedProperty().getIRI().toString(), label, propertyName,
+                nameSpace, true);
+        return assocWrap;
+        
     }
 
     /**
