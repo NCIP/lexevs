@@ -42,8 +42,6 @@ public class RemoveAllValueSetDefinitions {
         }
         
         boolean force = cl.hasOption("f");
-        
-        System.out.println("Force option: " + force);
         char choice = 0;
         
         // if user doesn't force, then confirm
