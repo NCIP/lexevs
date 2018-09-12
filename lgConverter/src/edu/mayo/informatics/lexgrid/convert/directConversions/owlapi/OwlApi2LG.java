@@ -2329,17 +2329,7 @@ public class OwlApi2LG {
             List<String> list = new ArrayList<String>();
             list.add(label);
             if(isTransitive){
-                Set<OWLObjectPropertyExpression> propExps = 
-                        objectProp.getInverses(ontology) != null? 
-                                objectProp.getInverses(ontology): null;
-                Iterator<OWLObjectPropertyExpression> itr = propExps.iterator();
-                OWLObjectPropertyExpression propExp  = itr.next();
-                if(propExp != null && 
-                        inversePropCache.get(
-                        propExp.getNamedProperty().getIRI().toString()) == null && 
-                         inversePropCache.get(objectProp.getNamedProperty().getIRI().toString()) == null){
-                    inversePropCache.put(propExp.getNamedProperty().getIRI().toString(), propExp);
-                }
+                processObjectPropertyInverses(objectProp);
                 lgSupportedMappings_.registerSupportedHierarchy(label, 
                         owlProp.getIRI().toString(), label, "@@", list, false, true);
             }
@@ -2363,6 +2353,23 @@ public class OwlApi2LG {
 
     }
     
+    private void processObjectPropertyInverses(OWLObjectProperty objectProp) {
+        
+        Set<OWLObjectPropertyExpression> propExps = 
+                objectProp.getInverses(ontology) != null? 
+                        objectProp.getInverses(ontology): null;
+        Iterator<OWLObjectPropertyExpression> itr = propExps.iterator();
+        while(itr.hasNext()) {
+        OWLObjectPropertyExpression propExp  = itr.next();
+        if(inversePropCache.get(
+                propExp.getNamedProperty().getIRI().toString()) == null && 
+                 inversePropCache.get(objectProp.getNamedProperty().getIRI().toString()) == null){
+            inversePropCache.put(propExp.getNamedProperty().getIRI().toString(), propExp);
+        }
+        }
+        
+    }
+
     protected AssociationWrapper addAssociation(OWLAnnotation owlProp) {
         AssociationWrapper assocWrap = new AssociationWrapper();
         String propertyName = getLocalName(owlProp.getProperty());
