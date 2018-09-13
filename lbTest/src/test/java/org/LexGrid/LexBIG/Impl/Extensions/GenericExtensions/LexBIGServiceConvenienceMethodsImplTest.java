@@ -303,13 +303,29 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     }
     
     @Test
-    public void searchAllDecendentsInTransitiveClosure( ) throws LBParameterException{
+    public void searchAllDecendentsInTransitiveClosureNeoplasm( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
     	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
     			"NCI Thesaurus", null, "C3262", "subClassOf", "Lipoma");
+    	System.out.println("Neoplasm Execution time: " + (System.currentTimeMillis() - start));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("C5678")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("ncit")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("Colorectal Lipoma")));    	
+    }
+    
+    @Test
+    public void searchAllDecendentsInTransitiveClosure( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			"NCI Thesaurus", null, "C1909", "subClassOf", "Somatostatin");
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("C836")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("C74861")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("C25294")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("ncit")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("Recombinant Somatostatin")));    	
     }
     
     protected void runCacheThreadSaveTest(Map cache) throws Throwable {
