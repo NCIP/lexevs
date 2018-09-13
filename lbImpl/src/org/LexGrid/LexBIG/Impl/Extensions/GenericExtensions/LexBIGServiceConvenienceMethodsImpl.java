@@ -63,6 +63,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
@@ -2266,7 +2267,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private List<ResolvedConceptReference> getTransitiveClosure(final String code, final String associationName, final String uri,
             final String version, boolean ancestors) {
         DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-        ClosureIterator iterator = new ClosureIterator(databaseServiceManager, uri, version, code, associationName, ancestors);
+        ClosureIterator iterator = new ClosureIterator(databaseServiceManager, uri, version, associationName, code, ancestors);
         List<ResolvedConceptReference> refs = new ArrayList<ResolvedConceptReference>();
         while(iterator.hasNext()){
             GraphDbTriple triple = iterator.next();
@@ -2405,6 +2406,36 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
 
 
+    }
+
+    @Override
+    public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, String code, String association, String matchText) throws LBParameterException {
+        List<ResolvedConceptReference> refs = getDescendentsInTransitiveClosure(codingScheme,
+            versionOrTag, code, association);
+        ConceptReferenceList list = new ConceptReferenceList();
+        refs.stream().map(x -> Constructors.createConceptReference(
+                x.getConceptCode(), codingScheme)).
+                    forEachOrdered(y -> list.addConceptReference(y));
+        CodedNodeSet nodeSet = null;
+        try {
+           nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
+           nodeSet = nodeSet.restrictToCodes(list);
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery" , null);
+           
+           
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        ResolvedConceptReferenceList results = null;
+        try {
+            results = nodeSet.resolveToList(null, null, null, -1);
+        } catch (LBInvocationException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return results;
     }
     
     
