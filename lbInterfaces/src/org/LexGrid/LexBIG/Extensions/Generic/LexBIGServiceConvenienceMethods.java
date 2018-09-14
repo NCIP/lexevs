@@ -1052,6 +1052,6 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
             CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException;
     
     public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure( String codingScheme,
-            CodingSchemeVersionOrTag versionOrTag, final String code, final String association, final String matchText) throws LBParameterException;
+            CodingSchemeVersionOrTag versionOrTag, final List<String> code, final String association, final String matchText) throws LBParameterException;
     
 }

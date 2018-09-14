@@ -2338,6 +2338,6 @@
 			AND 
 				ap.associationName = #param3#
 			AND 
-				source.isAnonymous != 1
+				(source.isAnonymous != 1 OR source.isAnonymous IS NULL)
 	</select>
 </sqlMap>

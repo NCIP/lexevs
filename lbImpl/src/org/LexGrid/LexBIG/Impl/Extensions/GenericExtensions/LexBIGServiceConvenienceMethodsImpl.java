@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
@@ -2410,9 +2411,22 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
     @Override
     public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure(String codingScheme,
-            CodingSchemeVersionOrTag versionOrTag, String code, String association, String matchText) throws LBParameterException {
-        List<ResolvedConceptReference> refs = getDescendentsInTransitiveClosure(codingScheme,
-            versionOrTag, code, association);
+            CodingSchemeVersionOrTag versionOrTag, List<String> codes, String association, String matchText) throws LBParameterException {
+        if(codes == null || codes.size() <= 0) { 
+            System.out.println("ERROR: Null or Empty list of domain codes cannot be searched" ); 
+            getLogger().error("Null or Empty list of domain codes cannot be searched" );
+            return null;}
+        List<ResolvedConceptReference> refs = codes.stream().map(x -> {
+            List<ResolvedConceptReference> innerRefs = null;
+            try {
+                innerRefs = getDescendentsInTransitiveClosure(codingScheme,
+                    versionOrTag, x, association);
+            } catch (LBParameterException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } return innerRefs;
+        }).flatMap(List::stream).collect(Collectors.toList());
+
         ConceptReferenceList list = new ConceptReferenceList();
         refs.stream().map(x -> Constructors.createConceptReference(
                 x.getConceptCode(), codingScheme)).
@@ -2421,11 +2435,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         try {
            nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
            nodeSet = nodeSet.restrictToCodes(list);
-           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery" , null);
-           
-           
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, 
+                   SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery" , null);
         } catch (LBException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         ResolvedConceptReferenceList results = null;

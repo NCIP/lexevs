@@ -429,7 +429,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	public void testGetValueSetEntitiesForTermFromOWL2() throws LBException, URISyntaxException {
 		
 		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().
-				getValueSetDefinitionEntitiesForTerm("VerySickCancerPatient", 
+				getValueSetDefinitionEntitiesForTerm("Very Sick Cancer Patient", 
 						MatchAlgorithms.exactMatch.name(), new URI("OWL2LEXEVS:VerySickCancerPatient"), null, null);
 		
 		CodedNodeSet cns = null;
