@@ -2422,8 +2422,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 innerRefs = getDescendentsInTransitiveClosure(codingScheme,
                     versionOrTag, x, association);
             } catch (LBParameterException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                throw new RuntimeException("Failed to get descendents for top node: ", e1);
             } return innerRefs;
         }).flatMap(List::stream).collect(Collectors.toList());
 
@@ -2432,20 +2431,19 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 x.getConceptCode(), codingScheme)).
                     forEachOrdered(y -> list.addConceptReference(y));
         CodedNodeSet nodeSet = null;
+        ResolvedConceptReferenceList results = null;
         try {
            nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
            nodeSet = nodeSet.restrictToCodes(list);
            nodeSet = nodeSet.restrictToMatchingDesignations(matchText, 
                    SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery" , null);
-        } catch (LBException e) {
-            e.printStackTrace();
-        }
-        ResolvedConceptReferenceList results = null;
-        try {
             results = nodeSet.resolveToList(null, null, null, -1);
         } catch (LBInvocationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException("Failed to get concepts for coding scheme: " 
+                    + codingScheme + " : "
+                    + versionOrTag.getVersion(), e);
+        } catch (LBException e) {
+            throw new RuntimeException("Failed resolve concepts for code or code list : ", e);
         }
         return results;
     }

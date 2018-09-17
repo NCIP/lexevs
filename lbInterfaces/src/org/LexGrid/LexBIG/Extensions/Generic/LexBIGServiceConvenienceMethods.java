@@ -1051,7 +1051,17 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
     public List<ResolvedConceptReference> getDescendentsInTransitiveClosure( String codingScheme,
             CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException;
     
+    /**
+     * 
+     * @param codingScheme the coding scheme focus of the search
+     * @param versionOrTag coding scheme version
+     * @param codes that are top nodes of a domain
+     * @param association the relationship name that determines the domain
+     * @param matchText text to match domain members
+     * @return ResolvedConceptReferenceList of search results from discrete domain
+     * @throws LBParameterException
+     */
     public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure( String codingScheme,
-            CodingSchemeVersionOrTag versionOrTag, final List<String> code, final String association, final String matchText) throws LBParameterException;
+            CodingSchemeVersionOrTag versionOrTag, final List<String> codes, final String association, final String matchText) throws LBParameterException;
     
 }
