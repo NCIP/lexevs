@@ -1164,6 +1164,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;MildlySickCancerPatient">
+        <P90>slightly sick cancer patient</P90>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1281,6 +1282,7 @@
 
     <owl:Class rdf:about="&owl2lexevs;PatientWithCold">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;MildlySickPatient"/>
+        <P90>slightly sick patient</P90>
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
@@ -1607,6 +1609,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;VerySickCancerPatient">
+        <P90>very sick cancer patient</P90>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -2366,7 +2369,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>BLACKER</P90>
         <P90>Blacker</P90>
-        <P97>Of even darker color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Of even darker color</P97>
     </owl:Class>
     
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99989">
@@ -2378,7 +2382,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>BLA</P90>
         <P90>Bla</P90>
-        <P97>Of even bla color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Of even bla color</P97>
     </owl:Class>
     
    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99988">
@@ -2390,7 +2395,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>ACK</P90>
         <P90>ack</P90>
-        <P97>Of even acker color;</P97>
+         <P90>color characterized as dark</P90>
+        <P97>Of even acker color</P97>
     </owl:Class>
     
      <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99998">
@@ -2402,7 +2408,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>UberBLACKER</P90>
         <P90>BlackUber</P90>
-        <P97>Uber dark color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Uber dark color</P97>
     </owl:Class>
     
        <!-- White -->
