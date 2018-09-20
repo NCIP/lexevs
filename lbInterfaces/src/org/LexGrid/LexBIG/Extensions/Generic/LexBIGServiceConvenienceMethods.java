@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
@@ -36,6 +37,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedProperty;
@@ -1062,6 +1064,8 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
      * @throws LBParameterException
      */
     public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure( String codingScheme,
-            CodingSchemeVersionOrTag versionOrTag, final List<String> codes, final String association, final String matchText) throws LBParameterException;
+            CodingSchemeVersionOrTag versionOrTag, final List<String> codes, final String association, final String matchText, String matchAlgorithm,
+            SearchDesignationOption searchOption,
+            LocalNameList sources) throws LBParameterException;
     
 }
