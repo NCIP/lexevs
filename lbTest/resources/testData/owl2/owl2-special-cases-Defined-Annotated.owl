@@ -1609,7 +1609,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;VerySickCancerPatient">
-        <P90>very sick cancer patient</P90>
+    		<P90>very sick cancer patient</P90>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1630,6 +1630,13 @@
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">very sick cancer patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on union of object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
@@ -1662,6 +1669,13 @@
     <owl:Class rdf:about="&owl2lexevs;VerySickPatient">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;SickPatient"/>
     </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">very sick patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     
 
 

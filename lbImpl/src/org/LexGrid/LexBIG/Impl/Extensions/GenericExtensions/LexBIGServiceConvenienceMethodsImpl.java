@@ -2450,9 +2450,11 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         try {
            nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
            nodeSet = nodeSet.restrictToCodes(list);
-           nodeSet = nodeSet.restrictToProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, sources, null, null);
+           if(sources != null && sources.getEntryCount() > 0) {
+           nodeSet = nodeSet.restrictToProperties(null, new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, sources, null, null);
+           }
            nodeSet = nodeSet.restrictToMatchingDesignations(matchText, 
-                   SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery" , null);
+                   searchOption, alg , null);
             results = nodeSet.resolveToList(null, null, null, -1);
         } catch (LBInvocationException e) {
             throw new RuntimeException("Failed to get concepts for coding scheme: " 
