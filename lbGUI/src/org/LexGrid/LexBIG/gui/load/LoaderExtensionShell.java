@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- * 		http://www.eclipse.org/legal/epl-v10.html
+ *      http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package org.LexGrid.LexBIG.gui.load;
@@ -21,13 +21,29 @@ package org.LexGrid.LexBIG.gui.load;
 import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Enumeration;
 
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
+import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OWL2_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.MultiValueOption;
 import org.LexGrid.LexBIG.Extensions.Load.options.Option;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Extensions.Load.options.URIOption;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.gui.DialogHandler;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
@@ -67,19 +83,21 @@ import org.springframework.util.StringUtils;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class LoaderExtensionShell extends LoadExportBaseShell {
-
-	/**
-	 * Instantiates a new loader extension shell.
-	 * 
-	 * @param lb_gui the lb_gui
-	 * @param loader the loader
-	 */
-	public LoaderExtensionShell(LB_GUI lb_gui, Loader loader) {
-		super(lb_gui);
-		initializeLBGui(loader);
-	}
-	
-	/**
+    String metadataFileStr = null;
+    boolean metadataOverwrite = false;
+    
+    /**
+     * Instantiates a new loader extension shell.
+     * 
+     * @param lb_gui the lb_gui
+     * @param loader the loader
+     */
+    public LoaderExtensionShell(LB_GUI lb_gui, Loader loader) {
+        super(lb_gui);
+        initializeLBGui(loader);
+    }
+    
+    /**
      * Instantiates a new loader extension shell.
      * 
      * @param lb_gui the lb_gui
@@ -134,22 +152,25 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         } 
     }
 
-	/**
-	 * Builds the gui.
-	 * 
-	 * @param shell the shell
-	 * @param loader the loader
-	 */
-	private void buildGUI(final Shell shell, final Loader loader) {
-
-	    Group options = new Group(shell, SWT.NONE);
-	    options.setText("Load Options");
-	    shell.setLayout(new GridLayout());
+    /**
+     * Builds the gui.
+     * 
+     * @param shell the shell
+     * @param loader the loader
+     */
+    private void buildGUI(final Shell shell, final Loader loader) {
+        final Text metadataFile;
+        final Button metadataUriChooseButton;
+        final Button overwriteButton;
+                
+        Group options = new Group(shell, SWT.NONE);
+        options.setText("Load Options");
+        shell.setLayout(new GridLayout());
         
-	    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-	    options.setLayoutData(gd);
-	    
-	    GridLayout layout = new GridLayout(1, false);
+        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+        options.setLayoutData(gd);
+        
+        GridLayout layout = new GridLayout(1, false);
         options.setLayout(layout);
         
         Group groupUri = new Group(options, SWT.NONE);
@@ -178,7 +199,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
         uriChooseButton.setToolTipText(uriHelp);
-                
+        
+        
         // get lbconfig properties
         SystemVariables variables = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
         String csTag = variables.getAssertedValueSetCodingSchemeTag();
@@ -257,22 +279,56 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 }    
             });
         }
-	    
-	    for(final Option<Boolean> boolOption : optionHolder.getBooleanOptions()){
-	        Composite group2 = new Composite(options, SWT.NONE);
-	       
-	       RowLayout rlo = new RowLayout();
+        
+        // Determine if the metadata load options should be displayed.
+        if (displayMetadataOptions(loader)) {
+        
+            // Metadata Options
+            Group groupMetadata = new Group(options, SWT.NONE);
+            groupMetadata.setLayout(new GridLayout(3, false));
+            groupMetadata.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            
+            String metadataUriHelp = "The URI of the metadata to load.";
+      
+            Label metadataLabel = new Label(groupMetadata, SWT.NONE);
+            metadataLabel.setText("Metadata URI:");
+            metadataLabel.setToolTipText(metadataUriHelp);
+            
+            metadataFile = new Text(groupMetadata, SWT.BORDER);
+            metadataFile.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+            metadataFile.setToolTipText(metadataUriHelp);
+            
+            metadataUriChooseButton = Utility.getFileChooseButton(groupMetadata, metadataFile,
+                 optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]),
+                 optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
+            
+            metadataUriChooseButton.setToolTipText(metadataUriHelp);   
+                    
+            overwriteButton = new Button(groupMetadata, SWT.CHECK);
+            overwriteButton.setText("Overwrite");
+            overwriteButton.setToolTipText("overwrite If specified, existing metadata for the code system will be erased. " +
+                    "Otherwise, new metadata will be appended to existing metadata (if present).");
+        }
+        else {
+            metadataFile = null;
+            overwriteButton = null;
+        }
+        
+        for(final Option<Boolean> boolOption : optionHolder.getBooleanOptions()){
+            Composite group2 = new Composite(options, SWT.NONE);
+           
+           RowLayout rlo = new RowLayout();
            rlo.marginWidth = 0;
            group2.setLayout(rlo);
            
-	       final Button button = new Button(group2, SWT.CHECK);
-	       button.setText(boolOption.getOptionName());
-	       button.setToolTipText(boolOption.getHelpText());
-	       
-	       if(boolOption.getOptionValue() != null){
-	           button.setSelection(boolOption.getOptionValue());
-	       }
-	       button.addSelectionListener(new SelectionListener(){
+           final Button button = new Button(group2, SWT.CHECK);
+           button.setText(boolOption.getOptionName());
+           button.setToolTipText(boolOption.getHelpText());
+           
+           if(boolOption.getOptionValue() != null){
+               button.setSelection(boolOption.getOptionValue());
+           }
+           button.addSelectionListener(new SelectionListener(){
 
             public void widgetDefaultSelected(SelectionEvent event) {
               //
@@ -281,35 +337,35 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             public void widgetSelected(SelectionEvent event) {
                 boolOption.setOptionValue(button.getSelection());
             }
-	           
-	       });
-	    }
+               
+           });
+        }
 
-	    for(final Option<String> stringOption : optionHolder.getStringOptions()){
-	        Composite group3 = new Composite(options, SWT.NONE);
-	   
-	        RowLayout rlo = new RowLayout();
-	        rlo.marginWidth = 0;
-	        group3.setLayout(rlo);
-	           
-	        Label textLabel = new Label(group3, SWT.NONE);
-	        textLabel.setText(stringOption.getOptionName() + ":");
-	        textLabel.setToolTipText(stringOption.getHelpText());
-	        
-	        if(CollectionUtils.isNotEmpty(stringOption.getPickList())) {
-	            final Combo comboDropDown = new Combo(group3, SWT.DROP_DOWN | SWT.BORDER);
-	            
-	            comboDropDown.setToolTipText(stringOption.getHelpText());
+        for(final Option<String> stringOption : optionHolder.getStringOptions()){
+            Composite group3 = new Composite(options, SWT.NONE);
+       
+            RowLayout rlo = new RowLayout();
+            rlo.marginWidth = 0;
+            group3.setLayout(rlo);
+               
+            Label textLabel = new Label(group3, SWT.NONE);
+            textLabel.setText(stringOption.getOptionName() + ":");
+            textLabel.setToolTipText(stringOption.getHelpText());
+            
+            if(CollectionUtils.isNotEmpty(stringOption.getPickList())) {
+                final Combo comboDropDown = new Combo(group3, SWT.DROP_DOWN | SWT.BORDER);
                 
-	            for(String pickListItem : stringOption.getPickList()) {
-	                	                
-	                // Add if it is not a resolved value set
+                comboDropDown.setToolTipText(stringOption.getHelpText());
+                
+                for(String pickListItem : stringOption.getPickList()) {
+                                        
+                    // Add if it is not a resolved value set
                     if (resolvedValueSets != null && !isResolvedValueSet(resolvedValueSets, pickListItem)){
                         comboDropDown.add(pickListItem);
                     }
                 }
 
-	            comboDropDown.addSelectionListener(new SelectionListener(){
+                comboDropDown.addSelectionListener(new SelectionListener(){
 
                     @Override
                     public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -324,76 +380,76 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 });
             } else {
 
-	        final Text text = new Text(group3, SWT.BORDER);
-	        RowData textGd = new RowData();
-	        textGd.width = 25;
-	        text.setLayoutData(textGd);
-	        
-	        text.setToolTipText(stringOption.getHelpText());
-	        
-	        text.addModifyListener(new ModifyListener(){
+            final Text text = new Text(group3, SWT.BORDER);
+            RowData textGd = new RowData();
+            textGd.width = 25;
+            text.setLayoutData(textGd);
+            
+            text.setToolTipText(stringOption.getHelpText());
+            
+            text.addModifyListener(new ModifyListener(){
 
                 public void modifyText(ModifyEvent event) {
                     stringOption.setOptionValue(text.getText());      
                 }  
-	        });
-	    }
-	    }
-	    
-	       for(final Option<Integer> integerOption : optionHolder.getIntegerOptions()){
-	            Composite group3 = new Composite(options, SWT.NONE);
-	       
-	            RowLayout rlo = new RowLayout();
-	            rlo.marginWidth = 0;
-	            group3.setLayout(rlo);
-	               
-	            Label textLabel = new Label(group3, SWT.NONE);
-	            textLabel.setText(integerOption.getOptionName() + ":");
-	            textLabel.setToolTipText(integerOption.getHelpText());
+            });
+        }
+        }
+        
+           for(final Option<Integer> integerOption : optionHolder.getIntegerOptions()){
+                Composite group3 = new Composite(options, SWT.NONE);
+           
+                RowLayout rlo = new RowLayout();
+                rlo.marginWidth = 0;
+                group3.setLayout(rlo);
+                   
+                Label textLabel = new Label(group3, SWT.NONE);
+                textLabel.setText(integerOption.getOptionName() + ":");
+                textLabel.setToolTipText(integerOption.getHelpText());
 
-	            final Text text = new Text(group3, SWT.BORDER);
-	            text.setToolTipText(integerOption.getHelpText());
-	            
-	            if(integerOption.getOptionValue() != null){
-	                text.setText(integerOption.getOptionValue().toString());
-	            }
-	            
-	            text.addModifyListener(new ModifyListener(){
+                final Text text = new Text(group3, SWT.BORDER);
+                text.setToolTipText(integerOption.getHelpText());
+                
+                if(integerOption.getOptionValue() != null){
+                    text.setText(integerOption.getOptionValue().toString());
+                }
+                
+                text.addModifyListener(new ModifyListener(){
 
-	                public void modifyText(ModifyEvent event) {
-	                    integerOption.setOptionValue(Integer.parseInt(text.getText()));      
-	                }  
-	            });
-	        }
-	    	       
-	       for(final MultiValueOption<String> stringArrayOption : optionHolder.getStringArrayOptions()){
-	            Composite group4 = new Composite(options, SWT.NONE);
-	
-	            RowLayout rlo = new RowLayout();
-	            rlo.marginWidth = 0;
-	            group4.setLayout(rlo);
-	               
-	            Label textLabel = new Label(group4, SWT.NONE);
-	            String appendString = CollectionUtils.isNotEmpty(stringArrayOption.getPickList()) ? "" : "\n\t(Comma Seperated):";
-	            textLabel.setText(stringArrayOption.getOptionName() + appendString);
-	            textLabel.setToolTipText(stringArrayOption.getHelpText());
+                    public void modifyText(ModifyEvent event) {
+                        integerOption.setOptionValue(Integer.parseInt(text.getText()));      
+                    }  
+                });
+            }
+                   
+           for(final MultiValueOption<String> stringArrayOption : optionHolder.getStringArrayOptions()){
+                Composite group4 = new Composite(options, SWT.NONE);
+    
+                RowLayout rlo = new RowLayout();
+                rlo.marginWidth = 0;
+                group4.setLayout(rlo);
+                   
+                Label textLabel = new Label(group4, SWT.NONE);
+                String appendString = CollectionUtils.isNotEmpty(stringArrayOption.getPickList()) ? "" : "\n\t(Comma Seperated):";
+                textLabel.setText(stringArrayOption.getOptionName() + appendString);
+                textLabel.setToolTipText(stringArrayOption.getHelpText());
 
-	            if(CollectionUtils.isNotEmpty(stringArrayOption.getPickList())) {
-	                final List multi = new List(group4, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-	                
-	                multi.setToolTipText(stringArrayOption.getHelpText());
-	                
-	                for(String pickListItem : stringArrayOption.getPickList()) {
-	                    multi.add(pickListItem);
+                if(CollectionUtils.isNotEmpty(stringArrayOption.getPickList())) {
+                    final List multi = new List(group4, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+                    
+                    multi.setToolTipText(stringArrayOption.getHelpText());
+                    
+                    for(String pickListItem : stringArrayOption.getPickList()) {
+                        multi.add(pickListItem);
                     }
-	                for(int i=0;i<stringArrayOption.getPickList().size();i++) {
-	                    if(stringArrayOption.getOptionValue().contains(    
-	                            stringArrayOption.getPickList().get(i))) {
-	                        multi.select(i);
-	                    }
-	                }
+                    for(int i=0;i<stringArrayOption.getPickList().size();i++) {
+                        if(stringArrayOption.getOptionValue().contains(    
+                                stringArrayOption.getPickList().get(i))) {
+                            multi.select(i);
+                        }
+                    }
 
-	                multi.addSelectionListener(new SelectionListener(){
+                    multi.addSelectionListener(new SelectionListener(){
 
                         @Override
                         public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -406,76 +462,81 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                             stringArrayOption.setOptionValue(Arrays.asList(options));
                         }  
                     });
-	            } else {
-	                final Text text = new Text(group4, SWT.BORDER);
-	                
-	                text.setToolTipText(stringArrayOption.getHelpText());
+                } else {
+                    final Text text = new Text(group4, SWT.BORDER);
+                    
+                    text.setToolTipText(stringArrayOption.getHelpText());
 
-	                String arrayString =
-	                    StringUtils.collectionToCommaDelimitedString(stringArrayOption.getOptionValue());
-	                text.setText(arrayString);
+                    String arrayString =
+                        StringUtils.collectionToCommaDelimitedString(stringArrayOption.getOptionValue());
+                    text.setText(arrayString);
 
-	                text.addModifyListener(new ModifyListener(){
+                    text.addModifyListener(new ModifyListener(){
 
-	                    public void modifyText(ModifyEvent event) {
-	                        String[] options =  StringUtils.commaDelimitedListToStringArray(text.getText());
-	                        stringArrayOption.setOptionValue(Arrays.asList(options));
-	                    }  
-	                });
-	            }
-	        }
-
-	    Group groupControlButtons = new Group(options, SWT.NONE);
+                        public void modifyText(ModifyEvent event) {
+                            String[] options =  StringUtils.commaDelimitedListToStringArray(text.getText());
+                            stringArrayOption.setOptionValue(Arrays.asList(options));
+                        }  
+                    });
+                }
+            }
+          
+        Group groupControlButtons = new Group(options, SWT.NONE);
         groupControlButtons.setLayout(new GridLayout(3, false));
         groupControlButtons.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-	    
+        
         final Button load = new Button(groupControlButtons, SWT.PUSH);
         final Button nextLoad = new Button(groupControlButtons, SWT.PUSH);
         final Button close = new Button(groupControlButtons, SWT.PUSH);
         close.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true, 1, 1));
         
-	    load.setText("Load");
-	    load.setToolTipText("Start Load Process.");
-	    load.addSelectionListener(new SelectionListener() {
+        load.setText("Load");
+        load.setToolTipText("Start Load Process.");
+        load.addSelectionListener(new SelectionListener() {
 
-	        public void widgetSelected(SelectionEvent arg0) {
+            public void widgetSelected(SelectionEvent arg0) {
 
-	            URI uri = null;
-	            // is this a local file?
-				File theFile = new File(file.getText());
+                URI uri = null;
+               
+                // is this a local file?
+                File theFile = new File(file.getText());
 
-				if (theFile.exists()) {
-					uri = theFile.toURI();
-				} else {
-					// is it a valid URI (like http://something)
-					try {
-						uri = new URI(file.getText());
-						uri.toURL().openConnection();
-					} catch (Exception e) {
-						dialog_.showError("Path Error",
-								"No file could be located at this location");
-						return;
-					}
-				}
+                if (theFile.exists()) {
+                    uri = theFile.toURI();
+                } else {
+                    // is it a valid URI (like http://something)
+                    try {
+                        uri = new URI(file.getText());
+                        uri.toURL().openConnection();
+                    } catch (Exception e) {
+                        dialog_.showError("Path Error",
+                                "No file could be located at this location");
+                        return;
+                    }
+                }
+                
+                metadataFileStr = metadataFile != null?  metadataFile.getText(): null;
+                metadataOverwrite = overwriteButton != null? overwriteButton.getSelection() : false;
 
-				setLoading(true);
-				load.setEnabled(false);
-				close.setEnabled(false);
-				loader.load(uri);
-				
-				// Create/start a new thread to update the buttons when the load completes.
-				ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
-				Thread t = new Thread(buttonUpdater);
-		        t.setDaemon(true);
-		        t.start();  
-	        }
+                setLoading(true);
+                load.setEnabled(false);
+                close.setEnabled(false);
+                loader.load(uri);
+                
+                
+                // Create/start a new thread to update the buttons when the load completes.
+                ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
+                Thread t = new Thread(buttonUpdater);
+                t.setDaemon(true);
+                t.start();  
+            }
 
-			public void widgetDefaultSelected(SelectionEvent arg0) {
-				// 
-			}
+            public void widgetDefaultSelected(SelectionEvent arg0) {
+                // 
+            }
 
-		});
-	    
+        });
+        
         nextLoad.setText("Next Load");
         nextLoad.setToolTipText("Start a New Load Process.");
         nextLoad.setEnabled(false);
@@ -489,13 +550,13 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 } catch (LBException e) {
                     e.printStackTrace();
                 }
-	            if(!isLoading()){
-	                
-	                // close the current window and create/initialize it again with the same loader
+                if(!isLoading()){
+                    
+                    // close the current window and create/initialize it again with the same loader
                     shell.dispose();
                     setMonitorLoader(true);
                     initializeLBGui(newLoader);
-	            }
+                }
             }
 
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -518,12 +579,12 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 
         });
 
-		Composite status = getStatusComposite(shell, loader);
-		gd = new GridData(GridData.FILL_BOTH);
-		status.setLayoutData(gd);
-	}
-	
-	/**
+        Composite status = getStatusComposite(shell, loader);
+        gd = new GridData(GridData.FILL_BOTH);
+        status.setLayoutData(gd);
+    }
+    
+    /**
      * Builds the gui.
      * 
      * @param shell the shell
@@ -593,7 +654,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                         return;
                     }
                 }
-
+      
                 setLoading(true);
                 load.setEnabled(false);
                 close.setEnabled(false);
@@ -689,6 +750,38 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     throw new RuntimeException("Error while waiting for load to complete.", e);
                 }
             }
+         
+            try {
+                URI metadataUri = getMetadataURI();
+                if (metadataUri != null){
+                    
+                    // Pause a second then do the metadata load.  Otherwise the logs don't
+                    // display the metadata load.
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Error while waiting for status log.", e);
+                    }
+                    
+                    LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+                    LexBIGServiceManager lbsm = lbs.getServiceManager(null);
+                    MetaData_Loader metadataLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
+                    
+                    CodingSchemeSummary css = 
+                            getCodingSchemeSummary(loader.getCodingSchemeReferences(), 
+                                    lbs.getSupportedCodingSchemes());
+                    
+                    setStatusMonitor(statusText_, metadataLoader);
+                    
+                    metadataLoader.loadAuxiliaryData(metadataUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
+                            metadataOverwrite, false, true);  
+                }
+            }
+            catch (Exception e) {
+                System.out.println("Metadata loader failed:" + e);
+            }
+                                   
+            
             // Wait an extra 3 seconds to give time for the screen to update completely (XWindows sessions)
             // JIRA issue lexevs-2461
             try {
@@ -735,5 +828,63 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         } 
         return isResolvedValueSet;
     }
+    
+    private CodingSchemeSummary getCodingSchemeSummary(AbsoluteCodingSchemeVersionReference[] refs,
+            CodingSchemeRenderingList schemeList){
+        
+        CodingSchemeSummary css = null;
+        Enumeration<? extends CodingSchemeRendering> schemes = schemeList.enumerateCodingSchemeRendering();
+        while (schemes.hasMoreElements() && css == null) {
+            CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
+            
+            for (int i = 0; i < refs.length; i++) {
+                AbsoluteCodingSchemeVersionReference ref = refs[i];
+                                        
+                if (ref.getCodingSchemeURN().equalsIgnoreCase(summary.getCodingSchemeURI())
+                        && ref.getCodingSchemeVersion().equalsIgnoreCase(summary.getRepresentsVersion())){
+                    css = summary;
+                    break;
+                }
+            }
+        }
+        return css;
+    }
 
+    private boolean displayMetadataOptions(Loader loader){
+        boolean display = false;
+        if (loader.getName().equals(LexGrid_Loader.name) ||
+            loader.getName().equals(OWL2_Loader.name) ||   
+            loader.getName().equals(MrMap_Loader.name) ||   
+            loader.getName().equals(MetaBatchLoader.NAME) ||   
+            loader.getName().equals(UmlsBatchLoader.NAME) ||   
+            loader.getName().equals(OBO_Loader.name)){
+            display = true;
+        }
+        
+        return display;
+    }
+    
+    private URI getMetadataURI() {
+        
+        URI metadataUri = null;
+        if (metadataFileStr != null && metadataFileStr.trim().length() > 0) {
+            File metadataFile = new File(metadataFileStr);
+
+            if (metadataFile.exists()) {
+                metadataUri = metadataFile.toURI();
+            } else {
+                // is it a valid URI (like http://something)
+                try {
+                    metadataUri = new URI(metadataFileStr);
+                    metadataUri.toURL().openConnection();
+                } catch (Exception e) {
+                    System.out.println("Path Error. No metatdata file could be located at this location." + e.getMessage());
+                }
+            } 
+        }
+        
+        return metadataUri;
+    }
+
+    
 }
