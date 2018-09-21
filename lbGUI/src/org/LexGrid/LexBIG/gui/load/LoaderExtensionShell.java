@@ -21,13 +21,29 @@ package org.LexGrid.LexBIG.gui.load;
 import java.io.File;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Enumeration;
 
+import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.Loader;
+import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
+import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.MrMap_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OWL2_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.MultiValueOption;
 import org.LexGrid.LexBIG.Extensions.Load.options.Option;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Extensions.Load.options.URIOption;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.gui.DialogHandler;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
@@ -67,7 +83,9 @@ import org.springframework.util.StringUtils;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public class LoaderExtensionShell extends LoadExportBaseShell {
-
+    String metadataFileStr = null;
+    boolean metadataOverwrite = false;
+    
 	/**
 	 * Instantiates a new loader extension shell.
 	 * 
@@ -141,7 +159,10 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	 * @param loader the loader
 	 */
 	private void buildGUI(final Shell shell, final Loader loader) {
-
+	    final Text metadataFile;
+        final Button metadataUriChooseButton;
+        final Button overwriteButton;
+        	    
 	    Group options = new Group(shell, SWT.NONE);
 	    options.setText("Load Options");
 	    shell.setLayout(new GridLayout());
@@ -178,7 +199,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
         }
         uriChooseButton.setToolTipText(uriHelp);
-                
+        
+        
         // get lbconfig properties
         SystemVariables variables = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables();
         String csTag = variables.getAssertedValueSetCodingSchemeTag();
@@ -257,7 +279,41 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 }    
             });
         }
-	    
+        
+        // Determine if the metadata load options should be displayed.
+        if (displayMetadataOptions(loader)) {
+        
+            // Metadata Options
+            Group groupMetadata = new Group(options, SWT.NONE);
+            groupMetadata.setLayout(new GridLayout(3, false));
+            groupMetadata.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            
+            String metadataUriHelp = "The URI of the metadata to load.";
+      
+            Label metadataLabel = new Label(groupMetadata, SWT.NONE);
+            metadataLabel.setText("Metadata URI:");
+            metadataLabel.setToolTipText(metadataUriHelp);
+            
+            metadataFile = new Text(groupMetadata, SWT.BORDER);
+            metadataFile.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.FILL_HORIZONTAL));
+            metadataFile.setToolTipText(metadataUriHelp);
+            
+            metadataUriChooseButton = Utility.getFileChooseButton(groupMetadata, metadataFile,
+                 optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]),
+                 optionHolder.getResourceUriAllowedFileTypes().toArray(new String[0]));
+            
+            metadataUriChooseButton.setToolTipText(metadataUriHelp);   
+                    
+            overwriteButton = new Button(groupMetadata, SWT.CHECK);
+            overwriteButton.setText("Overwrite");
+            overwriteButton.setToolTipText("overwrite If specified, existing metadata for the code system will be erased. " +
+                    "Otherwise, new metadata will be appended to existing metadata (if present).");
+        }
+        else {
+            metadataFile = null;
+            overwriteButton = null;
+        }
+        
 	    for(final Option<Boolean> boolOption : optionHolder.getBooleanOptions()){
 	        Composite group2 = new Composite(options, SWT.NONE);
 	       
@@ -424,7 +480,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	                });
 	            }
 	        }
-
+	      
 	    Group groupControlButtons = new Group(options, SWT.NONE);
         groupControlButtons.setLayout(new GridLayout(3, false));
         groupControlButtons.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -441,6 +497,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 	        public void widgetSelected(SelectionEvent arg0) {
 
 	            URI uri = null;
+	           
 	            // is this a local file?
 				File theFile = new File(file.getText());
 
@@ -457,17 +514,21 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 						return;
 					}
 				}
+				
+				metadataFileStr = metadataFile != null?  metadataFile.getText(): null;
+				metadataOverwrite = overwriteButton != null? overwriteButton.getSelection() : false;
 
 				setLoading(true);
 				load.setEnabled(false);
 				close.setEnabled(false);
 				loader.load(uri);
 				
+				
 				// Create/start a new thread to update the buttons when the load completes.
-				ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
-				Thread t = new Thread(buttonUpdater);
-		        t.setDaemon(true);
-		        t.start();  
+                ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
+                Thread t = new Thread(buttonUpdater);
+                t.setDaemon(true);
+                t.start();  
 	        }
 
 			public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -593,7 +654,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                         return;
                     }
                 }
-
+      
                 setLoading(true);
                 load.setEnabled(false);
                 close.setEnabled(false);
@@ -689,6 +750,38 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                     throw new RuntimeException("Error while waiting for load to complete.", e);
                 }
             }
+         
+            try {
+                URI metadataUri = getMetadataURI();
+                if (metadataUri != null){
+                    
+                    // Pause a second then do the metadata load.  Otherwise the logs don't
+                    // display the metadata load.
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("Error while waiting for status log.", e);
+                    }
+                    
+                    LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+                    LexBIGServiceManager lbsm = lbs.getServiceManager(null);
+                    MetaData_Loader metadataLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
+                    
+                    CodingSchemeSummary css = 
+                            getCodingSchemeSummary(loader.getCodingSchemeReferences(), 
+                                    lbs.getSupportedCodingSchemes());
+                    
+                    setStatusMonitor(statusText_, metadataLoader);
+                    
+                    metadataLoader.loadAuxiliaryData(metadataUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
+                            metadataOverwrite, false, true);  
+                }
+            }
+            catch (Exception e) {
+                System.out.println("Metadata loader failed:" + e);
+            }
+                                   
+            
             // Wait an extra 3 seconds to give time for the screen to update completely (XWindows sessions)
             // JIRA issue lexevs-2461
             try {
@@ -735,5 +828,63 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         } 
         return isResolvedValueSet;
     }
+    
+    private CodingSchemeSummary getCodingSchemeSummary(AbsoluteCodingSchemeVersionReference[] refs,
+    		CodingSchemeRenderingList schemeList){
+    	
+    	CodingSchemeSummary css = null;
+    	Enumeration<? extends CodingSchemeRendering> schemes = schemeList.enumerateCodingSchemeRendering();
+        while (schemes.hasMoreElements() && css == null) {
+            CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
+            
+            for (int i = 0; i < refs.length; i++) {
+                AbsoluteCodingSchemeVersionReference ref = refs[i];
+                                        
+                if (ref.getCodingSchemeURN().equalsIgnoreCase(summary.getCodingSchemeURI())
+                        && ref.getCodingSchemeVersion().equalsIgnoreCase(summary.getRepresentsVersion())){
+                    css = summary;
+                    break;
+                }
+            }
+        }
+        return css;
+    }
 
+    private boolean displayMetadataOptions(Loader loader){
+        boolean display = false;
+        if (loader.getName().equals(LexGrid_Loader.name) ||
+            loader.getName().equals(OWL2_Loader.name) ||   
+            loader.getName().equals(MrMap_Loader.name) ||   
+            loader.getName().equals(MetaBatchLoader.NAME) ||   
+            loader.getName().equals(UmlsBatchLoader.NAME) ||   
+            loader.getName().equals(OBO_Loader.name)){
+            display = true;
+        }
+        
+        return display;
+    }
+    
+    private URI getMetadataURI() {
+        
+        URI metadataUri = null;
+        if (metadataFileStr != null && metadataFileStr.trim().length() > 0) {
+            File metadataFile = new File(metadataFileStr);
+
+            if (metadataFile.exists()) {
+                metadataUri = metadataFile.toURI();
+            } else {
+                // is it a valid URI (like http://something)
+                try {
+                    metadataUri = new URI(metadataFileStr);
+                    metadataUri.toURL().openConnection();
+                } catch (Exception e) {
+                    System.out.println("Path Error. No metatdata file could be located at this location." + e.getMessage());
+                }
+            } 
+        }
+        
+        return metadataUri;
+    }
+
+    
 }

@@ -43,6 +43,8 @@ public abstract class LoadExportBaseShell {
 	
 	protected boolean loadingPL_ = false;
 	protected boolean loadingVD_ = false;
+	protected StyledText statusText_;
+	protected Thread statusMonitorThread_;
 	/*
 	 * monitorLoader needs to have synchronized access (or be volatile). The UI
 	 * thread was accessing it directly, as was the StatusMonitor thread. Even
@@ -123,18 +125,27 @@ public abstract class LoadExportBaseShell {
 	    status.setLayout(new GridLayout());
 	    status.setText("Output");
 
-	    StyledText text = new StyledText(status, SWT.MULTI | SWT.READ_ONLY
+	    statusText_ = new StyledText(status, SWT.MULTI | SWT.READ_ONLY
 	            | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER);
 	    GridData gd = new GridData(GridData.FILL_BOTH);
 	    gd.heightHint = 200;
-	    text.setLayoutData(gd);
-
-	    StatusMonitor sm = new StatusMonitor(text, reporter);
-	    Thread t = new Thread(sm);
-	    t.setDaemon(true);
-	    t.start();
-
+	    statusText_.setLayoutData(gd);
+	    
+	    setStatusMonitor(statusText_, reporter);
 	    return status;
+	}
+	
+	protected void setStatusMonitor(StyledText statusText, StatusReporter reporter) {
+	    if (statusMonitorThread_ != null){
+	        statusMonitorThread_.interrupt();
+	        statusMonitorThread_ = null;
+	    }
+	    setMonitorLoader(true);
+	    
+	    StatusMonitor sm = new StatusMonitor(statusText, reporter);
+        statusMonitorThread_ = new Thread(sm);
+        statusMonitorThread_.setDaemon(true);
+        statusMonitorThread_.start();
 	}
 
 	protected class StatusMonitor implements Runnable {
