@@ -1164,7 +1164,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;MildlySickCancerPatient">
-        <P90>slightly sick cancer patient</P90>
+        <P108>slightly sick cancer patient</P108>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1282,6 +1282,7 @@
 
     <owl:Class rdf:about="&owl2lexevs;PatientWithCold">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;MildlySickPatient"/>
+        <P108>Patient With Cold</P108>
         <P90>slightly sick patient</P90>
         <rdfs:subClassOf>
             <owl:Restriction>
@@ -1289,7 +1290,14 @@
                 <owl:someValuesFrom rdf:resource="&owl2lexevs;Cold"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-    </owl:Class>
+    </owl:Class>   
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">CDISC</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">slightly sick patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;PatientWithCold"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     
 
 
@@ -1609,7 +1617,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;VerySickCancerPatient">
-    		<P90>very sick cancer patient</P90>
+    		<P108>very sick cancer patient</P108>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
