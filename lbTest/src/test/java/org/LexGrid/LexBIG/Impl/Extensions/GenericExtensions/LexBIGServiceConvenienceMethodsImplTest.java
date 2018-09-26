@@ -323,6 +323,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     }
     
     @Test
+    @Category(RemoveFromDistributedTests.class)
     public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatient( ) throws LBParameterException{
     	long start = System.currentTimeMillis();
     	List<String> codes = new ArrayList<String>();
