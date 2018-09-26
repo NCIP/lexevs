@@ -21,7 +21,12 @@ package org.lexevs.dao.database.ibatis.association;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.relations.AssociationData;
@@ -34,11 +39,14 @@ import org.LexGrid.relations.Relations;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
+import org.lexevs.dao.database.access.association.batch.AssociationQualifierBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchInsertItem;
+import org.lexevs.dao.database.access.association.model.InstanceToGuid;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.property.PropertyDao;
@@ -55,11 +63,14 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.inserter.BatchInserter;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.locator.LexEvsServiceLocator;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.util.Assert;
 
@@ -99,7 +110,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/** The GE t_ associatio n_ instanc e_ ke y_ sql. */
 	private static String GET_ASSOCIATION_INSTANCE_KEY_SQL = ASSOCIATION_NAMESPACE + "getAccociationInstanceKey";
 	
-	/** The GE t_ relation s_ ke y_ sql. */
+	/** Getting a UID. */
+	private static String GET_ASSOCIATION_UID_SQL_FROM_INSTANCE_ID = ASSOCIATION_NAMESPACE + "getAssociationInstanceUIDFromInstanceIdOnly";
+	
+			/** The GE t_ relation s_ ke y_ sql. */
 	private static String GET_RELATIONS_KEY_SQL = ASSOCIATION_NAMESPACE + "getRelationsKey";
 	
 	/** The GE t_ associatio n_ predicat e_ ke y_ sql. */
@@ -127,6 +141,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	private static final String GET_ANCESTOR_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getGraphDbTriplesAncestorsTr";
 
 	private static final String GET_DESCENDANT_TRIPLES_OF_CODINGSCHEME_SQL = ASSOCIATION_NAMESPACE + "getGraphDbTriplesDecendentsTr";
+
+	private static final String GET_COMPLETE_INSTANCE_TO_GUID_MAP =  ASSOCIATION_NAMESPACE + "getCompleteInstanceToGuidMap";
 	
 	private static String DELETE_ENTITY_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL = ASSOCIATION_NAMESPACE + "deleteEntityAssocQualsByCodingSchemeUId";
 	
@@ -586,6 +602,60 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		});
 	}
 	
+	@ClearCache
+	public void insertBatchAssociationQualifiers(final String codingSchemeId,
+			final List<AssociationQualifierBatchInsertItem> list, HashMap<String,String> instanceMap) {
+		
+		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		
+			public Object doInSqlMapClient(SqlMapExecutor executor)
+					throws SQLException {
+				BatchInserter batchInserter = getBatchTemplateInserter(executor);
+				
+				batchInserter.startBatch();
+				
+				for(AssociationQualifierBatchInsertItem item : list){
+					String associationId = instanceMap.get(item.getParentId());
+					if(associationId == null) {
+						System.out.println(item.getParentId() + "Is an associationId"
+								+ " with no loaded association"); 
+					}else {
+					insertAssociationQualifier(
+							codingSchemeId, 
+							associationId,
+							item.getParentId(), 
+							item.getAssociationQualifier(), 
+							batchInserter);
+					}
+					}
+				
+				batchInserter.executeBatch();
+				return null;
+			}
+
+			@ClearCache
+			private void insertAssociationQualifier(String codingSchemeId,  String associationTargetId, String parentId,
+					AssociationQualification qual, BatchInserter batchInserter) {
+				String qualUId = createUniqueId();
+				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+				qualBean.setReferenceUId(associationTargetId );
+				qualBean.setUId(qualUId);
+				qualBean.setPrefix(getPrefixResolver().resolvePrefixForCodingScheme(
+						codingSchemeId));
+				qualBean.setQualifierName(qual.getAssociationQualifier());
+				qualBean.setEntryStateUId(createUniqueId());
+
+				if (qual.getQualifierText() != null) {
+					qualBean
+							.setQualifierValue(qual.getQualifierText().getContent());
+				}
+
+				batchInserter.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				
+			}	
+		});
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationSource(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
 	 */
@@ -834,14 +904,23 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * 
 	 * @return the key for association instance id
 	 */
-	protected String getKeyForAssociationInstanceId(String codingSchemeId, String associationInstanceId){
+	public String getKeyForAssociationInstanceId(String codingSchemeId, String associationInstanceId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		return (String) this.getSqlMapClientTemplate().queryForObject(
 				
-				GET_ASSOCIATION_INSTANCE_KEY_SQL, 
-				new PrefixedParameterTuple(prefix, codingSchemeId, associationInstanceId));
+				GET_ASSOCIATION_UID_SQL_FROM_INSTANCE_ID, 
+				new PrefixedParameter(prefix, associationInstanceId));
 	}
+	
+	@Override
+	@CacheMethod
+	public Map<String, String> getInstanceToGuidCache(String schemeId)
+	{
+		List<InstanceToGuid> list = (List<InstanceToGuid>) getGuidToInstanceMap(schemeId);
+		return (Map<String, String>)list.stream().collect(Collectors.toMap(x -> x.getInstance(), y -> y.getValue()));
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.AbstractBaseDao#doGetSupportedLgSchemaVersions()
@@ -1029,6 +1108,17 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	public List<InstanceToGuid> getGuidToInstanceMap(String codingSchemeId) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+		PrefixedTableParameterBean bean = new PrefixedTableParameterBean(prefix);
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_COMPLETE_INSTANCE_TO_GUID_MAP, 
+				bean);
+	}
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
 	public List<GraphDbTriple> getAllGraphDbTriplesOfCodingScheme(
 			String codingSchemeId,List<String> guids) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -1111,6 +1201,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		else
 			return false;
 	}
+	
 
 
 

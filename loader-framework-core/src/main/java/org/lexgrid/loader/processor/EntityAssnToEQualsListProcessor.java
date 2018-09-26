@@ -77,7 +77,7 @@ public class EntityAssnToEQualsListProcessor<I> extends AbstractSupportedAttribu
 	protected ParentIdHolder<AssociationQualification> buildEntityAssnsToEquals(I item, QualifierResolver<I> qualifierResolver){
 		AssociationQualification qual = new AssociationQualification();
 		
-		qual.setAssociationQualifier(qualifierResolver.getQualifierName());
+		qual.setAssociationQualifier(qualifierResolver.getQualifierName(item));
 		qual.setQualifierText(qualifierResolver.getQualifierValue(item));
 
 		String associationInstanceId = associationInstanceIdResolver.resolveAssociationInstanceId(item);

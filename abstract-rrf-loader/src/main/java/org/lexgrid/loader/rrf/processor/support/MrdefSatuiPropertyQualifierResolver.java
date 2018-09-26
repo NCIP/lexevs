@@ -31,7 +31,7 @@ import org.lexgrid.loader.rrf.model.Mrdef;
  */
 public class MrdefSatuiPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrdef>{
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrdef item) {
 		return RrfLoaderConstants.SATUI_QUALIFIER;
 	}
 

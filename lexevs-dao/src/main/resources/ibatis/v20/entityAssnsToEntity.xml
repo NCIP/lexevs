@@ -186,6 +186,11 @@
 	<resultMap id="vsEntityCount" class="string">
 		<result property="java.util.String" column="vsEntityCount" />
 	</resultMap>
+	
+	<resultMap id="instanceToGuidMapResult" class="org.lexevs.dao.database.access.association.model.InstanceToGuid" >
+		<result property="instance" column="instance" />
+		<result property="value" column="value" />
+	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
@@ -326,6 +331,19 @@
 			eae.associationInstanceId = 
 			#param2#
 	</select>
+	
+	<select id="getAssociationInstanceUIDFromInstanceIdOnly" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		remapResults="true" 
+		resultMap="Common.uidResult">
+		
+		SELECT
+			eae.entityAssnsGuid AS uidKey
+		FROM 
+			$prefix$entityAssnsToEntity eae
+		WHERE
+			eae.associationInstanceId = #param1#
+	</select>	
 	
 	<select id="getAllTriplesOfCodingScheme" remapResults="true"
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.tripleResult">
@@ -1892,6 +1910,16 @@
 		resultMap="Common.uidResult">
 		<include refid="getTripleUidsForMappingContainerPre"/>
 		<include refid="getTripleUidsForMappingContainerPost"/>	
+	</select>
+	
+	<select id="getCompleteInstanceToGuidMap" remapResults="true"
+	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean" 
+	resultMap="instanceToGuidMapResult" >
+		SELECT
+			eae.associationInstanceId as instance,
+			eae.entityAssnsGuid as value
+		FROM
+			$prefix$entityAssnsToEntity eae
 	</select>
 	
 	<select id="getTripleUidsForMappingContainerAndCodesWithSort" remapResults="true"
