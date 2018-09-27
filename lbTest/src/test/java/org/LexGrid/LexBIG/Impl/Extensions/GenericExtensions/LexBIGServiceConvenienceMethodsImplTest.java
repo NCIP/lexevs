@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.SupportedProperty;
@@ -322,6 +323,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     }
     
     @Test
+    @Category(RemoveFromDistributedTests.class)
     public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatient( ) throws LBParameterException{
     	long start = System.currentTimeMillis();
     	List<String> codes = new ArrayList<String>();
@@ -329,7 +331,12 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
     			OWL2_SNIPPET_INDIVIDUAL_URN, 
     			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION), 
-    			codes, "subClassOf", "patient");
+    			codes, 
+    			"subClassOf", 
+    			"patient", 
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
     	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
@@ -346,7 +353,12 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
     			OWL2_SNIPPET_INDIVIDUAL_URN, 
     			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
-    			codes, "subClassOf", "patient");
+    			codes, 
+    			"subClassOf", 
+    			"patient",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
     	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
     	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
     	assertTrue(list.size() > 0);
@@ -358,6 +370,79 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     }
     
     @Test
+    public void searchAllDecendentsInTransitiveClosureDomainVerySickPatientSourceSpecific( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("VerySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"patient",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.ALL, 
+    			Constructors.createLocalNameList("NCI"));
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertTrue(list.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
+    }
+    
+    @Test
+    @Category(RemoveFromDistributedTests.class)
+    public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatientSourceSpecificPreferred( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"sick",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertFalse(list.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("slightly sick cancer patient"))); 
+    }
+    
+    @Test
+    public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatientContainsPreferred( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"Patient",
+    			LBConstants.MatchAlgorithms.contains.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertTrue(list.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("slightly sick cancer patient"))); 
+    }
+    
+    @Test
     public void searchAllDecendentsInTransitiveClosureScaledCodeList( ) throws LBParameterException{
     	long start = System.currentTimeMillis();
     	List<String> codes = new ArrayList<String>();
@@ -366,7 +451,12 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
     			OWL2_SNIPPET_INDIVIDUAL_URN, 
     			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION), 
-    			codes, "subClassOf", "patient");
+    			codes, 
+    			"subClassOf", 
+    			"patient",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
     	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
        	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
