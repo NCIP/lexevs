@@ -456,6 +456,20 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	}
 	
 	@Test
+	public void testLoadTransitivePropertiesAndInversesAsTHierarchies() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodingScheme scheme = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+		List<SupportedHierarchy> hrchy = scheme.getMappings().getSupportedHierarchyAsReference();
+
+		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("precedes")));
+		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("preceded by")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("precedes")).anyMatch(y -> y.getRootCode().equals("@@")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("preceded by")).anyMatch(y -> y.getRootCode().equals("@")));
+	}
+	
+	@Test
 	public void testLoadValidOWL2ComplexPropsOff() throws LBInvocationException, LBParameterException{
 		String[] stringList = {"C61410"};
 		cns = cns.restrictToCodes(Constructors.createConceptReferenceList(stringList, LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN));
