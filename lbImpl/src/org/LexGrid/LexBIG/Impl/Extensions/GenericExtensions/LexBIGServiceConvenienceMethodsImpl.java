@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
@@ -63,8 +64,12 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -2266,7 +2271,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private List<ResolvedConceptReference> getTransitiveClosure(final String code, final String associationName, final String uri,
             final String version, boolean ancestors) {
         DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-        ClosureIterator iterator = new ClosureIterator(databaseServiceManager, uri, version, code, associationName, ancestors);
+        ClosureIterator iterator = new ClosureIterator(databaseServiceManager, uri, version, associationName, code, ancestors);
         List<ResolvedConceptReference> refs = new ArrayList<ResolvedConceptReference>();
         while(iterator.hasNext()){
             GraphDbTriple triple = iterator.next();
@@ -2405,6 +2410,65 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         }
 
 
+    }
+
+    @Override
+    public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, 
+            List<String> codes, 
+            String association, 
+            String matchText,
+            String alg,
+            SearchDesignationOption searchOption,
+            LocalNameList sources
+            ) throws LBParameterException {
+        if(codes == null || codes.size() <= 0) { 
+            System.out.println("ERROR: Null or Empty list of domain codes cannot be searched" ); 
+            getLogger().error("Null or Empty list of domain codes cannot be searched" );
+            return null;}
+        if(!isValidMatchAlgorithm(alg)) {
+            System.out.println("MatchAlgorithm doesn't exist. Must be defined as one of the following: ");
+            Arrays.asList(LBConstants.MatchAlgorithms.values()).stream().forEach(x ->System.out.println(x.name()));
+            return null;
+        }
+        List<ResolvedConceptReference> refs = codes.stream().map(x -> {
+            List<ResolvedConceptReference> innerRefs = null;
+            try {
+                innerRefs = getDescendentsInTransitiveClosure(codingScheme,
+                    versionOrTag, x, association);
+            } catch (LBParameterException e1) {
+                throw new RuntimeException("Failed to get descendents for top node: ", e1);
+            } return innerRefs;
+        }).flatMap(List::stream).collect(Collectors.toList());
+
+        ConceptReferenceList list = new ConceptReferenceList();
+        refs.stream().map(x -> Constructors.createConceptReference(
+                x.getConceptCode(), codingScheme)).
+                    forEachOrdered(y -> list.addConceptReference(y));
+        CodedNodeSet nodeSet = null;
+        ResolvedConceptReferenceList results = null;
+        try {
+           nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
+           nodeSet = nodeSet.restrictToCodes(list);
+           if(sources != null && sources.getEntryCount() > 0) {
+           nodeSet = nodeSet.restrictToProperties(null, new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, sources, null, null);
+           }
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, 
+                   searchOption, alg , null);
+            results = nodeSet.resolveToList(null, null, null, -1);
+        } catch (LBInvocationException e) {
+            throw new RuntimeException("Failed to get concepts for coding scheme: " 
+                    + codingScheme + " : "
+                    + versionOrTag.getVersion(), e);
+        } catch (LBException e) {
+            throw new RuntimeException("Failed resolve concepts for code or code list : ", e);
+        }
+        return results;
+    }
+    
+    private Boolean isValidMatchAlgorithm(String matchAlgorithm) {
+        return Arrays.asList(LBConstants.MatchAlgorithms.values()).
+                stream().anyMatch(x -> x.name().equals("contains"));
     }
     
     

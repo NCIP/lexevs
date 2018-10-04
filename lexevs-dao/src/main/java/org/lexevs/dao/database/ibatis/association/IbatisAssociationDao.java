@@ -1131,7 +1131,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<GraphDbTriple> getAllAncestorTriplesTrOfCodingScheme(
-			String codingSchemeId, String code, String associationName, int start, int pagesize) {
+			String codingSchemeId, String associationName, String code, int start, int pagesize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		return this.getSqlMapClientTemplate().queryForList(
@@ -1142,7 +1142,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<GraphDbTriple> getAllDescendantTriplesTrOfCodingScheme(
-			String codingSchemeId, String code, String associationName, int start, int pagesize) {
+			String codingSchemeId, String associationName, String code, int start, int pagesize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		return this.getSqlMapClientTemplate().queryForList(

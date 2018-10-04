@@ -281,22 +281,22 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 	}
 
 	protected List<VSHierarchyNode> collectReducedNodes(String source, List<VSHierarchyNode> nodes) {
-		// Get all nodes with declared sources and filter them to the source of the top node
-		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null && 
-				x.getSource().equals(source == null? x.getSource(): source)).collect(Collectors.toList());
-		// Filter these from the remainder when there is a duplicate with a null
-		// source
-		List<VSHierarchyNode> complete = new ArrayList<VSHierarchyNode>();
-		for (VSHierarchyNode n : nodes) {
-			if (n.getSource() == null) {
-				if (!temps.stream().anyMatch(x -> x.getEntityCode().equals(n.getEntityCode()))) {
-					complete.add(n);
-				}
-			}
-		}
-		// add those with a source back in
-		complete.addAll(temps);
-		return complete;
+		//Group nodes by code into a Map structure
+		Map<String, List<VSHierarchyNode>> groupedNodes = nodes.stream().
+				collect(Collectors.groupingBy(
+						VSHierarchyNode::getEntityCode, Collectors.toList()));
+		//Filter and remove duplicate nodes in the lists where there is no source 
+		//and keep non-sourced nodes when there is not a duplicate with a declared source.
+		//We assume a list size of 1 for non-sourced (NCI originated) value sets.
+		//This means we would always not add a possible NCI sourced list back into the list if
+		//there is another source present.
+		//Flatten these resulting lists to a List of nodes and return.
+		return groupedNodes.values().stream().map(
+				x -> x.stream().filter(
+						n -> n.getSource() != null ||
+						(x.size() == 1 && n.getSource() == null)).
+							collect(Collectors.toList())).
+								flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	protected List<VSHierarchyNode> getUnfilteredNodes(String code) {

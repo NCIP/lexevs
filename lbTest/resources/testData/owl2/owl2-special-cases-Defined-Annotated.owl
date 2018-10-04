@@ -1192,6 +1192,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;MildlySickCancerPatient">
+        <P108>slightly sick cancer patient</P108>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1309,13 +1310,22 @@
 
     <owl:Class rdf:about="&owl2lexevs;PatientWithCold">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;MildlySickPatient"/>
+        <P108>Patient With Cold</P108>
+        <P90>slightly sick patient</P90>
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
                 <owl:someValuesFrom rdf:resource="&owl2lexevs;Cold"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-    </owl:Class>
+    </owl:Class>   
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">CDISC</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">slightly sick patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;PatientWithCold"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     
 
 
@@ -1635,6 +1645,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;VerySickCancerPatient">
+    		<P108>very sick cancer patient</P108>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1655,6 +1666,13 @@
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">very sick cancer patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on union of object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
@@ -1687,6 +1705,13 @@
     <owl:Class rdf:about="&owl2lexevs;VerySickPatient">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;SickPatient"/>
     </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">very sick patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     
 
 
@@ -2394,7 +2419,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>BLACKER</P90>
         <P90>Blacker</P90>
-        <P97>Of even darker color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Of even darker color</P97>
     </owl:Class>
     
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99989">
@@ -2406,7 +2432,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>BLA</P90>
         <P90>Bla</P90>
-        <P97>Of even bla color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Of even bla color</P97>
     </owl:Class>
     
    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99988">
@@ -2418,7 +2445,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>ACK</P90>
         <P90>ack</P90>
-        <P97>Of even acker color;</P97>
+         <P90>color characterized as dark</P90>
+        <P97>Of even acker color</P97>
     </owl:Class>
     
      <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99998">
@@ -2430,7 +2458,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>UberBLACKER</P90>
         <P90>BlackUber</P90>
-        <P97>Uber dark color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Uber dark color</P97>
     </owl:Class>
     
        <!-- White -->

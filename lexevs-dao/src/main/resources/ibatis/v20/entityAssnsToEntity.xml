@@ -178,7 +178,7 @@
 		<result property="_propertyList" resultMap="Association.vsPropertyResult"/>
 	</resultMap>
 	
-	<resultMap id="vsPropertyResult" class="vsProperty" groupBy="propertyName, propertyValue">
+	<resultMap id="vsPropertyResult" class="vsProperty" >
 		<result property="propertyName" column="propertyName"/>
 		<result property="value.content" column="propertyValue"/>
 	</resultMap>
@@ -2337,5 +2337,7 @@
 			  	eae.targetEntityCode = #param2#
 			AND 
 				ap.associationName = #param3#
+			AND 
+				(source.isAnonymous != 1 OR source.isAnonymous IS NULL)
 	</select>
 </sqlMap>
