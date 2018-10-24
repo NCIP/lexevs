@@ -1068,4 +1068,19 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
             SearchDesignationOption searchOption,
             LocalNameList sources) throws LBParameterException;
     
+    /**
+     * 
+     * @param codingScheme the coding scheme focus of the search
+     * @param versionOrTag coding scheme version
+     * @param codes that are top nodes of a domain
+     * @param association the relationship name that determines the domain
+     * @param matchText text to match domain members
+     * @return ResolvedConceptReferenceList of search results from discrete domain
+     * @throws LBParameterException
+     */
+    public ResolvedConceptReferenceList searchAscendentsInTransitiveClosure( String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, final List<String> codes, final String association, final String matchText, String matchAlgorithm,
+            SearchDesignationOption searchOption,
+            LocalNameList sources) throws LBParameterException;
+    
 }

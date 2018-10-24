@@ -2450,11 +2450,64 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         try {
            nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
            nodeSet = nodeSet.restrictToCodes(list);
-           if(sources != null && sources.getEntryCount() > 0) {
-           nodeSet = nodeSet.restrictToProperties(null, new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, sources, null, null);
+           if(sources != null && sources.getEntryCount() > 0 && !searchOption.equals(SearchDesignationOption.PREFERRED_ONLY)) {
+           nodeSet = nodeSet.restrictToProperties(null, 
+                   new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, 
+                   sources, null, null); }
+           else {
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
            }
-           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, 
-                   searchOption, alg , null);
+            results = nodeSet.resolveToList(null, null, null, -1);
+        } catch (LBInvocationException e) {
+            throw new RuntimeException("Failed to get concepts for coding scheme: " 
+                    + codingScheme + " : "
+                    + versionOrTag.getVersion(), e);
+        } catch (LBException e) {
+            throw new RuntimeException("Failed resolve concepts for code or code list : ", e);
+        }
+        return results;
+    }
+    
+    @Override
+    public ResolvedConceptReferenceList searchAscendentsInTransitiveClosure(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, List<String> codes, String association, String matchText,
+            String alg, SearchDesignationOption searchOption, LocalNameList sources)
+            throws LBParameterException {
+        if(codes == null || codes.size() <= 0) { 
+            System.out.println("ERROR: Null or Empty list of domain codes cannot be searched" ); 
+            getLogger().error("Null or Empty list of domain codes cannot be searched" );
+            return null;}
+        if(!isValidMatchAlgorithm(alg)) {
+            System.out.println("MatchAlgorithm doesn't exist. Must be defined as one of the following: ");
+            Arrays.asList(LBConstants.MatchAlgorithms.values()).stream().forEach(x ->System.out.println(x.name()));
+            return null;
+        }
+        List<ResolvedConceptReference> refs = codes.stream().map(x -> {
+            List<ResolvedConceptReference> innerRefs = null;
+            try {
+                innerRefs = getAncestorsInTransitiveClosure(codingScheme,
+                    versionOrTag, x, association);
+            } catch (LBParameterException e1) {
+                throw new RuntimeException("Failed to get descendents for top node: ", e1);
+            } return innerRefs;
+        }).flatMap(List::stream).collect(Collectors.toList());
+
+        ConceptReferenceList list = new ConceptReferenceList();
+        refs.stream().map(x -> Constructors.createConceptReference(
+                x.getConceptCode(), codingScheme)).
+                    forEachOrdered(y -> list.addConceptReference(y));
+        CodedNodeSet nodeSet = null;
+        ResolvedConceptReferenceList results = null;
+        try {
+           nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
+           nodeSet = nodeSet.restrictToCodes(list);
+           if(sources != null && sources.getEntryCount() > 0 && !searchOption.equals(SearchDesignationOption.PREFERRED_ONLY)) {
+           nodeSet = nodeSet.restrictToProperties(null, 
+                   new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, 
+                   sources, null, null);
+           }else {
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
+           }
             results = nodeSet.resolveToList(null, null, null, -1);
         } catch (LBInvocationException e) {
             throw new RuntimeException("Failed to get concepts for coding scheme: " 
@@ -2468,8 +2521,10 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     
     private Boolean isValidMatchAlgorithm(String matchAlgorithm) {
         return Arrays.asList(LBConstants.MatchAlgorithms.values()).
-                stream().anyMatch(x -> x.name().equals("contains"));
+                stream().anyMatch(x -> x.name().equals(matchAlgorithm));
     }
+
+
     
     
 }
