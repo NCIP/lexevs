@@ -87,7 +87,7 @@ public class GForge23103 extends LexBIGServiceTestCase {
      */
     public void testSourceCount(){
         Presentation pres = getPreferredPresentation(testEntity.getPresentation());
-        assertTrue("Length: " + pres.getSource().length, pres.getSource().length == 2);  
+        assertTrue("Length: " + pres.getSource().length, pres.getSource().length == 3);  
     }
     
     /**
@@ -99,7 +99,8 @@ public class GForge23103 extends LexBIGServiceTestCase {
         for(Source source : sources){
             assertTrue(
                     sourceEquals(source, "lexgrid.org", "sampleSource", "sampleSubRef1") ||
-                    sourceEquals(source, "lexgrid.org", "sampleSource", "sampleSubRef2")
+                    sourceEquals(source, "lexgrid.org.org", "sampleSource", "sampleSubRef2") ||
+                    sourceEquals(source, "lexgrid-org", "sampleSource", "sampleSubRef2") 
             );
         }
     }

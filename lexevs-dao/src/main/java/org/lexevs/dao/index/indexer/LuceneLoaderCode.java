@@ -356,7 +356,7 @@ public abstract class LuceneLoaderCode {
         if (sources != null && sources.length > 0) {
             StringBuffer temp = new StringBuffer();
             for (int i = 0; i < sources.length; i++) {
-            	  generator_.addTextField("sources", sources[i], false, true, false);
+            	  generator_.addTextField("sources", StringUtils.lowerCase(sources[i]), false, true, false);
 //                temp.append(sources[i]);
 //                if (i + 1 < sources.length) {
 //                    temp.append(STRING_TOKENIZER_TOKEN);
@@ -543,18 +543,19 @@ public abstract class LuceneLoaderCode {
         	
         };
         
-        Analyzer sourcesAnalyzer = new Analyzer() {
-
-			@Override
-			protected TokenStreamComponents createComponents(String arg0) {
-                final WhitespaceTokenizer source = new WhitespaceTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
-                TokenStream filter = new LowerCaseFilter(source);
-                Pattern pattern = Pattern.compile("(\\<:>)");
-				filter = new PatternReplaceFilter(filter, pattern, " ", true);
-                return new TokenStreamComponents(source, filter);
-			}
-        	
-        };
+        Analyzer sourcesAnalyzer = new KeywordAnalyzer();
+//        		new Analyzer() {
+//
+//			@Override
+//			protected TokenStreamComponents createComponents(String arg0) {
+//                final WhitespaceTokenizer source = new WhitespaceTokenizer(AttributeFactory.DEFAULT_ATTRIBUTE_FACTORY);
+//                TokenStream filter = new LowerCaseFilter(source);
+//                Pattern pattern = Pattern.compile("(\\<:>)");
+//				filter = new PatternReplaceFilter(filter, pattern, " ", true);
+//                return new TokenStreamComponents(source, filter);
+//			}
+//        	
+//        };
 
         analyzerPerField.put("sources", sourcesAnalyzer);
         analyzerPerField.put("usageContexts", sa);
