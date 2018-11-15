@@ -1348,6 +1348,12 @@ public class OwlApi2LG {
                 // Remember that a preferred definition was assigned ...
                 assignedPreferredDefn = true;
             }
+            else if (prop instanceof Presentation){
+                // default the presentation property isPreferred value to false, if it wasn't set.
+                if (((Presentation) prop).getIsPreferred() == null) {
+                    ((Presentation) prop).setIsPreferred(Boolean.FALSE);
+                }
+            }
         }
 
         // Updated on 05/28/2008: It was decided that we also need to

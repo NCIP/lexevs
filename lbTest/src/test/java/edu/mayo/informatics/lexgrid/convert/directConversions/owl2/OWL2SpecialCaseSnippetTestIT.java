@@ -84,7 +84,42 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		assertTrue(hasEditorTerm);
 	}
 
-
+	@Test
+	public void testPreferredPresentationPropNotNull() 
+			throws LBException{
+	
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("C117743"));
+		ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(itr.hasNext());
+		
+		ResolvedConceptReference ref = itr.next();
+		org.LexGrid.concepts.Entity e = ref.getEntity();
+		
+		Presentation[] presentations = e.getPresentation();
+		for( int i = 0; i < presentations.length; i++) {
+			Presentation p = presentations[i];
+			
+			// isPreferred should not be null
+			assertNotNull(p.getIsPreferred());
+			
+			if(p.getIsPreferred() ) {
+				System.out.print(p.getValue().getContent() + "\t");
+				Property[] props = e.getAllProperties();
+				for( Property prop : props ) {
+					if( prop.getPropertyName().equals("Semantic_Type") ) {
+						System.out.print(prop.getValue().getContent() + "\t");
+					}
+				}
+			}
+		}
+		
+	}
+	
 	@Test
 	public void testRestrictOnSubClassOfToProperty() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
