@@ -223,6 +223,46 @@
 							</xs:sequence>
 						</xs:complexType>
 					</xs:element>
+					<xs:element name="IsTransitiveManaged" type="xs:boolean" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+							Transitive management flag indicates administrator will name inverse and normal transitive
+							elements as opposed to a random implementation
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="TransitiveInverseAssociatinNames" nillable="true" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>
+										Indicates a list of associations that are otherwise designated as transitive relations
+										but have a potential inverse relation this list designates any of those names that would
+										be the inverse relation, with association direction going the opposite of it's transitive
+										opposite
+										</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="TransitiveNormalAssociationNames" nillable="true" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="name" type="xs:string" nillable="true" minOccurs="0" maxOccurs="unbounded">
+									<xs:annotation>
+										<xs:documentation>
+										Indicates a list of associations that are otherwise designated as transitive relations
+										but have a potential inverse relation this list designates any of those names that would
+										be the transitive relation, with association direction going the opposite of it's inverse
+										relation.
+										</xs:documentation>
+									</xs:annotation>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
 				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>

@@ -2230,9 +2230,11 @@ public class OwlApi2LG {
         for (OWLObjectProperty prop : ontology.getObjectPropertiesInSignature()) {
             addAssociation(prop);
         }
-        //Overwrite transitive expressions of inverse with reverse traversable values
-        for(OWLObjectPropertyExpression propExp : inversePropCache.values()) {
-            addInverseHierarchyAssociation(propExp);
+        // Overwrite transitive expressions of inverse with reverse traversable values
+        if (!prefManager.isDoManageInverseAndTransitiveDesignation()) {
+            for (OWLObjectPropertyExpression propExp : inversePropCache.values()) {
+                addInverseHierarchyAssociation(propExp);
+            }
         }
     }
 
@@ -2335,7 +2337,10 @@ public class OwlApi2LG {
             List<String> list = new ArrayList<String>();
             list.add(label);
             if(isTransitive){
+                if(prefManager.isDoManageInverseAndTransitiveDesignation() && 
+                        isThisObjectPropertyAnInvers(objectProp)) {
                 processObjectPropertyInverses(objectProp);
+                }
                 lgSupportedMappings_.registerSupportedHierarchy(label, 
                         owlProp.getIRI().toString(), label, "@@", list, false, true);
             }
@@ -2359,6 +2364,11 @@ public class OwlApi2LG {
 
     }
     
+    private boolean isThisObjectPropertyAnInvers(OWLObjectProperty objectProp) {
+        return Arrays.asList(prefManager.getTransitiveInverseAssociationNames().getName()).
+        stream().anyMatch(x -> x.equals(getLocalName(objectProp)));
+    }
+
     private void processObjectPropertyInverses(OWLObjectProperty objectProp) {
         
         Set<OWLObjectPropertyExpression> propExps = 
@@ -2426,6 +2436,7 @@ public class OwlApi2LG {
         boolean isTransitive = propExp.isTransitive(ontology);
         resolveAssociationProperty(assocWrap.getAssociationEntity(), propExp.getNamedProperty());
         assocWrap.setIsTransitive(isTransitive);
+        assocWrap.setInverseTransitive(true);
         List<String> list = new ArrayList<String>();
         list.add(label);
         lgSupportedMappings_.registerSupportedHierarchy(label, 
