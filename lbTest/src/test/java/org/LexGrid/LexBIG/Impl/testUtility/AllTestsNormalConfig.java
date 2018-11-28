@@ -222,6 +222,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2Primitive
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCaseSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCasesNamespaceTestIT;
+import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCasesPreferencesLoad;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
@@ -512,6 +513,9 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
         
         mainSuite.addTestSuite(CleanUpTest.class);
+        
+        //Special Preferences Adjustments need reload and retest
+        mainSuite.addTestSuite(OWL2SpecialCasesPreferencesLoad.class);
        
         //ValueSets tests
         mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());

@@ -198,7 +198,8 @@ public class PreferenceManager {
         if (owlLoadPrefs.getDatatypePropSwitch() != null) {
             dataTypePropertySwitch = owlLoadPrefs.getDatatypePropSwitch();
         }
-        if(owlLoadPrefs.getIsTransitiveManaged()) {
+        if(owlLoadPrefs.getIsTransitiveManaged() != null && owlLoadPrefs.getIsTransitiveManaged()) {
+            doManageInverseAndTransitiveDesignation = owlLoadPrefs.getIsTransitiveManaged();
         if (owlLoadPrefs.getTransitiveInverseAssociatinNames() != null) {
             setTransitiveInverseAssociationNames(owlLoadPrefs.getTransitiveInverseAssociatinNames());
         }
