@@ -86,16 +86,16 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
     String metadataFileStr = null;
     boolean metadataOverwrite = false;
     
-	/**
-	 * Instantiates a new loader extension shell.
-	 * 
-	 * @param lb_gui the lb_gui
-	 * @param loader the loader
-	 */
-	public LoaderExtensionShell(LB_GUI lb_gui, Loader loader) {
-		super(lb_gui);
-		initializeLBGui(loader);
-	}
+    /**
+     * Instantiates a new loader extension shell.
+     * 
+     * @param lb_gui the lb_gui
+     * @param loader the loader
+     */
+    public LoaderExtensionShell(LB_GUI lb_gui, Loader loader) {
+        super(lb_gui);
+        initializeLBGui(loader);
+    }
 	
 	/**
      * Instantiates a new loader extension shell.
@@ -279,6 +279,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 }    
             });
         }
+
+        
         
         // Determine if the metadata load options should be displayed.
         if (displayMetadataOptions(loader)) {
@@ -525,6 +527,7 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 				
 				
 				// Create/start a new thread to update the buttons when the load completes.
+
                 ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
                 Thread t = new Thread(buttonUpdater);
                 t.setDaemon(true);

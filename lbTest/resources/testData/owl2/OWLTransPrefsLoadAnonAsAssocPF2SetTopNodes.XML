@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OWLLoaderPreferences xmlns="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-  xsi:schemaLocation="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences
-  http://lexgrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences.xsd">
+  xsi:schemaLocation="../lbModel/master.preferences/OWLLoadPreferences
+  ../lbModel/master.preferences/OWLLoadPreferences.xsd">
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
+  
   <MatchXMLRepformNames>term-group</MatchXMLRepformNames> 
-  <MatchXMLSourceNames>term-source|def-source|source</MatchXMLSourceNames>
+  <!--MatchXMLRepformNames>P383</MatchXMLRepformNames--> 
+    
+  <MatchXMLSourceNames>source|P384|P378</MatchXMLSourceNames>
+  <!--MatchXMLSourceNames>term-source|source|def-source</MatchXMLSourceNames-->
+  
   <ProcessComplexProps>true</ProcessComplexProps>  
   <StrictOWLImplementation>false</StrictOWLImplementation>
   <PrioritizedPresentationNames>
@@ -27,7 +32,9 @@
   <name>FGED alternative term</name>
   <name>OBI_9991119</name>
   </PrioritizedPresentationNames>
-    
-   
+  <IsTransitiveManaged>true</IsTransitiveManaged>
+  <TransitiveInverseAssociatinNames>
+  <name>willing</name>
+  </TransitiveInverseAssociatinNames>
     
 </OWLLoaderPreferences>

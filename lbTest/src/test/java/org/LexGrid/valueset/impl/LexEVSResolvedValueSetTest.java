@@ -90,13 +90,13 @@ public class LexEVSResolvedValueSetTest {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving full scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(list.size() > 0);
-		assertEquals(list.size(), 7);
+		assertEquals(list.size(), 8);
 		assertEquals(list.stream().
 		filter(scheme -> scheme.getProperties().getPropertyAsReference().
 			stream().filter(
 			prop -> prop.getPropertyName().
 			equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)).
-				findAny().isPresent()).count(), 7);
+				findAny().isPresent()).count(), 8);
 		//Source asserted value set
 		assertTrue(list.stream().filter(scheme -> scheme.getCodingSchemeName().equals("Black")).findAny().isPresent());
 		//Resolved value set coding scheme
@@ -143,7 +143,7 @@ public class LexEVSResolvedValueSetTest {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving mini scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(schemes.size() > 0);
-		assertEquals(schemes.size(), 7);
+		assertEquals(schemes.size(), 8);
 		//Resolved value set coding schemes
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
