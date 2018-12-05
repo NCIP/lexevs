@@ -2233,11 +2233,8 @@ public class OwlApi2LG {
         for (OWLObjectProperty prop : ontology.getObjectPropertiesInSignature()) {
             addAssociation(prop);
         }
-        // Overwrite transitive expressions of inverse with reverse traversable values
-       // if (!prefManager.isDoManageInverseAndTransitiveDesignation()) {
             for (OWLObjectPropertyExpression propExp : inversePropCache.values()) {
                 addInverseHierarchyAssociation(propExp);
-       //     }
         }
     }
 
