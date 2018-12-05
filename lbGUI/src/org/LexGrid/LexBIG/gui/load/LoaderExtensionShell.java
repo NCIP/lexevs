@@ -13,7 +13,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at 
  * 
- *      http://www.eclipse.org/legal/epl-v10.html
+ * 		http://www.eclipse.org/legal/epl-v10.html
  * 
  */
 package org.LexGrid.LexBIG.gui.load;
@@ -96,8 +96,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         super(lb_gui);
         initializeLBGui(loader);
     }
-    
-    /**
+	
+	/**
      * Instantiates a new loader extension shell.
      * 
      * @param lb_gui the lb_gui
@@ -152,25 +152,25 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
         } 
     }
 
-    /**
-     * Builds the gui.
-     * 
-     * @param shell the shell
-     * @param loader the loader
-     */
-    private void buildGUI(final Shell shell, final Loader loader) {
-        final Text metadataFile;
+	/**
+	 * Builds the gui.
+	 * 
+	 * @param shell the shell
+	 * @param loader the loader
+	 */
+	private void buildGUI(final Shell shell, final Loader loader) {
+	    final Text metadataFile;
         final Button metadataUriChooseButton;
         final Button overwriteButton;
-                
-        Group options = new Group(shell, SWT.NONE);
-        options.setText("Load Options");
-        shell.setLayout(new GridLayout());
+        	    
+	    Group options = new Group(shell, SWT.NONE);
+	    options.setText("Load Options");
+	    shell.setLayout(new GridLayout());
         
-        GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-        options.setLayoutData(gd);
-        
-        GridLayout layout = new GridLayout(1, false);
+	    GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+	    options.setLayoutData(gd);
+	    
+	    GridLayout layout = new GridLayout(1, false);
         options.setLayout(layout);
         
         Group groupUri = new Group(options, SWT.NONE);
@@ -279,6 +279,8 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 }    
             });
         }
+
+        
         
         // Determine if the metadata load options should be displayed.
         if (displayMetadataOptions(loader)) {
@@ -314,21 +316,21 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             overwriteButton = null;
         }
         
-        for(final Option<Boolean> boolOption : optionHolder.getBooleanOptions()){
-            Composite group2 = new Composite(options, SWT.NONE);
-           
-           RowLayout rlo = new RowLayout();
+	    for(final Option<Boolean> boolOption : optionHolder.getBooleanOptions()){
+	        Composite group2 = new Composite(options, SWT.NONE);
+	       
+	       RowLayout rlo = new RowLayout();
            rlo.marginWidth = 0;
            group2.setLayout(rlo);
            
-           final Button button = new Button(group2, SWT.CHECK);
-           button.setText(boolOption.getOptionName());
-           button.setToolTipText(boolOption.getHelpText());
-           
-           if(boolOption.getOptionValue() != null){
-               button.setSelection(boolOption.getOptionValue());
-           }
-           button.addSelectionListener(new SelectionListener(){
+	       final Button button = new Button(group2, SWT.CHECK);
+	       button.setText(boolOption.getOptionName());
+	       button.setToolTipText(boolOption.getHelpText());
+	       
+	       if(boolOption.getOptionValue() != null){
+	           button.setSelection(boolOption.getOptionValue());
+	       }
+	       button.addSelectionListener(new SelectionListener(){
 
             public void widgetDefaultSelected(SelectionEvent event) {
               //
@@ -337,35 +339,35 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
             public void widgetSelected(SelectionEvent event) {
                 boolOption.setOptionValue(button.getSelection());
             }
-               
-           });
-        }
+	           
+	       });
+	    }
 
-        for(final Option<String> stringOption : optionHolder.getStringOptions()){
-            Composite group3 = new Composite(options, SWT.NONE);
-       
-            RowLayout rlo = new RowLayout();
-            rlo.marginWidth = 0;
-            group3.setLayout(rlo);
-               
-            Label textLabel = new Label(group3, SWT.NONE);
-            textLabel.setText(stringOption.getOptionName() + ":");
-            textLabel.setToolTipText(stringOption.getHelpText());
-            
-            if(CollectionUtils.isNotEmpty(stringOption.getPickList())) {
-                final Combo comboDropDown = new Combo(group3, SWT.DROP_DOWN | SWT.BORDER);
+	    for(final Option<String> stringOption : optionHolder.getStringOptions()){
+	        Composite group3 = new Composite(options, SWT.NONE);
+	   
+	        RowLayout rlo = new RowLayout();
+	        rlo.marginWidth = 0;
+	        group3.setLayout(rlo);
+	           
+	        Label textLabel = new Label(group3, SWT.NONE);
+	        textLabel.setText(stringOption.getOptionName() + ":");
+	        textLabel.setToolTipText(stringOption.getHelpText());
+	        
+	        if(CollectionUtils.isNotEmpty(stringOption.getPickList())) {
+	            final Combo comboDropDown = new Combo(group3, SWT.DROP_DOWN | SWT.BORDER);
+	            
+	            comboDropDown.setToolTipText(stringOption.getHelpText());
                 
-                comboDropDown.setToolTipText(stringOption.getHelpText());
-                
-                for(String pickListItem : stringOption.getPickList()) {
-                                        
-                    // Add if it is not a resolved value set
+	            for(String pickListItem : stringOption.getPickList()) {
+	                	                
+	                // Add if it is not a resolved value set
                     if (resolvedValueSets != null && !isResolvedValueSet(resolvedValueSets, pickListItem)){
                         comboDropDown.add(pickListItem);
                     }
                 }
 
-                comboDropDown.addSelectionListener(new SelectionListener(){
+	            comboDropDown.addSelectionListener(new SelectionListener(){
 
                     @Override
                     public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -380,76 +382,76 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 });
             } else {
 
-            final Text text = new Text(group3, SWT.BORDER);
-            RowData textGd = new RowData();
-            textGd.width = 25;
-            text.setLayoutData(textGd);
-            
-            text.setToolTipText(stringOption.getHelpText());
-            
-            text.addModifyListener(new ModifyListener(){
+	        final Text text = new Text(group3, SWT.BORDER);
+	        RowData textGd = new RowData();
+	        textGd.width = 25;
+	        text.setLayoutData(textGd);
+	        
+	        text.setToolTipText(stringOption.getHelpText());
+	        
+	        text.addModifyListener(new ModifyListener(){
 
                 public void modifyText(ModifyEvent event) {
                     stringOption.setOptionValue(text.getText());      
                 }  
-            });
-        }
-        }
-        
-           for(final Option<Integer> integerOption : optionHolder.getIntegerOptions()){
-                Composite group3 = new Composite(options, SWT.NONE);
-           
-                RowLayout rlo = new RowLayout();
-                rlo.marginWidth = 0;
-                group3.setLayout(rlo);
-                   
-                Label textLabel = new Label(group3, SWT.NONE);
-                textLabel.setText(integerOption.getOptionName() + ":");
-                textLabel.setToolTipText(integerOption.getHelpText());
+	        });
+	    }
+	    }
+	    
+	       for(final Option<Integer> integerOption : optionHolder.getIntegerOptions()){
+	            Composite group3 = new Composite(options, SWT.NONE);
+	       
+	            RowLayout rlo = new RowLayout();
+	            rlo.marginWidth = 0;
+	            group3.setLayout(rlo);
+	               
+	            Label textLabel = new Label(group3, SWT.NONE);
+	            textLabel.setText(integerOption.getOptionName() + ":");
+	            textLabel.setToolTipText(integerOption.getHelpText());
 
-                final Text text = new Text(group3, SWT.BORDER);
-                text.setToolTipText(integerOption.getHelpText());
-                
-                if(integerOption.getOptionValue() != null){
-                    text.setText(integerOption.getOptionValue().toString());
-                }
-                
-                text.addModifyListener(new ModifyListener(){
+	            final Text text = new Text(group3, SWT.BORDER);
+	            text.setToolTipText(integerOption.getHelpText());
+	            
+	            if(integerOption.getOptionValue() != null){
+	                text.setText(integerOption.getOptionValue().toString());
+	            }
+	            
+	            text.addModifyListener(new ModifyListener(){
 
-                    public void modifyText(ModifyEvent event) {
-                        integerOption.setOptionValue(Integer.parseInt(text.getText()));      
-                    }  
-                });
-            }
-                   
-           for(final MultiValueOption<String> stringArrayOption : optionHolder.getStringArrayOptions()){
-                Composite group4 = new Composite(options, SWT.NONE);
-    
-                RowLayout rlo = new RowLayout();
-                rlo.marginWidth = 0;
-                group4.setLayout(rlo);
-                   
-                Label textLabel = new Label(group4, SWT.NONE);
-                String appendString = CollectionUtils.isNotEmpty(stringArrayOption.getPickList()) ? "" : "\n\t(Comma Seperated):";
-                textLabel.setText(stringArrayOption.getOptionName() + appendString);
-                textLabel.setToolTipText(stringArrayOption.getHelpText());
+	                public void modifyText(ModifyEvent event) {
+	                    integerOption.setOptionValue(Integer.parseInt(text.getText()));      
+	                }  
+	            });
+	        }
+	    	       
+	       for(final MultiValueOption<String> stringArrayOption : optionHolder.getStringArrayOptions()){
+	            Composite group4 = new Composite(options, SWT.NONE);
+	
+	            RowLayout rlo = new RowLayout();
+	            rlo.marginWidth = 0;
+	            group4.setLayout(rlo);
+	               
+	            Label textLabel = new Label(group4, SWT.NONE);
+	            String appendString = CollectionUtils.isNotEmpty(stringArrayOption.getPickList()) ? "" : "\n\t(Comma Seperated):";
+	            textLabel.setText(stringArrayOption.getOptionName() + appendString);
+	            textLabel.setToolTipText(stringArrayOption.getHelpText());
 
-                if(CollectionUtils.isNotEmpty(stringArrayOption.getPickList())) {
-                    final List multi = new List(group4, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
-                    
-                    multi.setToolTipText(stringArrayOption.getHelpText());
-                    
-                    for(String pickListItem : stringArrayOption.getPickList()) {
-                        multi.add(pickListItem);
+	            if(CollectionUtils.isNotEmpty(stringArrayOption.getPickList())) {
+	                final List multi = new List(group4, SWT.BORDER | SWT.MULTI | SWT.V_SCROLL);
+	                
+	                multi.setToolTipText(stringArrayOption.getHelpText());
+	                
+	                for(String pickListItem : stringArrayOption.getPickList()) {
+	                    multi.add(pickListItem);
                     }
-                    for(int i=0;i<stringArrayOption.getPickList().size();i++) {
-                        if(stringArrayOption.getOptionValue().contains(    
-                                stringArrayOption.getPickList().get(i))) {
-                            multi.select(i);
-                        }
-                    }
+	                for(int i=0;i<stringArrayOption.getPickList().size();i++) {
+	                    if(stringArrayOption.getOptionValue().contains(    
+	                            stringArrayOption.getPickList().get(i))) {
+	                        multi.select(i);
+	                    }
+	                }
 
-                    multi.addSelectionListener(new SelectionListener(){
+	                multi.addSelectionListener(new SelectionListener(){
 
                         @Override
                         public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -462,81 +464,82 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                             stringArrayOption.setOptionValue(Arrays.asList(options));
                         }  
                     });
-                } else {
-                    final Text text = new Text(group4, SWT.BORDER);
-                    
-                    text.setToolTipText(stringArrayOption.getHelpText());
+	            } else {
+	                final Text text = new Text(group4, SWT.BORDER);
+	                
+	                text.setToolTipText(stringArrayOption.getHelpText());
 
-                    String arrayString =
-                        StringUtils.collectionToCommaDelimitedString(stringArrayOption.getOptionValue());
-                    text.setText(arrayString);
+	                String arrayString =
+	                    StringUtils.collectionToCommaDelimitedString(stringArrayOption.getOptionValue());
+	                text.setText(arrayString);
 
-                    text.addModifyListener(new ModifyListener(){
+	                text.addModifyListener(new ModifyListener(){
 
-                        public void modifyText(ModifyEvent event) {
-                            String[] options =  StringUtils.commaDelimitedListToStringArray(text.getText());
-                            stringArrayOption.setOptionValue(Arrays.asList(options));
-                        }  
-                    });
-                }
-            }
-          
-        Group groupControlButtons = new Group(options, SWT.NONE);
+	                    public void modifyText(ModifyEvent event) {
+	                        String[] options =  StringUtils.commaDelimitedListToStringArray(text.getText());
+	                        stringArrayOption.setOptionValue(Arrays.asList(options));
+	                    }  
+	                });
+	            }
+	        }
+	      
+	    Group groupControlButtons = new Group(options, SWT.NONE);
         groupControlButtons.setLayout(new GridLayout(3, false));
         groupControlButtons.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        
+	    
         final Button load = new Button(groupControlButtons, SWT.PUSH);
         final Button nextLoad = new Button(groupControlButtons, SWT.PUSH);
         final Button close = new Button(groupControlButtons, SWT.PUSH);
         close.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, true, true, 1, 1));
         
-        load.setText("Load");
-        load.setToolTipText("Start Load Process.");
-        load.addSelectionListener(new SelectionListener() {
+	    load.setText("Load");
+	    load.setToolTipText("Start Load Process.");
+	    load.addSelectionListener(new SelectionListener() {
 
-            public void widgetSelected(SelectionEvent arg0) {
+	        public void widgetSelected(SelectionEvent arg0) {
 
-                URI uri = null;
-               
-                // is this a local file?
-                File theFile = new File(file.getText());
+	            URI uri = null;
+	           
+	            // is this a local file?
+				File theFile = new File(file.getText());
 
-                if (theFile.exists()) {
-                    uri = theFile.toURI();
-                } else {
-                    // is it a valid URI (like http://something)
-                    try {
-                        uri = new URI(file.getText());
-                        uri.toURL().openConnection();
-                    } catch (Exception e) {
-                        dialog_.showError("Path Error",
-                                "No file could be located at this location");
-                        return;
-                    }
-                }
-                
-                metadataFileStr = metadataFile != null?  metadataFile.getText(): null;
-                metadataOverwrite = overwriteButton != null? overwriteButton.getSelection() : false;
+				if (theFile.exists()) {
+					uri = theFile.toURI();
+				} else {
+					// is it a valid URI (like http://something)
+					try {
+						uri = new URI(file.getText());
+						uri.toURL().openConnection();
+					} catch (Exception e) {
+						dialog_.showError("Path Error",
+								"No file could be located at this location");
+						return;
+					}
+				}
+				
+				metadataFileStr = metadataFile != null?  metadataFile.getText(): null;
+				metadataOverwrite = overwriteButton != null? overwriteButton.getSelection() : false;
 
-                setLoading(true);
-                load.setEnabled(false);
-                close.setEnabled(false);
-                loader.load(uri);
-                
-                
-                // Create/start a new thread to update the buttons when the load completes.
+				setLoading(true);
+				load.setEnabled(false);
+				close.setEnabled(false);
+				loader.load(uri);
+				
+				
+				// Create/start a new thread to update the buttons when the load completes.
+
                 ButtonUpdater buttonUpdater = new ButtonUpdater(nextLoad, close, loader);
                 Thread t = new Thread(buttonUpdater);
                 t.setDaemon(true);
                 t.start();  
-            }
+	        }
 
-            public void widgetDefaultSelected(SelectionEvent arg0) {
-                // 
-            }
+			public void widgetDefaultSelected(SelectionEvent arg0) {
+				// 
+			}
 
-        });
-        
+		});
+	    
         nextLoad.setText("Next Load");
         nextLoad.setToolTipText("Start a New Load Process.");
         nextLoad.setEnabled(false);
@@ -550,13 +553,13 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
                 } catch (LBException e) {
                     e.printStackTrace();
                 }
-                if(!isLoading()){
-                    
-                    // close the current window and create/initialize it again with the same loader
+	            if(!isLoading()){
+	                
+	                // close the current window and create/initialize it again with the same loader
                     shell.dispose();
                     setMonitorLoader(true);
                     initializeLBGui(newLoader);
-                }
+	            }
             }
 
             public void widgetDefaultSelected(SelectionEvent arg0) {
@@ -579,12 +582,12 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
 
         });
 
-        Composite status = getStatusComposite(shell, loader);
-        gd = new GridData(GridData.FILL_BOTH);
-        status.setLayoutData(gd);
-    }
-    
-    /**
+		Composite status = getStatusComposite(shell, loader);
+		gd = new GridData(GridData.FILL_BOTH);
+		status.setLayoutData(gd);
+	}
+	
+	/**
      * Builds the gui.
      * 
      * @param shell the shell
@@ -830,10 +833,10 @@ public class LoaderExtensionShell extends LoadExportBaseShell {
     }
     
     private CodingSchemeSummary getCodingSchemeSummary(AbsoluteCodingSchemeVersionReference[] refs,
-            CodingSchemeRenderingList schemeList){
-        
-        CodingSchemeSummary css = null;
-        Enumeration<? extends CodingSchemeRendering> schemes = schemeList.enumerateCodingSchemeRendering();
+    		CodingSchemeRenderingList schemeList){
+    	
+    	CodingSchemeSummary css = null;
+    	Enumeration<? extends CodingSchemeRendering> schemes = schemeList.enumerateCodingSchemeRendering();
         while (schemes.hasMoreElements() && css == null) {
             CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
             
