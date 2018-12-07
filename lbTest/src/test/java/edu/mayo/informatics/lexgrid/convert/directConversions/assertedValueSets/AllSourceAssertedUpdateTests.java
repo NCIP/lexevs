@@ -6,7 +6,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({ LoadAndUpdateSourceAssertedValueSetsTest.class,
-		 CleanUpResolvedValueSetUpdateLoads.class })
+		NCItSourceAssertedValueSetUpdateServiceTest.class, CleanUpResolvedValueSetUpdateLoads.class })
 public class AllSourceAssertedUpdateTests {
 
 }

@@ -27,12 +27,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 	@BeforeClass
 	public void setUp(){
 		service = SourceAssertedValueSetHierarchyServicesImpl.defaultInstance();
-		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  
-				"0.1.5", 
-				"Concept_In_Subset", 
-				"Contributing_Source",
-				"Publish_Value_Set", 
-				"C54453");
+		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
  		//Comment this in instead for direct to NCIt testing
 //		service.preprocessSourceHierarchyData();
 	}
@@ -74,24 +69,6 @@ public class AssertedVSHierarchyTest extends TestCase {
 		int tabCounter = 0;
 		System.out.println("Printing Source Only Tree");
 		printTree(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A), tabCounter);
-	}
-	
-	@Test
-	public void testbadUrlCreation() throws LBException {
-		Map<String, LexEVSTreeItem> items = service.getSourceValueSetTree();
-		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
-		assertTrue(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
-				.anyMatch(x -> x.get_text().equals("Black_TEST")));
-		LexEVSTreeItem brokenSourceTest = item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
-				.filter(x -> x.get_text().equals("Black_TEST")).findFirst().get();
-		assertFalse(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
-				.anyMatch(y -> y.get_code().equals("http://evs.nci.nih.gov/valueset/C99999")));
-		assertFalse(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
-				.anyMatch(z -> z.get_code().equals("http://evs.nci.nih.gov/valueset/C99998")));
-		assertTrue(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
-				.anyMatch(y -> y.get_code().equals("http://evs.nci.nih.gov/valueset/FDA/C99999")));
-		assertTrue(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
-				.anyMatch(z -> z.get_code().equals("http://evs.nci.nih.gov/valueset/FDA/C99998")));
 	}
 	
 	@Test

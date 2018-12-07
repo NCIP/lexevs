@@ -69,14 +69,14 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
 		List<String> list = getSourceAssertedValueSetTopNodesForRootCode(params.getRootConcept());
 		return list.stream().map(code ->
-			{List<CodingScheme> schemes = null;
+			{CodingScheme scheme = null;
 				try {
-					schemes = getSourceAssertedValueSetforTopNodeEntityCode(code);
+					scheme = getSourceAssertedValueSetforTopNodeEntityCode(code).get(0);
 				} catch (LBException e) {
 					throw new RuntimeException("Mapping value set root code: " + code + " failed");
 				}
-				return schemes;
-			}).collect(ArrayList::new, List::addAll, List::addAll);
+				return scheme;
+			}).collect(Collectors.toList());
 	
 	}
 
@@ -104,10 +104,7 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	@Override
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {;
 		return getSourceAssertedValueSetforTopNodeEntityCode(
-				AssertedValueSetServices.getConceptCodeForURI(uri)) == null
-				? null
-				:getSourceAssertedValueSetforTopNodeEntityCode(
-						AssertedValueSetServices.getConceptCodeForURI(uri)).get(0);
+				AssertedValueSetServices.getConceptCodeForURI(uri)).get(0);
 	}
 
 	@Override

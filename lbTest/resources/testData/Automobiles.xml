@@ -75,8 +75,6 @@
 			propertyType="presentation">textualPresentation</lgNaming:supportedProperty>
 		<lgNaming:supportedProperty localId="genericProperty">genericProperty</lgNaming:supportedProperty>
 		<lgNaming:supportedSource localId="lexgrid.org">lexgrid.org</lgNaming:supportedSource>
-		<lgNaming:supportedSource localId="lexgrid-org">lexgrid-org</lgNaming:supportedSource>
-		<lgNaming:supportedSource localId="lexgrid.org.org">lexgrid.org.org</lgNaming:supportedSource>
 		<lgNaming:supportedSource localId="_111101">11.11.0.1</lgNaming:supportedSource>
 	</mappings>
 	<properties>
@@ -102,8 +100,7 @@
 			<lgCon:presentation propertyName="textualPresentation"
 				propertyId="p1" isPreferred="true">
 				<lgCommon:source role="sampleSource" subRef="sampleSubRef1">lexgrid.org</lgCommon:source>
-				<lgCommon:source role="sampleSource" subRef="sampleSubRef2">lexgrid.org.org</lgCommon:source>
-				<lgCommon:source role="sampleSource" subRef="sampleSubRef2">lexgrid-org</lgCommon:source>
+				<lgCommon:source role="sampleSource" subRef="sampleSubRef2">lexgrid.org</lgCommon:source>
 				<lgCommon:value>Domestic Auto Makers</lgCommon:value>
 			</lgCon:presentation>
 			<lgCon:presentation propertyName="textualPresentation"

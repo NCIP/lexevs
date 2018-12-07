@@ -184,9 +184,11 @@ import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
 import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandlerTest;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
 import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedVSIteratorTest;
+import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedValueSetTest;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceTest;
+import org.lexevs.dao.index.indexer.SourceAssertedIndexerTest;
 import org.lexevs.dao.index.lucene.v2013.search.ValueSetDaoTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCleanupIndexesTest;
 import org.lexevs.dao.index.operation.DefaultLexEVSIndexOperationsCreateIndexTest;
@@ -203,6 +205,7 @@ import org.lexevs.dao.indexer.lucene.hitcollector.BestScoreOfEntityHitCollectorT
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexCapabilitiesTest;
 import org.lexevs.dao.indexer.lucene.query.SerializableRegexQueryTest;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetIndexCreation;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetIndexSupport;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetServicesTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.AssertedValueSetTagTest;
@@ -210,6 +213,7 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToRVSTransformerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.LoadAndUpdateSourceAssertedValueSetsTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.NCItSourceAssertedValueSetUpdateServiceTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.SourceAssertedValueSetSearchIndexServiceTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
@@ -218,7 +222,6 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2Primitive
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2PrimitivesUnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCaseSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCasesNamespaceTestIT;
-import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2SpecialCasesPreferencesLoad;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.PresentationPropertyTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWL2UnitTests;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owlapi.OWLUnitTests;
@@ -509,9 +512,6 @@ public class AllTestsNormalConfig {
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
         
         mainSuite.addTestSuite(CleanUpTest.class);
-        
-        //Special Preferences Adjustments need reload and retest
-        mainSuite.addTestSuite(OWL2SpecialCasesPreferencesLoad.class);
        
         //ValueSets tests
         mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());
@@ -531,6 +531,7 @@ public class AllTestsNormalConfig {
         TestSuite assertedValueSetUpdates = new TestSuite("AssertedValueSetUpdates");
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
         assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(NCItSourceAssertedValueSetUpdateServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchIndexServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchExtensionTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSIteratorTest.class));

@@ -426,7 +426,6 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
-    @Category(RemoveFromDistributedTests.class)
 	public void testGetValueSetEntitiesForTermFromOWL2() throws LBException, URISyntaxException {
 		
 		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().

@@ -451,7 +451,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     	
     	LoadMetaBatchWithMetadata metaBatch = new LoadMetaBatchWithMetadata();
     	metaBatch.run(args);
-    	
+
     	LexBIGServiceManager lbsm = getLexBIGServiceManager();
         lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
         lbsm.setVersionTag(metaBatch.getCodingSchemeRef(), LBConstants.KnownTags.PRODUCTION.toString());

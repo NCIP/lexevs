@@ -350,9 +350,14 @@ public abstract class LuceneLoaderCode {
         }
 
         if (sources != null && sources.length > 0) {
+            StringBuffer temp = new StringBuffer();
             for (int i = 0; i < sources.length; i++) {
-            	  generator_.addTextField("sources", StringUtils.lowerCase(sources[i]), false, true, false);
+                temp.append(sources[i]);
+                if (i + 1 < sources.length) {
+                    temp.append(STRING_TOKENIZER_TOKEN);
+                }
             }
+            generator_.addTextField("sources", temp.toString(), false, true, true);
         }
 
         if (usageContexts != null && usageContexts.length > 0) {
@@ -532,10 +537,7 @@ public abstract class LuceneLoaderCode {
 			}
         	
         };
-        
-        Analyzer sourcesAnalyzer = new KeywordAnalyzer();
-
-        analyzerPerField.put("sources", sourcesAnalyzer);
+        analyzerPerField.put("sources", sa);
         analyzerPerField.put("usageContexts", sa);
         analyzerPerField.put("qualifiers", qualifierAnalyzer);
         

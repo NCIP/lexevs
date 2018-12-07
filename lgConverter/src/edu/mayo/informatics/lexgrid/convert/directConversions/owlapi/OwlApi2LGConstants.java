@@ -179,5 +179,4 @@ public class OwlApi2LGConstants {
     
     //Entity type for datatype implementation
     public static final String DATA_TYPE_ENTITY_TYPE = "datatype";
-    public static final boolean MANAGE_TRANSITIVE_AND_INVERSE = false;
 }

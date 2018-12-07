@@ -41,10 +41,9 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 						getPredUid(csUID), csUID);
 		List<Entity> entity = getDaoManager().getCurrentAssertedValueSetDao()
 				.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
-		List<CodingScheme> transcheme = transformToCodingScheme(entity, entities);
-		if(transcheme == null || transcheme.size() == 0){return null;}
+		CodingScheme scheme = transformToCodingScheme(entity, entities);
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
-		schemes.addAll(transcheme);
+		schemes.add(scheme);
 		return schemes;
 	}
 	
@@ -72,7 +71,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 			List<Entity> topNodeListOfOne = new ArrayList<Entity>();
 			topNodeListOfOne.add(entity);
 					try {
-						schemes.addAll(transformToCodingScheme(topNodeListOfOne, vsEntities));
+						schemes.add(transformToCodingScheme(topNodeListOfOne, vsEntities));
 					} catch (LBException e) {
 						throw new RuntimeException("Failed to retrieve value set for: " + entity.getEntityCode(), e);
 					}
@@ -87,37 +86,22 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		return nodes.stream().map(node -> node.getEntityCode()).collect(Collectors.toList());
 	}
 
-	private List<CodingScheme> transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
+	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
 		if (entity == null || entity.size() == 0) {
 			return null;
 		}
 		Entities list = new Entities();
 		list.getEntityAsReference().addAll(entities);
 		Entity ent = entity.iterator().next();
-		List<String> sources = null;
+		String source = null;
 		if (ent.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(params.getSourceName()))
 				.findAny().isPresent()) {
-			sources = ent.getPropertyAsReference().stream()
+			source = ent.getPropertyAsReference().stream()
 					.filter(x -> x.getPropertyName().equals(params.getSourceName())).map(x -> x.getValue().getContent())
-					.collect(Collectors.toList());
+					.collect(Collectors.toList()).get(0);
 		}
-		if (sources != null && sources.size() > 0) {
-			return sources.stream().map(source -> {
-				CodingScheme cs = null;
-				try {
-					cs = AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(),
-							params.getCodingSchemeURI());
-				} catch (LBException e) {
-					e.printStackTrace();
-				}
-				return cs;
-			}).collect(Collectors.toList());
-		} else {
-			List<CodingScheme> newList = new ArrayList<CodingScheme>();
-			newList.add(AssertedValueSetServices.transform(ent, null, null, list, params.getCodingSchemeVersion(),
-					params.getCodingSchemeURI()));
-			return newList;
-		}
+		return AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(),
+				params.getCodingSchemeURI());
 	}
 	
 

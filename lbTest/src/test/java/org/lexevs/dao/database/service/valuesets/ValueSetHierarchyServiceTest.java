@@ -75,13 +75,13 @@ public class ValueSetHierarchyServiceTest {
 		nodes.add(node3);
 		nodes.add(node4);
 		nodes.add(node5);
-		//Allowing attachment of CDISC sourced Nodes
+		//Filtering out CDISC sourced Nodes
 		List<VSHierarchyNode> complete = new ValueSetHierarchyServiceImpl().collectReducedNodes("FDA",nodes);
 
 		complete.stream()
 				.forEach(x -> System.out.println(
 						x.getDescription() + ": " + x.getEntityCode() + ": " + x.getSource()));
-		assertTrue(complete.contains(node));
+		assertFalse(complete.contains(node));
 		assertTrue(complete.contains(node2));
 		assertTrue(complete.contains(node5));
 	}

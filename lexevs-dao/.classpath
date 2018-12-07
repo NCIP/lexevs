@@ -7,8 +7,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lbInterfaces"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/lgUtil"/>
+	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/mysql-connector-java-5.1.6-bin.jar"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=lexevs-dao&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="lib" path="/lgSharedLibraries/nci/browser-util.jar"/>
-	<classpathentry kind="lib" path="/lgSharedLibraries/sqlDrivers/restricted-license/mysql-connector-java-5.1.37-bin.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
