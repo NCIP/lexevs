@@ -276,8 +276,8 @@
 					
  					<beans:property name="relationResolver">
 						<beans:bean
-							class="org.lexgrid.loader.umls.processor.support.UmlsRelationResolver">
-							<beans:property name="codingSchemeIdSetter" ref="umlsCodingSchemeIdSetter" />
+							class="org.lexgrid.loader.umls.processor.support.MedRTRelationResolver">
+							<beans:property name="codingSchemeIdSetter" ref="MedRTUmlsCodingSchemeIdSetter" />
 							<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao" />
 						</beans:bean>
 					</beans:property>
@@ -737,6 +737,16 @@
 			<beans:ref bean="mrsabUtility" />
 		</beans:property>
 		<beans:property name="sab" value="${sab}" />
+		<beans:property name="isoMap">
+			<beans:ref bean="isoMap" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="MedRTUmlsCodingSchemeIdSetter"
+		class="org.lexgrid.loader.umls.data.codingscheme.MedRTUmlsCodingSchemeIdSetter">
+		<beans:property name="mrsabUtility">
+			<beans:ref bean="mrsabUtility" />
+		</beans:property>
 		<beans:property name="isoMap">
 			<beans:ref bean="isoMap" />
 		</beans:property>
