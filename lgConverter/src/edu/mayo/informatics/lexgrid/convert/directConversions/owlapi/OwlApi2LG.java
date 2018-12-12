@@ -149,9 +149,12 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationPropertyRangeAxiomImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplNoCompression;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 /**
@@ -2230,9 +2233,8 @@ public class OwlApi2LG {
         for (OWLObjectProperty prop : ontology.getObjectPropertiesInSignature()) {
             addAssociation(prop);
         }
-        //Overwrite transitive expressions of inverse with reverse traversable values
-        for(OWLObjectPropertyExpression propExp : inversePropCache.values()) {
-            addInverseHierarchyAssociation(propExp);
+            for (OWLObjectPropertyExpression propExp : inversePropCache.values()) {
+                addInverseHierarchyAssociation(propExp);
         }
     }
 
@@ -2334,8 +2336,14 @@ public class OwlApi2LG {
             assocWrap.setIsTransitive(isTransitive);
             List<String> list = new ArrayList<String>();
             list.add(label);
-            if(isTransitive){
-                processObjectPropertyInverses(objectProp);
+            if (isTransitive) {
+                if (prefManager.isDoManageInverseAndTransitiveDesignation()) {
+                    if (isThisObjectPropertyAManagedInverse(objectProp)) {
+                        processObjectPropertyInverses(objectProp);
+                    }
+                } else {
+                    processObjectPropertyInverses(objectProp);
+                }
                 lgSupportedMappings_.registerSupportedHierarchy(label, 
                         owlProp.getIRI().toString(), label, "@@", list, false, true);
             }
@@ -2359,6 +2367,11 @@ public class OwlApi2LG {
 
     }
     
+    private boolean isThisObjectPropertyAManagedInverse(OWLObjectProperty objectProp) {
+        return Arrays.asList(prefManager.getTransitiveInverseAssociationNames().getName()).
+        stream().anyMatch(x -> x.equals(resolveLabel(objectProp)));
+    }
+
     private void processObjectPropertyInverses(OWLObjectProperty objectProp) {
         
         Set<OWLObjectPropertyExpression> propExps = 
@@ -2426,6 +2439,7 @@ public class OwlApi2LG {
         boolean isTransitive = propExp.isTransitive(ontology);
         resolveAssociationProperty(assocWrap.getAssociationEntity(), propExp.getNamedProperty());
         assocWrap.setIsTransitive(isTransitive);
+        assocWrap.setInverseTransitive(true);
         List<String> list = new ArrayList<String>();
         list.add(label);
         lgSupportedMappings_.registerSupportedHierarchy(label, 
