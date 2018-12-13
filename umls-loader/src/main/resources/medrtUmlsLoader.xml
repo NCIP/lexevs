@@ -747,6 +747,7 @@
 		<beans:property name="mrsabUtility">
 			<beans:ref bean="mrsabUtility" />
 		</beans:property>
+		<beans:property name="sab" value="${sab}" />
 		<beans:property name="isoMap">
 			<beans:ref bean="isoMap" />
 		</beans:property>

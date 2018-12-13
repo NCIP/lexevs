@@ -66,7 +66,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	}
 
 	/** The UML s_ loade r_ config. */
-	private String UMLS_LOADER_CONFIG = "umlsLoader.xml";
+	private String UMLS_LOADER_CONFIG = "medrtUmlsLoader.xml";
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#loadUmls(java.lang.String, java.lang.String)

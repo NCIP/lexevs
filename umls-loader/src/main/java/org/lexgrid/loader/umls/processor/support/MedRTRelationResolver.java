@@ -52,13 +52,25 @@ public class MedRTRelationResolver extends AbstractRrfRelationResolver {
 		return mrconsoStagingDao.getCodeAndSab(item.getCui1(), item.getAui1()).getCode();
 	}
 	
+	@Override
+	public String getSourceNamespace(Mrrel item) {
+		return mrconsoStagingDao.getCodeAndSab(item.getCui2(), item.getAui2()).getSab();
+	}
+	
+	@Override
+	public String getTargetNamespace(Mrrel item) {
+		return mrconsoStagingDao.getCodeAndSab(item.getCui1(), item.getAui1()).getSab();
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver#getContainerName()
 	 */
 	@Override
 	public String getContainerName() {
 		return RrfLoaderConstants.UMLS_RELATIONS_NAME;
-	}	
+	}
+	
+	
 	
 	/**
 	 * Gets the mrconso staging dao.
