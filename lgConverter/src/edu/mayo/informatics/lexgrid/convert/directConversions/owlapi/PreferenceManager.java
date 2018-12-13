@@ -26,6 +26,8 @@ import java.util.regex.Pattern;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.OWLLoaderPreferences;
+import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.TransitiveInverseAssociatinNames;
+import org.LexGrid.LexBIG.Preferences.loader.OWLLoadPreferences.TransitiveNormalAssociationNames;
 
 public class PreferenceManager {
     // Constants for preferences loading -- these default to the value in
@@ -52,8 +54,11 @@ public class PreferenceManager {
     private boolean processStrictOWL = OwlApi2LGConstants.STRICT_OWL_IMPLEMENTATION;
     private boolean processConceptsForObjectProperties = OwlApi2LGConstants.CREATE_CONCEPT_FOR_OBJECT_PROP;
     private String dataTypePropertySwitch = OwlApi2LGConstants.DATATYPE_PROP_SWITCH;
+    private boolean doManageInverseAndTransitiveDesignation = OwlApi2LGConstants.MANAGE_TRANSITIVE_AND_INVERSE;
     private LoaderPreferences loaderPreference = null;
     private Pattern matchRootName = null;
+    private TransitiveInverseAssociatinNames transitiveInverseAssociationNames;
+    private TransitiveNormalAssociationNames transitiveNormalAssociationNames;
 
     public PreferenceManager(LoaderPreferences loaderPreference_) {
         this.loaderPreference = loaderPreference_;
@@ -193,6 +198,15 @@ public class PreferenceManager {
         if (owlLoadPrefs.getDatatypePropSwitch() != null) {
             dataTypePropertySwitch = owlLoadPrefs.getDatatypePropSwitch();
         }
+        if(owlLoadPrefs.getIsTransitiveManaged() != null && owlLoadPrefs.getIsTransitiveManaged()) {
+            doManageInverseAndTransitiveDesignation = owlLoadPrefs.getIsTransitiveManaged();
+        if (owlLoadPrefs.getTransitiveInverseAssociatinNames() != null) {
+            setTransitiveInverseAssociationNames(owlLoadPrefs.getTransitiveInverseAssociatinNames());
+        }
+        if (owlLoadPrefs.getTransitiveNormalAssociationNames() != null) {
+            setTransitiveNormalAssociationNames(owlLoadPrefs.getTransitiveNormalAssociationNames());
+        }
+        }
     }
 
     public boolean isComplexProps_isDbxRefRepForm() {
@@ -301,5 +315,29 @@ public class PreferenceManager {
 
     public void setPropertyName_type(String propertyName_type) {
         this.propertyName_type = propertyName_type;
+    }
+
+    public boolean isDoManageInverseAndTransitiveDesignation() {
+        return doManageInverseAndTransitiveDesignation;
+    }
+
+    public void setDoManageInverseAndTransitiveDesignation(boolean doManageInverseAndTransitiveDesignation) {
+        this.doManageInverseAndTransitiveDesignation = doManageInverseAndTransitiveDesignation;
+    }
+
+    public TransitiveInverseAssociatinNames getTransitiveInverseAssociationNames() {
+        return transitiveInverseAssociationNames;
+    }
+
+    public void setTransitiveInverseAssociationNames(TransitiveInverseAssociatinNames transitiveInverseAssociationNames) {
+        this.transitiveInverseAssociationNames = transitiveInverseAssociationNames;
+    }
+
+    public TransitiveNormalAssociationNames getTransitiveNormalAssociationNames() {
+        return transitiveNormalAssociationNames;
+    }
+
+    public void setTransitiveNormalAssociationNames(TransitiveNormalAssociationNames transitiveNormalAssociationNames) {
+        this.transitiveNormalAssociationNames = transitiveNormalAssociationNames;
     }
 }
