@@ -239,7 +239,7 @@
 	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityListProcessor"
 		class="org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator">
 		<beans:constructor-arg>
-			 <beans:ref bean="umlsEntityAssnsToEntityProcessor"/>
+			 <beans:ref bean="medRtUmlsEntityAssnsToEntityProcessor"/>
 		</beans:constructor-arg>
 		<beans:property name="replaceRelation" value="true"/>
 		<beans:property name="rootNodeResolver">
@@ -255,7 +255,7 @@
 		</beans:property>
 	</beans:bean>
 
-				<beans:bean	id="umlsEntityAssnsToEntityProcessor" 
+	<beans:bean	id="umlsEntityAssnsToEntityProcessor" 
 					class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor">		
 					
 					<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
@@ -303,8 +303,22 @@
 							<beans:bean class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />
 						</beans:list>
 					</beans:property>
+	</beans:bean>
+
+	<beans:bean id="medRtUmlsEntityAssnsToEntityProcessor" parent="umlsEntityAssnsToEntityProcessor"
+		class="org.lexgrid.loader.processor.MedRtEntityAssnsToEntityProcessor">
+		<beans:property name="supportedAttributeTemplate" ref="medRtCachingSupportedAttribuiteTemplate" />
+		<beans:property name="isoMap">
+			<beans:ref bean="isoMap" />
+		</beans:property>
+	</beans:bean>		
 	
-			</beans:bean>
+		<beans:bean id="medRtCachingSupportedAttribuiteTemplate" parent="loggingBean"
+	class="org.lexgrid.loader.dao.template.MedRtCachingSupportedAttribuiteTemplate">
+		<beans:property name="databaseServiceManager">
+			<beans:ref bean="databaseServiceManager" />
+		</beans:property>
+	</beans:bean>	
 	
 
 	<beans:bean id="entityPropertyPropertyComparator"
