@@ -24,6 +24,7 @@
 	<job id="umlsJob" restartable="true">
 		<listeners>
 			<listener ref="cachingSupportedAttribuiteTemplate" />
+			<listener ref="medRtCachingSupportedAttributeTemplate"/>
 			<listener ref="jobSetupListener" />
 			<listener ref="cleanupListener" />
 		</listeners>
@@ -83,7 +84,7 @@
 							</streams>
 						</chunk>
 						<listeners>
-							<listener ref="cachingSupportedAttribuiteTemplate" />
+							<listener ref="medRtCachingSupportedAttributeTemplate" />
 						</listeners>
 					</tasklet>
 				</step>		
@@ -255,66 +256,68 @@
 		</beans:property>
 	</beans:bean>
 
-	<beans:bean	id="umlsEntityAssnsToEntityProcessor" 
-					class="org.lexgrid.loader.processor.EntityAssnsToEntityProcessor">		
-					
-					<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
-					
-					<beans:property name="associationInstanceIdResolver">
-						<beans:bean class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver"/>
-					</beans:property>		
-	
-					<beans:property name="associationPredicateKeyResolver">
-						<beans:bean class="org.lexgrid.loader.database.key.AssociationPredicateCreatingKeyResolver">
-							<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
-						</beans:bean>
-					</beans:property> 
-					
-					<beans:property name="codingSchemeIdSetter">
-						<beans:ref local="umlsCodingSchemeIdSetter" />
-					</beans:property>
-					
- 					<beans:property name="relationResolver">
-						<beans:bean
-							class="org.lexgrid.loader.umls.processor.support.MedRTRelationResolver">
-							<beans:property name="codingSchemeIdSetter" ref="MedRTUmlsCodingSchemeIdSetter" />
-							<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao" />
-						</beans:bean>
-					</beans:property>
-					
-					<beans:property name="sourcePropertyIdResolver">
-						<beans:bean
-							class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
-							<beans:property name="aui" value="AUI1" />
-						</beans:bean>
-					</beans:property>
-					
-					<beans:property name="targetPropertyIdResolver">
-						<beans:bean
-							class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
-							<beans:property name="aui" value="AUI2" />
-						</beans:bean>
-					</beans:property>
-					
-					<beans:property name="databaseServiceManager" ref="databaseServiceManager"/>
-					
-					<beans:property name="qualifierResolvers">
-						<beans:list>
-							<beans:bean class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />
-						</beans:list>
-					</beans:property>
-	</beans:bean>
 
-	<beans:bean id="medRtUmlsEntityAssnsToEntityProcessor" parent="umlsEntityAssnsToEntityProcessor"
-		class="org.lexgrid.loader.processor.MedRtEntityAssnsToEntityProcessor">
-		<beans:property name="supportedAttributeTemplate" ref="medRtCachingSupportedAttribuiteTemplate" />
+	<beans:bean id="medRtUmlsEntityAssnsToEntityProcessor" class="org.lexgrid.loader.processor.MedRtEntityAssnsToEntityProcessor">
+		<beans:property name="supportedAttributeTemplate"
+			ref="medRtCachingSupportedAttributeTemplate" />
+	
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver" />
+		</beans:property>
+	
+		<beans:property name="associationPredicateKeyResolver">
+			<beans:bean
+				class="org.lexgrid.loader.database.key.AssociationPredicateCreatingKeyResolver">
+				<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	
+		<beans:property name="relationResolver">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.MedRTRelationResolver">
+				<beans:property name="codingSchemeIdSetter" ref="medRtUmlsCodingSchemeIdSetter" />
+				<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="sourcePropertyIdResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+				<beans:property name="aui" value="AUI1" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="targetPropertyIdResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+				<beans:property name="aui" value="AUI2" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
+	
+		<beans:property name="qualifierResolvers">
+			<beans:list>
+				<beans:bean
+					class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />
+			</beans:list>
+		</beans:property>
 		<beans:property name="isoMap">
 			<beans:ref bean="isoMap" />
 		</beans:property>
 	</beans:bean>		
 	
-		<beans:bean id="medRtCachingSupportedAttribuiteTemplate" parent="loggingBean"
-	class="org.lexgrid.loader.dao.template.MedRtCachingSupportedAttribuiteTemplate">
+	<beans:bean id="medRtCachingSupportedAttributeTemplate"
+		parent="loggingBean"
+		class="org.lexgrid.loader.dao.template.MedRtCachingSupportedAttributeTemplate">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="medRtUmlsCodingSchemeIdSetter" />
+		</beans:property>
 		<beans:property name="databaseServiceManager">
 			<beans:ref bean="databaseServiceManager" />
 		</beans:property>
@@ -756,7 +759,7 @@
 		</beans:property>
 	</beans:bean>
 	
-	<beans:bean id="MedRTUmlsCodingSchemeIdSetter"
+	<beans:bean id="medRtUmlsCodingSchemeIdSetter"
 		class="org.lexgrid.loader.umls.data.codingscheme.MedRTUmlsCodingSchemeIdSetter">
 		<beans:property name="mrsabUtility">
 			<beans:ref bean="mrsabUtility" />
