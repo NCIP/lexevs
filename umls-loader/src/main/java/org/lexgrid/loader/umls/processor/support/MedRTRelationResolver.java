@@ -18,7 +18,6 @@
  */
 package org.lexgrid.loader.umls.processor.support;
 
-import org.lexevs.logging.LoggerFactory;
 import org.lexgrid.loader.rrf.constants.RrfLoaderConstants;
 import org.lexgrid.loader.rrf.model.Mrrel;
 import org.lexgrid.loader.rrf.processor.support.AbstractRrfRelationResolver;

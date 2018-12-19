@@ -165,57 +165,6 @@
 
 	</job>
 	
-	<!-- Partitioning -->
-	
-	<!-- Relation Processing Below -->
-<!--	<beans:bean id="umlsLoadAssocsPartioned"-->
-<!--		class="org.springframework.batch.core.partition.support.PartitionStep">-->
-<!--		<beans:property name="partitionHandler"-->
-<!--			ref="umlsLoadAssocsPartitionHandler" />-->
-<!--		<beans:property name="stepExecutionSplitter"-->
-<!--			ref="umlsLoadAssocsExecutionSplitter" />-->
-<!--		<beans:property name="stepExecutionListeners"-->
-<!--			ref="stepCompletionListener"/>-->
-<!--		<beans:property name="jobRepository" ref="jobRepository" />-->
-<!--	</beans:bean>-->
-<!---->
-<!--	<beans:bean id="umlsLoadAssocsExecutionSplitter"-->
-<!--		class="org.springframework.batch.core.partition.support.SimpleStepExecutionSplitter">-->
-<!--		<beans:constructor-arg index="0" ref="jobRepository" />-->
-<!--		<beans:constructor-arg index="1"-->
-<!--			ref="umlsPartitionedLoadAssociations" />-->
-<!--		<beans:constructor-arg index="2">-->
-<!--			<beans:bean class="org.lexgrid.loader.rrf.partition.RrfFilePartitioner" />-->
-<!--		</beans:constructor-arg>-->
-<!--	</beans:bean>-->
-<!---->
-<!--	<beans:bean id="umlsLoadAssocsPartitionHandler"-->
-<!--		class="org.springframework.batch.core.partition.support.TaskExecutorPartitionHandler">-->
-<!--		<beans:property name="taskExecutor" ref="taskExecutor" />-->
-<!--		<beans:property name="step"-->
-<!--			ref="umlsPartitionedLoadAssociations" />-->
-<!--		<beans:property name="gridSize" value="10" />-->
-<!--	</beans:bean>-->
-<!---->
-<!--	<step id="umlsPartitionedLoadAssociations">-->
-<!--		<tasklet>-->
-<!--			<listeners>-->
-<!--				<listener ref="stepCompletionListener" />-->
-<!--			</listeners>-->
-<!--			<chunk reader="umlsMrrelPartitionedGroupReader" processor="umlsRootNodeAddingEntityAssocToEntityProcessor"-->
-<!--				writer="entityAssnsToEntityListWriter" -->
-<!--				skip-limit="500" commit-interval="10">-->
-<!--				<streams>-->
-<!--					<stream ref="mrrelReader" />-->
-<!--				</streams>-->
-<!--				<skippable-exception-classes>-->
-<!--					org.springframework.dao.DataIntegrityViolationException-->
-<!--				</skippable-exception-classes>-->
-<!--			</chunk>-->
-<!--		</tasklet>-->
-<!--	</step>-->
-	
-	<!-- End Partitioning -->
 
 	<beans:bean id="cleanupListener" parent="abstractCleanupListener"
 	class="org.lexgrid.loader.listener.CleanupListener">
@@ -429,23 +378,6 @@
 			<beans:ref bean="umlsEntityResolver" />
 		</beans:property>
 	</beans:bean>
-
-<!--	<beans:bean id="umlsPresentationPropertyListProcessor"-->
-<!--		class="org.lexgrid.loader.processor.EntityPropertyListProcessor">-->
-<!--		<beans:property name="propertyComparator">-->
-<!--			<beans:ref bean="propertyComparator" />-->
-<!--		</beans:property>-->
-<!--		<beans:property name="listIdSetter">-->
-<!--			<beans:bean-->
-<!--				class="org.lexgrid.loader.data.property.NoopListIdSetter" />-->
-<!--		</beans:property>-->
-<!--		<beans:property name="preferredSetter">-->
-<!--			<beans:bean-->
-<!--				class="org.lexgrid.loader.data.property.GroupByLanguagePreferredSetter" />-->
-<!--		</beans:property>-->
-<!--		<beans:property name="delegate"-->
-<!--			ref="umlsPresentationPropertyProcessor" />-->
-<!--	</beans:bean>-->
 	
 	<beans:bean id="umlsMrstyListProcessor"
 		class="org.lexgrid.loader.umls.processor.MrstyListProcessor">
@@ -465,28 +397,6 @@
 			ref="databaseServiceManager"/>
 		<beans:property name="codingSchemeIdSetter" ref="umlsCodingSchemeIdSetter"/>
 	</beans:bean>
-
-<!--	<beans:bean id="umlsCuiPropertyListProcessor" class="org.lexgrid.loader.processor.decorator.EntityPropertyListIdAddingDecorator">-->
-<!--		<beans:constructor-arg>-->
-<!--			<beans:bean class="org.lexgrid.loader.processor.PreFilteringListProcessor">-->
-<!--				<beans:property name="delegate" ref="umlsCuiPropertyProcessor" />-->
-<!--				<beans:property name="listFilter">-->
-<!--					<beans:bean class="org.lexgrid.loader.umls.processor.support.filter.UniqueCuiListFilter"/>-->
-<!--				</beans:property>	-->
-<!--			</beans:bean>-->
-<!--		</beans:constructor-arg>-->
-<!--		<beans:property name="listIdSetter">-->
-<!--			<beans:bean class="org.lexgrid.loader.data.property.PrefixedSequentialIdSetter">-->
-<!--				<beans:property name="prefix" value="cui"/>	-->
-<!--			</beans:bean>-->
-<!--		</beans:property>-->
-<!--	</beans:bean>-->
-
-<!--	<beans:bean id="umlsCuiPropertyProcessor" parent="umlsDefaultPropertyProcessor"-->
-<!--		class="org.lexgrid.loader.processor.EntityPropertyProcessor">-->
-<!--		<beans:property name="propertyResolver"-->
-<!--			ref="umlsCuiPropertyResolver" />-->
-<!--	</beans:bean>-->
 
 	<beans:bean id="umlsDefinitionPropertyProcessor" parent="umlsDefaultPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityPropertyProcessor">
@@ -544,12 +454,6 @@
 			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
 		</beans:property>
 	</beans:bean>
-
-<!--	<beans:bean id="umlsPresentationPropertyProcessor" parent="umlsDefaultPropertyProcessor"-->
-<!--		class="org.lexgrid.loader.processor.EntityPropertyProcessor">-->
-<!--		<beans:property name="propertyResolver"-->
-<!--			ref="umlsPresentationPropertyResolver" />-->
-<!--	</beans:bean>-->
 	
 	<beans:bean id="umlsRelaQualifierProcessor" parent="umlsDefaultPropertyProcessor"
 		class="org.lexgrid.loader.processor.EntityAssnToEQualsProcessor">
