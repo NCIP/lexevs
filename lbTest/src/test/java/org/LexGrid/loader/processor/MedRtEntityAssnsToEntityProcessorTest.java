@@ -1,6 +1,15 @@
 package org.LexGrid.loader.processor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.naming.SupportedCodingScheme;
@@ -13,26 +22,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexgrid.loader.dao.template.MedRtCachingSupportedAttributeTemplate;
 import org.lexgrid.loader.dao.template.SupportedAttributeTemplate;
-import org.lexgrid.loader.data.DataUtils;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.processor.MedRtEntityAssnsToEntityProcessor;
-import org.lexgrid.loader.processor.MedRtEntityAssnsToEntityProcessor.SelfReferencingAssociationPolicy;
-import org.lexgrid.loader.processor.support.OptionalQualifierResolver;
 import org.lexgrid.loader.umls.data.codingscheme.MedRTUmlsCodingSchemeIdSetter;
 import org.lexgrid.loader.wrappers.CodingSchemeIdHolder;
 import org.lexgrid.loader.wrappers.ParentIdHolder;
-import org.mockito.Answers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-
-import static org.mockito.Mockito.*;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MedRtEntityAssnsToEntityProcessorTest {
@@ -40,12 +36,10 @@ public class MedRtEntityAssnsToEntityProcessorTest {
 	@Mock
 	private Map<String,String> isoMap;
 	
-//	@Mock
-//	private ;
-	
+	@SuppressWarnings("rawtypes")
 	MedRtEntityAssnsToEntityProcessor processor;
-	
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Before
 	public void setUp() throws Exception {
 	processor = new MedRtEntityAssnsToEntityProcessor();
@@ -130,8 +124,6 @@ public class MedRtEntityAssnsToEntityProcessorTest {
 		qual.setQualifierText(Constructors.createText("qvalue"));
 		target.addAssociationQualification(qual);	
 
-
-		
 		source.addTarget(target);
 		
 		return source;

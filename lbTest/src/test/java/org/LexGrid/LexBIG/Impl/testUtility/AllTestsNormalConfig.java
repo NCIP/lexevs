@@ -181,8 +181,12 @@ import org.LexGrid.LexBIG.Impl.load.meta.MrrankQualifierDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.MrstyPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationPropertyDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
+import org.LexGrid.LexBIG.Impl.load.umls.MedRTUmlsCodingSchemeIdSetterTest;
 import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandlerTest;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
+import org.LexGrid.loader.dao.template.MedRtCachingSupportedAttributeTemplateTest;
+import org.LexGrid.loader.processor.MedRtEntityAssnsToEntityProcessorTest;
+import org.LexGrid.loader.umls.processor.support.MedRTRelationResolverTest;
 import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedVSIteratorTest;
 import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedValueSetTest;
 import org.junit.runners.model.InitializationError;
@@ -303,6 +307,12 @@ public class AllTestsNormalConfig {
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.TuiPropertyDataTestIT.class);
         umlsLoaderSuite.addTestSuite(org.LexGrid.LexBIG.Impl.load.umls.IsoMapTest.class);
         mainSuite.addTest(umlsLoaderSuite);
+        
+        TestSuite medRTLoaderSuite = new TestSuite("MED-RTLoader Tests");
+        medRTLoaderSuite.addTest(new JUnit4TestAdapter(MedRTUmlsCodingSchemeIdSetterTest.class));
+        medRTLoaderSuite.addTest(new JUnit4TestAdapter(MedRtEntityAssnsToEntityProcessorTest.class));
+        medRTLoaderSuite.addTest(new JUnit4TestAdapter(MedRtCachingSupportedAttributeTemplateTest.class));
+        medRTLoaderSuite.addTest(new JUnit4TestAdapter(MedRTRelationResolverTest.class));
         
         TestSuite hl7MifVocabularyLoaderSuite = new TestSuite("HL7 MIF Vocabulary Loader Tests");
         hl7MifVocabularyLoaderSuite.addTestSuite(edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary.MifVocabularyHierarchyRootsTestIT.class);
