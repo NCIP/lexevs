@@ -24,9 +24,9 @@ import java.util.Properties;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Load.MedRtUmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
-import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.lexevs.dao.database.spring.DynamicPropertyApplicationContext;
 import org.lexgrid.loader.AbstractSpringBatchLoader;
@@ -45,14 +45,20 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class UmlsBatchLoaderImpl extends AbstractSpringBatchLoader implements UmlsBatchLoader {
+public class MedRtUmlsBatchLoaderImpl extends AbstractSpringBatchLoader implements MedRtUmlsBatchLoader {
+
+/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 /** The connection properties factory. */
 private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLexEVSPropertiesFactory();
 
 	public static String SAB_OPTION = "SAB";
+	public static final String SAB = "MED-RT";
 	
-	public UmlsBatchLoaderImpl(){
+	public MedRtUmlsBatchLoaderImpl(){
 		super();
 		super.setDoIndexing(false);
 		super.setDoRegister(false);
@@ -60,14 +66,14 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	}
 
 	/** The UML s_ loade r_ config. */
-	private String UMLS_LOADER_CONFIG = "umlsLoader.xml";
+	private String UMLS_LOADER_CONFIG = "medrtUmlsLoader.xml";
 
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#loadUmls(java.lang.String, java.lang.String)
 	 */
-	public void loadUmls(URI rrfDir, String sab) throws Exception {
+	public void loadMEDRT(URI rrfDir) throws Exception {
 		this.getOptions().getBooleanOption(ASYNC_OPTION).setOptionValue(false);
-		this.getOptions().getStringOption(SAB_OPTION).setOptionValue(sab);
+		this.getOptions().getStringOption(SAB_OPTION).setOptionValue(SAB);
 		
 		this.load(rrfDir);
 	}	
@@ -75,9 +81,9 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.umls.UmlsBatchLoader#resumeUmls(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
-	public void resumeUmls(URI rrfDir, String sab, String uri, String version) throws Exception {
+	public void resumeMEDRT(URI rrfDir, String uri, String version) throws Exception {
 		Properties connectionProps = connectionPropertiesFactory.getPropertiesForExistingLoad(uri, version);
-		connectionProps.put("sab", sab);
+		connectionProps.put("sab", SAB);
 		connectionProps.put("rrfDir", rrfDir.toString());
 		connectionProps.put("retry", "true");
 		launchJob(connectionProps, UMLS_LOADER_CONFIG, "umlsJob");
@@ -109,16 +115,16 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
     
     @Override
 	public String getName() {
-		return UmlsBatchLoader.NAME;
+		return MedRtUmlsBatchLoader.NAME;
 	}
 
     public static void main(String[] args) throws Exception { 
     	System.setProperty("LG_CONFIG_FILE", "src/test/resources/lbconfig.props");
 
-    	UmlsBatchLoader ubl = new UmlsBatchLoaderImpl();
+    	MedRtUmlsBatchLoader ubl = new MedRtUmlsBatchLoaderImpl();
 		 //ubl.loadUmls(new File("/home/LargeStorage/ontologies/rrf/snomed-ct/2009AA").toURI(), "SNOMEDCT");
 		// mbl.loadMeta("/home/LargeStorage/ontologies/rrf/LNC/LNC226");
-    	ubl.loadUmls(new File("src/test/resources/data/sample-air").toURI(), "AIR");
+    	ubl.loadMEDRT(new File("src/test/resources/data/sample-air").toURI());
 	 }
 
 	@Override
@@ -165,7 +171,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	protected ExtensionDescription buildExtensionDescription() {
 		ExtensionDescription meta = new ExtensionDescription();
 		meta.setExtensionBaseClass(MetaBatchLoader.class.getName());
-		meta.setExtensionClass("org.lexgrid.loader.umls.UmlsBatchLoaderImpl");
+		meta.setExtensionClass("org.lexgrid.loader.umls.MedRtUmlsBatchLoaderImpl");
 		meta.setDescription(MetaBatchLoader.DESCRIPTION);
 		meta.setName(MetaBatchLoader.NAME);
 		meta.setVersion(MetaBatchLoader.VERSION);

@@ -19,6 +19,9 @@
 package org.lexgrid.loader.processor;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationQualification;
@@ -40,12 +43,12 @@ import org.lexgrid.loader.wrappers.ParentIdHolder;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
-/**
- * The Class EntityAssnsToEntityProcessor.
- * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
- */
-public class EntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I,ParentIdHolder<AssociationSource>> implements InitializingBean {
+
+public class MedRtEntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I,ParentIdHolder<AssociationSource>> implements InitializingBean {
+	
+	/** The iso map. */
+	private Map<String,String> isoMap;
+	
 	
 	public enum SelfReferencingAssociationPolicy {IGNORE, AS_ASSOCIATIONS, AS_PROPERTY_LINKS, BOTH }
 	
@@ -171,25 +174,6 @@ public class EntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeR
 			}
 		});
 	}
-	
-	@Override
-	protected void registerSupportedAttributes(SupportedAttributeTemplate template,
-			ParentIdHolder<AssociationSource> item) {
-		if(! ArrayUtils.isEmpty(item.getItem().getTarget())){
-			for(AssociationTarget target : item.getItem().getTarget()){
-				if(! ArrayUtils.isEmpty(target.getAssociationQualification())){
-					for(AssociationQualification qual : target.getAssociationQualification()) {
-						template.addSupportedAssociationQualifier(
-								this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
-								this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
-								qual.getAssociationQualifier(), 
-								null, 
-								qual.getAssociationQualifier());
-					}
-				}
-			}
-		}
-	}
 
 	/**
 	 * Gets the relation resolver.
@@ -270,4 +254,48 @@ public class EntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeR
 	public List<OptionalQualifierResolver<I>> getQualifierResolvers() {
 		return qualifierResolvers;
 	}
+	
+	@Override
+	protected void registerSupportedAttributes(SupportedAttributeTemplate template,
+			ParentIdHolder<AssociationSource> item) {
+
+			if(! ArrayUtils.isEmpty(item.getItem().getTarget())){
+				for(AssociationTarget target : item.getItem().getTarget()){
+					if(! ArrayUtils.isEmpty(target.getAssociationQualification())){
+						for(AssociationQualification qual : target.getAssociationQualification()) {
+							template.addSupportedAssociationQualifier(
+									this.getCodingSchemeIdSetter().getCodingSchemeUri(), 
+									this.getCodingSchemeIdSetter().getCodingSchemeVersion(), 
+									qual.getAssociationQualifier(), 
+									null, 
+									qual.getQualifierText().getContent());
+						}
+					}
+				}
+			}
+
+		// likely not needed -- there is only one target
+		Set<String> set = item.getItem().getTargetAsReference().stream().map(x -> x.getTargetEntityCodeNamespace())
+				.distinct().collect(Collectors.toSet());
+		// namespaces might be the same we'll eliminate them as duplicates
+		set.add(item.getItem().getSourceEntityCodeNamespace());
+		//These are all sabs, we'll see if they are MED-RT, if not we'll create
+		//supported attibutes for external value sets
+		for (String sab : set) {
+			if (!this.getCodingSchemeIdSetter().getCodingSchemeName().equals(sab)) {
+				this.getSupportedAttributeTemplate().addSupportedCodingScheme(sab, null, sab, isoMap.get(sab), sab,
+						false);
+				this.getSupportedAttributeTemplate().addSupportedNamespace(sab, null, sab, isoMap.get(sab), sab, sab);
+			}
+		}
+	}
+
+	public Map<String, String> getIsoMap() {
+		return isoMap;
+	}
+
+	public void setIsoMap(Map<String, String> isoMap) {
+		this.isoMap = isoMap;
+	}
+
 }
