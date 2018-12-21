@@ -29,17 +29,15 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
 /**
- * The Class UmlsBatchLoaderLauncher.
+ * The Class MedRtUmlsBatchLoaderLauncher.
  * 
- * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
+ * @author <a href="mailto:bauer.scott@mayo.edu">Scott Bauer</a>
  */
 public class MedRtBatchLoaderLauncher {
 	
 	 /** The rrf dir. */
  	@Option(name="-in")   
 	 private String rrfDir;
-	  
-	 private String sab;
 	 
 	 /** The uri. */
  	@Option(name="-uri")   
@@ -102,25 +100,6 @@ public class MedRtBatchLoaderLauncher {
 		this.rrfDir = rrfDir;
 	}
 
-
-	/**
-	 * Gets the sab.
-	 * 
-	 * @return the sab
-	 */
-	public String getSab() {
-		return sab;
-	}
-
-
-	/**
-	 * Sets the sab.
-	 * 
-	 * @param sab the new sab
-	 */
-	public void setSab(String sab) {
-		this.sab = sab;
-	}
 		
 	/**
 	 * Sets the AbsoluteCodingSchemeVersionReference.
