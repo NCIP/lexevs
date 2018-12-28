@@ -192,7 +192,7 @@
 		<result property="value" column="value" />
 	</resultMap>
 	
-	<resultMap id="mapGraphSuperTriplesAndMetaData" class="org.lexevs.dao.database.ibatis.codednodegraph.model.TerminologyMapBean">
+	<resultMap id="mapGraphSuperTriplesAndMetaData" class="org.LexGrid.custom.relations.TerminologyMapBean">
 		<result property="source" column="source" />
 		<result property="sourceCode" column="sourceCode" />
 		<result property="sourceName" column="sourceName" />
@@ -2360,7 +2360,7 @@
 			sourceEntityCode AS sourceCode,
 			sourceEnt.description AS sourceName,
 			pred.associationName AS rel, 
-			quals.qualifierValue AS rank, 
+			quals.qualifierValue AS mapRank, 
 			targetEntityCodeNameSpace AS target,
 			targetEntityCode AS targetCode, 
 			tent.description AS targetName 

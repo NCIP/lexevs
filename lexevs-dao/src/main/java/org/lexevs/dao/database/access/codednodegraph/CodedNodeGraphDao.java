@@ -278,6 +278,6 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	
 	public int deleteFromTransitiveTableByCodingSchemeUid(String codingSchemeUid);
 
-	List<TerminologyMapBean> getMapAndTermsForMappingAndReferences(String mappingCodingSchemUid,
+	public List<TerminologyMapBean> getMapAndTermsForMappingAndReferences(String mappingCodingSchemUid,
 			String sourceCodingSchemeUid, String targetCodingSchemeUid, Relations rel, String qualifierName);
 }

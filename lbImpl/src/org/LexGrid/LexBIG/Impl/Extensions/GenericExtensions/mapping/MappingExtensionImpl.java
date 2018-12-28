@@ -129,7 +129,7 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
             new IteratorBackedResolvedConceptReferencesIterator(iterator, count);
     }
     
-    private String getDefaultMappingRelationsContainer(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
+    public String getDefaultMappingRelationsContainer(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
         CodingScheme cs = LexEvsServiceLocator.getInstance().
             getDatabaseServiceManager().
                 getCodingSchemeService().
@@ -311,10 +311,17 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
                 final Relations rels = ServiceUtility.getRelationsForMappingScheme(mappingName, mappingVersion,
                         this.getDefaultMappingRelationsContainer(
                                 Constructors.createAbsoluteCodingSchemeVersionReference(mappingName, mappingVersion)));
-                final String sourceUid = getCodingSchemeUid(rels.getSourceCodingScheme(),
-                        rels.getSourceCodingSchemeVersion());
-                final String targetUid = getCodingSchemeUid(rels.getTargetCodingScheme(),
-                        rels.getTargetCodingSchemeVersion());
+                //Insure you have corrected target and source uri and version
+                String sourceUri = ServiceUtility.getUriForCodingSchemeName(rels.getSourceCodingScheme());
+                String sourceVersion = ServiceUtility.getVersion(sourceUri, null);
+                
+                String targetUri = ServiceUtility.getUriForCodingSchemeName(rels.getTargetCodingScheme());
+                String targetVersion = ServiceUtility.getVersion(targetUri, null);
+                
+                final String sourceUid = getCodingSchemeUid(sourceUri,
+                        sourceVersion);
+                final String targetUid = getCodingSchemeUid(targetUri,
+                        targetVersion);
 
                 final String version = mappingVersion;
                 beanList = (List<TerminologyMapBean>) LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
