@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.custom.relations.TerminologyMapBean;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
@@ -59,6 +60,9 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
     
     /** The PAG e_ size. */
     protected static int PAGE_SIZE = 1000;
+    
+
+    private String rankScoreName = "score";
     
     /**
      * Instantiates a new mapping extension impl.
@@ -281,5 +285,68 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
                 }});
         
         return participates;
+    }
+
+    @Override
+    public List<TerminologyMapBean> resolveBulkMapping(final String mappingName, String mappingVersion) {
+
+        List<TerminologyMapBean> beanList = null;
+
+        if (mappingName == null) {
+            throw new RuntimeException("Mapping Name or URI cannot be null when returning bulk mapping");
+        }
+        if (mappingVersion == null) {
+            try {
+                mappingVersion = ServiceUtility.getVersion(mappingName,
+                        Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion));
+            } catch (LBParameterException e) {
+                throw new RuntimeException("Mapping Version Could not be resolved.", e);
+            }
+        }
+        try {
+            if (isMappingCodingScheme(mappingName,
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion))) {
+                // return full set of mapped metadata
+                final String mappingUid = getCodingSchemeUid(mappingName, mappingVersion);
+                final Relations rels = ServiceUtility.getRelationsForMappingScheme(mappingName, mappingVersion,
+                        this.getDefaultMappingRelationsContainer(
+                                Constructors.createAbsoluteCodingSchemeVersionReference(mappingName, mappingVersion)));
+                final String sourceUid = getCodingSchemeUid(rels.getSourceCodingScheme(),
+                        rels.getSourceCodingSchemeVersion());
+                final String targetUid = getCodingSchemeUid(rels.getTargetCodingScheme(),
+                        rels.getTargetCodingSchemeVersion());
+
+                final String version = mappingVersion;
+                beanList = (List<TerminologyMapBean>) LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
+                        .getDaoCallbackService().executeInDaoLayer(new DaoCallback<List<TerminologyMapBean>>() {
+
+                            @Override
+                            public List<TerminologyMapBean> execute(DaoManager daoManager) {
+
+                                return daoManager.getCodedNodeGraphDao(mappingName, version)
+                                        .getMapAndTermsForMappingAndReferences(mappingUid, sourceUid, targetUid, rels,
+                                                rankScoreName);
+                            }
+                        });
+
+            } // if
+        } catch (LBParameterException e) {
+            throw new RuntimeException("Mapping scheme is not present or in error", e);
+        }
+        return beanList;
+    }
+
+    private String getCodingSchemeUid(String uri, String mappingVersion) {
+        String Uid = LexEvsServiceLocator.getInstance().
+        getDatabaseServiceManager().
+        getDaoCallbackService().
+        executeInDaoLayer(new DaoCallback<String>() {
+
+            @Override
+            public String execute(DaoManager daoManager) {
+                return daoManager.getCodingSchemeDao(uri, mappingVersion).
+                        getCodingSchemeUIdByUriAndVersion(uri, mappingVersion);
+            }});
+        return Uid;
     }
 }

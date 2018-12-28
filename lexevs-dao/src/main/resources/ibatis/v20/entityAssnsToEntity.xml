@@ -191,6 +191,17 @@
 		<result property="instance" column="instance" />
 		<result property="value" column="value" />
 	</resultMap>
+	
+	<resultMap id="mapGraphSuperTriplesAndMetaData" class="org.lexevs.dao.database.ibatis.codednodegraph.model.TerminologyMapBean">
+		<result property="source" column="source" />
+		<result property="sourceCode" column="sourceCode" />
+		<result property="sourceName" column="sourceName" />
+		<result property="rel" column="rel" />
+		<result property="mapRank" column="mapRank" />
+		<result property="target" column="target" />
+		<result property="targetCode" column="targetCode" />
+		<result property="targetName" column="targetName" />
+	</resultMap>
 
 	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
@@ -2339,5 +2350,40 @@
 				ap.associationName = #param3#
 			AND 
 				(source.isAnonymous != 1 OR source.isAnonymous IS NULL)
+	</select>
+	
+	<select id="getFullMapOfTerminologyWithEntityNames" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.SourceAndTargetMappingPrefixedParameter" 
+		resultMap="Association.mapGraphSuperTriplesAndMetaData">
+		SELECT 
+			sourceEntityCodeNameSpace AS source,
+			sourceEntityCode AS sourceCode,
+			sourceEnt.description AS sourceName,
+			pred.associationName AS rel, 
+			quals.qualifierValue AS rank, 
+			targetEntityCodeNameSpace AS target,
+			targetEntityCode AS targetCode, 
+			tent.description AS targetName 
+		FROM
+			$prefix$entityAssnsToEntity AS assns 
+		JOIN
+			$sourcePrefix$entity AS sourceEnt 
+		ON
+			sourceEntityCode=sourceEnt.entityCode 
+		JOIN 
+			$targetPrefix$entity AS tent 
+		ON
+			targetEntityCode=tent.entityCode 
+		JOIN
+			lbaaadassociationPredicate AS pred 
+		ON 
+			pred.associationPredicateGuid= assns.associationPredicateGuid 
+		LEFT OUTER JOIN
+			lbaaadentityAssnQuals AS quals 
+		ON
+			quals.referenceGuid = assns.entityAssnsGuid 
+		AND
+			quals.qualifierName = #param1#
+		
 	</select>
 </sqlMap>
