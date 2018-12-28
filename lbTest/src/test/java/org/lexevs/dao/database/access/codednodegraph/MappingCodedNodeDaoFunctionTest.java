@@ -82,7 +82,8 @@ public class MappingCodedNodeDaoFunctionTest extends LexBIGServiceTestCase{
         assertTrue(beanList.size() > 0);
         assertTrue(beanList.stream().anyMatch(x -> x.getSourceCode().equals("Jaguar")));
         assertTrue(beanList.stream().anyMatch(x -> x.getTargetCode().equals("E0001")));
-        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("Ford") && x.getTargetCode().equals("E0001")).findAny().isPresent());
+        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("Ford") && 
+                x.getTargetCode().equals("E0001")).findAny().isPresent());
     }
     
    
@@ -94,8 +95,24 @@ public class MappingCodedNodeDaoFunctionTest extends LexBIGServiceTestCase{
         assertTrue(beanList.size() > 0);
         assertTrue(beanList.stream().anyMatch(x -> x.getSourceCode().equals("Jaguar")));
         assertTrue(beanList.stream().anyMatch(x -> x.getTargetCode().equals("E0001")));
-        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("Ford") && x.getTargetCode().equals("E0001")).findAny().isPresent());
-        
+        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("Jaguar") && 
+                x.getTargetCode().equals("E0001")).findAny().isPresent());
+        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("A0001") && 
+                x.getTargetCode().equals("R0001")).findAny().isPresent());
+        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("C0001") && 
+                x.getTargetCode().equals("E0001")).findAny().isPresent());
+        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("005") && 
+                x.getTargetCode().equals("P0001")).findAny().isPresent());
+        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("Ford") && 
+                x.getTargetCode().equals("E0001")).findAny().isPresent());
+        assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("C0002") && 
+                x.getTargetCode().equals("P0001")).findAny().isPresent());
+        assertTrue(beanList.stream().anyMatch(x -> x.getRel().equals("mapsTo")));
+        assertTrue(beanList.stream().anyMatch(x -> x.getRel().equals("hasPart")));
+        assertTrue(beanList.stream().anyMatch(x -> x.getSourceName().equals("Automobile")));
+        assertTrue(beanList.stream().anyMatch(x -> x.getTargetName().equals("Engine")));
+        assertFalse(beanList.stream().anyMatch(x -> x.getSourceName().equals("Engine")));
+        assertFalse(beanList.stream().anyMatch(x -> x.getTargetName().equals("Automobile")));
     }
 
 
