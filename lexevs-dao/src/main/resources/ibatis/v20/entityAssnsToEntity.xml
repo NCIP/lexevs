@@ -2375,11 +2375,11 @@
 		ON
 			targetEntityCode=tent.entityCode 
 		JOIN
-			lbaaadassociationPredicate AS pred 
+			$prefix$associationPredicate AS pred 
 		ON 
 			pred.associationPredicateGuid= assns.associationPredicateGuid 
 		LEFT OUTER JOIN
-			lbaaadentityAssnQuals AS quals 
+			$prefix$entityAssnQuals AS quals 
 		ON
 			quals.referenceGuid = assns.entityAssnsGuid 
 		AND

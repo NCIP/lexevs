@@ -189,6 +189,7 @@ import org.LexGrid.loader.processor.MedRtEntityAssnsToEntityProcessorTest;
 import org.LexGrid.loader.umls.processor.support.MedRTRelationResolverTest;
 import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedVSIteratorTest;
 import org.junit.runners.model.InitializationError;
+import org.lexevs.dao.database.access.codednodegraph.MappingCodedNodeDaoFunctionTest;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceTest;
 import org.lexevs.dao.index.lucene.v2013.search.ValueSetDaoTest;
@@ -509,6 +510,7 @@ public class AllTestsNormalConfig {
         //Mapping Extension tests
         mainSuite.addTestSuite(MappingExtensionImplTest.class);
 		mainSuite.addTestSuite(MappingExtensionSerializationTest.class);
+		mainSuite.addTestSuite(MappingCodedNodeDaoFunctionTest.class);
         
         //Search Extension tests
         mainSuite.addTestSuite(SearchExtensionImplTest.class);
