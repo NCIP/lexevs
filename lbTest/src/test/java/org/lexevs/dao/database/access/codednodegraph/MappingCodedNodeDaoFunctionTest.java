@@ -1,13 +1,10 @@
 package org.lexevs.dao.database.access.codednodegraph;
 
-import static org.junit.Assert.*;
-
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension;
-import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingExtensionImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
@@ -43,8 +40,6 @@ public class MappingCodedNodeDaoFunctionTest extends LexBIGServiceTestCase{
        String relationsContainerName =  ((MappingExtensionImpl)mappingExtension).getDefaultMappingRelationsContainer(
                 Constructors.createAbsoluteCodingSchemeVersionReference(MAPPING_SCHEME_URI, MAPPING_SCHEME_VERSION));
 
-//        Mapping map = mappingExtension.getMapping(
-//                MAPPING_SCHEME_URI, Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), relationsContainerName);
         List<TerminologyMapBean> beanList = (List<TerminologyMapBean>) LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
                 .getDaoCallbackService().executeInDaoLayer(new DaoCallback<List<TerminologyMapBean>>() {
 
@@ -71,8 +66,7 @@ public class MappingCodedNodeDaoFunctionTest extends LexBIGServiceTestCase{
                                 .getMapAndTermsForMappingAndReferences(mappingUid, sourceUid, targetUid, null,
                                         "score");
                         } catch (LBParameterException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            fail(e.toString());
                         }
                         return null;
                     }
@@ -93,6 +87,7 @@ public class MappingCodedNodeDaoFunctionTest extends LexBIGServiceTestCase{
         List<TerminologyMapBean> beanList = mappingExtension.resolveBulkMapping(MAPPING_SCHEME_URI, MAPPING_SCHEME_VERSION);
         assertNotNull(beanList);
         assertTrue(beanList.size() > 0);
+        assertEquals(beanList.size(), 6);
         assertTrue(beanList.stream().anyMatch(x -> x.getSourceCode().equals("Jaguar")));
         assertTrue(beanList.stream().anyMatch(x -> x.getTargetCode().equals("E0001")));
         assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("Jaguar") && 
