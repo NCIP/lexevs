@@ -72,13 +72,13 @@ public class TerminologyMapBean {
 	}
 	
 	public String toString(){
-		String string = (getSource() == null ?" ":getSource()) + "," +
-						(getSourceCode() == null ?" ":getSourceCode()) + "," +
-						(getSourceName() == null ?" ":getSourceName()) + "," +
-						(getRel() == null ?" ":getRel()) + "," +
-						(getMapRank() == null ?" ":getMapRank()) + "," +	
-						(getTarget() == null ?" ":getTarget()) + "," +
-						(getTargetCode() == null ?" ":getTargetCode()) + "," +
+		String string = (getSource() == null ?" ":getSource()) + "|" +
+						(getSourceCode() == null ?" ":getSourceCode()) + "|" +
+						(getSourceName() == null ?" ":getSourceName()) + "|" +
+						(getRel() == null ?" ":getRel()) + "|" +
+						(getMapRank() == null ?" ":getMapRank()) + "|" +	
+						(getTarget() == null ?" ":getTarget()) + "|" +
+						(getTargetCode() == null ?" ":getTargetCode()) + "|" +
 						(getTargetName() == null ?" ":getTargetName());								
 		return string;
 	}
