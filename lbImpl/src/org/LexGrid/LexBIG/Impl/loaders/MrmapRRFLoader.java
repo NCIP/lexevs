@@ -38,6 +38,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.relations.Relations;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.MrmapToSQL;
+import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MappingRelationsUtil;
 import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrSat;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -119,7 +120,22 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
     if(getLoaderPreferences() != null){
         messages.warn("Loader Preferences are not supported in the MrMap Loader");
     }
-    
+
+    URI sourceSat = this.getOptions().getURIOption(MRSAT_URI).getOptionValue();
+    if(rel == null || !rel.getValue().isIsMapping()){
+    Map<String, Relations> rels = new MappingRelationsUtil().processMrSatBean(sourceSat.getPath(), getResourceUri().getPath());
+    if(rels.entrySet() == null || rels.isEmpty()){
+        throw new RuntimeException("This mapping does not define any mapping relations");
+    }
+    CodingScheme[] schemes = map.load(getMessageDirector(), 
+            this.getResourceUri(), 
+            this.getOptions().getURIOption(MRSAT_URI).getOptionValue(),
+            null, null, null, null, null, null, null, null,
+            this.getResourceUri().toString(), rels.entrySet().iterator().next(),
+            this.getCodingSchemeManifest());
+   setDoApplyPostLoadManifest(false);
+   return this.constructVersionPairsFromCodingSchemes((Object[])schemes);
+    }
      CodingScheme[] schemes = map.load(getMessageDirector(), 
               this.getResourceUri(), 
               this.getOptions().getURIOption(MRSAT_URI).getOptionValue(),
