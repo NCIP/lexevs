@@ -133,6 +133,7 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
             CodingScheme[] schemes = null;
             Iterator<Entry<String, Relations>> itr = rels.entrySet().iterator();
             while (itr.hasNext()) {
+                // schemes are reset to the next load.  This needs to be additive
                 schemes = map.load(getMessageDirector(), this.getResourceUri(),
                         this.getOptions().getURIOption(MRSAT_URI).getOptionValue(), 
                         null, null, null, null, null, null,
@@ -149,21 +150,6 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
         return this.constructVersionPairsFromCodingSchemes((Object[]) schemes);
     }
 
-    
-//    protected HashMap<String, Relations> processRelationsContainers(String mapPath) throws IOException{
-//        HashMap<String, Relations> relations = new HashMap<String, Relations>();
-//        RRFLineReader mapReader = new RRFLineReader(mapPath);
-//        String[] mrMapRow;
-//            while((mrMapRow = mapReader.readRRFLine()) != null){
-//                if(!relations.containsKey(mrMapRow[0])){
-//                    Relations rel = new Relations();
-//                    rel.setContainerName(mrMapRow[0]);
-//                    relations.put(mrMapRow[0], rel);
-//                }
-//            }
-//        
-//        return relations;
-//    }
     
     protected MrSat processMrSatRow(String [] mapRow, int lineCount) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrSat mrSat = new MrSat();
