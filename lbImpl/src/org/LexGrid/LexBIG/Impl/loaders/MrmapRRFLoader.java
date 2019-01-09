@@ -20,11 +20,13 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Spliterator;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -132,6 +134,7 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
             }
             CodingScheme[] schemes = null;
             Iterator<Entry<String, Relations>> itr = rels.entrySet().iterator();
+            List<CodingScheme> listScheme  = new ArrayList<CodingScheme>();
             while (itr.hasNext()) {
                 // schemes are reset to the next load.  This needs to be additive
                 schemes = map.load(getMessageDirector(), this.getResourceUri(),
@@ -140,8 +143,10 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
                         null, null, this.getResourceUri().toString(), 
                         itr.next(), this.getCodingSchemeManifest());
                 setDoApplyPostLoadManifest(false);
+                listScheme.addAll(Arrays.asList(schemes));
             }
-            return this.constructVersionPairsFromCodingSchemes((Object[]) schemes);
+            
+            return this.constructVersionPairsFromCodingSchemes(listScheme.toArray());
         }
         CodingScheme[] schemes = map.load(getMessageDirector(), this.getResourceUri(),
                 this.getOptions().getURIOption(MRSAT_URI).getOptionValue(), null, null, null, null, null, null, null,

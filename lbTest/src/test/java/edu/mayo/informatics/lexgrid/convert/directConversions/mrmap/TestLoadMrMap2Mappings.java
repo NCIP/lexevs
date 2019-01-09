@@ -21,6 +21,7 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.mrmap;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
@@ -29,13 +30,22 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MrmapRRFLoader;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
+import org.LexGrid.annotations.LgAdminFunction;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.relations.Relations;
+import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry;
 
 import junit.framework.TestCase;
 
 public class TestLoadMrMap2Mappings extends TestCase {
+	
+	@LgAdminFunction
 	public void testLoadOneMappingFromMRMAP() throws LBException, InterruptedException, SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException{
 
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
@@ -54,7 +64,10 @@ public class TestLoadMrMap2Mappings extends TestCase {
 
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
+        Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
+        List<RegistryEntry> entries = registry.getAllRegistryEntries();
+//       assertFalse( entries.stream().anyMatch(x -> x.getStatus().equals("pending")));
+        assertTrue(entries.stream().filter(x -> (x.getResourceUri().equals("urn:oid:CL413320.MDR.ICD9CM") || x.getResourceUri().equals("urn:oid:CL413321.MDR.CST"))).anyMatch(y -> y.getStatus().equals("inactive"))); 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 
@@ -62,5 +75,9 @@ public class TestLoadMrMap2Mappings extends TestCase {
 }
     private LexBIGServiceManager getLexBIGServiceManager() throws LBParameterException, LBInvocationException{
     	return LexBIGServiceImpl.defaultInstance().getServiceManager(null);
+    }
+    
+    private LexBIGService getLexBigService(){
+    	return LexBIGServiceImpl.defaultInstance();
     }
 }
