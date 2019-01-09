@@ -66,7 +66,6 @@ public class TestLoadMrMap2Mappings extends TestCase {
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
         Registry registry = LexEvsServiceLocator.getInstance().getRegistry();
         List<RegistryEntry> entries = registry.getAllRegistryEntries();
-//       assertFalse( entries.stream().anyMatch(x -> x.getStatus().equals("pending")));
         assertTrue(entries.stream().filter(x -> (x.getResourceUri().equals("urn:oid:CL413320.MDR.ICD9CM") || x.getResourceUri().equals("urn:oid:CL413321.MDR.CST"))).anyMatch(y -> y.getStatus().equals("inactive"))); 
         lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
