@@ -127,7 +127,7 @@ public class ActivateScheme {
 
             // Continue and confirm the action (if not bypassed by force option)
             // ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             boolean confirmed = true;
             if (!force) {
                 Util.displayMessage("ACTIVATE NOW? ('Y' to confirm, any other key to cancel)");
@@ -137,9 +137,9 @@ public class ActivateScheme {
             if (confirmed) {
                 LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(new Object());
                 lbsm.activateCodingSchemeVersion(Constructors.createAbsoluteCodingSchemeVersionReference(css));
-                Util.displayTaggedMessage("Request complete");
+                Util.displayAndLogMessage("Request complete");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

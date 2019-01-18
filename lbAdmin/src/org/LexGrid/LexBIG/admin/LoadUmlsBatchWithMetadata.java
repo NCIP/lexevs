@@ -83,7 +83,7 @@ public class LoadUmlsBatchWithMetadata {
         try {        
             new LoadUmlsBatchWithMetadata().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -126,7 +126,7 @@ public class LoadUmlsBatchWithMetadata {
               
             // metatdata - validate input file (optional)
             if (v1 >= 0) {
-                Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + metaUri.toString());
+                Util.displayAndLogMessage("VALIDATING METADATA SOURCE URI: " + metaUri.toString());
             } 
            
             // metadata force
@@ -171,14 +171,14 @@ public class LoadUmlsBatchWithMetadata {
                 }
                 
                 if (css == null){
-                    Util.displayTaggedMessage("Unable to apply metadata");
+                    Util.displayAndLogMessage("Unable to apply metadata");
                     return;
                 }
                              
                 if (v1 >=0 ){
-                    Util.displayTaggedMessage("Validating Metadata");
+                    Util.displayAndLogMessage("Validating Metadata");
                     metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v1);
-                    Util.displayTaggedMessage("METADATA VALIDATION SUCCESSFUL");
+                    Util.displayAndLogMessage("METADATA VALIDATION SUCCESSFUL");
                 }
                 else{
                     boolean confirmed = true;
@@ -188,7 +188,7 @@ public class LoadUmlsBatchWithMetadata {
                         confirmed = choice == 'Y' || choice == 'y';
                     }
                     if (confirmed) {
-                        Util.displayTaggedMessage("Loading Metadata");
+                        Util.displayAndLogMessage("Loading Metadata");
                         metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
                                 overwrite, false, true);
                         Util.displayLoaderStatus(metadataLoader);

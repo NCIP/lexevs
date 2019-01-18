@@ -123,7 +123,7 @@ public class RemoveMetadata {
 
             // Continue and confirm the action (if not bypassed by force option)
             // ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             boolean confirmed = true;
             if (!force) {
                 Util.displayMessage("CLEAR OPTIONAL METADATA? ('Y' to confirm, any other key to cancel)");
@@ -133,9 +133,9 @@ public class RemoveMetadata {
             if (confirmed) {
                 lbs.getServiceManager(null).removeCodingSchemeVersionMetaData(
                         Constructors.createAbsoluteCodingSchemeVersionReference(css));
-                Util.displayTaggedMessage("Request complete");
+                Util.displayAndLogMessage("Request complete");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

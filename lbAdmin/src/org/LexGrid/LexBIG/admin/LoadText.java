@@ -43,7 +43,7 @@ public class LoadText {
         try {
             new LoadText().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -95,10 +95,10 @@ public class LoadText {
             }
             boolean activate = vl < 0 && cl.hasOption("a");
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATING SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATING SOURCE URI: " + source.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
-                Util.displayTaggedMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
             }
 
             String delimiterArg = cl.getOptionValue("d", null);
@@ -117,7 +117,7 @@ public class LoadText {
             // Perform the requested load or validate action ...
             if (vl >= 0) {
                 loader.validate(source, delimeter, true, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
                 loader.setCodingSchemeManifestURI(manifest);
                 loader.load(source, delimeter, true, true, true);
@@ -132,7 +132,7 @@ public class LoadText {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.setVersionTag(ref, tag);
-                    Util.displayTaggedMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }
@@ -143,7 +143,7 @@ public class LoadText {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.activateCodingSchemeVersion(ref);
-                    Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }

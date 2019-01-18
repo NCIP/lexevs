@@ -69,7 +69,7 @@ public class LoadHL7RIM {
         try {
             new LoadHL7RIM().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -124,10 +124,10 @@ public class LoadHL7RIM {
             String dbPath = cl.getOptionValue("in");
             boolean activate = vl < 0 && cl.hasOption("a");
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATING MSACCESS: " + dbPath);
+                Util.displayAndLogMessage("VALIDATING MSACCESS: " + dbPath);
             } else {
-                Util.displayTaggedMessage("LOADING FROM MSACCESS DB: " + dbPath);
-                Util.displayTaggedMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
+                Util.displayAndLogMessage("LOADING FROM MSACCESS DB: " + dbPath);
+                Util.displayAndLogMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
             }
 
             // Find the registered extension handling this type of load ...
@@ -137,7 +137,7 @@ public class LoadHL7RIM {
 
             // Perform the requested load or validate action ...
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
 
                 // may want to hard code to false the loading thread.
@@ -173,7 +173,7 @@ public class LoadHL7RIM {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.setVersionTag(ref, tag);
-                    Util.displayTaggedMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }
@@ -183,7 +183,7 @@ public class LoadHL7RIM {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.activateCodingSchemeVersion(ref);
-                    Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }

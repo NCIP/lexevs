@@ -133,7 +133,7 @@ public class RemoveScheme {
 
             // Continue and confirm the action (if not bypassed by force option)
             // ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
             AbsoluteCodingSchemeVersionReference acsvr = Constructors.createAbsoluteCodingSchemeVersionReference(css);
             boolean confirmed = true;
@@ -154,9 +154,9 @@ public class RemoveScheme {
 
             if (confirmed) {
                 lbsm.removeCodingSchemeVersion(acsvr);
-                Util.displayTaggedMessage("Request complete");
+                Util.displayAndLogMessage("Request complete");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

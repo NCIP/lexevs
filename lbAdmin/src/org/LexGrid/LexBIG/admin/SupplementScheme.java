@@ -156,7 +156,7 @@ public class SupplementScheme {
                 Util.displayMessage("Coding Scheme Unregistered as a Supplement.");
             }
         } catch (CodingSchemeParameterException e) {
-            Util.displayMessage("REQUEST FAILED !!! " + e.getMessage());
+            Util.displayAndLogError("REQUEST FAILED !!! " , e);
             return;
         }
     }
@@ -172,17 +172,17 @@ public class SupplementScheme {
                     &&
                     StringUtils.isNotBlank(entry.getSupplementsVersion())){
                 found = true;
-                Util.displayMessage("================================================");
-                Util.displayMessage("PARENT:     [URI]-" + entry.getSupplementsUri());
-                Util.displayMessage("            [VERSION]-" + entry.getSupplementsVersion());
-                Util.displayMessage("SUPPLEMENT: [URI]-" + entry.getResourceUri());
-                Util.displayMessage("            [VERSION]-" + entry.getResourceVersion());
-                Util.displayMessage("================================================");
+                Util.displayAndLogMessage("================================================");
+                Util.displayAndLogMessage("PARENT:     [URI]-" + entry.getSupplementsUri());
+                Util.displayAndLogMessage("            [VERSION]-" + entry.getSupplementsVersion());
+                Util.displayAndLogMessage("SUPPLEMENT: [URI]-" + entry.getResourceUri());
+                Util.displayAndLogMessage("            [VERSION]-" + entry.getResourceVersion());
+                Util.displayAndLogMessage("================================================");
             }
         }
 
         if(! found){
-            Util.displayMessage("No Registered Supplements.");
+            Util.displayAndLogMessage("No Registered Supplements.");
         }
     }
 
@@ -207,8 +207,8 @@ public class SupplementScheme {
         // Found it? If not, prompt...
         if (css == null) {
             if (uri != null || version != null) {
-                Util.displayMessage("No matching coding scheme was found for the given URN or version.");
-                Util.displayMessage("");
+                Util.displayAndLogMessage("No matching coding scheme was found for the given URN or version.");
+                Util.displayAndLogMessage("");
             }
             css = Util.promptForCodeSystem();
             if (css == null)

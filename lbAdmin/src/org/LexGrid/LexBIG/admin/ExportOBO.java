@@ -69,7 +69,7 @@ public class ExportOBO {
         try {
             new ExportOBO().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -116,7 +116,7 @@ public class ExportOBO {
             String urn = cl.getOptionValue("u");
             String ver = cl.getOptionValue("v");
             boolean overwrite = cl.hasOption("f");
-            Util.displayTaggedMessage("WRITING TO: " + destination.toString());
+            Util.displayAndLogMessage("WRITING TO: " + destination.toString());
 
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);

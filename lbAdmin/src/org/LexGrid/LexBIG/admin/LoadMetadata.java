@@ -73,7 +73,7 @@ public class LoadMetadata {
         try {
             new LoadMetadata().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -142,13 +142,13 @@ public class LoadMetadata {
 
             // Continue and confirm the action (if not bypassed by force option)
             // ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
 
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATING SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATING SOURCE URI: " + source.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
-                Util.displayTaggedMessage(overwrite ? "OVERWRITE EXISTING METADATA" : "APPEND TO EXISTING METADATA");
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage(overwrite ? "OVERWRITE EXISTING METADATA" : "APPEND TO EXISTING METADATA");
             }
 
             // Find the registered extension handling this type of load ...
@@ -158,7 +158,7 @@ public class LoadMetadata {
             // Perform the requested load or validate action ...
             if (vl >= 0) {
                 loader.validateAuxiliaryData(source, null, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
                 boolean confirmed = true;
                 if (overwrite && !force) {

@@ -63,7 +63,7 @@ public class Util {
      *            Error associated with the message.
      */
     public static void displayAndLogError(String message, Throwable cause) {
-        displayTaggedMessage(message);
+        displayAndLogMessage(message);
         _logger.error(message, cause);
     }
 
@@ -76,6 +76,19 @@ public class Util {
      */
     public static void displayAndLogError(Throwable cause) {
         displayAndLogError(cause.getMessage(), cause);
+    }
+    
+    /**
+     * Outputs messages to the information log and administration console, with
+     * additional tagging to assist service-ability.
+     * 
+     * @param message
+     *            Non-exception or generated message. Information
+     *            useful to the user
+     */
+    public static void displayAndLogMessage(String message) {
+        displayTaggedMessage(message);
+        _logger.info(message);
     }
 
     /**
@@ -125,7 +138,7 @@ public class Util {
             status = reporter.getStatus();
             String s = status.getMessage();
             if (s != null && !s.equals(msg)) {
-                Util.displayTaggedMessage(s);
+                Util.displayAndLogMessage(s);
                 msg = s;
             }
         } while (status.getEndTime() == null);
@@ -148,7 +161,7 @@ public class Util {
             status = exporter.getStatus();
             String s = status.getMessage();
             if (s != null && !s.equals(msg)) {
-                Util.displayTaggedMessage(s);
+                Util.displayAndLogMessage(s);
                 msg = s;
             }
         } while (status.getEndTime() == null);
@@ -172,17 +185,17 @@ public class Util {
             status = loader.getStatus();
             Integer num = status.getNumConceptsLoaded();
             if (num != cnum) {
-                Util.displayTaggedMessage("# concepts processed: " + num);
+                Util.displayAndLogMessage("# concepts processed: " + num);
                 cnum = num;
             }
             num = status.getNumRelationsLoaded();
             if (num != rnum) {
-                Util.displayTaggedMessage("# relations processed: " + num);
+                Util.displayAndLogMessage("# relations processed: " + num);
                 rnum = num;
             }
             String s = status.getMessage();
             if (s != null && !s.equals(msg)) {
-                Util.displayTaggedMessage(s);
+                Util.displayAndLogMessage(s);
                 msg = s;
             }
         } while (status.getEndTime() == null);
@@ -349,7 +362,7 @@ public class Util {
             // Accomodate embedded spaces ...
             return new URI(f.toURI().toString().replace(" ", "%20"));
         } catch (Exception e) {
-            displayTaggedMessage(e.getMessage());
+            displayAndLogMessage(e.getMessage());
             throw new LBResourceUnavailableException("UNABLE TO RESOLVE RESOURCE: " + trimmed);
         }
     }

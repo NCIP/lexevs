@@ -146,9 +146,9 @@ public class RemoveIndex {
                 confirmed = choice == 'Y' || choice == 'y';
             }
             if (confirmed) {
-                Util.displayTaggedMessage("Requested Index Removal Complete for Coding Scheme URI \"" + css.getCodingSchemeURI() + "\", Version \"" + css.getRepresentsVersion() + "\".");
+                Util.displayAndLogMessage("Requested Index Removal Complete for Coding Scheme URI \"" + css.getCodingSchemeURI() + "\", Version \"" + css.getRepresentsVersion() + "\".");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

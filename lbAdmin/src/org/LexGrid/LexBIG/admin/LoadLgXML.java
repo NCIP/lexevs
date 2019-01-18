@@ -87,7 +87,7 @@ public class LoadLgXML {
         try {
             new LoadLgXML().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -139,7 +139,7 @@ public class LoadLgXML {
               
             // metatdata - validate input file (optional)
             if (v2 >= 0) {
-                Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
             } 
            
             // metadata force
@@ -149,10 +149,10 @@ public class LoadLgXML {
                         
             boolean activate = vl < 0 && cl.hasOption("a");
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATION SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATION SOURCE URI: " + source.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
-                Util.displayTaggedMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
             }
 
             // Find the registered extension handling this type of load ...
@@ -165,7 +165,7 @@ public class LoadLgXML {
             if (vl >= 0) {
                 loader.setCodingSchemeManifestURI(manifest);
                 loader.validate(source, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
                 loader.setCodingSchemeManifestURI(manifest);
                 loader.load(source, false, true);
@@ -180,7 +180,7 @@ public class LoadLgXML {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.setVersionTag(ref, tag);
-                    Util.displayTaggedMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }
@@ -191,7 +191,7 @@ public class LoadLgXML {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.activateCodingSchemeVersion(ref);
-                    Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }
@@ -221,16 +221,16 @@ public class LoadLgXML {
                 }
                 
                 if (css == null){
-                    Util.displayTaggedMessage("Unable to apply metadata");
+                    Util.displayAndLogMessage("Unable to apply metadata");
                     return;
                 }
                      
                 loader = null;
                 
                 if (v2 >=0 ){
-                    Util.displayTaggedMessage("Validating Metadata");
+                    Util.displayAndLogMessage("Validating Metadata");
                     metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v2);
-                    Util.displayTaggedMessage("METADATA VALIDATION SUCCESSFUL");
+                    Util.displayAndLogMessage("METADATA VALIDATION SUCCESSFUL");
                 }
                 else{
                     boolean confirmed = true;
@@ -240,7 +240,7 @@ public class LoadLgXML {
                         confirmed = choice == 'Y' || choice == 'y';
                     }
                     if (confirmed) {
-                        Util.displayTaggedMessage("Loading Metadata");
+                        Util.displayAndLogMessage("Loading Metadata");
                         metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
                                 overwrite, false, true);
                         Util.displayLoaderStatus(metadataLoader);

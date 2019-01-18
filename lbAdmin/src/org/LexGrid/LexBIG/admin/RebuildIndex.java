@@ -158,14 +158,14 @@ public class RebuildIndex {
         if (confirmed) {
             try {
                 ProcessRunner loader = new IndexLoaderImpl();
-                Util.displayTaggedMessage("Recreation of index extension '" + 
+                Util.displayAndLogMessage("Recreation of index extension '" + 
                         indexName + "' in progress...");
                 Util.displayStatus(loader.runProcess(ref, null));
             } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Rebuild of specified index extension '" + indexName + "' is not supported.");
+                Util.displayAndLogMessage("Rebuild of specified index extension '" + indexName + "' is not supported.");
             }
         } else {
-            Util.displayTaggedMessage("Rebuild of index '" + indexName + "' cancelled by user.");
+            Util.displayAndLogMessage("Rebuild of index '" + indexName + "' cancelled by user.");
         }
     }
 

@@ -123,10 +123,10 @@ public class TagScheme {
             }
 
             // Continue and perform the action ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(new Object());
             lbsm.setVersionTag(Constructors.createAbsoluteCodingSchemeVersionReference(css), tag);
-            Util.displayTaggedMessage("Request complete");
+            Util.displayAndLogMessage("Request complete");
         }
     }
 

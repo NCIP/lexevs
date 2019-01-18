@@ -121,11 +121,11 @@ public class RemoveTagScheme {
             }
 
             // Continue and perform the action ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(new Object());
             // Pass in a null tag to have it removed.
             lbsm.setVersionTag(Constructors.createAbsoluteCodingSchemeVersionReference(css), null);
-            Util.displayTaggedMessage("Request complete");
+            Util.displayAndLogMessage("Request complete");
         }
     }
 

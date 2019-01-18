@@ -60,7 +60,7 @@ public class LoadUMLSHistory {
         try {
             new LoadUMLSHistory().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -97,10 +97,10 @@ public class LoadUMLSHistory {
             URI metaFolder = Util.string2FileURI(cl.getOptionValue("in"));
             boolean replace = vl < 0 && cl.hasOption("r");
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATING SOURCE URI: " + metaFolder.toString());
+                Util.displayAndLogMessage("VALIDATING SOURCE URI: " + metaFolder.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + metaFolder.toString());
-                Util.displayTaggedMessage(replace ? "REPLACING THE EXISTING HISTORY DATA, IF ANY."
+                Util.displayAndLogMessage("LOADING FROM URI: " + metaFolder.toString());
+                Util.displayAndLogMessage(replace ? "REPLACING THE EXISTING HISTORY DATA, IF ANY."
                         : "APPEDNING TO THE EXISTING HISTORY DATA, IF ANY.");
             }
 
@@ -113,7 +113,7 @@ public class LoadUMLSHistory {
             // Perform the load ...
             if (vl >= 0) {
                 loader.validate(metaFolder, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
                 loader.load(metaFolder, !replace, false, true);
                 Util.displayLoaderStatus(loader);

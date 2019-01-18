@@ -152,14 +152,14 @@ public class BuildAssertedValueSetIndex {
         if (confirmed) {
             try {
                 ProcessRunner loader = new AssertedValueSetIndexLoaderImpl();
-                Util.displayTaggedMessage("Recreation of index extension '" + 
+                Util.displayAndLogMessage("Recreation of index extension '" + 
                         indexName + "' in progress...");
                 Util.displayStatus(loader.runProcess(ref, null));
             } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Build index extension for '" + indexName + "' is not supported.");
+                Util.displayAndLogMessage("Build index extension for '" + indexName + "' is not supported.");
             }
         } else {
-            Util.displayTaggedMessage("Build of index '" + indexName + "' cancelled by user.");
+            Util.displayAndLogMessage("Build of index '" + indexName + "' cancelled by user.");
         }
     }
 

@@ -154,7 +154,7 @@ public class ListExtensions {
      * @param list
      */
     private void list(String label, Enumeration extensions) {
-        Util.displayTaggedMessage(label);
+        Util.displayAndLogMessage(label);
         while (extensions.hasMoreElements()) {
             Util.displayMessage(ObjectToString.toString(extensions.nextElement()));
             Util.displayMessage("");

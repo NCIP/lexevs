@@ -78,7 +78,7 @@ public class LoadMrMap {
         try {
             new LoadMrMap().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -126,7 +126,7 @@ public class LoadMrMap {
               
             // metatdata - validate input file (optional)
             if (v1 >= 0) {
-                Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
             } 
            
             // metadata force
@@ -134,9 +134,9 @@ public class LoadMrMap {
             // metadata overwrite
             boolean overwrite = cl.hasOption("metao");
             
-            Util.displayTaggedMessage("LOADING FROM URI FOR MRMAP: " + source.toString());
-            Util.displayTaggedMessage("LOADING FROM URI FOR MRSAT: " + sourceSat.toString());
-            Util.displayTaggedMessage("POST LOAD AND ACTIVATION AVAILABLE ONLY ON MRMAP LOADS");
+            Util.displayAndLogMessage("LOADING FROM URI FOR MRMAP: " + source.toString());
+            Util.displayAndLogMessage("LOADING FROM URI FOR MRSAT: " + sourceSat.toString());
+            Util.displayAndLogMessage("POST LOAD AND ACTIVATION AVAILABLE ONLY ON MRMAP LOADS");
 
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
@@ -183,14 +183,14 @@ public class LoadMrMap {
                 }
                 
                 if (css == null){
-                    Util.displayTaggedMessage("Unable to apply metadata");
+                    Util.displayAndLogMessage("Unable to apply metadata");
                     return;
                 }
                                      
                 if (v1 >=0 ){
-                    Util.displayTaggedMessage("Validating Metadata");
+                    Util.displayAndLogMessage("Validating Metadata");
                     metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v1);
-                    Util.displayTaggedMessage("METADATA VALIDATION SUCCESSFUL");
+                    Util.displayAndLogMessage("METADATA VALIDATION SUCCESSFUL");
                 }
                 else{
                     boolean confirmed = true;
@@ -200,7 +200,7 @@ public class LoadMrMap {
                         confirmed = choice == 'Y' || choice == 'y';
                     }
                     if (confirmed) {
-                        Util.displayTaggedMessage("Loading Metadata");
+                        Util.displayAndLogMessage("Loading Metadata");
                         metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
                                 overwrite, false, true);
                         Util.displayLoaderStatus(metadataLoader);
