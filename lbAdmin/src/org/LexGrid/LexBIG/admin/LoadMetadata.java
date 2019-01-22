@@ -73,7 +73,7 @@ public class LoadMetadata {
         try {
             new LoadMetadata().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayAndLogMessage(e.getMessage());
+            Util.displayAndLogError("Resource Unavialable: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -103,6 +103,7 @@ public class LoadMetadata {
                 Util.displayCommandOptions("LoadMetadata", options,
                         "\n LoadMetadata -in \"file:///path/to/file.obo\" -o"
                                 + "\n LoadMetadata -in \"file:///path/to/file.obo\"" + Util.getURIHelp(), e);
+                Util.displayAndLogError("Requires correctly configured file locations", e );
                 return;
             }
 

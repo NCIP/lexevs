@@ -166,10 +166,10 @@ public class RebuildTransitivityTable {
                                     ref.getCodingSchemeURN(), 
                                     ref.getCodingSchemeVersion());
             } catch (UnsupportedOperationException e) {
-                Util.displayAndLogMessage("Recreation Transitivity Table '" + codingScheme + "' is not supported.");
+                Util.displayAndLogError("Recreation of Transitivity Table '" + codingScheme + "' is not supported.", e);
             }
         } else {
-            Util.displayAndLogMessage("Recreation Transitivity Table '" + codingScheme + "' cancelled by user.");
+            Util.displayAndLogMessage("Recreation of Transitivity Table '" + codingScheme + "' cancelled by user.");
         }
     }
 

@@ -135,6 +135,7 @@ public class CleanUpMetadataLauncher {
 		} catch(CmdLineException e) {
 			System.err.println(e.getMessage());
             printUsage(parser, System.err);
+            Util.displayAndLogError("Metadata cleanup failed: ", e);
             return;
         }
 	}

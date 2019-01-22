@@ -66,7 +66,7 @@ public class ExportLgXML {
         try {
             new ExportLgXML().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayAndLogMessage(e.getMessage());
+            Util.displayAndLogError(e.getMessage(), e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }

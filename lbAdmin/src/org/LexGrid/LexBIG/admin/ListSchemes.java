@@ -83,6 +83,7 @@ public class ListSchemes {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("ParseException on command line options: " + e.getMessage() , e);
                 Util.displayCommandOptions("ListExtensions", options, "ListExtensions -a", e);
                 return;
             }

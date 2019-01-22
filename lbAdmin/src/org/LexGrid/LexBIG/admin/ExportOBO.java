@@ -23,6 +23,9 @@ import java.util.Enumeration;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Export.OBO_Exporter;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -68,8 +71,6 @@ public class ExportOBO {
     public static void main(String[] args) {
         try {
             new ExportOBO().run(args);
-        } catch (LBResourceUnavailableException e) {
-            Util.displayAndLogMessage(e.getMessage());
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -84,7 +85,7 @@ public class ExportOBO {
      * 
      * @throws Exception
      */
-    public void run(String[] args) throws Exception {
+    public void run(String[] args){
         synchronized (ResourceManager.instance()) {
 
             // Parse the command line ...
@@ -108,8 +109,8 @@ public class ExportOBO {
             }
             catch(Exception e)
             {
-                Util.displayMessage(e.getMessage());
-                Util.displayMessage("Please make sure the destination is an existing directory.");
+                Util.displayAndLogError("Please make "
+                        + "sure the destination is an existing directory. " + e.getMessage(), e);
                 return;
             }
             
@@ -117,7 +118,7 @@ public class ExportOBO {
             String ver = cl.getOptionValue("v");
             boolean overwrite = cl.hasOption("f");
             Util.displayAndLogMessage("WRITING TO: " + destination.toString());
-
+            try{
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
 
@@ -160,6 +161,14 @@ public class ExportOBO {
             exporter.export(Constructors.createAbsoluteCodingSchemeVersionReference(csuri, csver), destination, overwrite,
                     false, true);
             Util.displayExporterStatus(exporter);
+            }
+            catch (LBParameterException e){
+            Util.displayAndLogError("Parameter Exception Thrown. ", e);    
+            } catch (LBInvocationException e) {
+             Util.displayAndLogError("Invocation Exception Thrown. ",e);
+            } catch (LBException e) {
+             Util.displayAndLogError("LexBig Exception Thrown. ",e);
+            } 
         }
     }
 

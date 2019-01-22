@@ -77,6 +77,7 @@ public class ListExtensions {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("Parsing command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions("ListExtensions", options, "ListExtensions -a", e);
                 return;
             }

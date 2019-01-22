@@ -29,6 +29,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.AssertedValueSetIndexLoaderImpl;
@@ -96,6 +97,7 @@ public class IndexResolvedandAssertedValueSets {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
+        	Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
             Util.displayCommandOptions("BuildAssertedValueSetIndex", options,
                     "BuildAssertedValueSetIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"17.08d\"", e);
             Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -175,14 +177,17 @@ public class IndexResolvedandAssertedValueSets {
         if (confirmed) {
             try {
                 ProcessRunner loader = new AssertedValueSetIndexLoaderImpl();
-                Util.displayTaggedMessage("Recreation of index extension '" + 
+                Util.displayAndLogMessage("Recreation of index extension '" + 
                         indexName + "' in progress...");
                 Util.displayStatus(loader.runProcess(ref, null));
             } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Build index extension for '" + indexName + "' is not supported.");
+                Util.displayAndLogError("Build index extension for '" + indexName + "' is not supported.", e);
+            } catch (LBParameterException e){
+            	 Util.displayAndLogError("Incorrect parameter for '" + indexName, e);
             }
+            
         } else {
-            Util.displayTaggedMessage("Build of index '" + indexName + "' cancelled by user.");
+            Util.displayAndLogMessage("Build of index '" + indexName + "' cancelled by user.");
         }
     }
     

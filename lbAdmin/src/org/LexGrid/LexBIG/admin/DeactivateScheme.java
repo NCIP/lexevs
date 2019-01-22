@@ -93,6 +93,7 @@ public class DeactivateScheme {
                 if (cl.hasOption("d"))
                     when = _df.parse(cl.getOptionValue("d"));
             } catch (Exception e) {
+                Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util
                         .displayCommandOptions(
                                 "DeactivateScheme",

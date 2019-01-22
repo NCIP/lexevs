@@ -85,6 +85,7 @@ public class RebuildIndex {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
+            Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
             Util.displayCommandOptions("RebuildIndex", options,
                     "RebuildIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
             Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -151,6 +152,7 @@ public class RebuildIndex {
                 char choice = Util.getConsoleCharacter();
                 confirmed = choice == 'Y' || choice == 'y';
             } catch (IOException e) {
+                Util.displayAndLogError("IO Exception rebuilding Index: " + e.getMessage() , e);
             }
         }
 

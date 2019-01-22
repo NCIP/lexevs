@@ -72,7 +72,7 @@ public class TransferScheme {
         try {
             new TransferScheme().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayAndLogMessage(e.getMessage());
+            Util.displayAndLogError("Resource is unavailable: " + e.getMessage(), e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }

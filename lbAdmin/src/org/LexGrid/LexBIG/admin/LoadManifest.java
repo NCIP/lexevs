@@ -155,7 +155,7 @@ public class LoadManifest {
                 mdLoader.loadLexGridManifest(new URI(manifest), codingSchemeURNVersion, false, true);
                 Util.displayAndLogMessage("Manifest data applied successfully on the codingscheme.");
             } catch (LBException e) {
-                Util.displayAndLogMessage("Load failed: " + e.getMessage());
+                Util.displayAndLogError("Load failed: " + e.getMessage(), e);
                 e.printStackTrace();
             }
 

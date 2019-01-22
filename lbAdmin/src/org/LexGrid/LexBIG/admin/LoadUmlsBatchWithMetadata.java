@@ -83,7 +83,7 @@ public class LoadUmlsBatchWithMetadata {
         try {        
             new LoadUmlsBatchWithMetadata().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayAndLogMessage(e.getMessage());
+            Util.displayAndLogError("Resource Unavailable: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }

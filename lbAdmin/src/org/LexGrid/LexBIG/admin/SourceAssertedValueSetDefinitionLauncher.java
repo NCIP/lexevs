@@ -39,7 +39,7 @@ public class SourceAssertedValueSetDefinitionLauncher {
     public static void main(String[] args) {
         try {
             new SourceAssertedValueSetDefinitionLauncher().run(args);
-        } catch (LBParameterException e) {            
+        } catch (LBParameterException e) {
             Util.displayAndLogError(
                     "Loading Asserted Value Set defintions has failed. Check parameters", e);
         } catch (CmdLineException e) {

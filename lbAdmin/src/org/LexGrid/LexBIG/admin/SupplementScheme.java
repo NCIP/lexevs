@@ -92,6 +92,7 @@ public class SupplementScheme {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
+            Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
             Util.displayCommandOptions("SupplementScheme", options,
                     "SupplementScheme -u -parentUri \"urn:oid:2.16.840.1.113883.3.26.1.1\" -parentVersion \"05.09e\" "+
                         "-supplementUri \"http://supplement.ontology.org\" -supplementVersion \"1.0.1\" ",

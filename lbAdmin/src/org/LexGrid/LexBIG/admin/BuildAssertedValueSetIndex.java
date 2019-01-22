@@ -79,6 +79,7 @@ public class BuildAssertedValueSetIndex {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
+            Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
             Util.displayCommandOptions("BuildAssertedValueSetIndex", options,
                     "BuildAssertedValueSetIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"17.08d\"", e);
             Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -152,7 +153,7 @@ public class BuildAssertedValueSetIndex {
         if (confirmed) {
             try {
                 ProcessRunner loader = new AssertedValueSetIndexLoaderImpl();
-                Util.displayAndLogMessage("Recreation of index extension '" + 
+                Util.displayAndLogMessage("Re-creation of index extension '" + 
                         indexName + "' in progress...");
                 Util.displayStatus(loader.runProcess(ref, null));
             } catch (UnsupportedOperationException e) {

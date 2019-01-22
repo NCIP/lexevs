@@ -7,12 +7,16 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+import com.sun.media.jfxmedia.logging.Logger;
+
 public class AssertedValueSetIndexLoaderImpl extends AbstractProcessRunner {
 
     @Override
     protected void doRunProcess(AbsoluteCodingSchemeVersionReference codingSchemeVersion, OntologyFormat format,
             LgMessageDirectorIF md, ProcessStatus status) {
-        if(codingSchemeVersion == null) { throw new RuntimeException("Coding Scheme Reference cannot me null");}
+        if(codingSchemeVersion == null) { 
+            md.info("Coding Scheme Reference cannot be null");
+            throw new RuntimeException("Coding Scheme Reference cannot be null");}
         SourceAssertedValueSetSearchIndexService entityIndexService = 
                 LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
             
