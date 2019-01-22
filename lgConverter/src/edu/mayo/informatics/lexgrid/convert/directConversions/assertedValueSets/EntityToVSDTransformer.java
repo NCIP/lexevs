@@ -89,9 +89,10 @@ public class EntityToVSDTransformer{
         EntityReference ref = initEntityReference(entity, this.association);
         entry.setEntityReference(ref);
         def.addDefinitionEntry(entry);
-        mappings.addSupportedNamespace(AssertedValueSetServices.createSupportedNamespace(entity.getEntityCodeNamespace(), codingSchemeName, codingSchemeURI));
+        mappings.addSupportedNamespace(AssertedValueSetServices.createSupportedNamespace(entity.getEntityCodeNamespace(), codingSchemeName, codingSchemeURI));       
         mappings.addSupportedCodingScheme(
-                AssertedValueSetServices.createSupportedCodingScheme(entity.getEntityCodeNamespace(), codingSchemeURI));
+                AssertedValueSetServices.createSupportedCodingScheme(codingSchemeName, codingSchemeURI));
+        
         def.setMappings(mappings);
 
         String conceptDomain = AssertedValueSetServices.getConceptDomainValueFromEntityProperty(entity, conceptDomainPropertyName);
