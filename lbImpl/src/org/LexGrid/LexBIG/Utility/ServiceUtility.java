@@ -46,6 +46,7 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.Relations;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
@@ -701,6 +702,35 @@ public class ServiceUtility {
         } else {
             return null;
         } 
+    }
+    
+    public static Relations getRelationsForMappingScheme(String schemeUri, 
+            String schemeVersion, String relationsContainerName){
+        Relations relations = 
+                LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
+                        getDaoCallbackService().
+                            executeInDaoLayer(new DaoCallback<Relations>() {
+
+                @Override
+                public Relations execute(DaoManager daoManager) {
+                    String codingSchemeUid = daoManager.getCodingSchemeDao(
+                            schemeUri, schemeVersion).
+                            getCodingSchemeUIdByUriAndVersion(schemeUri, schemeVersion);
+                    
+                    String relationsUid = daoManager.getAssociationDao(
+                            schemeUri, schemeVersion).
+                            getRelationUId(codingSchemeUid, relationsContainerName);
+                    
+                    return daoManager.getAssociationDao(schemeUri, schemeVersion).
+                            getRelationsByUId(
+                            codingSchemeUid, 
+                            relationsUid, 
+                            false);
+                }
+            });
+        
+        return relations;
     }
    
 }
