@@ -41,6 +41,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.LexBIG.Utility.logging.StatusReporter;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.lexevs.system.ResourceManager;
 
 /**
@@ -65,6 +66,7 @@ public class Util {
     public static void displayAndLogError(String message, Throwable cause) {
         displayAndLogMessage(message);
         _logger.error(message, cause);
+        _logger.error(ExceptionUtils.getFullStackTrace(cause));
     }
 
     /**

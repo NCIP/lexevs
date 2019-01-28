@@ -89,17 +89,17 @@ public class ListSchemes {
             }
 
             if (schemes.getCodingSchemeRenderingCount() == 0)
-                Util.displayMessage("No coding schemes found.");
+                Util.displayAndLogMessage("No coding schemes found.");
             else {
                 boolean fullRequested = cl.hasOption('f');
                 if (fullRequested) {
                     for (CodingSchemeRendering csr : schemes.getCodingSchemeRendering()) {
                         // Separator ...
-                        Util.displayMessage("=============================");
+                        Util.displayAndLogMessage("=============================");
                         CodingSchemeSummary css = csr.getCodingSchemeSummary();
                         CodingScheme cs = lbs.resolveCodingScheme(css.getCodingSchemeURI(), Constructors
                                 .createCodingSchemeVersionOrTagFromVersion(css.getRepresentsVersion()));
-                        Util.displayMessage(ObjectToString.toString(cs, "", 80));
+                        Util.displayAndLogMessage(ObjectToString.toString(cs, "", 80));
                     }
                 } else {
                     Formatter f = new Formatter();
@@ -140,10 +140,10 @@ public class ListSchemes {
                         // Output separator
                         f.format(format, hSep);
                     }
-                    Util.displayMessage(f.out().toString());
-                    Util.displayMessage("");
-                    Util.displayMessage("NOTE: >> indicates column value exceeds the available width.");
-                    Util.displayMessage("      Specify the '-f' option for additional detail.");
+                    Util.displayAndLogMessage(f.out().toString());
+                    Util.displayAndLogMessage("");
+                    Util.displayAndLogMessage("NOTE: >> indicates column value exceeds the available width.");
+                    Util.displayAndLogMessage("      Specify the '-f' option for additional detail.");
                 }
             }
         }

@@ -157,8 +157,8 @@ public class ListExtensions {
     private void list(String label, Enumeration extensions) {
         Util.displayAndLogMessage(label);
         while (extensions.hasMoreElements()) {
-            Util.displayMessage(ObjectToString.toString(extensions.nextElement()));
-            Util.displayMessage("");
+            Util.displayAndLogMessage(ObjectToString.toString(extensions.nextElement()));
+            Util.displayAndLogMessage("");
         }
     }
 }

@@ -156,7 +156,6 @@ public class LoadManifest {
                 Util.displayAndLogMessage("Manifest data applied successfully on the codingscheme.");
             } catch (LBException e) {
                 Util.displayAndLogError("Load failed: " + e.getMessage(), e);
-                e.printStackTrace();
             }
 
         }
