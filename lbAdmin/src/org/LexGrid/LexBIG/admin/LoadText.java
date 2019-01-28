@@ -103,7 +103,7 @@ public class LoadText {
 
             String delimiterArg = cl.getOptionValue("d", null);
             if(delimiterArg != null && delimiterArg.length() != 1){
-                Util.displayMessage("Delimiter character ('d') must be exactly 1 character in size.");
+                Util.displayAndLogMessage("Delimiter character ('d') must be exactly 1 character in size.");
                 System.exit(1);
             }
             

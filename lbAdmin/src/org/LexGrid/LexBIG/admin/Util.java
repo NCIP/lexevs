@@ -198,6 +198,7 @@ public class Util {
             String s = status.getMessage();
             if (s != null && !s.equals(msg)) {
                 Util.displayAndLogMessage(s);
+                Util.displayAndLogMessage(status.getState().name());
                 msg = s;
             }
         } while (status.getEndTime() == null);

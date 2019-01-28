@@ -78,27 +78,12 @@ public class LoadMIFVocabulary {
 
             // Perform the requested load or validate action ...
             if (vl >= 0) {
-//                loader.setCodingSchemeManifestURI(manifest);
                 loader.validate(source, vl);
                 Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
-//                loader.setCodingSchemeManifestURI(manifest);
                 loader.load(source, manifest,  false, true);
                 Util.displayLoaderStatus(loader);
             }
-
-            // If specified, set the associated tag on the newly loaded
-            // scheme(s) ...
-//            if (vl < 0 && cl.hasOption("t")) {
-//                String tag = cl.getOptionValue("t");
-//                AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
-//                for (int i = 0; i < refs.length; i++) {
-//                    AbsoluteCodingSchemeVersionReference ref = refs[i];
-//                    lbsm.setVersionTag(ref, tag);
-//                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
-//                            + ref.getCodingSchemeVersion());
-//                }
-//            }
 
             // If requested, activate the newly loaded scheme(s) ...
             if (activate) {

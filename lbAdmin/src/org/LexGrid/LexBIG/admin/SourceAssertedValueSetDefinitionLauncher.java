@@ -59,6 +59,7 @@ public class SourceAssertedValueSetDefinitionLauncher {
                 build();
         new SourceAssertedValueSetBatchLoader(params,
                 owner, conceptDomainName).run(params.getSourceName());
+        Util.displayAndLogMessage("Value Set Definition Loading from " + codingScheme + " Complete");
     }
 
 }

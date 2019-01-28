@@ -117,6 +117,7 @@ public class LoadUMLSHistory {
             } else {
                 loader.load(metaFolder, !replace, false, true);
                 Util.displayLoaderStatus(loader);
+                Util.displayAndLogMessage("Final History Loader Status: " + loader.getStatus().getState().name());
             }
         }
     }

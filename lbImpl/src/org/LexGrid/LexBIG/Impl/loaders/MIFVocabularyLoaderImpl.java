@@ -78,7 +78,7 @@ public class MIFVocabularyLoaderImpl extends BaseLoader implements MIFVocabulary
            
            return this.constructVersionPairsFromCodingSchemes(codingScheme);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("HL7 MIF Load Failed", e);
         }
     }
     
