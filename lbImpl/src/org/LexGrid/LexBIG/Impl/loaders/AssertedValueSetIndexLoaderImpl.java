@@ -7,8 +7,6 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-import com.sun.media.jfxmedia.logging.Logger;
-
 public class AssertedValueSetIndexLoaderImpl extends AbstractProcessRunner {
 
     @Override
