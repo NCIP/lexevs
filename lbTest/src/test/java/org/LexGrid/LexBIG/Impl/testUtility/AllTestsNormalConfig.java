@@ -184,6 +184,7 @@ import org.LexGrid.LexBIG.Impl.load.meta.PresentationQualifiersDataTestIT;
 import org.LexGrid.LexBIG.Impl.load.umls.MedRTUmlsCodingSchemeIdSetterTest;
 import org.LexGrid.LexBIG.Impl.namespace.DefaultNamespaceHandlerTest;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunnerTest;
+import org.LexGrid.LexBIG.admin.TestAdminUtilDisplayAndLog;
 import org.LexGrid.loader.dao.template.MedRtCachingSupportedAttributeTemplateTest;
 import org.LexGrid.loader.processor.MedRtEntityAssnsToEntityProcessorTest;
 import org.LexGrid.loader.umls.processor.support.MedRTRelationResolverTest;
@@ -500,6 +501,10 @@ public class AllTestsNormalConfig {
         featureRequestTests.addTestSuite(ChangeConfigFileName.class);  
         featureRequestTests.addTestSuite(GForge17019.class);
         mainSuite.addTest(featureRequestTests);
+        
+        TestSuite loggingTests = new TestSuite("Logging Tests");
+        loggingTests.addTestSuite(TestAdminUtilDisplayAndLog.class);
+        mainSuite.addTest(loggingTests);
         
         //Mapping tests
         TestSuite mappingTests = new TestSuite("Mapping Tests");

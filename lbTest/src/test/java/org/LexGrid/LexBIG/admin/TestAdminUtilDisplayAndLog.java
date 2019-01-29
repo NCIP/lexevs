@@ -6,6 +6,7 @@ import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
+import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.log4j.Layout;
 import org.apache.log4j.Logger;
@@ -15,7 +16,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class TestAdminUtilDisplayAndLog {
+public class TestAdminUtilDisplayAndLog extends LexBIGServiceTestCase {
 	LgLoggerIF logger;
 	Logger forjlogger;
 	
@@ -38,6 +39,11 @@ public class TestAdminUtilDisplayAndLog {
 		Util.displayAndLogMessage("Not yet implemented");
 		assertEquals(true, stringWriter.toString().contains("Not yet implemented"));
 		System.out.println(stringWriter.toString());
+	}
+
+	@Override
+	protected String getTestID() {
+		return "Logging Tests";
 	}
 
 }
