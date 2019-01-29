@@ -148,13 +148,13 @@ public class SupplementScheme {
                     getServiceManager(null).
                         registerCodingSchemeAsSupplement(parent, supplement);
                 
-                Util.displayMessage("Coding Scheme Registered as a Supplement.");
+                Util.displayAndLogMessage("Coding Scheme Registered as a Supplement.");
             } else {
                 LexBIGServiceImpl.defaultInstance().
                 getServiceManager(null).
                     unRegisterCodingSchemeAsSupplement(parent, supplement);
                 
-                Util.displayMessage("Coding Scheme Unregistered as a Supplement.");
+                Util.displayAndLogMessage("Coding Scheme Unregistered as a Supplement.");
             }
         } catch (CodingSchemeParameterException e) {
             Util.displayAndLogError("REQUEST FAILED !!! " , e);

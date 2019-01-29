@@ -115,8 +115,8 @@ public class TagScheme {
             // Found it? If not, prompt...
             if (css == null) {
                 if (urn != null || ver != null) {
-                    Util.displayMessage("No matching coding scheme was found for the given URN or version.");
-                    Util.displayMessage("");
+                    Util.displayAndLogMessage("No matching coding scheme was found for the given URN or version.");
+                    Util.displayAndLogMessage("");
                 }
                 css = Util.promptForCodeSystem();
                 if (css == null)
