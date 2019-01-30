@@ -67,7 +67,7 @@ public class RemoveAllResolvedValueSets {
 		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
 		lbsm.deactivateCodingSchemeVersion(acsvr, null);
 		lbsm.removeCodingSchemeVersion(acsvr);
-		Util.displayTaggedMessage("Resolved valueset [URN=" + acsvr.getCodingSchemeURN() + ", Version="
+		Util.displayAndLogMessage("Resolved valueset [URN=" + acsvr.getCodingSchemeURN() + ", Version="
 				+ acsvr.getCodingSchemeVersion() + "] was removed.");
 	}
 

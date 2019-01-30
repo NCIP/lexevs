@@ -79,7 +79,7 @@ public class LoadUMLSSemnet {
         try {
             new LoadUMLSSemnet().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogError("Resource Unavailable: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -144,8 +144,8 @@ public class LoadUMLSSemnet {
 
             boolean activate = cl.hasOption("a");
      
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
-                Util.displayTaggedMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
    
 
             // Find the registered extension handling this type of load ...
@@ -176,7 +176,7 @@ public class LoadUMLSSemnet {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.setVersionTag(ref, tag);
-                    Util.displayTaggedMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }
@@ -187,7 +187,7 @@ public class LoadUMLSSemnet {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.activateCodingSchemeVersion(ref);
-                    Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }

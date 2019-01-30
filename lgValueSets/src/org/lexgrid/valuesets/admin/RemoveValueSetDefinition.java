@@ -75,11 +75,11 @@ public class RemoveValueSetDefinition {
             }
 
             if (matchedURN == null) {
-                Util.displayMessage("No matching ValueSetDefinition found for the given urn " + urn);
+                Util.displayAndLogMessage("No matching ValueSetDefinition found for the given urn " + urn);
 
             } else {
                 vss.removeValueSetDefinition(URI.create(matchedURN));
-                Util.displayMessage("ValueSetDefinition removed: " +  matchedURN);
+                Util.displayAndLogMessage("ValueSetDefinition removed: " +  matchedURN);
             }
 
         }

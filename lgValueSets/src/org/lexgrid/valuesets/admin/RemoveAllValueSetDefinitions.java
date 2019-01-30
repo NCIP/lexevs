@@ -51,7 +51,7 @@ public class RemoveAllValueSetDefinitions {
 			try {
 				choice = Util.getConsoleCharacter();
 			} catch (IOException e) {
-				Util.displayMessage("Error Reading Input");
+				Util.displayAndLogError("Error Reading Input:", e);
 			}
         }
 		if (force || choice == 'Y' || choice == 'y'){
@@ -61,9 +61,10 @@ public class RemoveAllValueSetDefinitions {
 				try {
 					vss.removeValueSetDefinition(URI.create(urn));
 				} catch (LBException e) {
+					Util.displayAndLogError(e);
 					e.printStackTrace();
 				}
-				Util.displayMessage("ValueSetDefinition removed: " + urn);
+				Util.displayAndLogMessage("ValueSetDefinition removed: " + urn);
 			}
 		}
 	}

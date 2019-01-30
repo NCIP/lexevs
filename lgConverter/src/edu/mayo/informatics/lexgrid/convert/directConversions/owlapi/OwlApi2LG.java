@@ -288,8 +288,7 @@ public class OwlApi2LG {
                     databaseServiceManager.getAuthoringService().loadRevision(lgScheme_, null, null);
                 }
             } catch (Exception e) {
-                // Exception logged by SQLReadWrite
-                return null;
+                throw new RuntimeException("Owl2 formatted scheme failed to load: ", e);
             }
 
             initAssociationEntities();

@@ -58,7 +58,7 @@ public class LoadPickListDefinition {
     	try {
             new LoadPickListDefinition().run(args);
         } catch (LBResourceUnavailableException e) {
-        	Util.displayTaggedMessage(e.getMessage());
+        	Util.displayAndLogError("Resource not available: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -85,6 +85,7 @@ public class LoadPickListDefinition {
                 if (cl.hasOption("v"))
                     vl = Integer.parseInt(cl.getOptionValue("v"));
             } catch (Exception e) {
+            	Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util
                         .displayCommandOptions(
                                 "LoadPickList",
@@ -97,9 +98,9 @@ public class LoadPickListDefinition {
             // Interpret provided values ...
             URI source = Util.string2FileURI(cl.getOptionValue("in"));
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATION SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATION SOURCE URI: " + source.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
             }
 
             LexEVSPickListDefinitionServices pls = LexEVSPickListDefinitionServicesImpl.defaultInstance();
@@ -107,7 +108,7 @@ public class LoadPickListDefinition {
             // Perform the requested load or validate action ...
             if (vl >= 0) {
                 pls.validate(source, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
             	pls.loadPickList(source.toString(), false);
             }            

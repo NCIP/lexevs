@@ -72,7 +72,7 @@ public class TransferScheme {
         try {
             new TransferScheme().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogError("Resource is unavailable: " + e.getMessage(), e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -139,7 +139,7 @@ public class TransferScheme {
 //        String internalCSName = ResourceManager.instance().getInternalCodingSchemeNameForUserCodingSchemeName(cs,
 //                internalVersion);
 
-        System.out.println("The following instructions are for transfering the code system '" + internalCSName
+        Util.displayAndLogMessage("The following instructions are for transfering the code system '" + internalCSName
                 + "' version '" + internalVersion + "'.");
         boolean moveDB = isDatabaseOnDifferentServer();
         String newDBName = "";
@@ -151,38 +151,38 @@ public class TransferScheme {
 
         if (moveDB) {
             newDBName = getNewDBName();
-            System.out.println();
-            System.out.println("Step " + step++ + ")");
+            Util.displayAndLogMessage("");
+            Util.displayAndLogMessage("Step " + step++ + ")");
 
             if (sv.getAutoLoadSingleDBMode()) {
-                System.out.println("You are using Single Database mode.");
-                System.out.println("You will need to copy all of the tables from the database '"
+                Util.displayAndLogMessage("You are using Single Database mode.");
+                Util.displayAndLogMessage("You will need to copy all of the tables from the database '"
                         + sv.getAutoLoadDBURL() + "'");
 
                 SQLInterface si = ResourceManager.instance().getSQLInterface(internalCSName, internalVersion);
-                System.out.println("that have the prefix '" + si.getTablePrefix() + "' to the new database.  ");
-                System.out.println("You will have to copy these with native tools provided by your SQL database.");
-                System.out
-                        .println("Following is a list of the tables in an order which will alleviate foreign key problems.");
-                System.out.print(si.getTableName(SQLTableConstants.CODING_SCHEME));
-                System.out.print(si.getTableName(SQLTableConstants.CODING_SCHEME_PROP));
-                System.out.print(si.getTableName(SQLTableConstants.CODING_SCHEME_PROP_MULTI_ATTRIB));
-                System.out.print(" " + si.getTableName(SQLTableConstants.CODING_SCHEME_MULTI_ATTRIBUTES));
-                System.out.print(" " + si.getTableName(SQLTableConstants.CODING_SCHEME_SUPPORTED_ATTRIBUTES));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_PROPERTY));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_PROPERTY_MULTI_ATTRIBUTES));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_PROPERTY_LINKS));
-                System.out.print(" " + si.getTableName(SQLTableConstants.RELATION));
-                // System.out.print(" " +
+                Util.displayAndLogMessage("that have the prefix '" + si.getTablePrefix() + "' to the new database.  ");
+                Util.displayAndLogMessage("You will have to copy these with native tools provided by your SQL database.");
+                Util.displayAndLogMessage
+                        ("Following is a list of the tables in an order which will alleviate foreign key problems.");
+                Util.displayAndLogMessage(si.getTableName(SQLTableConstants.CODING_SCHEME));
+                Util.displayAndLogMessage(si.getTableName(SQLTableConstants.CODING_SCHEME_PROP));
+                Util.displayAndLogMessage(si.getTableName(SQLTableConstants.CODING_SCHEME_PROP_MULTI_ATTRIB));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.CODING_SCHEME_MULTI_ATTRIBUTES));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.CODING_SCHEME_SUPPORTED_ATTRIBUTES));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_PROPERTY));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_PROPERTY_MULTI_ATTRIBUTES));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_PROPERTY_LINKS));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.RELATION));
+                // Util.displayAndLogMessage(" " +
                 // si.getTableName(SQLTableConstants.RELATION_MULTI_ATTRIBUTES));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ASSOCIATION));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_ENTITY));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_E_QUALS));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_DATA));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_D_QUALS));
-                System.out.print(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_ENTITY_TRANSITIVE));
-                System.out.println(" " + si.getTableName(SQLTableConstants.LEXGRID_TABLE_META_DATA));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ASSOCIATION));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_ENTITY));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_E_QUALS));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_DATA));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_D_QUALS));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.ENTITY_ASSOCIATION_TO_ENTITY_TRANSITIVE));
+                Util.displayAndLogMessage(" " + si.getTableName(SQLTableConstants.LEXGRID_TABLE_META_DATA));
             } else {
                 RegistryEntry entry = sysReg.getCodingSchemeEntry(
                         DaoUtility.createAbsoluteCodingSchemeVersionReference(
@@ -191,38 +191,38 @@ public class TransferScheme {
                 String connUrl = entry.getDbUri();
 //                String connUrl = ResourceManager.instance().getSQLInterface(internalCSName, internalVersion)
 //                        .getConnectionDescriptor().getDbUrl();
-                System.out.println("You are using Multiple Database mode.");
-                System.out.println("You will need to copy the database '" + connUrl + "' to the new database server.");
-                System.out.println("You should do this with native tools provided by your SQL database.");
+                Util.displayAndLogMessage("You are using Multiple Database mode.");
+                Util.displayAndLogMessage("You will need to copy the database '" + connUrl + "' to the new database server.");
+                Util.displayAndLogMessage("You should do this with native tools provided by your SQL database.");
                 // more specific help for mysql
                 if (connUrl.toLowerCase().indexOf("mysql") != -1) {
                     String dbName = connUrl.substring(connUrl.lastIndexOf('/') + 1);
-                    System.out.println("Here is an example of how to do this for MySQL:");
-                    System.out.println("mysqldump -u username -p --databases " + dbName + " > mysqlDump.sql");
-                    System.out.println();
-                    System.out.println("After the data is dumped, you can load it onto the new database like this:");
-                    System.out.println("mysql -u username -p < mysqlDump.sql");
+                    Util.displayAndLogMessage("Here is an example of how to do this for MySQL:");
+                    Util.displayAndLogMessage("mysqldump -u username -p --databases " + dbName + " > mysqlDump.sql");
+                    Util.displayAndLogMessage("");
+                    Util.displayAndLogMessage("After the data is dumped, you can load it onto the new database like this:");
+                    Util.displayAndLogMessage("mysql -u username -p < mysqlDump.sql");
                 }
             }
 
         }
 
-        System.out.println();
-        System.out.println("Step " + step++ + ")");
-        System.out.println("You will need to copy the following folder to the appropriate location on the new server:");
-        System.out.println(ResourceManager.instance().getIndexInterface(internalCSName, internalVersion)
+        Util.displayAndLogMessage("");
+        Util.displayAndLogMessage("Step " + step++ + ")");
+        Util.displayAndLogMessage("You will need to copy the following folder to the appropriate location on the new server:");
+        Util.displayAndLogMessage(ResourceManager.instance().getIndexInterface(internalCSName, internalVersion)
                 .getIndexLocation(internalCSName, internalVersion));
 
-        System.out.println();
-        System.out.println("Step " + step++ + ")");
-        System.out.println("You will need to copy the following file to the appropriate location on the new server:");
-//        System.out.println(ResourceManager.instance().getIndexInterface(internalCSName, internalVersion)
+        Util.displayAndLogMessage("");
+        Util.displayAndLogMessage("Step " + step++ + ")");
+        Util.displayAndLogMessage("You will need to copy the following file to the appropriate location on the new server:");
+//        Util.displayAndLogMessage(ResourceManager.instance().getIndexInterface(internalCSName, internalVersion)
 //                .getMetaLocation());
         System.out
                 .println("It is recommended that you rename the current file on the new server, in case you need to undo this change.");
 
-        System.out.println();
-        System.out.println("Step " + step++ + ")");
+        Util.displayAndLogMessage("");
+        Util.displayAndLogMessage("Step " + step++ + ")");
 
         if (moveDB) {
             File outputFile = new File(registry.getParent(), "registryToTransfer.xml");
@@ -230,27 +230,27 @@ public class TransferScheme {
                     .getAutoLoadDBURL(), newDBName);
             System.out
                     .println("You will need to move the following file to the appropriate location on the new server:");
-            System.out.println(outputFile.getCanonicalPath());
-            System.out.println("and rename it to '" + registry.getName() + "' on the new server.");
-            System.out.println("This file has been modified for the new database name that you provided.");
-            System.out.println("After you move it to the new server, it can be deleted from the current server.");
-            System.out.println();
+            Util.displayAndLogMessage(outputFile.getCanonicalPath());
+            Util.displayAndLogMessage("and rename it to '" + registry.getName() + "' on the new server.");
+            Util.displayAndLogMessage("This file has been modified for the new database name that you provided.");
+            Util.displayAndLogMessage("After you move it to the new server, it can be deleted from the current server.");
+            Util.displayAndLogMessage("");
             System.out
                     .println("It is recommended that you rename the current file on the new server, in case you need to undo this change.");
         } else {
             System.out
                     .println("You will need to copy the following file to the appropriate location on the new server:");
-            System.out.println(registry.getCanonicalPath());
+            Util.displayAndLogMessage(registry.getCanonicalPath());
             System.out
                     .println("It is recommended that you rename the current file on the new server, in case you need to undo this change.");
         }
 
-        System.out.println();
-        System.out.println("If the new server was running while you copied these files,");
-        System.out.println("it should automatically notice the changes within 5 minutes.");
-        System.out.println();
-        System.out.println("It would be a good idea to check the log files in 5 minutes");
-        System.out.println("to make sure no errors occured reading the new configuration.");
+        Util.displayAndLogMessage("");
+        Util.displayAndLogMessage("If the new server was running while you copied these files,");
+        Util.displayAndLogMessage("it should automatically notice the changes within 5 minutes.");
+        Util.displayAndLogMessage("");
+        Util.displayAndLogMessage("It would be a good idea to check the log files in 5 minutes");
+        Util.displayAndLogMessage("to make sure no errors occured reading the new configuration.");
 
     }
 
@@ -282,15 +282,15 @@ public class TransferScheme {
 
         br = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
-            System.out.println("You are currently using the following DB Server:");
-            System.out.println(ResourceManager.instance().getSystemVariables().getAutoLoadDBURL());
-            System.out.println("Please enter the connection string for the new server that you will be ");
-            System.out.println("moving the data to, so that the registry file can be modified as appropriate.");
-            System.out.println("What is the connection string for the new server?");
+            Util.displayAndLogMessage("You are currently using the following DB Server:");
+            Util.displayAndLogMessage(ResourceManager.instance().getSystemVariables().getAutoLoadDBURL());
+            Util.displayAndLogMessage("Please enter the connection string for the new server that you will be ");
+            Util.displayAndLogMessage("moving the data to, so that the registry file can be modified as appropriate.");
+            Util.displayAndLogMessage("What is the connection string for the new server?");
             String newServer = br.readLine();
 
             while (true) {
-                System.out.println("You provided '" + newServer + "' as the new server.  Is this correct? (y/n): ");
+                Util.displayAndLogMessage("You provided '" + newServer + "' as the new server.  Is this correct? (y/n): ");
                 String ans = br.readLine();
 
                 if (ans.trim().toLowerCase().equals("y")) {
@@ -298,7 +298,7 @@ public class TransferScheme {
                 } else if (ans.trim().toLowerCase().equals("n")) {
                     break;
                 } else {
-                    System.out.println("Please answer 'y' or 'n'.");
+                    Util.displayAndLogMessage("Please answer 'y' or 'n'.");
                 }
             }
         }
@@ -306,7 +306,7 @@ public class TransferScheme {
     }
 
     private boolean isDatabaseOnDifferentServer() throws IOException {
-        System.out.print("Will you also be transfering the database to another server? (y/n): ");
+        Util.displayAndLogMessage("Will you also be transfering the database to another server? (y/n): ");
         BufferedReader br = null;
 
         br = new BufferedReader(new InputStreamReader(System.in));
@@ -317,7 +317,7 @@ public class TransferScheme {
             } else if (ans.trim().toLowerCase().equals("n")) {
                 return false;
             } else {
-                System.out.println("Please answer 'y' or 'n'.");
+                Util.displayAndLogMessage("Please answer 'y' or 'n'.");
             }
         }
 

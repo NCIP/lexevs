@@ -501,7 +501,7 @@ public abstract class RevisableAbstractDatabaseService<T extends Versionable, I 
 			
 			if (entryUid != null) {
 				throw new LBRevisionException(invalid
-						+ "The entry being added already exist.");
+						+ "The entry being added already exists.");
 			}
 		} else {
 			

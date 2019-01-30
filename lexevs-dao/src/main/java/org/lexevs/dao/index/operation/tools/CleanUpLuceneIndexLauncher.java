@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.apache.log4j.spi.LoggerFactory;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
@@ -41,7 +43,7 @@ public class CleanUpLuceneIndexLauncher {
 	private boolean reindexMissing;
 
 	private void execute() {
-
+		LgLoggerIF logger = org.lexevs.logging.LoggerFactory.getLogger();
 		try {
 			List<AbsoluteCodingSchemeVersionReference> expectedList = 
 				new ArrayList<AbsoluteCodingSchemeVersionReference>();
@@ -58,6 +60,7 @@ public class CleanUpLuceneIndexLauncher {
 			
 			LexEvsServiceLocator.getInstance().getLexEvsIndexOperations().cleanUp(expectedList, reindexMissing);
 		} catch (Exception e) {
+			logger.error(e.getMessage());
 			throw new RuntimeException(e);
 		}
 	}
