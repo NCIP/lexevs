@@ -82,7 +82,7 @@ public class LoadMetaBatchWithMetadata {
         try {        
             new LoadMetaBatchWithMetadata().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogError("Resource Unavailable: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -125,7 +125,7 @@ public class LoadMetaBatchWithMetadata {
               
             // metatdata - validate input file (optional)
             if (v1 >= 0) {
-                Util.displayTaggedMessage("VALIDATING METADATA SOURCE URI: " + metaUri.toString());
+                Util.displayAndLogMessage("VALIDATING METADATA SOURCE URI: " + metaUri.toString());
             } 
            
             // metadata force
@@ -142,7 +142,7 @@ public class LoadMetaBatchWithMetadata {
             parser.parseArgument(umlsArgs);    
             launcher.loadAndWait();
          
-            Util.displayTaggedMessage("Metabatch load complete.");
+            Util.displayAndLogMessage("Metabatch load complete.");
                                     
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
                                
@@ -166,7 +166,7 @@ public class LoadMetaBatchWithMetadata {
             }
                 
             if (css == null){
-                Util.displayTaggedMessage("Unable to apply metadata");
+                Util.displayAndLogMessage("Unable to apply metadata");
                 return;
             }
             
@@ -200,9 +200,9 @@ public class LoadMetaBatchWithMetadata {
         MetaData_Loader metadataLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
                 
         if (v1 >=0 ){
-            Util.displayTaggedMessage("Validating Metadata for " + metaUri);
+            Util.displayAndLogMessage("Validating Metadata for " + metaUri);
             metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v1);
-            Util.displayTaggedMessage("METADATA VALIDATION SUCCESSFUL");
+            Util.displayAndLogMessage("METADATA VALIDATION SUCCESSFUL");
         }
         else{
             boolean confirmed = true;
@@ -212,7 +212,7 @@ public class LoadMetaBatchWithMetadata {
                 confirmed = choice == 'Y' || choice == 'y';
             }
             if (confirmed) {
-                Util.displayTaggedMessage("Loading Metadata for " + metaUri);
+                Util.displayAndLogMessage("Loading Metadata for " + metaUri);
                 metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
                         overwrite, false, true);
                 Util.displayLoaderStatus(metadataLoader);

@@ -35,6 +35,7 @@ public class LoadAllDefinitionsToResolvedValueSet {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (Exception e) {
+        	Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
             Util.displayCommandOptions(
                             "LLoadAllDefinitionsToResolvedValueSet",
                             options,
@@ -59,7 +60,7 @@ public class LoadAllDefinitionsToResolvedValueSet {
 			try {	
 				
 				ResolvedValueSetDefinitionLoader loader =  new ResolvedValueSetDefinitionLoaderImpl();
-				Util.displayMessage("Attempting to load value set for: " + uri + " :" +
+				Util.displayAndLogMessage("Attempting to load value set for: " + uri + " :" +
 						vsdName);
 				LexBIGServiceManager lbsm = lbsvc.getServiceManager(null);
 				ValueSetDefinition def = valueSetService.getValueSetDefinition(new URI(uri), null);
@@ -77,24 +78,28 @@ public class LoadAllDefinitionsToResolvedValueSet {
 				if(!loader.getStatus().getErrorsLogged()){
 				lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 				lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],"PRODUCTION");
-				Util.displayMessage("Loaded and activiated resolved value set for: " + uri + " :" +
+				Util.displayAndLogMessage("Loaded and activiated resolved value set for: " + uri + " :" +
 				vsdName);
 				}
 				else{
-				Util.displayMessage("Error loading value set: " + uri + " :" +
+				Util.displayAndLogMessage("Error loading value set: " + uri + " :" +
 						vsdName);	
 				}
 				counter++;
 				if(counter % 100 == 0){
-					Util.displayMessage("Resolved and loaded " + counter + " value sets");
-					Util.displayMessage("Total time expended: " + TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - start) + " seconds");
+					Util.displayAndLogMessage("Resolved and loaded " + counter + " value sets");
+					Util.displayAndLogMessage("Total time expended: " + TimeUnit.NANOSECONDS.toSeconds(System.nanoTime() - start) + " seconds");
 				}
 			} catch (LBException e) {
+				Util.displayAndLogError("Error getting value set definition: " + uri + " :" +
+						vsdName, e);
 				throw new RuntimeException("Error getting value set definition: " + uri + " :" +
 						vsdName, e);
 			} catch (URISyntaxException e) {
+				Util.displayAndLogError("Malformed URI.  Check ValueSet Definition", e);
 				throw new RuntimeException("Malformed URI.  Check ValueSet Definition", e);
 			} catch (Exception e) {
+				Util.displayAndLogError("Value Set failed to resolve/load: ", e);
 				throw new RuntimeException("Value Set failed to resolve/load: ", e);
 			}
 		}

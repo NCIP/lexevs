@@ -157,7 +157,7 @@ public class RebuildTransitivityTable {
         if (confirmed) {
             try {
                
-                Util.displayTaggedMessage("Recreation Transitivity Table '" + 
+                Util.displayAndLogMessage("Recreation Transitivity Table '" + 
                         codingScheme + "' in progress...");
                 LexEvsServiceLocator.
                     getInstance().
@@ -166,10 +166,10 @@ public class RebuildTransitivityTable {
                                     ref.getCodingSchemeURN(), 
                                     ref.getCodingSchemeVersion());
             } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Recreation Transitivity Table '" + codingScheme + "' is not supported.");
+                Util.displayAndLogError("Recreation of Transitivity Table '" + codingScheme + "' is not supported.", e);
             }
         } else {
-            Util.displayTaggedMessage("Recreation Transitivity Table '" + codingScheme + "' cancelled by user.");
+            Util.displayAndLogMessage("Recreation of Transitivity Table '" + codingScheme + "' cancelled by user.");
         }
     }
 

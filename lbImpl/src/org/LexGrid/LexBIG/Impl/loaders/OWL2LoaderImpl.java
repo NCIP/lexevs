@@ -133,6 +133,8 @@ public class OWL2LoaderImpl extends BaseLoader implements OWL2_Loader {
             } 
             
             return this.constructVersionPairsFromCodingSchemes(owlScheme);
+        } catch(CodingSchemeAlreadyLoadedException e){
+            throw new RuntimeException("This OWL formatted Scheme already exists in the system", e);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
