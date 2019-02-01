@@ -64,9 +64,15 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 
 	public ValueSetHierarchyServiceImpl init() {
-		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
-		schemeUID = this.getSchemeUid(scheme, version);
+		this.scheme = SCHEME;
+		this.version = null;
+		schemeUID = this.getCodingSchemeUId(scheme, version);
+		this.association = HIERARCHY;
 		this.associationPredicateGuid = this.getPredicateUid();
+		this.sourceDesignation = SOURCE;
+		this.publishName = PUBLISH_DESIGNATION;
+		this.root_code = ROOT_CODE;
+		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		vsDef = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 		vsExternalURIs = getExternallyDefinedValueSetsForAssertedSource(root_code);
 		System.out.println("scheme: " + scheme);
