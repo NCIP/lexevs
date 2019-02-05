@@ -189,6 +189,7 @@ import org.LexGrid.loader.dao.template.MedRtCachingSupportedAttributeTemplateTes
 import org.LexGrid.loader.processor.MedRtEntityAssnsToEntityProcessorTest;
 import org.LexGrid.loader.umls.processor.support.MedRTRelationResolverTest;
 import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedVSIteratorTest;
+import org.LexGrid.valuesets.sourceasserted.impl.TestAssertedValueSetInitialization;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.access.codednodegraph.MappingCodedNodeDaoFunctionTest;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
@@ -555,6 +556,7 @@ public class AllTestsNormalConfig {
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(ValueSetHierarchyServiceTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetTagTest.class));
+        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(TestAssertedValueSetInitialization.class));
         assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
         assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
         mainSuite.addTest(assertedValueSetUpdates);
