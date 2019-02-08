@@ -77,12 +77,50 @@ public class LexEVSResolvedValueSetTest {
 		codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl").
 		rootConcept("C54453")
 		.build();
+				
+//	new AssertedValueSetParameters.Builder("18.08d").
+//	assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+//	codingSchemeName("NCI_Thesaurus").
+////	codingSchemeURI("http://evs.nci.nih.gov/valueset/").
+//	codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#").
+//	rootConcept("C54453")
+//	.build();
+		
+				
 		service = new LexEVSResolvedValueSetServiceImpl(params);
+		
 		vsSvc = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
 		vsSvc.createIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
 	}
 
+	@Test
+	public void testListResolvedValueSetFromDescription() throws Exception {
+		long start = System.currentTimeMillis();
+		CodingScheme cs = service.listResolvedValueSetForDescription("Black");
+		assertNotNull(cs);
+		assertEquals(cs.getCodingSchemeName(), "Black");
+		assertEquals(cs.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/TEST/C48323");
+		long end = System.currentTimeMillis();
+		System.out.println("Retrieving scheme value set from description (Black): " + (end - start) + " mseconds");
+		
+		start = System.currentTimeMillis();
+		cs = service.listResolvedValueSetForDescription("Blacker");
+		assertNotNull(cs);
+		assertEquals(cs.getCodingSchemeName(), "Blacker");
+		assertEquals(cs.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/FDA/C99999");
+		end = System.currentTimeMillis();
+		System.out.println("Retrieving scheme value set from description (Blacker): " + (end - start) + " mseconds");
+		
+		start = System.currentTimeMillis();
+		cs = service.listResolvedValueSetForDescription("White");
+		assertNotNull(cs);
+		assertEquals(cs.getCodingSchemeName(), "White");
+		assertEquals(cs.getCodingSchemeURI(), "http://evs.nci.nih.gov/valueset/FDA/C48325");
+		end = System.currentTimeMillis();
+		System.out.println("Retrieving scheme value set from description (White): " + (end - start) + " mseconds");
+	}
+	
 	@Test
 	public void testListAllResolvedValueSets() throws Exception {
 		long start = System.currentTimeMillis();
@@ -219,6 +257,7 @@ public class LexEVSResolvedValueSetTest {
 	@Test
 	public void getValueSetEntities() throws Exception {
 		URI uri = new URI("http://evs.nci.nih.gov/valueset/TEST/C48323");
+//        URI uri = new URI("http://evs.nci.nih.gov/valueset/CDISC/C61410");
 		ResolvedConceptReferenceList refs = service.getValueSetEntitiesForURI(uri.toString());
 		assertNotNull(refs);
 		assertTrue(refs.getResolvedConceptReferenceCount() > 0);
@@ -567,6 +606,7 @@ public class LexEVSResolvedValueSetTest {
 	@AfterClass
 	 @Category(RemoveFromDistributedTests.class)
 	public static void tearDown() {
+		
 		vsSvc.dropIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
 	}
