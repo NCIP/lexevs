@@ -291,26 +291,37 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
     public List<TerminologyMapBean> resolveBulkMapping(final String mappingName, String mappingVersion) {
 
         List<TerminologyMapBean> beanList = null;
+        AbsoluteCodingSchemeVersionReference ref = null;
 
         if (mappingName == null) {
             throw new RuntimeException("Mapping Name or URI cannot be null when returning bulk mapping");
         }
+        CodingSchemeVersionOrTag version = null;
         if (mappingVersion == null) {
             try {
-                mappingVersion = ServiceUtility.getVersion(mappingName,
-                        Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion));
+                mappingVersion = ServiceUtility.getVersion(mappingName, null);
+                version = Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion);
+                ref = ServiceUtility.getAbsoluteCodingSchemeVersionReference(mappingName, version, true);
             } catch (LBParameterException e) {
                 throw new RuntimeException("Mapping Version Could not be resolved.", e);
             }
+        } else {
+            version = Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion);
+            try {
+                ref = ServiceUtility.getAbsoluteCodingSchemeVersionReference(mappingName, version, true);
+            } catch (LBParameterException e) {
+                throw new RuntimeException(
+                        "Mapping Scheme" + mappingName + " : " + version.getVersion() + " Could not be resolved.", e);
+            }
         }
         try {
-            if (isMappingCodingScheme(mappingName,
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion))) {
+            if (isMappingCodingScheme(ref.getCodingSchemeURN(),
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getCodingSchemeVersion()))) {
                 // return full set of mapped metadata
-                final String mappingUid = getCodingSchemeUid(mappingName, mappingVersion);
-                final Relations rels = ServiceUtility.getRelationsForMappingScheme(mappingName, mappingVersion,
+                final String mappingUid = getCodingSchemeUid(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion());
+                final Relations rels = ServiceUtility.getRelationsForMappingScheme(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion(),
                         this.getDefaultMappingRelationsContainer(
-                                Constructors.createAbsoluteCodingSchemeVersionReference(mappingName, mappingVersion)));
+                                Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURN(), ref.getCodingSchemeVersion())));
                 //Insure you have corrected target and source uri and version
                 String sourceUri = ServiceUtility.getUriForCodingSchemeName(rels.getSourceCodingScheme());
                 String sourceVersion = ServiceUtility.getVersion(sourceUri, null);
@@ -322,15 +333,15 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
                         sourceVersion);
                 final String targetUid = getCodingSchemeUid(targetUri,
                         targetVersion);
-
-                final String version = mappingVersion;
+                final String finalName = ref.getCodingSchemeURN();
+                final String finalVersion = mappingVersion;
                 beanList = (List<TerminologyMapBean>) LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
                         .getDaoCallbackService().executeInDaoLayer(new DaoCallback<List<TerminologyMapBean>>() {
 
                             @Override
                             public List<TerminologyMapBean> execute(DaoManager daoManager) {
 
-                                return daoManager.getCodedNodeGraphDao(mappingName, version)
+                                return daoManager.getCodedNodeGraphDao(finalName, finalVersion)
                                         .getMapAndTermsForMappingAndReferences(mappingUid, sourceUid, targetUid, rels,
                                                 rankScoreName);
                             }
