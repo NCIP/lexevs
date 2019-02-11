@@ -1578,6 +1578,36 @@
 			entityCode = #param2#
    </select>
    
+   <select id="getVSTopNodeEntityByDescription"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
+		resultMap="vsEntityResultWithProperties"
+		remapResults="true">
+		SELECT 
+			 ent.entityGuid, 
+			 ent.entityCode, 
+			 ent.entityCodeNamespace,
+			 ent.isDefined, 
+			 ent.isAnonymous, 
+			 ent.description, 
+			 ent.isActive, 
+			 ent.owner, 
+			 ent.status, 
+			 ent.effectiveDate, 
+			 ent.expirationDate,
+			 prop.propertyName, 
+			 prop.propertyValue  
+		FROM 
+			$prefix$entity ent 
+		JOIN 
+			$prefix$property prop 
+		ON 
+			entityGuid = referenceGuid 
+		WHERE
+			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		AND
+			description = #param2#
+   </select>
+   
    <select id="getVSEntityCount"
    		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
 		resultMap="vsEntityCount"

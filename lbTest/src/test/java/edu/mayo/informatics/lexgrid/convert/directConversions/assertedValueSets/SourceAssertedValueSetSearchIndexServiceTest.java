@@ -71,6 +71,7 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 				codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl").
 				rootConcept("C54453")
 				.build();
+
 		svc = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(params);
 	}
 

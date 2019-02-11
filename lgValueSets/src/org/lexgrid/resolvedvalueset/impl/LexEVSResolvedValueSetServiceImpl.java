@@ -74,6 +74,15 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		}).collect(Collectors.toList()));
 		return assertVSList;
 	}
+	
+	@Override
+	public CodingScheme listResolvedValueSetForDescription(String description) throws LBException {
+		SourceAssertedValueSetService vsSvc = getSourceAssertedValueSetService(this.params);
+		if (vsSvc != null) { 
+			return vsSvc.listResolvedValueSetForDescription(description);
+		}
+		return null;
+	}
 
 	@Override
 	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException {
