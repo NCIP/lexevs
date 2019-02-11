@@ -78,17 +78,7 @@ public class LexEVSResolvedValueSetTest {
 		rootConcept("C54453")
 		.build();
 				
-//	new AssertedValueSetParameters.Builder("18.08d").
-//	assertedDefaultHierarchyVSRelation("Concept_In_Subset").
-//	codingSchemeName("NCI_Thesaurus").
-////	codingSchemeURI("http://evs.nci.nih.gov/valueset/").
-//	codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#").
-//	rootConcept("C54453")
-//	.build();
-		
-				
 		service = new LexEVSResolvedValueSetServiceImpl(params);
-		
 		vsSvc = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
 		vsSvc.createIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
@@ -257,7 +247,6 @@ public class LexEVSResolvedValueSetTest {
 	@Test
 	public void getValueSetEntities() throws Exception {
 		URI uri = new URI("http://evs.nci.nih.gov/valueset/TEST/C48323");
-//        URI uri = new URI("http://evs.nci.nih.gov/valueset/CDISC/C61410");
 		ResolvedConceptReferenceList refs = service.getValueSetEntitiesForURI(uri.toString());
 		assertNotNull(refs);
 		assertTrue(refs.getResolvedConceptReferenceCount() > 0);
