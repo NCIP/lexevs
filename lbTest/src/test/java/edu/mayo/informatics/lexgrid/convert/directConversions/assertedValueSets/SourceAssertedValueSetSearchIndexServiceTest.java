@@ -72,13 +72,6 @@ public class SourceAssertedValueSetSearchIndexServiceTest {
 				rootConcept("C54453")
 				.build();
 
-//		AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("18.08d").
-//				assertedDefaultHierarchyVSRelation("Concept_In_Subset").
-//				codingSchemeName("NCI_Thesaurus").
-////				codingSchemeURI("http://evs.nci.nih.gov/valueset/").
-//				codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#").
-//				rootConcept("C54453")
-//				.build();
 		svc = SourceAssertedValueSetServiceImpl.getDefaultValueSetServiceForVersion(params);
 	}
 
