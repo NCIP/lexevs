@@ -292,28 +292,27 @@ public class MappingExtensionImpl extends AbstractExtendable implements MappingE
 
         List<TerminologyMapBean> beanList = null;
         AbsoluteCodingSchemeVersionReference ref = null;
-        
+
         if (mappingName == null) {
             throw new RuntimeException("Mapping Name or URI cannot be null when returning bulk mapping");
         }
         CodingSchemeVersionOrTag version = null;
         if (mappingVersion == null) {
             try {
-                mappingVersion = ServiceUtility.getVersion(mappingName,
-                        null);
+                mappingVersion = ServiceUtility.getVersion(mappingName, null);
                 version = Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion);
-                 ref = 
-                        ServiceUtility.getAbsoluteCodingSchemeVersionReference(mappingName, version, true);
+                ref = ServiceUtility.getAbsoluteCodingSchemeVersionReference(mappingName, version, true);
             } catch (LBParameterException e) {
                 throw new RuntimeException("Mapping Version Could not be resolved.", e);
             }
-        }
-        version = Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion);
-        try {
-             ref = 
-                    ServiceUtility.getAbsoluteCodingSchemeVersionReference(mappingName, version, true);
-        } catch (LBParameterException e) {
-            throw new RuntimeException("Mapping Scheme" + mappingName + " : " + version.getVersion() + " Could not be resolved.", e);
+        } else {
+            version = Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion);
+            try {
+                ref = ServiceUtility.getAbsoluteCodingSchemeVersionReference(mappingName, version, true);
+            } catch (LBParameterException e) {
+                throw new RuntimeException(
+                        "Mapping Scheme" + mappingName + " : " + version.getVersion() + " Could not be resolved.", e);
+            }
         }
         try {
             if (isMappingCodingScheme(ref.getCodingSchemeURN(),
