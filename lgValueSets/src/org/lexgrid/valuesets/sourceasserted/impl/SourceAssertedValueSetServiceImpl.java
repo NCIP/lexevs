@@ -176,6 +176,11 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	}
 	
 	@Override
+	public CodingScheme listResolvedValueSetForDescription(String description) throws LBException {
+		return getAssertedValueSetService().getSourceAssertedValueSetforDescription(description);
+	}
+	
+	@Override
 	public List<CodingScheme> getSourceAssertedValueSetforValueSetMemberEntityCode(String matchCode)
 			throws LBException {
 		return getAssertedValueSetService().getSourceAssertedValueSetforMemberEntityCode(matchCode);

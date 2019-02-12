@@ -49,6 +49,27 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 	}
 	
 	@Override
+	public CodingScheme getSourceAssertedValueSetforDescription(String description) throws LBException {
+		String csUID = getCsUid();
+		List<Entity> entity = getDaoManager().getCurrentAssertedValueSetDao()
+				.getSourceAssertedValueSetTopNodeDescription(description, csUID);
+		
+		if (entity != null && entity.size() > 0) {
+			String entityCode = entity.get(0).getEntityCode();
+			
+			List<Entity> entities = getDaoManager().getCurrentAssertedValueSetDao()
+				.getSourceAssertedValueSetEntitiesForEntityCode(entityCode, 
+						params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+			
+			List<CodingScheme> transcheme = transformToCodingScheme(entity, entities);
+			if (transcheme != null && transcheme.size() > 0) {
+				return transcheme.get(0);
+			}
+		}
+		return null;
+	}
+	
+	@Override
 	public Entity getEntityforTopNodeEntityCode(String matchCode) throws LBException {
 		if (matchCode == null) {
 			throw new RuntimeException("Entity code cannot be null!");

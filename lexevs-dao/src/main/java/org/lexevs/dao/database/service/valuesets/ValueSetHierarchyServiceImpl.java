@@ -48,9 +48,11 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	public ValueSetHierarchyServiceImpl init(String scheme, String version, String association, String sourceDesignation, String publishName,
 			String root_code) {
+		//Initialize this value first to insure fail-fast behavior
+		//We don't want any bad values persisted to the singleton
+		schemeUID = this.getCodingSchemeUId(scheme, version);
 		this.scheme = scheme;
 		this.version = version;
-		schemeUID = this.getCodingSchemeUId(scheme, version);
 		this.association = association;
 		this.associationPredicateGuid = this.getPredicateUid();
 		this.sourceDesignation = sourceDesignation;
@@ -61,12 +63,18 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		vsExternalURIs = getExternallyDefinedValueSetsForAssertedSource(root_code);
 		return this;
 	}
-
-
+	
 	public ValueSetHierarchyServiceImpl init() {
-		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
-		schemeUID = this.getSchemeUid(scheme, version);
+		//Reinit to default values before hitting the fail fast method
+		this.scheme = SCHEME;
+		this.version = null;
+		schemeUID = this.getCodingSchemeUId(scheme, version);
+		this.association = HIERARCHY;
 		this.associationPredicateGuid = this.getPredicateUid();
+		this.sourceDesignation = SOURCE;
+		this.publishName = PUBLISH_DESIGNATION;
+		this.root_code = ROOT_CODE;
+		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		vsDef = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 		vsExternalURIs = getExternallyDefinedValueSetsForAssertedSource(root_code);
 		System.out.println("scheme: " + scheme);
