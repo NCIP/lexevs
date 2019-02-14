@@ -42,13 +42,13 @@ public class GetAssociationQualifiersTest extends TestCase {
 		map.setFromsid("afa");
 		map.setFromtype("fjhf");
 		map.setMapid("ruyty");
-		map.setMaprank("dghd");
+		map.setScore("dghd");
 		map.setMapres("xbv");
 		map.setMaprule("vmnv");
 		map.setMapsab("wrt");
 		map.setMapsetcui("afa");
 		map.setMapsid("q15r");
-		map.setMaprank("u5i");
+		map.setScore("u5i");
 		map.setMapres("hjf");
 		map.setMapsubsetid("qer");
 		map.setMaptype("adf");
@@ -85,7 +85,7 @@ public class GetAssociationQualifiersTest extends TestCase {
 		map1.setFromsid("afa");
 		map1.setFromtype("fjhf");
 		map1.setMapid("ruyty");
-		map1.setMaprank("dghd");
+		map1.setScore("dghd");
 		map1.setMapres("IF ALOPECIA AREATA CHOOSE L63.9 &#x7C; MAP OF SOURCE CONCEPT");
 		map1.setMaprule("IFA 68225006 &#x7C; Alopecia areata (disorder) &#x7C;");
 		map1.setMapsab("wrt");

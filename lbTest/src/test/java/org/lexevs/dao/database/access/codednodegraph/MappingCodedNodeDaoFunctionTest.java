@@ -158,6 +158,12 @@ public class MappingCodedNodeDaoFunctionTest extends LexBIGServiceTestCase{
                 x.getTargetCode().equals("E0001")).findAny().isPresent());
         assertTrue(beanList.stream().filter(x -> x.getSourceCode().equals("C0002") && 
                 x.getTargetCode().equals("P0001")).findAny().isPresent());
+        assertEquals(beanList.stream().filter(x -> x.getSourceCode().equals("Jaguar") && 
+                x.getTargetCode().equals("E0001")).findAny().get().getSource(), null);
+        assertEquals(beanList.stream().filter(x -> x.getSourceCode().equals("A0001") && 
+                x.getTargetCode().equals("R0001")).findAny().get().getSource(), "1");
+        assertEquals(beanList.stream().filter(x -> x.getSourceCode().equals("005") && 
+                x.getTargetCode().equals("P0001")).findAny().get().getSource(), "2");
         assertTrue(beanList.stream().anyMatch(x -> x.getRel().equals("mapsTo")));
         assertTrue(beanList.stream().anyMatch(x -> x.getRel().equals("hasPart")));
         assertTrue(beanList.stream().anyMatch(x -> x.getSourceName().equals("Automobile")));
