@@ -77,6 +77,22 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
         return testID;
     }
     
+   @Test
+   public void testGetLexevsBuildVersion() throws LBException {
+	   String version = lbs.getLexEVSBuildVersion();
+	   System.out.println("LexEVS Build Version: " + version);
+	   assertNotNull(version);
+	   assertTrue(!version.equals("@VERSION@"));
+   }
+   
+   @Test
+   public void testGetLexevsBuildTimestamp() throws LBException {
+	   String timestamp = lbs.getLexEVSBuildTimestamp();
+	   System.out.println("LexEVS Build Timestamp: " + timestamp);
+	   assertNotNull(timestamp);
+	   assertTrue(!timestamp.equals("@TIMESTAMP@"));
+   }
+
     @Test
     public void testGetNodespath() throws LBException {
     	String codingSchemeUri = "urn:oid:11.11.0.1";

@@ -43,6 +43,20 @@ import org.LexGrid.codingSchemes.CodingScheme;
 public interface LexBIGService extends Serializable {
 
 	/**
+	 * Returns the version of when LexEVS.
+	 * 
+	 * @return String version representing the LexEVS version number.
+	 */
+	public String getLexEVSBuildVersion();
+	
+	/**
+	 * Returns the timestamp of when LexEVS was built.
+	 * 
+	 * @return String timestamp representing the time LexEVS was built.
+	 */
+	public String getLexEVSBuildTimestamp();
+	
+	/**
 	 * Returns the set of all concepts in the specified coding scheme.
 	 * 
 	 * @param codingScheme
