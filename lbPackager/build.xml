@@ -386,6 +386,18 @@ You may obtain a copy of the License at
 		</propertyfile>
 	</target>
 	
+	<target name="copybuildinfo" depends="buildinfo" description="copy build properties file to lbImpl">
+		<tstamp>
+		     <format property="timestamp" pattern="yyyy-MM-dd_HH:mm:ss"/>
+		</tstamp>
+
+		<!-- Copy the version Java file to lbImpl package.  Then replace the tokens values with the actual version and timestamp. -->
+		<copy toFile="${lbImpl.dir}/src/org/LexGrid/LexBIG/Impl/LexEVSVersion.java" file="${file.dir}/LexEVSVersion.java" overwrite="true"/>
+		<replace file="${lbImpl.dir}/src/org/LexGrid/LexBIG/Impl/LexEVSVersion.java" token="@VERSION@" value="${vBuild}"/>
+		<replace file="${lbImpl.dir}/src/org/LexGrid/LexBIG/Impl/LexEVSVersion.java" token="@TIMESTAMP@" value="${timestamp}"/>
+		
+	</target>
+	
 	<target name="copyaway" depends="init" >
 	 <copy todir="c:\temp" flatten="true" verbose="true">
 	    <path refid="master.classpath"/>
@@ -829,7 +841,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 	<!-- note that forking of the junit element is critical to making this run -->
 	<!-- without forking nothing happens and no logs tell you why -->
 
-	<target name="run-junit-cobertura" depends="init, clean, buildinfo, predef,
+	<target name="run-junit-cobertura" depends="init, clean, buildinfo, copybuildinfo, predef,
 		lgModel, lgUtility,
 		lgResourceReader,
 		lbModel, lbInterfaces, lbImpl, lbAdmin,
@@ -1059,7 +1071,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		build-lexbig-jar, lexevs.pack, pack"/>
 		
 	<target name="build-lexbig-jar" depends="
-			init, clean, buildinfo, predef,
+			init, clean, buildinfo, copybuildinfo, predef,
 			lexbig.jar"/>
 	<target name="build-pack" depends="build-lexbig-jar, pack"></target>
 	
