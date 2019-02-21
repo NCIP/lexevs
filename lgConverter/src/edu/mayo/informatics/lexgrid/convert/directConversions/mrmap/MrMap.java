@@ -47,11 +47,11 @@ public class MrMap {
     public void setMapsubsetid(String mapsubsetid) {
         this.mapsubsetid = mapsubsetid;
     }
-    public String getMaprank() {
-        return maprank;
+    public String getScore() {
+        return score;
     }
-    public void setMaprank(String maprank) {
-        this.maprank = maprank;
+    public void setScore(String score) {
+        this.score = score;
     }
     public String getMapid() {
         return mapid;
@@ -182,7 +182,7 @@ public class MrMap {
     public String mapsetcui;
     public String mapsab;
     public String mapsubsetid;
-    public String maprank;
+    public String score;
 
 /**
      * value of MAPID column from MRMAP.RRF Mapping to AssociationTarget.associationInstanceId

@@ -38,13 +38,13 @@ public class CreateNewAssociationSourceWithTargetTest extends TestCase {
 		map.setFromsid("afa");
 		map.setFromtype("fjhf");
 		map.setMapid("AT102971857");
-		map.setMaprank("dghd");
+		map.setScore("dghd");
 		map.setMapres("xbv");
 		map.setMaprule("vmnv");
 		map.setMapsab("wrt");
 		map.setMapsetcui("afa");
 		map.setMapsid("q15r");
-		map.setMaprank("u5i");
+		map.setScore("u5i");
 		map.setMapres("hjf");
 		map.setMapsubsetid("qer");
 		map.setMaptype("adf");

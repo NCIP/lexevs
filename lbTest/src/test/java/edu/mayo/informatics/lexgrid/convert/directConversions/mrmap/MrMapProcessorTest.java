@@ -42,7 +42,7 @@ public class MrMapProcessorTest extends TestCase {
   assertTrue(map.getMapsetcui().equals(rawData[0]));
   assertTrue(map.getMapsab().equals(rawData[1]));
   assertTrue(map.getMapsubsetid().equals(rawData[2]));
-  assertTrue(map.getMaprank().equals(rawData[3]));
+  assertTrue(map.getScore().equals(rawData[3]));
   assertTrue(map.getMapid().equals(rawData[4]));
   assertTrue(map.getMapsid().equals(rawData[5]));
   assertTrue(map.getFromid().equals(rawData[6]));
