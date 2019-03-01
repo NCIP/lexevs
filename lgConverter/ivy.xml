@@ -18,7 +18,9 @@
 	    <dependency org="protege" name="protege-owl" rev="3.4.4" conf="default"/>
 	    <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.4" conf="default"/>
 	    <dependency org="com.hp.hpl.jena" name="iri" rev="0.8" conf="default"/>
+		<dependency org="com.ibm.icu" name="icu4j" rev="3.6.1" conf="default"/>
 	    <dependency org="commons-cli" name="commons-cli" rev="1.2" conf="default"/>
+		<dependency org="org.apache.commons" name="commons-rdf-api" rev="0.5.0" conf="default"/>
 	    <dependency org="xml-apis" name="xml-apis" rev="2.0.2" conf="default"/>
 	    <dependency org="claml" name="claml-model" rev="1.0.0" conf="default"/>
  		<dependency org="lexevs" name="lexgrid-resourcereader" rev="${vBuild}" conf="default"/>
@@ -28,13 +30,12 @@
 		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
 		<dependency org="net.sf.opencsv" name="opencsv" rev="2.3" conf="default"/>
-		<dependency org="net.sourceforge.owlapi" name="owlapi-impl" rev="3.4.3" conf="default"/>
-		<dependency org="net.sourceforge.owlapi" name="owlapi-api" rev="3.4.3" conf="default"/>
-		<dependency org="net.sourceforge.owlapi" name="owlapi-apibinding" rev="3.4.3" conf="default"/>
-		<dependency org="net.sourceforge.owlapi" name="owlapi-distribution" rev="3.4.3" conf="default"/>
-		<dependency org="net.sourceforge.owlapi" name="owlapi-parsers" rev="3.4.3" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-impl" rev="5.1.9" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-api" rev="5.1.9" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-apibinding" rev="5.1.9" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-distribution" rev="5.1.9" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-parsers" rev="5.1.9" conf="default"/>
 		<dependency org="org.semanticweb" name="HermiT" rev="1.3.7" conf="default"/>
 		<dependency org="org.codehaus.groovy" name="groovy-all" rev="2.1.7" conf="default"/>
-		<dependency org="com.ibm.icu" name="icu4j" rev="3.6.1" conf="default"/>
    	 </dependencies>
 </ivy-module>
