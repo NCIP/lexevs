@@ -228,8 +228,8 @@ public class OwlApi2LG {
 
     private Map<String, OWLObjectPropertyExpression> inversePropCache;
 
-    final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-    final static OWLDataFactory factory = manager.getOWLDataFactory();
+     OWLOntologyManager manager = null;
+     OWLDataFactory factory = null;
      
     /**
      * Create a new instance for conversion.
@@ -254,7 +254,12 @@ public class OwlApi2LG {
         this.loadPrefs_ = loadPrefs;
         bxp = new BasicXMLParser();
         databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-
+        try{
+        manager = OWLManager.createOWLOntologyManager();
+        factory = manager.getOWLDataFactory();
+        }catch(Throwable t){
+            t.printStackTrace();
+        }
     }
 
     /**
@@ -946,7 +951,8 @@ public class OwlApi2LG {
                 }
                 
                 if(restriction instanceof OWLDataHasValue){
-                    String label = restriction.getClassExpressionType().getName();
+                    String label = ((OWLDataHasValue) restriction).getClassExpressionType().getName();
+
                     if (label.isEmpty()) {
                         label = renderer.render(restriction);
                     }
@@ -1945,10 +1951,13 @@ public class OwlApi2LG {
     protected void initSchemeMetadata(){
         // Set the ontology version from the versionInfo tag
         String version = "";
-
-        IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI().get();
-        String uri = ontologyIRI.toString();
-
+        IRI ontologyIRI = null;
+        String uri = null;
+        
+        if(ontology.getOntologyID().getOntologyIRI().isPresent()){
+           ontologyIRI = ontology.getOntologyID().getOntologyIRI().get();
+           uri = ontologyIRI.toString();
+        }
             version = getVersionInfo();
 
         if (ontologyIRI != null) {
@@ -2012,15 +2021,17 @@ public class OwlApi2LG {
                 }
                 if(owl.getProperty().getIRI().getFragment().equals("source")){
                     Source source = new Source();
-                    source.setContent(stripQuotes(owl.getValue().toString()));
+                    String value = owl.getValue().isLiteral()? owl.getValue().asLiteral().get().getLiteral(): owl.getValue().toString();
+                    source.setContent(value);
                     lgSupportedMappings_.registerSupportedSource(resolveLabel(owl.getProperty()), 
-                             getNameSpace(owl.getProperty()), stripQuotes(owl.getValue().toString()), null, false);            
+                             getNameSpace(owl.getProperty()), value, null, false);            
                     lgScheme_.getSourceAsReference().add(source);
                 }
             }
             
-            IRI versionIRI = ontology.getOntologyID().getVersionIRI().get();
-            if(versionIRI != null){
+            IRI versionIRI = null;
+            if(ontology.getOntologyID().getVersionIRI().isPresent()){
+                versionIRI = ontology.getOntologyID().getVersionIRI().get();
                 Properties props = new Properties();
                 Property prop = new Property();
                 prop.setPropertyName("versionIRI");
@@ -2113,7 +2124,8 @@ public class OwlApi2LG {
     }
 
     String getDefaultNameSpace() {
-        IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI().get();
+        IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI().isPresent()? 
+                ontology.getOntologyID().getOntologyIRI().get(): null;
         String localName = renderer.getOntologyShortFormProvider().getShortForm(ontologyIRI);
         return localName;
     }
@@ -3569,6 +3581,8 @@ public class OwlApi2LG {
                 label = rdfProp.getClassExpressionType().getName();
             }
          String value = parseQualifierValueFromManchesterRender(renderer.render(rdfProp)); 
+         //in case we've added a namespace prefix
+        value = value != null? value.substring(value.lastIndexOf(':') +  1, value.length()): value;
         AssociationQualification lgQual = CreateUtils.createAssociationQualification(label, null, value == null? "":value,
                 lgSupportedMappings_);
         return lgQual;
