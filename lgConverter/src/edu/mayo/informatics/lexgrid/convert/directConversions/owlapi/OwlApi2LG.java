@@ -951,8 +951,8 @@ public class OwlApi2LG {
                 }
                 
                 if(restriction instanceof OWLDataHasValue){
-                    String label = ((OWLDataHasValue) restriction).getClassExpressionType().getName();
-
+                    String label = ((OWLDataHasValue) restriction).getValue().getDatatype().getIRI().getShortForm();;
+                    System.out.println("PRINT NAME: " + label);
                     if (label.isEmpty()) {
                         label = renderer.render(restriction);
                     }
