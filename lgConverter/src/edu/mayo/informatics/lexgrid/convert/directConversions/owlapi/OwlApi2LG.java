@@ -951,8 +951,7 @@ public class OwlApi2LG {
                 }
                 
                 if(restriction instanceof OWLDataHasValue){
-                    String label = ((OWLDataHasValue) restriction).getValue().getDatatype().getIRI().getShortForm();;
-                    System.out.println("PRINT NAME: " + label);
+                    String label = ((OWLDataHasValue) restriction).getValue().getDatatype().getIRI().getShortForm();
                     if (label.isEmpty()) {
                         label = renderer.render(restriction);
                     }
@@ -2357,7 +2356,7 @@ public class OwlApi2LG {
             if (isTransitive) {
                 if (prefManager.isDoManageInverseAndTransitiveDesignation()) {
                     if (isThisObjectPropertyAManagedInverse(objectProp)) {
-                        processObjectPropertyInverses(objectProp);
+                        processObjectPropertyAsInverse(objectProp);
                     }
                 } else {
                     processObjectPropertyInverses(objectProp);
@@ -2405,6 +2404,13 @@ public class OwlApi2LG {
         }
         }
         
+    }
+    
+    private void processObjectPropertyAsInverse(OWLObjectProperty objectProp) {
+
+        if(inversePropCache.get(objectProp.getNamedProperty().getIRI().toString()) == null){
+            inversePropCache.put(objectProp.getNamedProperty().getIRI().toString(), objectProp);
+        }
     }
 
     protected AssociationWrapper addAssociation(OWLAnnotation owlProp) {

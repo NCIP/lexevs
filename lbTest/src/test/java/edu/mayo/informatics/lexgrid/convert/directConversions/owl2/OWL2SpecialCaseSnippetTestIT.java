@@ -325,7 +325,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			true, false, 10, 10, null, null, null, null, -1);
 
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateQualifier("CL_0000001", "obo:CL_0000001", itr));
+	assertTrue(validateQualifier( "CL_0000001","CL_0000001", itr));
 	
 	}
 	
@@ -500,8 +500,8 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 
 		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("precedes")));
 		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("preceded by")));
-		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("precedes")).anyMatch(y -> y.getRootCode().equals("@@")));
-		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("preceded by")).anyMatch(y -> y.getRootCode().equals("@")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("precedes")).anyMatch(y -> y.getRootCode().equals("@")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("preceded by")).anyMatch(y -> y.getRootCode().equals("@@")));
 	}
 	
 	@Test
