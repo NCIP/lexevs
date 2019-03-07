@@ -45,8 +45,6 @@
 		<dependency org="com.github.ben-manes.caffeine" name="caffeine" rev="2.7.0" conf="default" />
 		<dependency org="org.eclipse.rdf4j" name="rdf4j-rio-api" rev="2.5.0-M2" conf="default" />
 		<dependency org="org.eclipse.rdf4j" name="rdf4j-model" rev="2.5.0-M2" conf="default" />
-<!--		<dependency org="org.eclipse.rdf4j" name="rdf4j-rio-turtle" rev="2.5.0-M2" conf="default" /> 
-		<dependency org="org.eclipse.rdf4j" name="rdf4j-rio-rdfxml" rev="2.5.0-M2" conf="default" /> -->
 		<dependency org="org.eclipse.rdf4j" name="rdf4j-util" rev="2.5.0-M2" conf="default" />
 		<dependency org="org.tukaani" name="xz" rev="1.0" conf="default" />
 		<dependency org="com.github.vsonnier" name="hppcrt" rev="0.7.5" conf="default" />
