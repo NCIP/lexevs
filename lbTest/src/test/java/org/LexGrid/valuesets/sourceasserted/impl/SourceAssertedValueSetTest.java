@@ -145,6 +145,7 @@ public class SourceAssertedValueSetTest{
 		assertTrue(itr.hasNext());
 		assertTrue(itr.numberRemaining() > 0);
 		assertEquals(itr.numberRemaining(), 2);
+		
 	}
 	
 	@Test
@@ -196,13 +197,13 @@ public class SourceAssertedValueSetTest{
 		assertEquals(code, "C54453");
 	}
 	
-    @AfterClass
-	public static void dropIndexTest() {
-		service.dropIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
-		boolean doesExist = service.doesIndexExist(Constructors.
-				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
-		assertFalse(doesExist);
-	}
+//    @AfterClass
+//	public static void dropIndexTest() {
+//		service.dropIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
+//				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+//		boolean doesExist = service.doesIndexExist(Constructors.
+//				createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"));
+//		assertFalse(doesExist);
+//	}
 
 }
