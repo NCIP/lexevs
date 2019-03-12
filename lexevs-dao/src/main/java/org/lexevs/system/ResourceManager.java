@@ -31,9 +31,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
-import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -55,11 +56,10 @@ import org.lexevs.dao.database.connection.SQLInterface;
 import org.lexevs.dao.database.type.DatabaseType;
 import org.lexevs.dao.index.connection.IndexInterface;
 import org.lexevs.exceptions.MissingResourceException;
-import org.lexevs.exceptions.UnexpectedInternalError;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.WriteLockManager;
-import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.Registry.KnownTags;
+import org.lexevs.registry.service.XmlRegistry;
 import org.lexevs.registry.service.XmlRegistry.DBEntry;
 import org.lexevs.registry.service.XmlRegistry.HistoryEntry;
 import org.lexevs.system.constants.SystemVariables;
@@ -148,7 +148,7 @@ public class ResourceManager implements SystemResourceService {
     // A cache to use for values that are frequently used. Automatically throws
     // away oldest unused items.
     /** The cache_. */
-    private Map cache_;
+    private ConcurrentHashMap cache_;
 
     // Properties object that I was launched with (need to keep incase reinit is
     // called)
@@ -219,7 +219,7 @@ public class ResourceManager implements SystemResourceService {
      * @throws Exception the exception
      */
     public void init() throws Exception {
-        cache_ = Collections.synchronizedMap(new LRUMap(systemVars_.getCacheSize()));  
+        cache_ = new ConcurrentHashMap(systemVars_.getCacheSize());
         
         // This increases the ability of Lucene to do queries against
         // large indexes like the MetaThesaurus without getting errors.

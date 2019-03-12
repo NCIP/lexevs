@@ -90,7 +90,6 @@ You may obtain a copy of the License at
 		<property name="cobertura.dir" value="${libs}/cobertura" />
 		<property name="fatjar.dir" value="${libs}/fatjar" />
 		<property name="castor.libs.dir" value="${libs}/castor" />
-		<property name="groboutils.libs.dir" value="${libs}/groboutils" />
 		<property name="asm.libs.dir" value="${libs}/asm" />
 		<property name="easymock.libs.dir" value="${libs}/easymock" />
 		<property name="cglib.libs.dir" value="${libs}/cglib" />	
@@ -184,9 +183,6 @@ You may obtain a copy of the License at
 			
 			<fileset dir="${junit.libs.dir}" id="junit">
 				<include name="junit-4.4.jar"/>
-			</fileset>
-			<fileset dir="${groboutils.libs.dir}" id="groboutils">
-				<include name="GroboUtils-5-core.jar"/>
 			</fileset>
 			<fileset dir="${asm.libs.dir}" id="asm">
 				<include name="*.jar"/>
