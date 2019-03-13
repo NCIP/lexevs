@@ -1920,12 +1920,7 @@ public class OwlApi2LG {
         Mappings mappings = new Mappings();
         lgScheme_.setMappings(mappings);
         ManchesterOWLSyntaxPrefixNameShortFormProvider prov = new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology);
-//        for (Iterator i = ontology.getImportsDeclarations().iterator(); i.hasNext();) {
-//            OWLImportsDeclaration decl = (OWLImportsDeclaration) i.next();
-//
-//            decl.getURI().toString();
-//
-//        }
+
         for (Iterator i = prov.getPrefixName2PrefixMap().keySet().iterator(); i.hasNext();) {
             String prefixName = (String) i.next();
             
