@@ -90,7 +90,6 @@ You may obtain a copy of the License at
 		<property name="cobertura.dir" value="${libs}/cobertura" />
 		<property name="fatjar.dir" value="${libs}/fatjar" />
 		<property name="castor.libs.dir" value="${libs}/castor" />
-		<property name="groboutils.libs.dir" value="${libs}/groboutils" />
 		<property name="asm.libs.dir" value="${libs}/asm" />
 		<property name="easymock.libs.dir" value="${libs}/easymock" />
 		<property name="cglib.libs.dir" value="${libs}/cglib" />	
@@ -184,9 +183,6 @@ You may obtain a copy of the License at
 			
 			<fileset dir="${junit.libs.dir}" id="junit">
 				<include name="junit-4.4.jar"/>
-			</fileset>
-			<fileset dir="${groboutils.libs.dir}" id="groboutils">
-				<include name="GroboUtils-5-core.jar"/>
 			</fileset>
 			<fileset dir="${asm.libs.dir}" id="asm">
 				<include name="*.jar"/>
@@ -384,6 +380,18 @@ You may obtain a copy of the License at
 			<entry key="build.computer"
 				value="${env.COMPUTERNAME}"/>
 		</propertyfile>
+	</target>
+	
+	<target name="copybuildinfo" depends="buildinfo" description="copy build properties file to lbImpl">
+		<tstamp>
+		     <format property="timestamp" pattern="yyyy-MM-dd_HH:mm:ss"/>
+		</tstamp>
+
+		<!-- Copy the version Java file to lbImpl package.  Then replace the tokens values with the actual version and timestamp. -->
+		<copy toFile="${lbImpl.dir}/src/org/LexGrid/LexBIG/Impl/LexEVSVersion.java" file="${file.dir}/LexEVSVersion.java" overwrite="true"/>
+		<replace file="${lbImpl.dir}/src/org/LexGrid/LexBIG/Impl/LexEVSVersion.java" token="@VERSION@" value="${vBuild}"/>
+		<replace file="${lbImpl.dir}/src/org/LexGrid/LexBIG/Impl/LexEVSVersion.java" token="@TIMESTAMP@" value="${timestamp}"/>
+		
 	</target>
 	
 	<target name="copyaway" depends="init" >
@@ -829,7 +837,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 	<!-- note that forking of the junit element is critical to making this run -->
 	<!-- without forking nothing happens and no logs tell you why -->
 
-	<target name="run-junit-cobertura" depends="init, clean, buildinfo, predef,
+	<target name="run-junit-cobertura" depends="init, clean, buildinfo, copybuildinfo, predef,
 		lgModel, lgUtility,
 		lgResourceReader,
 		lbModel, lbInterfaces, lbImpl, lbAdmin,
@@ -1059,7 +1067,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		build-lexbig-jar, lexevs.pack, pack"/>
 		
 	<target name="build-lexbig-jar" depends="
-			init, clean, buildinfo, predef,
+			init, clean, buildinfo, copybuildinfo, predef,
 			lexbig.jar"/>
 	<target name="build-pack" depends="build-lexbig-jar, pack"></target>
 	

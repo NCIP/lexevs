@@ -787,4 +787,14 @@ public class LexBIGServiceImpl implements LexBIGService {
     public void setAssertedValueSetConfiguration(AssertedValueSetParameters params) {
         this.params = params;
     }
+
+    @Override
+    public String getLexEVSBuildVersion() {
+        return LexEVSVersion.getLexEVSBuildVersion();
+    }
+    
+    @Override
+    public String getLexEVSBuildTimestamp() {
+        return LexEVSVersion.getLexEVSBuildTimestamp();
+    }
 }

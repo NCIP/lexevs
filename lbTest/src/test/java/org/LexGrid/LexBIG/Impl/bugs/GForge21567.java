@@ -18,13 +18,9 @@
  */
 package org.LexGrid.LexBIG.Impl.bugs;
 
-import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
-import net.sourceforge.groboutils.junit.v1.TestRunnable;
-
 import java.util.Arrays;
 
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.aspectj.util.Reflection;
 import org.lexevs.system.ResourceManager;
 
 public class GForge21567 extends LexBIGServiceTestCase {
@@ -33,25 +29,6 @@ public class GForge21567 extends LexBIGServiceTestCase {
     @Override
     protected String getTestID() {
         return testID;
-    }
-
-/**
-     * Test putting values in the SystemResourceService cache in a multithreaded environment.
-     * 
-     * @throws Throwable
-     */
-public void testThreadSafeResourceManagerCache() throws Throwable {
-
-        ResourceManager rm = ResourceManager.instance();
-
-        TestRunnable[] runnables = {
-                new TestResourceManagerPut(rm, 1000, 1),
-                new TestResourceManagerPut(rm, 1000, 1)
-        };
-
-        MultiThreadedTestRunner runner = new MultiThreadedTestRunner(runnables);
-
-        runner.runTestRunnables();
     }
 
 public void testResourceManagerThreadInitialization(){
@@ -63,23 +40,4 @@ public void testResourceManagerThreadInitialization(){
 	assertFalse(runnableClassExists);
 }
 
-    class TestResourceManagerPut extends TestRunnable {
-        private int count;
-        private int sleepTime;
-        private ResourceManager rm;
-
-        public TestResourceManagerPut( ResourceManager rm, int count, int delay )
-        {
-            this.rm = rm;
-            this.count = count;
-            this.sleepTime = delay;
-        }
-
-        public void runTest() throws Throwable {
-            for (int i = 0; i < this.count; ++i) {
-                Thread.sleep( this.sleepTime );
-                rm.getCache().put(i, i + i);
-            }
-        }
-    }   
 }

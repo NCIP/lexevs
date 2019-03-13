@@ -21,22 +21,15 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
-import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
-import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.LexBIG.DataModel.enums.PropertyType;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -44,8 +37,8 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
@@ -54,8 +47,8 @@ import org.LexGrid.naming.SupportedProperty;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runner.RunWith;
+import org.junit.runners.BlockJUnit4ClassRunner;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCase {
@@ -77,6 +70,22 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
         return testID;
     }
     
+   @Test
+   public void testGetLexevsBuildVersion() throws LBException {
+	   String version = lbs.getLexEVSBuildVersion();
+	   System.out.println("LexEVS Build Version: " + version);
+	   assertNotNull(version);
+	   assertTrue(!version.equals("@VERSION@"));
+   }
+   
+   @Test
+   public void testGetLexevsBuildTimestamp() throws LBException {
+	   String timestamp = lbs.getLexEVSBuildTimestamp();
+	   System.out.println("LexEVS Build Timestamp: " + timestamp);
+	   assertNotNull(timestamp);
+	   assertTrue(!timestamp.equals("@TIMESTAMP@"));
+   }
+
     @Test
     public void testGetNodespath() throws LBException {
     	String codingSchemeUri = "urn:oid:11.11.0.1";
@@ -158,49 +167,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	String forwardName = lbscm.getAssociationForwardName("A1", AUTO_SCHEME, null);
     	assertEquals("GoingForward", forwardName);
     }
-    
-    @Test
-    @Category(RemoveFromDistributedTests.class)
-    public void testThreadSafeCodingSchemeCaches() throws Throwable {
-        Map cache = lbscm.getCache_CodingSchemes();
-        runCacheThreadSaveTest(cache);       
-    }
-    
-    @Test
-    @Category(RemoveFromDistributedTests.class)
-    public void testThreadSafeCopyRightsCaches() throws Throwable {
-        Map cache = lbscm.getCache_CopyRights();
-        runCacheThreadSaveTest(cache);        
-    }
-    
-    @Test
-    @Category(RemoveFromDistributedTests.class)
-    public void testThreadSafeHIDCaches() throws Throwable {
-        Map cache = lbscm.getCache_HIDs();
-        runCacheThreadSaveTest(cache);      
-    }
-    
-    @Test
-    @Category(RemoveFromDistributedTests.class)
-    public void testThreadSafeHPathToRootExistsCaches() throws Throwable {
-        Map cache = lbscm.getCache_HPathToRootExists();
-        runCacheThreadSaveTest(cache);      
-    }
-    
-    @Test
-    @Category(RemoveFromDistributedTests.class)
-    public void testThreadSafeHRootCodesCaches() throws Throwable {
-        Map cache = lbscm.getCache_HRootCodes();
-        runCacheThreadSaveTest(cache);       
-    }
-    
-    @Test
-    @Category(RemoveFromDistributedTests.class)
-    public void testThreadSafeHRootsCaches() throws Throwable {
-        Map cache = lbscm.getCache_HRoots();
-        runCacheThreadSaveTest(cache);      
-    }
-    
+       
     @Test
     public void testGetAssociationNameFromAssociationCode() throws Exception {
     	String assocName = lbscm.getAssociationNameFromAssociationCode(AUTO_SCHEME, null, "AssocEntity");
@@ -587,38 +554,5 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
        	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
-    }
-    
-    protected void runCacheThreadSaveTest(Map cache) throws Throwable {
-        TestRunnable[] runnables = {
-                new TestCachePut(cache, 1000, 1),
-                new TestCachePut(cache, 1000, 1)
-        };
-
-        MultiThreadedTestRunner runner = new MultiThreadedTestRunner(runnables);
-
-        runner.runTestRunnables();   
-    }
-  
-    
-    class TestCachePut extends TestRunnable {
-        private int count;
-        private int sleepTime;
-        private Map cache;
-
-        public TestCachePut( Map cache, int count, int delay )
-        {
-            this.cache = cache;
-            this.count = count;
-            this.sleepTime = delay;
-        }
-
-        public void runTest() throws Throwable {
-            for (int i = 0; i < this.count; ++i) {
-                Thread.sleep( this.sleepTime );
-                cache.put(i, i + i);
-            }
-        }
-    }
-    
+    }    
 }
