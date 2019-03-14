@@ -872,8 +872,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testUnionObjectAndDataType2ndOr() throws LBException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("PlainLiteral"));
-		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("string"));
+		ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
 		cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("in_organism"), null);
@@ -881,7 +881,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("PlainLiteral", "all organisms", itr1));
+		assertTrue(validateQualifier("string", "all organisms", itr1));
 	}
 	
 	@Test
@@ -897,8 +897,8 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 	
 	@Test
 	public void testIntersectionObjectAndDatatype2ndAnd() throws LBException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("PlainLiteral"));
-		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("string"));
+		ResolvedConceptReferencesIterator rcri = cnsp.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
 		cngp = cngp.restrictToAssociations(
@@ -908,7 +908,7 @@ public class OWL2PrimitivesUnannotatedSnippetTestIT extends DataLoadTestBaseUnan
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("PlainLiteral", "homo sapiens", itr1));
+		assertTrue(validateQualifier("string", "homo sapiens", itr1));
 	}
 	
 

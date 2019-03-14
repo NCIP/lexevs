@@ -65,7 +65,7 @@
 		<dependency org="org.apache.ibatis" name="ibatis-sqlmap" rev="2.3.4.726" conf="default"/>
    		<dependency org="antlr" name="antlr" rev="2.7.7" conf="default"/>
    		<dependency org="org.dbunit" name="dbunit" rev="2.4.7" conf="default"/>
-   		<dependency org="commons-io" name="commons-io" rev="1.4" conf="default" />
+   		<dependency org="commons-io" name="commons-io" rev="2.6" conf="default" />
    	    <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" conf="default" />
    	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default"/>	
    	    <dependency org="javax.persistence" name="persistence-api" rev="1.0" conf="default->*"/>  

@@ -323,6 +323,27 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	public void testGetValueSetDefinitionFromAssertedValueSetTEST() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/TEST/C48323"), null);
+		assertNotNull(vdDef);
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());	
+	}
+	
+	
+	@Test
+	public void testGetValueSetDefinitionFromAssertedValueSetTestFDA() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C48323"), null);
+		assertNotNull(vdDef);
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());	
+	}
+	
+	@Test
 	public void isBadValueSetDefinitionCreated() throws LBException, URISyntaxException{
 		ValueSetDefinition def = getValueSetDefinitionService()
 				.getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C117743"), null);

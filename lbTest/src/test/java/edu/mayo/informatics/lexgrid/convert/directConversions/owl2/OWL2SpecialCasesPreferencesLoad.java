@@ -76,8 +76,8 @@ public class OWL2SpecialCasesPreferencesLoad extends TestCase{
 
 		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("willing")));
 		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("unwilling")));
-		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("willing")).anyMatch(y -> y.getRootCode().equals("@@")));
-		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("unwilling")).anyMatch(y -> y.getRootCode().equals("@")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("willing")).anyMatch(y -> y.getRootCode().equals("@")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("unwilling")).anyMatch(y -> y.getRootCode().equals("@@")));
 	}
 
 }
