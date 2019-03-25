@@ -46,11 +46,11 @@ public class CacheConfigLocationFactory implements FactoryBean<Resource> {
 				+ File.separator + ".." + File.separator + this.cacheConfigFileName);
 		
 		if(!resource.exists()){
-			LoggerFactory.getLogger().warn("No user defined Cache Settings available, using defaults.");
+			LoggerFactory.getLogger().debug("No user defined Cache Settings available, using defaults.");
 			
 			resource = new ClassPathResource(defaultClasspathCacheConfigFilePath);
 		} else {
-			LoggerFactory.getLogger().warn("Found user defined Cache Settings at: " + resource.getFile().getPath());
+			LoggerFactory.getLogger().debug("Found user defined Cache Settings at: " + resource.getFile().getPath());
 		}
 		
 		return resource;
