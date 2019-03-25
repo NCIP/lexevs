@@ -93,7 +93,6 @@ import org.semanticweb.owlapi.model.OWLAnnotationValue;
 import org.semanticweb.owlapi.model.OWLAxiom;
 import org.semanticweb.owlapi.model.OWLCardinalityRestriction;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassAxiom;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.model.OWLDataExactCardinality;
 import org.semanticweb.owlapi.model.OWLDataFactory;
@@ -111,7 +110,6 @@ import org.semanticweb.owlapi.model.OWLDisjointUnionAxiom;
 import org.semanticweb.owlapi.model.OWLEntity;
 import org.semanticweb.owlapi.model.OWLEquivalentClassesAxiom;
 import org.semanticweb.owlapi.model.OWLHasValueRestriction;
-import org.semanticweb.owlapi.model.OWLImportsDeclaration;
 import org.semanticweb.owlapi.model.OWLIndividual;
 import org.semanticweb.owlapi.model.OWLLiteral;
 import org.semanticweb.owlapi.model.OWLNamedIndividual;
@@ -143,9 +141,6 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 import org.semanticweb.owlapi.reasoner.OWLReasonerFactory;
 import org.semanticweb.owlapi.reasoner.structural.StructuralReasonerFactory;
 import org.semanticweb.owlapi.search.EntitySearcher;
-import org.semanticweb.owlapi.search.Searcher;
-import org.semanticweb.owlapi.util.OWLOntologyWalker;
-import org.semanticweb.owlapi.util.OWLOntologyWalkerVisitorEx;
 import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
@@ -155,12 +150,10 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
-import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWL2DatatypeImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationPropertyRangeAxiomImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImpl;
-import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplNoCompression;
 
 /**
  * This is the main class containing the logic for the conversion from OWL to
@@ -885,7 +878,12 @@ public class OwlApi2LG {
                 if (restriction instanceof OWLQuantifiedDataRestriction) {
                     OWLQuantifiedDataRestriction rest = (OWLQuantifiedDataRestriction) restriction;
                     OWLDataRange fillerProp = rest.getFiller();
-                    targetNameSpace = getNameSpace(((OWLDatatypeImpl)rest.getFiller()).getIRI());
+                    if(rest.getFiller() instanceof OWL2DatatypeImpl){
+                    targetNameSpace = getNameSpace(((OWL2DatatypeImpl)rest.getFiller()).getIRI());
+                    }
+                    else{
+                        targetNameSpace = getNameSpace(((OWLDatatypeImpl)rest.getFiller()).getIRI());
+                    }
                     opData = CreateUtils.createAssociationTextData(renderer.render(fillerProp));
                     targetCode =  buildDataTypeEntity(fillerProp, targetNameSpace);
                 }
