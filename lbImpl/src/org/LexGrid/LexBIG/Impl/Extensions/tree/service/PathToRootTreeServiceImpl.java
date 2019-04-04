@@ -20,6 +20,8 @@ package org.LexGrid.LexBIG.Impl.Extensions.tree.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -349,7 +351,13 @@ public class PathToRootTreeServiceImpl extends AbstractExtendable implements Tre
 	public LexEvsTreeNode getSubConcepts(String codingScheme,
 			CodingSchemeVersionOrTag versionOrTag, String code,
 			String namespace, String hierarchyId) {
-		List<SupportedHierarchy> hierarchies = this.getSupportedHierarchies(codingScheme, versionOrTag, hierarchyId);
+	    
+	    //We're taking some steps to insure only one hierarchy is represented
+	    //instead of throwing an error
+		List<SupportedHierarchy> hierarchies = this.getSupportedHierarchies(
+		        codingScheme, versionOrTag, hierarchyId).
+		        stream().filter(x -> x.getAssociationNames()[0].equals("subClassOf") || 
+		                x.getContent().equals("is_a") || x.getLocalId().equals("is_a")).collect(Collectors.toList());
 		Direction direction = this.getDirection(hierarchies);
 		List<String> associationNames = this.getAssociationNames(hierarchies);
 		
