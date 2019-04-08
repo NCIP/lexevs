@@ -22,6 +22,7 @@ import java.net.URI;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -71,6 +72,17 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	@Override
 	public ValueSetDefinition getValueSetDefinitionByUri(URI uri) {
 		return this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetDefinitionByURI(uri.toString());
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.service.valuesets.ValueSetDefinitionService#getValueSetDefinitionByUri(java.net.URI)
+	 */
+	@Override
+	public Map<String,ValueSetDefinition> getValueSetDefinitionsByResgistryEntry() {
+		long start = System.currentTimeMillis();
+		Map<String,ValueSetDefinition> map = this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetURIMapToDefinitions();
+		System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+		return map;
 	}
 
 	/* (non-Javadoc)
