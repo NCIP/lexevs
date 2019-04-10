@@ -12,6 +12,7 @@
 	<typeAlias alias="propertyReference" type="org.LexGrid.valueSets.PropertyReference" />
 	<typeAlias alias="propertyMatchValue" type="org.LexGrid.valueSets.PropertyMatchValue" />
 	<typeAlias alias="valueSetDefinitionBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean"/>
+	<typeAlias alias="valueSetDefinitionMapHelper" type="org.lexevs.dao.database.ibatis.valuesets.helper.ValueSetDefinitionMapHelper" />	
 	
 	<resultMap id="valueSetDefinitionResult" class="valueSetDefinition">
 		<result property="valueSetDefinitionURI" column="valueSetDefURI" />
@@ -59,20 +60,18 @@
 		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 	
-	<resultMap id="valueSetDefinitionMap" class="valueSetDefinitionBean">
+	<resultMap id="valueSetDefinitionMap" class="valueSetDefinitionMapHelper">
 		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
 		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
 		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
 		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
 		<result property="valueSetDefinition.entityDescription.content" column="description" />
-		<result property="systemReleaseUId" column="releaseGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="valueSetDefinition.isActive" column="isActive" />
 		<result property="valueSetDefinition.owner" column="owner" />
 		<result property="valueSetDefinition.status" column="status" />
 		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
 		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
+		<result property="valueSetDefinitionGuid" column="vskey" />
 	</resultMap>
 	
 	<resultMap  id="definitionEntryResult" class="definitionEntry">
@@ -405,9 +404,8 @@
 	
 		<select id="getValueSetDefinitionMetadataHashMapByRegistryDesignation" 		
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="ValueSetDefinition.valueSetDefinitionResult">
+		resultMap="ValueSetDefinition.valueSetDefinitionMap">
 		SELECT
-			vs.valueSetDefGuid,
 			vs.valueSetDefURI,
 			vs.valueSetDefName,
 			vs.defaultCodingScheme,
@@ -419,25 +417,13 @@
 			vs.status,
 			vs.effectiveDate,
 			vs.expirationDate,
-			vs.entryStateGuid,
-			vsMulti.vsMultiAttribGuid,
-			vsMulti.referenceGuid,
-			vsMulti.referenceType,
-			vsMulti.attributeType,
-			vsMulti.attributeValue,
-			vsMulti.subRef,
-			vsMulti.role,
-			vsMulti.entryStateGuid AS esGuid				
+			vs.valueSetDefGuid AS vskey
 		FROM
 			$prefix$registry as reg
 		JOIN
-			$prefix$valueSetDefinition vs
+			$prefix$valueSetDefinition as vs
 		ON
-		    reg.resourceURI=vs.valueSetDefURI
-		LEFT JOIN
-			$prefix$vsMultiAttrib vsMulti
-		ON
-			vsMulti.referenceGuid = vs.valueSetDefGuid
+			reg.resourceURI=vs.valueSetDefURI
 		WHERE
 			reg.resourceType = #param1#
 	</select>

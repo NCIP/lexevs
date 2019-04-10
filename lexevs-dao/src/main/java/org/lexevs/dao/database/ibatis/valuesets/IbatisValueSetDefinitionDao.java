@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -67,6 +68,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean;
+import org.lexevs.dao.database.ibatis.valuesets.helper.ValueSetDefinitionMapHelper;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -1181,10 +1183,25 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, ValueSetDefinition> getValueSetURIMapToDefinitions() {
-		return  (Map<String, ValueSetDefinition>)this
-		.getSqlMapClientTemplate().queryForMap(
-				GET_MAP_OF_ALL_VSD_WITH_URI_KEY,
-				new PrefixedParameter(getPrefix(), "VALUESET_DEFINITION"), "valueSetDefinitionURI");
+		long start = System.currentTimeMillis();
+		
+		List<ValueSetDefinitionMapHelper> guidMapHelper = 
+				(List<ValueSetDefinitionMapHelper>)this 
+				.getSqlMapClientTemplate().queryForList(
+						GET_MAP_OF_ALL_VSD_WITH_URI_KEY,
+						new PrefixedParameter(getPrefix(), "VALUESET_DEFINITION"));
+		
+		guidMapHelper.parallelStream().forEach(
+				x -> x.valueSetDefinition.setMappings(getMappings(x.valueSetDefinitionGuid)));
+		
+		Map<String, ValueSetDefinition> uriMap = 
+				(Map<String, ValueSetDefinition>)guidMapHelper.
+				stream().
+				collect(
+						Collectors.toMap(k -> k.getValueSetDefinition().getValueSetDefinitionURI(), 
+								k -> k.getValueSetDefinition()));
+		System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+		return  uriMap;
 	}
 	
 }

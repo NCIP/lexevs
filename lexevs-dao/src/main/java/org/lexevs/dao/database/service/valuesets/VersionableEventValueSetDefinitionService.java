@@ -79,9 +79,7 @@ public class VersionableEventValueSetDefinitionService extends AbstractDatabaseS
 	 */
 	@Override
 	public Map<String,ValueSetDefinition> getValueSetDefinitionsByResgistryEntry() {
-		long start = System.currentTimeMillis();
 		Map<String,ValueSetDefinition> map = this.getDaoManager().getCurrentValueSetDefinitionDao().getValueSetURIMapToDefinitions();
-		System.out.println("Execution time: " + (System.currentTimeMillis() - start));
 		return map;
 	}
 
