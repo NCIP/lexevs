@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -1588,6 +1590,26 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	            } 
 	        } 
 		}
+	}
+	
+	@Test
+	public void testGetURIVSDefinitionMap() {
+		// Start the value set resolution export
+		Map<String, ValueSetDefinition> map =  getValueSetDefinitionService().getURIToValueSetDefinitionsMap();
+		assertEquals(map.values().size(), 28);
+		Iterator<Entry<String, ValueSetDefinition>> itr = map.entrySet().iterator();
+		assertTrue(itr.hasNext());
+		Entry<String, ValueSetDefinition> entry = (Entry<String, ValueSetDefinition>)itr.next();
+		assertEquals(entry.getKey(), entry.getValue().getValueSetDefinitionURI());
+		assertNotNull(entry.getValue().getMappings().getSupportedCodingScheme(0));
+		assertNotNull(entry.getValue().getMappings().getSupportedCodingScheme(0).getLocalId());
+		assertNotNull(entry.getValue().getMappings().getSupportedCodingScheme(0).getContent());
+		assertNotNull(entry.getValue().getMappings().getSupportedNamespace(0));
+		assertNotNull(entry.getValue().getMappings().getSupportedNamespace(0).getLocalId());
+		assertNotNull(entry.getValue().getMappings().getSupportedNamespace(0).getContent());
+		assertNotNull(entry.getValue().getMappings().getSupportedSource(0));
+		assertNotNull(entry.getValue().getMappings().getSupportedSource(0).getLocalId());
+		assertNotNull(entry.getValue().getMappings().getSupportedSource(0).getContent());
 	}
 	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){

@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AbsoluteCodingSchemeVersionReferenceList;
@@ -554,6 +555,16 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 		return this.getValueSetDefinitionService().listValueSetDefinitionURIs();
 	}
     
+    /*
+     * (non-Javadoc)
+     * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#listValueSetDefinitionURIs()
+     */
+    @Override
+	public Map<String, ValueSetDefinition> getURIToValueSetDefinitionsMap(){
+		getLogger().logMethod(new Object[]{});
+		return this.getValueSetDefinitionService().getValueSetDefinitionsByResgistryEntry();
+	}
+    
 	/*
 	 * (non-Javadoc)
 	 * @see org.lexgrid.valuesets.LexEVSValueSetDefinitionServices#getAllValueSetDefinitionsWithNoName()
@@ -1071,6 +1082,13 @@ public class LexEVSValueSetDefinitionServicesImpl implements LexEVSValueSetDefin
 	
 	private ValueSetDefinitionService getValueSetDefinitionService() {
 		return this.getDatabaseServiceManager().getValueSetDefinitionService();
+	}
+	
+	public static void main(String ...args){
+		Map<String, ValueSetDefinition> defs = 
+				LexEVSValueSetDefinitionServicesImpl.defaultInstance().
+				getURIToValueSetDefinitionsMap();
+		defs.values().forEach(x -> System.out.println(x.getValueSetDefinitionName()));
 	}
 	
 }
