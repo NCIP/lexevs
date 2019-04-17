@@ -50,6 +50,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToAssociations;
@@ -104,6 +105,8 @@ import org.lexevs.exceptions.MissingResourceException;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.paging.AbstractPageableIterator;
+import org.lexevs.registry.model.RegistryEntry;
+import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.ResourceManager;
 import org.lexevs.system.service.SystemResourceService;
 
@@ -2522,6 +2525,37 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private Boolean isValidMatchAlgorithm(String matchAlgorithm) {
         return Arrays.asList(LBConstants.MatchAlgorithms.values()).
                 stream().anyMatch(x -> x.name().equals(matchAlgorithm));
+    }
+
+    @Override
+    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
+        String ontoform = null;
+        if(uri == null){System.out.println("URI cannot be null"); return null;}
+        List<RegistryEntry> regs = LexEvsServiceLocator.getInstance().getRegistry().
+        getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+        if(regs.stream().anyMatch(x -> x.getResourceUri().equals(uri))){
+            ontoform = regs.
+                    stream().
+                    filter(x -> x.getResourceUri().equals(uri)).
+                    findFirst().
+                    get().getDbName();
+
+            return getDesignationFromType(OntologyFormat.valueOf(ontoform));
+        }
+        return TerminologyServiceDesignation.UNIDENTIFIABLE;
+    }
+    
+    private TerminologyServiceDesignation getDesignationFromType(OntologyFormat ontoform){
+        switch(ontoform){
+        case  LEXGRID_MAPPING:
+            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME;
+        case  MRMAP: 
+            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME;
+        case RESOLVEDVALUESET:
+            return TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME;
+        default:
+            return TerminologyServiceDesignation.REGULAR_CODING_SCHEME;
+        }
     }
 
 

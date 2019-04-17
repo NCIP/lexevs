@@ -33,6 +33,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
@@ -554,5 +555,12 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
        	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
-    }    
+    }   
+    
+    @Test
+    public void getTerminologyServiceDesignationForUri(){
+    	assertEquals(lbscm.getTerminologyServiceObjectType(AUTO_URN), TerminologyServiceDesignation.REGULAR_CODING_SCHEME);
+    	assertEquals(lbscm.getTerminologyServiceObjectType(MAPPING_SCHEME_URI), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
+    	assertEquals(lbscm.getTerminologyServiceObjectType("SRITEST:AUTO:AllDomesticButGM"), TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
+    }
 }
