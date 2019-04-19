@@ -51,6 +51,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToAssociations;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToSourceCodes;
@@ -1162,6 +1163,13 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 cng = cng.restrictToAssociations(ConvenienceMethods.createNameAndValueList(sh.getAssociationNames()),
                         null);
                 try {
+                    CodedNodeSet nodeSet = null;
+                    try{
+                    nodeSet = cng.toNodeList(cr, sh.getIsForwardNavigable(), !sh.getIsForwardNavigable(), 0, -1);
+                    }catch(Exception e){
+                        getLogger().warn("No roots found for " + sh.getAssociationNames(0) + " hierarchy");
+                        continue;
+                    }
                     cns = cns.union(cng.toNodeList(cr, sh.getIsForwardNavigable(), !sh.getIsForwardNavigable(), 0, -1));
                 } catch (Exception e) {
                     getLogger().error("Unable to resolve hierarchy root nodes.", e);

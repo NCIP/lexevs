@@ -505,6 +505,9 @@ public class CodedNodeSetImpl implements CodedNodeSet, Cloneable {
         // indexes. Should be a no-op.
         if (cleanedList.getConceptReferenceCount() == 0) {
             ConceptReferenceList newList = new ConceptReferenceList();
+            if(codeList.getConceptReferenceCount() == 0){
+                return newList;
+            }
             newList.addConceptReference(codeList.getConceptReference(0));
             return newList;
         }
