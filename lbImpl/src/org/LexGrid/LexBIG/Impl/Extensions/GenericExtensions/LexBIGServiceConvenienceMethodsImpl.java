@@ -1165,6 +1165,11 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 try {
                     CodedNodeSet nodeSet = null;
                     try{
+                    //While this bad practice it deals with code that we will not re-factor from the
+                    //lbModel code level up through a parameter exception that must also be dealt with
+                    //We have done some re-factoring up this code stack to minimize this but still wound
+                    //up having to catch the exception because we have no way of both passing a legitimate
+                    //query and evaluating a null toNodeList value in the node set.
                     nodeSet = cng.toNodeList(cr, sh.getIsForwardNavigable(), !sh.getIsForwardNavigable(), 0, -1);
                     }catch(Exception e){
                         getLogger().warn("No roots found for " + sh.getAssociationNames(0) + " hierarchy");
