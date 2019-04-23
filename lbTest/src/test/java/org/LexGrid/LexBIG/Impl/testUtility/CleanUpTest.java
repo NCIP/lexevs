@@ -437,6 +437,21 @@ public class CleanUpTest extends TestCase {
 		lbsm.removeCodingSchemeVersion(scheme);
 	}
 	
+	public void testRemoveMrMap2Mapping() throws LBException, LBInvocationException{
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "urn:oid:CL413321.MDR.CST", "200909");
+        AbsoluteCodingSchemeVersionReference b = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "urn:oid:CL413320.MDR.ICD9CM", "200909");
+        
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.deactivateCodingSchemeVersion(b, null);
+        lbsm.removeCodingSchemeVersion(a);
+        lbsm.removeCodingSchemeVersion(b);
+	}
+	
 	public void testRemoveValueSetArtifacts() throws LBException{
 		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
 				.getServiceManager(null);

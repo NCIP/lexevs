@@ -566,6 +566,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     public void getTerminologyServiceDesignationForUri(){
     	assertEquals(lbscm.getTerminologyServiceObjectType(AUTO_URN), TerminologyServiceDesignation.REGULAR_CODING_SCHEME);
     	assertEquals(lbscm.getTerminologyServiceObjectType(MAPPING_SCHEME_URI), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
-    	assertEquals(lbscm.getTerminologyServiceObjectType("SRITEST:AUTO:AllDomesticButGM"), TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
+    	assertEquals(lbscm.getTerminologyServiceObjectType("urn:oid:CL413321.MDR.CST"), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
+    	assertEquals(lbscm.getTerminologyServiceObjectType("SRITEST:AUTO:Automobiles"), TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
     }
 }
