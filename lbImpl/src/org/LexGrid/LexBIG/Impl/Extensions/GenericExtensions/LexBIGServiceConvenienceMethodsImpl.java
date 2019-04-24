@@ -2542,6 +2542,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
             return getDesignationFromType(OntologyFormat.valueOf(ontoform));
         }
+        
         return TerminologyServiceDesignation.UNIDENTIFIABLE;
     }
     
