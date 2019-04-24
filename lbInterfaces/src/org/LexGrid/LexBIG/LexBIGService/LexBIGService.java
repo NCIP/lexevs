@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
@@ -309,5 +310,7 @@ public interface LexBIGService extends Serializable {
     List<CodingScheme> getRegularResolvedVSCodingSchemes();
     
     List<CodingScheme> getSourceAssertedResolvedVSCodingSchemes();
+
+	TerminologyServiceDesignation getTerminologyServiceObjectType(String uri);
 
 }

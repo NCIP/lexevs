@@ -2529,35 +2529,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
     @Override
     public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
-        String ontoform = null;
-        if(uri == null){System.out.println("URI cannot be null"); return null;}
-        List<RegistryEntry> regs = LexEvsServiceLocator.getInstance().getRegistry().
-        getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
-        if(regs.stream().anyMatch(x -> x.getResourceUri().equals(uri))){
-            ontoform = regs.
-                    stream().
-                    filter(x -> x.getResourceUri().equals(uri)).
-                    findFirst().
-                    get().getDbName();
-
-            return getDesignationFromType(OntologyFormat.valueOf(ontoform));
-        }
-        
-        return TerminologyServiceDesignation.UNIDENTIFIABLE;
+        return lbs_.getTerminologyServiceObjectType(uri);
     }
     
-    private TerminologyServiceDesignation getDesignationFromType(OntologyFormat ontoform){
-        switch(ontoform){
-        case  LEXGRID_MAPPING:
-            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME;
-        case  MRMAP: 
-            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME;
-        case RESOLVEDVALUESET:
-            return TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME;
-        default:
-            return TerminologyServiceDesignation.REGULAR_CODING_SCHEME;
-        }
-    }
 
 
     

@@ -42,6 +42,7 @@ import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MrmapRRFLoader;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
@@ -59,6 +60,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
@@ -1018,6 +1020,20 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
         assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
         assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
     }
+    
+	@Order(40)
+	@Test
+	public void loadSourceAssertedValueSetDefinitionsTest() throws LBParameterException, InterruptedException{
+	    AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
+	    		codingSchemeName("owl2lexevs").
+	    		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+	    		baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+	    		sourceName("Contributing_Source").
+	    		build();
+		new SourceAssertedValueSetBatchLoader(params,
+	    		"NCI", "Semantic_Type").run(params.getSourceName());
+	    Thread.sleep(1000);
+	}
     
     
     private LexBIGServiceManager getLexBIGServiceManager() throws LBException {

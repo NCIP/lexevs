@@ -50,7 +50,7 @@ import org.LexGrid.naming.SupportedProperty;
 public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	
 	public enum TerminologyServiceDesignation {
-		REGULAR_CODING_SCHEME, RESOLVED_VALUESET_CODING_SCHEME, MAPPING_CODING_SCHEME, UNIDENTIFIABLE
+		REGULAR_CODING_SCHEME, RESOLVED_VALUESET_CODING_SCHEME, MAPPING_CODING_SCHEME, UNIDENTIFIABLE, ASSERTED_VALUE_SET_SCHEME
 	}
 
 	public enum HierarchyPathResolveOption {
