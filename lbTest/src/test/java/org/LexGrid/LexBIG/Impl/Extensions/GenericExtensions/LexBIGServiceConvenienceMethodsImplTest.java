@@ -62,12 +62,12 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCase {
     final static String testID = "LexBIGServiceConvenienceMethodsImplTest";
 
-    private LexBIGService lbs;
+    private static LexBIGService lbs;
     private LexBIGServiceConvenienceMethodsImpl lbscm;
     
     @Before
     public void setUp() throws LBException{
-        lbs = ServiceHolder.instance().getLexBIGService(); 
+        lbs = getLexBIGService(); 
         ((LexBIGServiceImpl)lbs).setAssertedValueSetConfiguration(new AssertedValueSetParameters.Builder("0.1.5").
 		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
 		codingSchemeName("owl2lexevs").
@@ -79,7 +79,19 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     }
 
     
-    @Override
+	public static LexBIGService getLexBIGService(){
+		if(lbs == null){
+			lbs = LexBIGServiceImpl.defaultInstance();
+		}
+		return lbs;
+	}
+	
+	public void setLexBIGService(LexBIGService lbsvc){
+		lbs = lbsvc;
+	}
+
+
+	@Override
     protected String getTestID() {
         return testID;
     }
