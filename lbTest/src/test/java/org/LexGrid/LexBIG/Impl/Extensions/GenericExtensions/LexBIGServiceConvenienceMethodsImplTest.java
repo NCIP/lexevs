@@ -18,11 +18,6 @@
  */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,14 +33,13 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods.TerminologyServiceDesignation;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
-import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
@@ -584,10 +578,10 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     
     @Test
     public void getTerminologyServiceDesignationForUri(){
-    	assertEquals(lbscm.getTerminologyServiceObjectType(AUTO_URN), TerminologyServiceDesignation.REGULAR_CODING_SCHEME);
-    	assertEquals(lbscm.getTerminologyServiceObjectType(MAPPING_SCHEME_URI), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
-    	assertEquals(lbscm.getTerminologyServiceObjectType("urn:oid:CL413321.MDR.CST"), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
-    	assertEquals(lbscm.getTerminologyServiceObjectType("SRITEST:AUTO:AllDomesticButGM"), TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
-    	assertEquals(lbscm.getTerminologyServiceObjectType("http://evs.nci.nih.gov/valueset/FDA/C54453"), TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
+    	assertEquals(lbscm.getTerminologyServiceObjectType(AUTO_URN), TerminologyServiceDesignation.REGULAR_CODING_SCHEME.name());
+    	assertEquals(lbscm.getTerminologyServiceObjectType(MAPPING_SCHEME_URI), TerminologyServiceDesignation.MAPPING_CODING_SCHEME.name());
+    	assertEquals(lbscm.getTerminologyServiceObjectType("urn:oid:CL413321.MDR.CST"), TerminologyServiceDesignation.MAPPING_CODING_SCHEME.name());
+    	assertEquals(lbscm.getTerminologyServiceObjectType("SRITEST:AUTO:AllDomesticButGM"), TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME.name());
+    	assertEquals(lbscm.getTerminologyServiceObjectType("http://evs.nci.nih.gov/valueset/FDA/C54453"), TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME.name());
     }
 }

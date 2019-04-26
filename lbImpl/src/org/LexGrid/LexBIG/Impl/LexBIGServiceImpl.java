@@ -42,7 +42,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
-import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods.TerminologyServiceDesignation;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.Extensions.Load.MedRtUmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
@@ -786,7 +786,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     }
     
     @Override
-    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
+    public String getTerminologyServiceObjectType(String uri) {
         String ontoform = null;
         if(uri == null){System.out.println("URI cannot be null"); return null;}
         List<RegistryEntry> regs = LexEvsServiceLocator.getInstance().getRegistry().
@@ -803,21 +803,21 @@ public class LexBIGServiceImpl implements LexBIGService {
         if(getSourceAssertedResolvedVSCodingSchemes()
                 .stream()
                 .anyMatch(x -> x.getCodingSchemeURI().equals(uri))){
-            return TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME;
+            return TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME.name();
         }
-        return TerminologyServiceDesignation.UNIDENTIFIABLE;
+        return TerminologyServiceDesignation.UNIDENTIFIABLE.name();
     }
     
-    private TerminologyServiceDesignation getDesignationFromType(OntologyFormat ontoform){
+    private String getDesignationFromType(OntologyFormat ontoform){
         switch(ontoform){
         case  LEXGRID_MAPPING:
-            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME;
+            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME.name();
         case  MRMAP: 
-            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME;
+            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME.name();
         case RESOLVEDVALUESET:
-            return TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME;
+            return TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME.name();
         default:
-            return TerminologyServiceDesignation.REGULAR_CODING_SCHEME;
+            return TerminologyServiceDesignation.REGULAR_CODING_SCHEME.name();
         }
 
     }

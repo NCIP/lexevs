@@ -35,7 +35,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods.TerminologyServiceDesignation;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
@@ -49,9 +49,6 @@ import org.LexGrid.naming.SupportedProperty;
  */
 public interface LexBIGServiceConvenienceMethods extends GenericExtension {
 	
-	public enum TerminologyServiceDesignation {
-		REGULAR_CODING_SCHEME, RESOLVED_VALUESET_CODING_SCHEME, MAPPING_CODING_SCHEME, UNIDENTIFIABLE, ASSERTED_VALUE_SET_SCHEME
-	}
 
 	public enum HierarchyPathResolveOption {
 		ALL, ONE, ONE_PER_HIERARCHY, ONE_PER_ROOT
@@ -1089,6 +1086,13 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
             SearchDesignationOption searchOption,
             LocalNameList sources) throws LBParameterException;
     
-    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri);
+    
+    /**
+     * @param uri of the Terminology Object
+     * @return String that must conform to a TerminologyServiceObject
+     * enum value.  We don't enforce this on the return to to distributed
+     * API complexities.
+     */
+    public String getTerminologyServiceObjectType(String uri);
     
 }

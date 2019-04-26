@@ -50,6 +50,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
@@ -2528,8 +2529,8 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     }
 
     @Override
-    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
-        return lbs_.getTerminologyServiceObjectType(uri);
+    public String getTerminologyServiceObjectType(String uri) {
+        return getLexBIGService().getTerminologyServiceObjectType(uri);
     }
     
 

@@ -1,0 +1,5 @@
+package org.LexGrid.LexBIG.Extensions.Generic;
+
+public enum TerminologyServiceDesignation {
+	REGULAR_CODING_SCHEME, RESOLVED_VALUESET_CODING_SCHEME, MAPPING_CODING_SCHEME, UNIDENTIFIABLE, ASSERTED_VALUE_SET_SCHEME
+}
