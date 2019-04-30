@@ -1093,6 +1093,6 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
      * enum value.  We don't enforce this on the return to to distributed
      * API complexities.
      */
-    public String getTerminologyServiceObjectType(String uri);
+    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri);
     
 }

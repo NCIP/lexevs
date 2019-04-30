@@ -318,9 +318,9 @@ public interface LexBIGService extends Serializable {
     /**
      * 
      * @param uri of the terminology service object	
-     * @return String, which must comply with the TerminologyServiceDesignation
+     * @return TerminolgyServiceDesignationWrapper, which must comply with the TerminologyServiceDesignation
      * enum value
      */
-    String getTerminologyServiceObjectType(String uri);
+    TerminologyServiceDesignation getTerminologyServiceObjectType(String uri);
 
 }

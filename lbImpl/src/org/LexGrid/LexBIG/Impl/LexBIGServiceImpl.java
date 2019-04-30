@@ -786,7 +786,7 @@ public class LexBIGServiceImpl implements LexBIGService {
     }
     
     @Override
-    public String getTerminologyServiceObjectType(String uri) {
+    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
         String ontoform = null;
         if(uri == null){System.out.println("URI cannot be null"); return null;}
         List<RegistryEntry> regs = LexEvsServiceLocator.getInstance().getRegistry().
@@ -803,21 +803,27 @@ public class LexBIGServiceImpl implements LexBIGService {
         if(getSourceAssertedResolvedVSCodingSchemes()
                 .stream()
                 .anyMatch(x -> x.getCodingSchemeURI().equals(uri))){
-            return TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME.name();
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
         }
-        return TerminologyServiceDesignation.UNIDENTIFIABLE.name();
+        return new TerminologyServiceDesignation(
+                TerminologyServiceDesignation.UNIDENTIFIABLE);
     }
     
-    private String getDesignationFromType(OntologyFormat ontoform){
+    private TerminologyServiceDesignation getDesignationFromType(OntologyFormat ontoform){
         switch(ontoform){
         case  LEXGRID_MAPPING:
-            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME.name();
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
         case  MRMAP: 
-            return TerminologyServiceDesignation.MAPPING_CODING_SCHEME.name();
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
         case RESOLVEDVALUESET:
-            return TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME.name();
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
         default:
-            return TerminologyServiceDesignation.REGULAR_CODING_SCHEME.name();
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.REGULAR_CODING_SCHEME);
         }
 
     }
