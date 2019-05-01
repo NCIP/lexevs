@@ -2297,7 +2297,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     public AssociatedConceptList getallIncomingConceptsForAssociation(String codingScheme, CodingSchemeVersionOrTag csvt,
             String code, String associationName, int maxToReturn) throws LBInvocationException, LBParameterException, LBException{
         NameAndValueList nvList = Constructors.createNameAndValueList(associationName);
-        ResolvedConceptReferenceList matches = lbs_.getNodeGraph(codingScheme, csvt, null).restrictToAssociations(nvList,
+        ResolvedConceptReferenceList matches = getLexBIGService().getNodeGraph(codingScheme, csvt, null).restrictToAssociations(nvList,
                 null).resolveAsList(ConvenienceMethods.createConceptReference(code, codingScheme), false, true, 1, 1,
                 new LocalNameList(), null, null, maxToReturn);
                ResolvedConceptReference ref =  matches.getResolvedConceptReference(0);
