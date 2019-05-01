@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -117,9 +119,11 @@ import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
+import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -788,6 +792,9 @@ public class LexBIGServiceImpl implements LexBIGService {
     @Override
     public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
         String ontoform = null;
+        AssertedValueSetService vsSvc = LexEvsServiceLocator.getInstance().
+                getDatabaseServiceManager().getAssertedValueSetService();
+        vsSvc.init(this.params);
         if(uri == null){System.out.println("URI cannot be null"); return null;}
         List<RegistryEntry> regs = LexEvsServiceLocator.getInstance().getRegistry().
         getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
@@ -800,11 +807,20 @@ public class LexBIGServiceImpl implements LexBIGService {
 
             return getDesignationFromType(OntologyFormat.valueOf(ontoform));
         }
-        if(getSourceAssertedResolvedVSCodingSchemes()
-                .stream()
-                .anyMatch(x -> x.getCodingSchemeURI().equals(uri))){
-            return new TerminologyServiceDesignation(
-                    TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
+//        if(getSourceAssertedResolvedVSCodingSchemes()
+//                .stream()
+//                .anyMatch(x -> x.getCodingSchemeURI().equals(uri))){
+//            return new TerminologyServiceDesignation(
+//                    TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
+//        }
+        try {
+            if(vsSvc.getEntityforTopNodeEntityCode(
+                    AssertedValueSetServices.getConceptCodeForURI(
+                            new URI(uri))) != null){return new TerminologyServiceDesignation(
+            TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);}
+        } catch (LBException | URISyntaxException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         return new TerminologyServiceDesignation(
                 TerminologyServiceDesignation.UNIDENTIFIABLE);

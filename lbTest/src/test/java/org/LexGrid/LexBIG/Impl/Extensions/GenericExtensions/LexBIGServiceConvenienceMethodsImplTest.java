@@ -62,11 +62,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     @Before
     public void setUp() throws LBException{
         lbs = getLexBIGService(); 
-        ((LexBIGServiceImpl)lbs).setAssertedValueSetConfiguration(new AssertedValueSetParameters.Builder("0.1.5").
-		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
-		codingSchemeName("owl2lexevs").
-		codingSchemeURI("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl").
-		rootConcept("C54453")
+        ((LexBIGServiceImpl)lbs).setAssertedValueSetConfiguration(new AssertedValueSetParameters.Builder("18.05b")
 		.build());
         lbscm = (LexBIGServiceConvenienceMethodsImpl)lbs.getGenericExtension("LexBIGServiceConvenienceMethods");
         lbscm.setLexBIGService(lbs);
@@ -578,10 +574,14 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     
     @Test
     public void getTerminologyServiceDesignationForUri(){
+    	long startAuto = System.currentTimeMillis();
     	assertEquals(lbscm.getTerminologyServiceObjectType(AUTO_URN).getDesignation(), TerminologyServiceDesignation.REGULAR_CODING_SCHEME);
     	assertEquals(lbscm.getTerminologyServiceObjectType(MAPPING_SCHEME_URI).getDesignation(), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
+    	System.out.println("Auto etc. execution time: " + (System.currentTimeMillis() - startAuto));
     	assertEquals(lbscm.getTerminologyServiceObjectType("urn:oid:CL413321.MDR.CST"), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
     	assertEquals(lbscm.getTerminologyServiceObjectType("SRITEST:AUTO:AllDomesticButGM"), TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
-    	assertEquals(lbscm.getTerminologyServiceObjectType("http://evs.nci.nih.gov/valueset/FDA/C54453"), TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
+    	long start = System.currentTimeMillis();
+    	assertEquals(lbscm.getTerminologyServiceObjectType("http://evs.nci.nih.gov/valueset/FDA/C54453").getDesignation(), TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
+    	System.out.println(" Asserted Value Set Execution time: " + (System.currentTimeMillis() - start));
     }
 }
