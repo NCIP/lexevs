@@ -186,7 +186,12 @@ public class PathToRootTreeServiceImpl extends AbstractExtendable implements Tre
 			String namespace, String hierarchyId) {
 		LexEvsTree tree = new LexEvsTree();
 
-		List<SupportedHierarchy> hierarchies = this.getSupportedHierarchies(codingScheme, versionOrTag, hierarchyId);
+        List<SupportedHierarchy> hierarchies = this.getSupportedHierarchies(
+                codingScheme, versionOrTag, hierarchyId).
+                stream().filter(x -> x.getAssociationNames()[0].equals("subClassOf") || 
+                        x.getContent().equals("is_a") || 
+                        x.getLocalId().equals("is_a")).
+                collect(Collectors.toList());
 		Direction direction = this.getDirection(hierarchies);
 		String root = this.getRoot(hierarchies);
 		List<String> associationNames = this.getAssociationNames(hierarchies);
