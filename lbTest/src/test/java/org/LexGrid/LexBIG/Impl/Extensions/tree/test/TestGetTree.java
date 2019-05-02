@@ -7,6 +7,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.tree.service.PathToRootTreeServiceImpl
 import org.LexGrid.LexBIG.Impl.Extensions.tree.service.TreeServiceFactory;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -28,4 +29,12 @@ public class TestGetTree extends TestCase{
 		  assertNotNull(iterator.next());
 	}
 
+	@Test
+	public void testGetTreeWithMultipleHierarchyAsscDirectionNames() {
+		 lbs = ServiceHolder.instance().getLexBIGService();
+		  pathToRootTreeServiceImpl = (PathToRootTreeServiceImpl) TreeServiceFactory.getInstance().getTreeService(lbs);
+		  iterator = pathToRootTreeServiceImpl.getTree("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				  Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"), "Patient").getCurrentFocus().getChildIterator();
+		  assertNotNull(iterator.next());
+	}
 }
