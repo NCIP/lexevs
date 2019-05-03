@@ -38,7 +38,6 @@ public class MappingResolvedConceptReferenceIterator extends IteratorBackedResol
      */
     private static final long serialVersionUID = -698270712034240196L;
     private boolean areAllCodedNodeSetsNull;
-    Iterator<ResolvedConceptReference> iterator;
     String mappingUri;
     String mappingVersion;
     String relationsContainerName;
