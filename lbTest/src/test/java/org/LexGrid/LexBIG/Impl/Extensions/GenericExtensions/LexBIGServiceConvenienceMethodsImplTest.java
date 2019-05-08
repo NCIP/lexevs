@@ -33,8 +33,9 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
-import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
@@ -44,6 +45,7 @@ import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -54,18 +56,32 @@ import org.junit.runners.BlockJUnit4ClassRunner;
 public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCase {
     final static String testID = "LexBIGServiceConvenienceMethodsImplTest";
 
-    private LexBIGService lbs;
+    private static LexBIGService lbs;
     private LexBIGServiceConvenienceMethodsImpl lbscm;
     
     @Before
     public void setUp() throws LBException{
-        lbs = ServiceHolder.instance().getLexBIGService(); 
+        lbs = getLexBIGService(); 
+        ((LexBIGServiceImpl)lbs).setAssertedValueSetConfiguration(new AssertedValueSetParameters.Builder("18.05b")
+		.build());
         lbscm = (LexBIGServiceConvenienceMethodsImpl)lbs.getGenericExtension("LexBIGServiceConvenienceMethods");
         lbscm.setLexBIGService(lbs);
     }
 
     
-    @Override
+	public static LexBIGService getLexBIGService(){
+		if(lbs == null){
+			lbs = LexBIGServiceImpl.defaultInstance();
+		}
+		return lbs;
+	}
+	
+	public void setLexBIGService(LexBIGService lbsvc){
+		lbs = lbsvc;
+	}
+
+
+	@Override
     protected String getTestID() {
         return testID;
     }
@@ -554,5 +570,18 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
        	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
-    }    
+    }   
+    
+    @Test
+    public void getTerminologyServiceDesignationForUri(){
+    	long startAuto = System.currentTimeMillis();
+    	assertEquals(lbscm.getTerminologyServiceObjectType(AUTO_URN).getDesignation(), TerminologyServiceDesignation.REGULAR_CODING_SCHEME);
+    	assertEquals(lbscm.getTerminologyServiceObjectType(MAPPING_SCHEME_URI).getDesignation(), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
+    	System.out.println("Auto etc. execution time: " + (System.currentTimeMillis() - startAuto));
+    	assertEquals(lbscm.getTerminologyServiceObjectType("urn:oid:CL413321.MDR.CST"), TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
+    	assertEquals(lbscm.getTerminologyServiceObjectType("SRITEST:AUTO:AllDomesticButGM"), TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
+    	long start = System.currentTimeMillis();
+    	assertEquals(lbscm.getTerminologyServiceObjectType("http://evs.nci.nih.gov/valueset/FDA/C54453").getDesignation(), TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
+    	System.out.println(" Asserted Value Set Execution time: " + (System.currentTimeMillis() - start));
+    }
 }

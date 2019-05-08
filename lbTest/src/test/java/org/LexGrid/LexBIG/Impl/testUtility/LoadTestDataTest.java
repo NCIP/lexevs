@@ -30,6 +30,7 @@ import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OBO_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UMLSHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -38,8 +39,10 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MedDRALoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.MrmapRRFLoader;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
@@ -56,13 +59,23 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.LexGrid.relations.Relations;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.springframework.core.annotation.Order;
 
+import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MappingRelationsUtil;
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * This set of tests loads the necessary data for the full suite of JUnit tests.
@@ -953,6 +966,75 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
+    
+    @Test
+    @Order(37)
+	public void testLoadMrMap() throws LBException, LBInvocationException, InterruptedException, SecurityException, IllegalArgumentException, NoSuchFieldException, IllegalAccessException, FileNotFoundException{
+
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        MrmapRRFLoader loader = (MrmapRRFLoader) lbsm.getLoader("MrMap_Loader");
+        MappingRelationsUtil map = new  MappingRelationsUtil();
+   	 	HashMap<String, Relations> relationsMap = map.processMrSatBean(
+   	 			"resources/testData/mrmap_mapping/MRSAT1.RRF", "resources/testData/mrmap_mapping/MRMAP1.RRF");
+   	 	for(Map.Entry<String, Relations> rel: relationsMap.entrySet()){
+   	 		loader.load(new File(("resources/testData/mrmap_mapping/MRMAP1.RRF")).toURI(), 
+        		new File("resources/testData/mrmap_mapping/MRSAT1.RRF").toURI(), 
+        		null, null, null, rel, true, true);
+
+   	 		while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+   	 		}
+
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+
+        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+
+        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], 
+        		LBConstants.KnownTags.PRODUCTION.toString());
+    }
+	}
+    
+    
+    @Test
+    @Order(38)
+    public void testLoadValueSetDefinitions() throws LBException{
+
+    	LexEVSValueSetDefinitionServicesImpl vds_ = (LexEVSValueSetDefinitionServicesImpl) 
+    			LexEVSValueSetDefinitionServicesImpl.defaultInstance();
+        vds_.loadValueSetDefinition("resources/testData/valueDomain/vdTestData.xml", true);
+
+    }
+    
+    @Test
+    @Order(39)
+    public void testResolveToCodingSchemeValueSetDefinitions() throws URISyntaxException, Exception{
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+		ResolvedValueSetDefinitionLoader loader = (ResolvedValueSetDefinitionLoader) lbsm.getLoader("ResolvedValueSetDefinitionLoader");
+		loader.load(new URI("SRITEST:AUTO:AllDomesticButGM"), null, null, "PRODUCTION", "12.03test");
+        while (loader.getStatus().getEndTime() == null) {
+            Thread.sleep(500);
+        }
+
+        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+    }
+    
+	@Order(40)
+	@Test
+	public void loadSourceAssertedValueSetDefinitionsTest() throws LBParameterException, InterruptedException{
+	    AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
+	    		codingSchemeName("owl2lexevs").
+	    		assertedDefaultHierarchyVSRelation("Concept_In_Subset").
+	    		baseValueSetURI("http://evs.nci.nih.gov/valueset/").
+	    		sourceName("Contributing_Source").
+	    		build();
+		new SourceAssertedValueSetBatchLoader(params,
+	    		"NCI", "Semantic_Type").run(params.getSourceName());
+	    Thread.sleep(1000);
+	}
+    
     
     private LexBIGServiceManager getLexBIGServiceManager() throws LBException {
     	return ServiceHolder.instance().getLexBIGService().getServiceManager(null);

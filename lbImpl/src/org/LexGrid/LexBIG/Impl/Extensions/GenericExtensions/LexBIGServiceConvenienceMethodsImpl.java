@@ -50,6 +50,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
@@ -58,19 +59,17 @@ import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToSourceCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToTargetCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
-import org.LexGrid.LexBIG.Utility.LBConstants.MatchAlgorithms;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -89,7 +88,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
@@ -2312,7 +2310,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     public AssociatedConceptList getallIncomingConceptsForAssociation(String codingScheme, CodingSchemeVersionOrTag csvt,
             String code, String associationName, int maxToReturn) throws LBInvocationException, LBParameterException, LBException{
         NameAndValueList nvList = Constructors.createNameAndValueList(associationName);
-        ResolvedConceptReferenceList matches = lbs_.getNodeGraph(codingScheme, csvt, null).restrictToAssociations(nvList,
+        ResolvedConceptReferenceList matches = getLexBIGService().getNodeGraph(codingScheme, csvt, null).restrictToAssociations(nvList,
                 null).resolveAsList(ConvenienceMethods.createConceptReference(code, codingScheme), false, true, 1, 1,
                 new LocalNameList(), null, null, maxToReturn);
                ResolvedConceptReference ref =  matches.getResolvedConceptReference(0);
@@ -2536,6 +2534,12 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
         return Arrays.asList(LBConstants.MatchAlgorithms.values()).
                 stream().anyMatch(x -> x.name().equals(matchAlgorithm));
     }
+
+    @Override
+    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
+        return getLexBIGService().getTerminologyServiceObjectType(uri);
+    }
+    
 
 
     

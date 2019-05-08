@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.SortContext;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.Extensions.Query.Filter;
 import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
@@ -39,6 +40,10 @@ import org.LexGrid.codingSchemes.CodingScheme;
 
 /**
  * This interface represents the core interface to a LexBIG service.
+ */
+/**
+ * @author bauerhs
+ *
  */
 public interface LexBIGService extends Serializable {
 
@@ -309,5 +314,13 @@ public interface LexBIGService extends Serializable {
     List<CodingScheme> getRegularResolvedVSCodingSchemes();
     
     List<CodingScheme> getSourceAssertedResolvedVSCodingSchemes();
+
+    /**
+     * 
+     * @param uri of the terminology service object	
+     * @return TerminolgyServiceDesignationWrapper, which must comply with the TerminologyServiceDesignation
+     * enum value
+     */
+    TerminologyServiceDesignation getTerminologyServiceObjectType(String uri);
 
 }
