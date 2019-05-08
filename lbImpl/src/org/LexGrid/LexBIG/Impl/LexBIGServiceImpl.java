@@ -807,20 +807,13 @@ public class LexBIGServiceImpl implements LexBIGService {
 
             return getDesignationFromType(OntologyFormat.valueOf(ontoform));
         }
-//        if(getSourceAssertedResolvedVSCodingSchemes()
-//                .stream()
-//                .anyMatch(x -> x.getCodingSchemeURI().equals(uri))){
-//            return new TerminologyServiceDesignation(
-//                    TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);
-//        }
         try {
             if(vsSvc.getEntityforTopNodeEntityCode(
                     AssertedValueSetServices.getConceptCodeForURI(
                             new URI(uri))) != null){return new TerminologyServiceDesignation(
             TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);}
         } catch (LBException | URISyntaxException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException("Problems Getting a terminology Service designation for an Asserted Value Set Terminology", e);
         }
         return new TerminologyServiceDesignation(
                 TerminologyServiceDesignation.UNIDENTIFIABLE);
