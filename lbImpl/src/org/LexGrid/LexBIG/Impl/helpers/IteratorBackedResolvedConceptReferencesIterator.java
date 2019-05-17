@@ -27,22 +27,14 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.annotations.LgClientSideSafe;
-import org.LexGrid.annotations.LgProxyClass;
 
-@LgProxyClass
+@LgClientSideSafe
 public class IteratorBackedResolvedConceptReferencesIterator implements ResolvedConceptReferencesIterator {
 
     private static final long serialVersionUID = -9172975996526240085L;
     
     public static int UNKNOWN_NUMBER = -1;
     private int count;
-
-    public int getCount() {
-        return count;
-    }
-    public void setCount(int count) {
-        this.count = count;
-    }
 
     protected Iterator<ResolvedConceptReference> iterator;
     
