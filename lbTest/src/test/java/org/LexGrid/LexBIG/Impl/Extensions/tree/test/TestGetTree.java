@@ -1,7 +1,5 @@
 package org.LexGrid.LexBIG.Impl.Extensions.tree.test;
 
-import static org.junit.Assert.*;
-
 import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.iterator.ChildTreeNodeIterator;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTree;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNode;
@@ -11,8 +9,9 @@ import org.LexGrid.LexBIG.Impl.Extensions.tree.service.TreeServiceFactory;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.junit.Before;
+import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 
 import junit.framework.TestCase;
 
@@ -32,8 +31,9 @@ public class TestGetTree extends TestCase{
 		  assertNotNull(iterator.next());
 	}
 
+	
 	@Test
-	public void testGetTreeWithMultipleHierarchyAsscDirectionNames() {
+	public void testGetTreeWithMultipleHieØrarchyAsscDirectionNames() {
 		 lbs = ServiceHolder.instance().getLexBIGService();
 		  pathToRootTreeServiceImpl = (PathToRootTreeServiceImpl) TreeServiceFactory.getInstance().getTreeService(lbs);
 		  iterator = pathToRootTreeServiceImpl.getTree("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
@@ -42,6 +42,7 @@ public class TestGetTree extends TestCase{
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testGetTreeWithMultipleHierarchyAsscNamesPatient() {
 		 lbs = ServiceHolder.instance().getLexBIGService();
 		  pathToRootTreeServiceImpl = (PathToRootTreeServiceImpl) TreeServiceFactory.getInstance().getTreeService(lbs);
