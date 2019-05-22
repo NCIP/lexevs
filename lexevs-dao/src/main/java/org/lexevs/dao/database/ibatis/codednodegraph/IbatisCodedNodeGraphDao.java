@@ -903,7 +903,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				mappingCodingSchemeUid,
 				relationsContainerName,
 				sourceConceptReferences,
-				sourceConceptReferences,
+				targetConceptReferences,
 				sourceOrTargetConceptReferences);
 
 		bean.setPrefix(mappingSchemePrefix);
