@@ -254,7 +254,7 @@ public class LexEVSTreeItem implements Serializable{
 		public static class TextComparator implements Comparator<LexEVSTreeItem>{
 			
 			public int compare(LexEVSTreeItem one, LexEVSTreeItem two){
-				return one.get_text().compareTo(two.get_text());
+				return one.get_text().toLowerCase().compareTo(two.get_text().toLowerCase());
 			}
 			
 		}
