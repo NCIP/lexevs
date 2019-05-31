@@ -114,6 +114,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 				"All Domestic Autos But GM  and as many characters as it takes to exceed 50 chars but not 250 chars and that should about do it",
 				"Black_FDA",
 				"Black_TEST",
+				"BLUE",
 				"One Child Value Set",
 				"White"};
 		Iterator<LexEVSTreeItem> compItr = roots.iterator();
