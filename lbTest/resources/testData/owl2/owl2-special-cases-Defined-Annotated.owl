@@ -2427,6 +2427,59 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P378>NCI</P378>
     </owl:Axiom>
     
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <NHC0>C48333</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>BLUE</P108>
+        <P207>C1260957</P207>
+        <P317>SPL Color (C-DRG-00927)</P317>
+        <P322>FDA</P322>
+        <P366>BLUE</P366>
+        <P372>Yes</P372>
+        <P90>BLUE</P90>
+        <P90>BLUE</P90>
+        <P97>The hue of that portion of the visible spectrum lying between green and indigo.</P97>
+        <rdfs:label>BLUE</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>BLUE</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>FDA</P384>
+        <P386>SPL</P386>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>BLUE</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>The hue of that portion of the visible spectrum lying between green and indigo.</owl:annotatedTarget>
+        <P378>NCI</P378>
+        <P381>American Heritage Dictionary - Bartelby.com</P381>
+    </owl:Axiom>
+    
+        <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C98989">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <rdfs:label>Bluer than blue</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>Bluer</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>BLACKER</P90>
+        <P90>Bluer</P90>
+        <P90>color characterized as dark</P90>
+        <P97>Of even darker color</P97>
+    </owl:Class>
+    
         <!-- Black -->
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323">

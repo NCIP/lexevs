@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -207,8 +208,13 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		Map<String, List<VSHierarchyNode>> duplicateGrouping = groupByDescription(nodes);
 		List<LexEVSTreeItem> subTrees = new ArrayList<LexEVSTreeItem>();
 		Set<String> keys = duplicateGrouping.keySet();
-		TreeSet<String> sortedKeys =  keys.stream().collect(
-				Collectors.toCollection(TreeSet::new));
+		List<String> sortedKeys =  keys.stream().sorted(new Comparator<String>(){
+
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.toLowerCase().compareTo(o2.toLowerCase());
+			}}).collect(
+				Collectors.toList());
 		for(String s : sortedKeys){
 			if(duplicateGrouping.get(s).size() > 1){
 				duplicateGrouping.get(s).stream().forEach(x -> subTrees.add(new LexEVSTreeItem(
@@ -276,16 +282,12 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		 List<VSHierarchyNode> finalNodes = new ArrayList<VSHierarchyNode>();
 		Set<String> keys = groupedNodes.keySet();
 		//effectively sorts on the description of each node
-		TreeSet<String> sortedKeys =  keys.stream().collect(
-				Collectors.toCollection(TreeSet::new));
+		List<String> sortedKeys = keys.stream().collect(Collectors.toList());
 		for(String s : sortedKeys){
-//			if(groupedNodes.get(s).size() > 1){
-//				groupedNodes.get(s).stream().forEach(x -> x.setDescription(x.getDescription() +
-//						AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(x.getSource())));
-//			}
 			finalNodes.addAll(groupedNodes.get(s));
 		}
-		return finalNodes;
+
+	return sortedKeys.stream().map(x -> groupedNodes.get(x)).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	protected List<VSHierarchyNode> collectReducedNodes(String source, List<VSHierarchyNode> nodes) {

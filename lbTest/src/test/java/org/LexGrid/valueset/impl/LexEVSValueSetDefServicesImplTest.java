@@ -1596,7 +1596,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	public void testGetURIVSDefinitionMap() {
 		// Start the value set resolution export
 		Map<String, ValueSetDefinition> map =  getValueSetDefinitionService().getURIToValueSetDefinitionsMap();
-		assertEquals(map.values().size(), 28);
+		assertEquals(map.values().size(), 29);
 		Iterator<Entry<String, ValueSetDefinition>> itr = map.entrySet().iterator();
 		assertTrue(itr.hasNext());
 		Entry<String, ValueSetDefinition> entry = (Entry<String, ValueSetDefinition>)itr.next();

@@ -120,13 +120,13 @@ public class LexEVSResolvedValueSetTest {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving full scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(list.size() > 0);
-		assertEquals(list.size(), 8);
+		assertEquals(list.size(), 9);
 		assertEquals(list.stream().
 		filter(scheme -> scheme.getProperties().getPropertyAsReference().
 			stream().filter(
 			prop -> prop.getPropertyName().
 			equals(LexEVSValueSetDefinitionServices.RESOLVED_AGAINST_CODING_SCHEME_VERSION)).
-				findAny().isPresent()).count(), 8);
+				findAny().isPresent()).count(), 9);
 		//Source asserted value set
 		assertTrue(list.stream().filter(scheme -> scheme.getCodingSchemeName().equals("Black")).findAny().isPresent());
 		//Resolved value set coding scheme
@@ -173,7 +173,7 @@ public class LexEVSResolvedValueSetTest {
 		long end = System.currentTimeMillis();
 		System.out.println("Retrieving mini scheme value sets: " + (end - start) + " mseconds");
 		assertTrue(schemes.size() > 0);
-		assertEquals(schemes.size(), 8);
+		assertEquals(schemes.size(), 9);
 		//Resolved value set coding schemes
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM")));
 		assertTrue(schemes.stream().anyMatch(x -> x.getFormalName().equals("All Domestic Autos But GM  and "
@@ -497,8 +497,8 @@ public class LexEVSResolvedValueSetTest {
 		System.out.println("Contains search: " + (end1 - start1) + " mseconds");
 		assertNotNull(asVSrefs);
 		assertTrue(asVSrefs.size() > 0);
-		assertNotSame(asVSrefs.size(), 6);
-		assertEquals(asVSrefs.size(), 5);
+		assertNotSame(asVSrefs.size(), 7);
+		assertEquals(asVSrefs.size(), 6);
 		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C54453")));
 		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C99999")));
 		assertTrue(asVSrefs.stream().anyMatch(x -> x.getCodingSchemeURN().equals("http://evs.nci.nih.gov/valueset/C48323")));

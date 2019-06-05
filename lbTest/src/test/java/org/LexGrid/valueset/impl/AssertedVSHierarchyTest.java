@@ -114,6 +114,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 				"All Domestic Autos But GM  and as many characters as it takes to exceed 50 chars but not 250 chars and that should about do it",
 				"Black_FDA",
 				"Black_TEST",
+				"BLUE",
 				"One Child Value Set",
 				"White"};
 		Iterator<LexEVSTreeItem> compItr = roots.iterator();
@@ -207,13 +208,13 @@ public class AssertedVSHierarchyTest extends TestCase {
 				_assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
 		assertEquals(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "UberBlack");
 		assertFalse(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
-		assertEquals(roots.get(2).get_text(), "White");
-		assertTrue(roots.get(2).is_expandable());
-		assertTrue(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
-		assertEquals(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).get_text(), "ArchWhite");
-		assertFalse(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).is_expandable());
-		assertEquals(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "BlindingWhite");
-		assertFalse(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
+		assertEquals(roots.get(3).get_text(), "White");
+		assertTrue(roots.get(3).is_expandable());
+		assertTrue(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
+		assertEquals(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).get_text(), "ArchWhite");
+		assertFalse(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).is_expandable());
+		assertEquals(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "BlindingWhite");
+		assertFalse(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
 	}
 	
 	private void printTree(List<LexEVSTreeItem> items, int counter){
