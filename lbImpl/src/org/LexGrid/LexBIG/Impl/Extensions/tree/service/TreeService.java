@@ -31,6 +31,10 @@ import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNode;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+/**
+ * @author bauerhs
+ *
+ */
 public interface TreeService extends GenericExtension {
 
 	/**
@@ -142,4 +146,20 @@ public interface TreeService extends GenericExtension {
 	 * @return the evsTree converter
 	 */
 	public EvsTreeConverter getEvsTreeConverter();
+	
+
+    /**
+     * Gets the evsTree converter
+     * @param maxChildren
+     * @return the evsTree converter
+     */
+    public JsonConverter getJsonConverter(int maxChildren);
+    
+ 
+    /**
+     * Gets the json converter
+     * @param maxChildren
+     * @return the json converter
+     */
+    public EvsTreeConverter getEvsTreeConverter(int maxChildren);
 }
