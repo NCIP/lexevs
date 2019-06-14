@@ -52,6 +52,20 @@ public class ChildPagingEvsTreeConverter implements EvsTreeConverter {
 	/** The MOR e_ childre n_ indicator. */
 	private static String MORE_CHILDREN_INDICATOR = "...";
 	
+	public ChildPagingEvsTreeConverter(){
+	    super();
+	}
+	
+	public ChildPagingEvsTreeConverter(int maxChildren){
+	        super();
+	        if(maxChildren < 0){
+	            MAX_CHILDREN = Integer.MAX_VALUE;
+	        }
+	        else{
+	            MAX_CHILDREN = maxChildren;
+	        }
+	    }
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.tree.json.JsonConverters#buildJsonPathFromRootTree(org.lexevs.tree.model.LexEvsTreeNode)
 	 */

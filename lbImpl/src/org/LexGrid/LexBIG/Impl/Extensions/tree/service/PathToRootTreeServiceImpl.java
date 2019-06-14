@@ -504,5 +504,15 @@ public class PathToRootTreeServiceImpl extends AbstractExtendable implements Tre
 		  registry.registerGenericExtension(description);
 		
 	}
+
+    @Override
+    public JsonConverter getJsonConverter(int maxChildren) {
+        return new ChildPagingJsonConverter(maxChildren);
+    }
+
+    @Override
+    public EvsTreeConverter getEvsTreeConverter(int maxChildren) {
+        return new ChildPagingEvsTreeConverter(maxChildren);
+    }
 	
 }
