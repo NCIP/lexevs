@@ -804,8 +804,8 @@ public class LexBIGServiceImpl implements LexBIGService {
                     filter(x -> x.getResourceUri().equals(uri)).
                     findFirst().
                     get().getDbName();
-
-            return getDesignationFromType(OntologyFormat.valueOf(ontoform));
+            //allowing a generic coding scheme format to be designated insures that this will go to default
+            return getDesignationFromType(OntologyFormat.valueOf(ontoform == null? OntologyFormat.TEXT.name(): ontoform));
         }
         try {
             if(vsSvc.getEntityforTopNodeEntityCode(

@@ -75,8 +75,12 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 			throw new RuntimeException("Entity code cannot be null!");
 		}
 		String csUID = getCsUid();
-		return getDaoManager().getCurrentAssertedValueSetDao()
-				.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID).get(0);
+		List<Entity> entities =  getDaoManager().getCurrentAssertedValueSetDao()
+				.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
+		if(entities != null && entities.size() > 0){
+			return entities.get(0);
+		}
+		else{ return null;}
 	}
 	
 	@Override
