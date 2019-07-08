@@ -2516,6 +2516,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
            nodeSet = nodeSet.restrictToProperties(null, 
                    new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, 
                    sources, null, null);
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
            }else {
            nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
            }

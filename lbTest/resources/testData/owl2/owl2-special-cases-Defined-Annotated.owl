@@ -2716,6 +2716,300 @@ PMID: 23587118. see table2</obo:IAO_0000112>
     </owl:Class>
     
     
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C27574"/>
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3263"/>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R100"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12964"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R105"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12922"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <NHC0>C3810</NHC0>
+        <P106>Neoplastic Process</P106>
+        <P108>Connective and Soft Tissue Neoplasm</P108>
+        <P207>C0206765</P207>
+        <P363>Undetermined</P363>
+        <P366>Connective_and_Soft_Tissue_Neoplasm</P366>
+        <P90>Connective and Soft Tissue Neoplasm</P90>
+        <P90>Connective and Soft Tissue Tumor</P90>
+        <P90>Musculoskeletal and Soft Tissue Neoplasm</P90>
+        <P90>Musculoskeletal and Soft Tissue Tumor</P90>
+        <P90>Neoplasm of Skeletal and Soft Tissue</P90>
+        <P90>Neoplasm of Soft Tissue and Bone</P90>
+        <P90>Neoplasm of Soft Tissue and Skeleton</P90>
+        <P90>Skeletal and Soft Tissue Neoplasm</P90>
+        <P90>Skeletal and Soft Tissue Tumor</P90>
+        <P90>Soft Tissue and Bone Neoplasm</P90>
+        <P90>Soft Tissue and Bone Tumor</P90>
+        <P90>Tumor of Skeletal and Soft Tissue</P90>
+        <P90>Tumor of Soft Tissue and Bone</P90>
+        <P90>Tumor of Soft Tissue and Skeleton</P90>
+        <P97>A benign, intermediate, or malignant neoplasm that affects the connective and soft tissue.</P97>
+        <rdfs:label>Connective and Soft Tissue Neoplasm</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Connective and Soft Tissue Neoplasm</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Connective and Soft Tissue Tumor</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Musculoskeletal and Soft Tissue Neoplasm</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Musculoskeletal and Soft Tissue Tumor</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Neoplasm of Skeletal and Soft Tissue</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Neoplasm of Soft Tissue and Bone</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Neoplasm of Soft Tissue and Skeleton</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Skeletal and Soft Tissue Neoplasm</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+        <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Skeletal and Soft Tissue Tumor</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Soft Tissue and Bone Neoplasm</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Soft Tissue and Bone Tumor</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Tumor of Skeletal and Soft Tissue</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Tumor of Soft Tissue and Bone</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Tumor of Soft Tissue and Skeleton</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97"/>
+        <owl:annotatedTarget>A benign, intermediate, or malignant neoplasm that affects the connective and soft tissue.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
+    
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684">
+        <owl:equivalentClass>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C3810"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R103"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12964"/>
+                    </owl:Restriction>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R108"/>
+                        <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C36105"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </owl:equivalentClass>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R100"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12964"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R105"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12922"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C61410"/>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C77526"/>
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C88025"/>
+        <NHC0>C53684</NHC0>
+        <P106>Neoplastic Process</P106>
+        <P108>Benign Connective and Soft Tissue Neoplasm</P108>
+        <P207>C0347481</P207>
+        <P322>CDISC</P322>
+        <P325>A benign neoplasm arising from connective and soft tissues that does not invade adjacent tissues or metastasize to other anatomic sites.</P325>
+        <P363>Benign</P363>
+        <P366>Benign_Connective_and_Soft_Tissue_Neoplasm</P366>
+        <P90>Benign Connective and Soft Tissue Neoplasm</P90>
+        <P90>Benign Connective and Soft Tissue Tumor</P90>
+        <P90>Benign Mesenchymal Cell Neoplasm</P90>
+        <P90>Benign Neoplasm of the Soft Tissue and Bone</P90>
+        <P90>Benign Tumor of the Soft Tissue and Bone</P90>
+        <P90>CONNECTIVE AND SOFT TISSUE NEOPLASM, BENIGN</P90>
+        <P97>A non-metastasizing neoplasm that arises from the connective and soft tissue.  Representative examples include lipoma, leiomyoma, fibroma, and osteoma.</P97>
+        <rdfs:label>Benign Connective and Soft Tissue Neoplasm</rdfs:label>
+    </owl:Class>
+     <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P325"/>
+        <owl:annotatedTarget>A benign neoplasm arising from connective and soft tissues that does not invade adjacent tissues or metastasize to other anatomic sites.</owl:annotatedTarget>
+        <P378>CDISC</P378>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Connective and Soft Tissue Neoplasm</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Connective and Soft Tissue Neoplasm</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Connective and Soft Tissue Tumor</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Connective and Soft Tissue Tumor</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Mesenchymal Cell Neoplasm</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Mesenchymal Cell Neoplasm</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+        <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Neoplasm of the Soft Tissue and Bone</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Neoplasm of the Soft Tissue and Bone</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Tumor of the Soft Tissue and Bone</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Benign Tumor of the Soft Tissue and Bone</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>CONNECTIVE AND SOFT TISSUE NEOPLASM, BENIGN</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C53684"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97"/>
+        <owl:annotatedTarget>A non-metastasizing neoplasm that arises from the connective and soft tissue.  Representative examples include lipoma, leiomyoma, fibroma, and osteoma.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
+
+
+    
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
