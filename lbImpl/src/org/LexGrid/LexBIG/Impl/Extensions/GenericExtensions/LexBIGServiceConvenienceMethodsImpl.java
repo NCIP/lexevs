@@ -2464,7 +2464,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
            if(sources != null && sources.getEntryCount() > 0 && !searchOption.equals(SearchDesignationOption.PREFERRED_ONLY)) {
            nodeSet = nodeSet.restrictToProperties(null, 
                    new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, 
-                   sources, null, null); }
+                   sources, null, null); 
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
+           }
            else {
            nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
            }
