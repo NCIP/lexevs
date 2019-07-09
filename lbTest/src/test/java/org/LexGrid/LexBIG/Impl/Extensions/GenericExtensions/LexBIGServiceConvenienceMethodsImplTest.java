@@ -504,6 +504,28 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs"))); }
     
     @Test
+    public void searchAllAscendentsInTransitiveClosureDomainVerySickCancerPatientSourceSpecificExactMatch( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("VerySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchAscendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"Patient",
+    			LBConstants.MatchAlgorithms.exactMatch.name(),
+    			SearchDesignationOption.ALL, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("VerySickPatient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("Patient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs"))); }
+    
+    @Test
     @Category(RemoveFromDistributedTests.class)
     public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatientSourceSpecificPreferred( ) throws LBParameterException{
     	long start = System.currentTimeMillis();
@@ -599,6 +621,8 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
     	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
     }   
+    
+    
     
     @Test
     public void getTerminologyServiceDesignationForUri(){
