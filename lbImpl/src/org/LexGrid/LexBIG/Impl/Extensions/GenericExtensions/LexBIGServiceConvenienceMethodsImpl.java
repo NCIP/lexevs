@@ -2462,10 +2462,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
            nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
            nodeSet = nodeSet.restrictToCodes(list);
            if(sources != null && sources.getEntryCount() > 0 && !searchOption.equals(SearchDesignationOption.PREFERRED_ONLY)) {
-           nodeSet = nodeSet.restrictToProperties(null, 
-                   new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, 
-                   sources, null, null); 
-           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
+               nodeSet = nodeSet.restrictToMatchingProperties(null, 
+                       new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, sources, null, null, matchText, 
+                       alg, null);
            }
            else {
            nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
@@ -2515,10 +2514,9 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
            nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
            nodeSet = nodeSet.restrictToCodes(list);
            if(sources != null && sources.getEntryCount() > 0 && !searchOption.equals(SearchDesignationOption.PREFERRED_ONLY)) {
-           nodeSet = nodeSet.restrictToProperties(null, 
-                   new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, 
-                   sources, null, null);
-           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
+           nodeSet = nodeSet.restrictToMatchingProperties(null, 
+                   new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, sources, null, null, matchText, 
+                   alg, null);
            }else {
            nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
            }
