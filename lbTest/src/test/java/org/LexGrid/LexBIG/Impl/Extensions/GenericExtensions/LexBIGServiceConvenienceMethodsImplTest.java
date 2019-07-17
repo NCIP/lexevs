@@ -310,9 +310,7 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
            nodeSet = nodeSet.restrictToMatchingDesignations("patient", 
                    SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery" , null);
            ResolvedConceptReferenceList refs = nodeSet.resolveToList(null, null, null, -1);
-       //	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
        	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
-      // 	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
     }
     
     @Test
@@ -358,7 +356,6 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
 									}, 
 							Constructors.createLocalNameList("NCI"),
 							null, null, "Patient", "LuceneQuery", null);
-//			set = set.restrictToMatchingDesignations("Patient", SearchDesignationOption.ALL, "LuceneQuery", null);
 			ResolvedConceptReferenceList results = set.resolveToList(null, null, null, -1);
 			assertTrue(results.getResolvedConceptReferenceCount() > 0);
           	assertFalse(Arrays.asList(ass.getAssociatedConcepts().getAssociatedConcept()).stream().anyMatch(y -> y.getCode().equals("Person")));
