@@ -59,14 +59,18 @@ public class LexEVSResolvedValueSetURIMisMatchTest {
 	public static void setUp() {
 		lbs = getLexBIGService();
 		params =
-		new AssertedValueSetParameters.Builder("18.06d")
+		new AssertedValueSetParameters.Builder("18.05d")
 		.build();
 		service = new LexEVSResolvedValueSetServiceImpl(params);
 		vsSvc = LexEvsServiceLocator.getInstance().getIndexServiceManager().getAssertedValueSetIndexService();
 		hService = SourceAssertedValueSetHierarchyServicesImpl.defaultInstance();
-		hService.preprocessSourceHierarchyData();
-//		vsSvc.createIndex(Constructors.createAbsoluteCodingSchemeVersionReference(
-//				"http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.06d"));
+		hService.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#",  
+				"18.05d", 
+				"subClassOf", 
+				"Contributing_Source",
+				"Publish_Value_Set", 
+				"C54443");
+
 	}
 
 	@Test
