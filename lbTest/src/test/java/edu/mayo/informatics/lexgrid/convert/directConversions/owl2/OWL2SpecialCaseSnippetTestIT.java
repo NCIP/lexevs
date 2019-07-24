@@ -730,6 +730,50 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 
 		}
 		
+		@Test
+		public void testValidateNumericalEntityLoadDesignation() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToMatchingDesignations("NumericalId", null, "exactMatch", null);
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			while(itr.hasNext()){
+				boolean found = false;
+				ResolvedConceptReference ref = itr.next();
+				if(ref.getConceptCode().equals("112233")){
+					Presentation pres = ref.getEntity().getPresentationAsReference().stream().filter(x -> x.getValue().
+							getContent().equals("NumericalID")).findFirst().get();
+					assertNotNull(pres);
+				}
+			}
+
+		}
+		
+		@Test
+		public void testValidateNumericalEntityLoadCode() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToCodes(Constructors.createConceptReferenceList("112233"));
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			while(itr.hasNext()){
+				boolean found = false;
+				ResolvedConceptReference ref = itr.next();
+				if(ref.getConceptCode().equals("112233")){
+					Presentation pres = ref.getEntity().getPresentationAsReference().stream().filter(x -> x.getValue().
+							getContent().equals("NumericalID")).findFirst().get();
+					assertNotNull(pres);
+				}
+			}
+
+		}
+		
 		public void testCodingSchemeSourceDefinition() throws LBException{
 			CodingScheme scheme = lbs.resolveCodingScheme("owl2lexevs" , Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
 			assertTrue(scheme.getSourceAsReference().stream().anyMatch(x -> x.getContent().equals("nci evs")));
