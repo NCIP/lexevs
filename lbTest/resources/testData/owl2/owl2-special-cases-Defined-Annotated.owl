@@ -716,6 +716,11 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#112233 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#112233">
+        <rdfs:label>NumericalID</rdfs:label>
+    </owl:Class>
     
 
 
