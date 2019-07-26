@@ -1290,7 +1290,14 @@ public class OwlApi2LG {
             if (propName.matches(prefManager.getMatchPattern_conceptCode())) {
                 lgEntity.setEntityCode(resolvedText);
             } else if (lgLabel != null && lgLabel.matches(prefManager.getMatchPattern_conceptStatus())) {
-                lgEntity.setStatus(resolvedText);
+                // trim to 50, if needed.
+                if (resolvedText.length() > 50){
+                    System.out.println("Trimming Concept_Status to 50 characters: " + resolvedText);
+                    resolvedText = resolvedText.substring(0, 49);
+                }
+                else {
+                    lgEntity.setStatus(resolvedText);
+                }            
                 if (resolvedText.matches(prefManager.getMatchPattern_inactiveStatus()))
                     lgEntity.setIsActive(false);
             }
