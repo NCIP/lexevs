@@ -401,9 +401,8 @@ public class OwlApi2LG {
                 
         // The idea is to iterate through all the OWL classes
         messages_.info("Processing concepts: ");
-        for (OWLClass namedClass : ontology.getClassesInSignature()) {
-
-            resolveConcept(namedClass);
+        for (Object namedClass : ontology.classesInSignature().toArray()) {
+            resolveConcept((OWLClass) namedClass);
             count++;
             if (count % 5000 == 0) {
                 messages_.info("OWL classes processed: " + count);
@@ -3109,11 +3108,25 @@ public class OwlApi2LG {
     }
     
     String getLocalName(IRI iri) {
-        return iri.getFragment();
+        if(!StringUtils.isBlank(iri.getFragment())){ return iri.getFragment();}
+        ManchesterOWLSyntaxPrefixNameShortFormProvider prov = new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology);
+        // find the base IRI string 
+        Map<String, String> prefix2NamespaceMapp = prov
+                .getPrefixName2PrefixMap();
+        String prefix = prefix2NamespaceMapp.values().stream().filter(x -> iri.getIRIString().contains(x)).findFirst().get();
+        String fragment = StringUtils.remove(iri.getIRIString(), prefix);
+        return fragment;
     }
     
     String getLocalName(OWLEntity entity) {
-        return entity.getIRI().getFragment();
+        if(!StringUtils.isBlank(entity.getIRI().getFragment())){ return entity.getIRI().getFragment();}
+        ManchesterOWLSyntaxPrefixNameShortFormProvider prov = new ManchesterOWLSyntaxPrefixNameShortFormProvider(ontology);
+        // find the base IRI string 
+        Map<String, String> prefix2NamespaceMapp = prov
+                .getPrefixName2PrefixMap();
+        String prefix = prefix2NamespaceMapp.values().stream().filter(x -> entity.getIRI().getIRIString().contains(x)).findFirst().get();
+        String fragment = StringUtils.remove(entity.getIRI().getIRIString(), prefix);
+        return fragment;
     }
 
     protected String getNameSpace(OWLEntity entity) {
@@ -3134,7 +3147,7 @@ public class OwlApi2LG {
         // find the base IRI string 
         Map<String, String> prefix2NamespaceMap = prov
                 .getPrefixName2PrefixMap();
-        for (Iterator i$ = prefix2NamespaceMap.keySet().iterator(); i$.hasNext();) {
+        for (Iterator<String> i$ = prefix2NamespaceMap.keySet().iterator(); i$.hasNext();) {
             String keyName = (String) i$.next();
             String prefix = (String) prefix2NamespaceMap.get(keyName);
             if (defaultPrefix.equals(keyName)) {
