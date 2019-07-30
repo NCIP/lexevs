@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -69,7 +68,7 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		//Reinit to default values before hitting the fail fast method
 		this.scheme = SCHEME;
 		this.version = null;
-		schemeUID = this.getCodingSchemeUId(scheme, version);
+		schemeUID = getSchemeUid(scheme, version);
 		this.association = HIERARCHY;
 		this.associationPredicateGuid = this.getPredicateUid();
 		this.sourceDesignation = SOURCE;
