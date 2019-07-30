@@ -3,6 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xsi:schemaLocation="../lbModel/master.preferences/OWLLoadPreferences
   ../lbModel/master.preferences/OWLLoadPreferences.xsd">
+  <MatchConceptStatus>Concept_Status</MatchConceptStatus>
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
   
   <MatchXMLRepformNames>term-group</MatchXMLRepformNames> 
