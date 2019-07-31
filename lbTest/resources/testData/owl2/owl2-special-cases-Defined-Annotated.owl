@@ -441,32 +441,6 @@
     </owl:AnnotationProperty>
     
     
-        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P310 -->
-
-    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P310">
-        <NHC0>P310</NHC0>
-        <P106>Conceptual Entity</P106>
-        <P107>Concept Status</P107>
-        <P108>Concept_Status</P108>
-        <P90>Concept_Status</P90>
-        <P97>An NCI Thesaurus property used to indicate the standing of a concept in relation to currently accepted classifications and concepts. In NCI Thesaurus concept status subtype indicates concepts with unusual and problematic characteristics that should be evaluated by people and/or programs before those concept are used.</P97>
-        <rdfs:label>Concept_Status</rdfs:label>
-        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#Concept_Status-enum"/>
-    </owl:AnnotationProperty>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P310"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
-        <owl:annotatedTarget>Concept_Status</owl:annotatedTarget>
-        <P383>PT</P383>
-        <P384>NCI</P384>
-    </owl:Axiom>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P310"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97"/>
-        <owl:annotatedTarget>An NCI Thesaurus property used to indicate the standing of a concept in relation to currently accepted classifications and concepts. In NCI Thesaurus concept status subtype indicates concepts with unusual and problematic characteristics that should be evaluated by people and/or programs before those concept are used.</owl:annotatedTarget>
-        <P378>NCI</P378>
-    </owl:Axiom>
-    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -2748,50 +2722,6 @@ PMID: 23587118. see table2</obo:IAO_0000112>
     </owl:Class>
     
     
-    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C43679 -->
-
-    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C43679">
-        <NHC0>C43679</NHC0>
-        <P106>Conceptual Entity</P106>
-        <P108>Citation</P108>
-        <P200>NCI_Thesaurus_Property</P200>
-        <P203>NCI_Kind</P203>
-        <P310>Retired_Concept</P310>
-        <P90>Citation</P90>
-        <P97>Provides a journal reference.</P97>
-        <P98>Deprecated 01/27/2006</P98>
-        <rdfs:label>Citation</rdfs:label>
-        <owl:deprecated rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</owl:deprecated>
-    </owl:Class>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C43679"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
-        <owl:annotatedTarget>Citation</owl:annotatedTarget>
-        <P383>PT</P383>
-        <P384>NCI</P384>
-    </owl:Axiom>
-    <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C43679"/>
-        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97"/>
-        <owl:annotatedTarget>Provides a journal reference.</owl:annotatedTarget>
-        <P378>NCI</P378>
-    </owl:Axiom>
-    
-     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C1BadStatus">
-        <NHC0>C43679</NHC0>
-        <P106>Conceptual Entity</P106>
-        <P108>BAD STATUS</P108>
-        <P200>NCI_Thesaurus_Property</P200>
-        <P203>NCI_Kind</P203>
-        <P310>http://a.uri.definition.longer.than.fifty.characters.that.should.break.things</P310>
-        <P90>BAD STATUS</P90>
-        <P97>bad status example.</P97>
-        <P98>Deprecated 01/27/2006</P98>
-        <rdfs:label>bad status</rdfs:label>
-        <owl:deprecated rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</owl:deprecated>
-    </owl:Class>
-    
-    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -2830,8 +2760,6 @@ PMID: 23587118. see table2</obo:IAO_0000112>
         <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Axiom>
     
-    
-
 
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround -->
 
