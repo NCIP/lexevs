@@ -440,6 +440,7 @@
         <rdfs:label>term-source</rdfs:label>
     </owl:AnnotationProperty>
     
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -2759,8 +2760,6 @@ PMID: 23587118. see table2</obo:IAO_0000112>
         <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Axiom>
     
-    
-
 
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround -->
 
