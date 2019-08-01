@@ -22,9 +22,8 @@ public class TestAssertedValueSetInitialization {
 	String excptMess = "There was a problem connecting to the persistence store for the resource:"
 			+ " URI: http://ncicb.nci.nih.gov/xml/owl/EVS/owl4lexevs.owl, Version: 0.1.12."
 			+ "\nPlease make sure this resource exists in the system.";
-	String postInitMess = "There was a problem connecting to the persistence store for the resource:"
-			+ " URI: http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#, Version: null."
-			+ "\nPlease make sure this resource exists in the system.";
+	String postInitMess = "Problem retrieving a production version for coding scheme " 
+			+ "with uri: http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#";
 	ValueSetHierarchyServiceImpl vss;
 
 	@Before
@@ -57,22 +56,14 @@ public class TestAssertedValueSetInitialization {
 			e.printStackTrace();
 			assertEquals(postInitMess, e.getMessage());
 		}		
-		try {
-			//Using spy to reinit to the proper values
-			//pretending they are the default
-			//probably not really needed
-			spyService.preprocessSourceHierarchyData();
-		} catch (Exception e) {
-			fail(e.getMessage());
-		}
-		try {
-			//Smoke test of the new init
-			HashMap<String, LexEVSTreeItem> map = spyService.getFullServiceValueSetTree();
-			assertTrue(map.size() > 0);
-		} catch (Exception e) {
-			fail(e.getMessage());
-			e.printStackTrace();
-		}
+//		try {
+//			//Smoke test of the new init
+//			HashMap<String, LexEVSTreeItem> map = spyService.getFullServiceValueSetTree();
+//			assertTrue(map.size() > 0);
+//		} catch (Exception e) {
+//			fail(e.getMessage());
+//			e.printStackTrace();
+//		}
 	}
 
 }
