@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -43,6 +44,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
@@ -66,6 +68,14 @@ public class CodedNodeSetBackedMapping implements Mapping {
     private CodedNodeSet targetCodesCodedNodeSet;
     
     private CodedNodeSet sourceOrTargetCodesCodedNodeSet;
+    
+    private ConcurrentHashMap<String, String> sourceIdAndNamespaceMap;
+    private ConcurrentHashMap<String, String> targetIdAndNamespaceMap;
+    
+    private AbsoluteCodingSchemeVersionReference sourceReference;
+    private AbsoluteCodingSchemeVersionReference targetReference;
+    
+    private CodingScheme mappingSchemeMetadata;
     
     private List<RelationshipRestriction> relationshipRestrictions = 
         new ArrayList<RelationshipRestriction>();
@@ -100,8 +110,44 @@ public class CodedNodeSetBackedMapping implements Mapping {
         this.mappingUri = ref.getCodingSchemeURN();
         this.mappingVersion = ref.getCodingSchemeVersion();
         this.relationsContainerName = relationsContainerName;
+        initSourceAndTargeCaching(mappingUri, mappingVersion, relationsContainerName);
     }
     
+    protected void initSourceAndTargeCaching(String mappingUri, String mappingVersion, String relationsContainerName){
+        mappingSchemeMetadata = resolveMappingMetaData();
+        sourceIdAndNamespaceMap = getSourceMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName);
+        targetIdAndNamespaceMap = getTargetMappingIdsAndNamespace(mappingSchemeMetadata);
+    }
+    
+    private ConcurrentHashMap<String, String> getTargetMappingIdsAndNamespace(CodingScheme scheme) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private ConcurrentHashMap<String, String> getSourceMappingIdsAndNamespace(CodingScheme scheme, String relationsContainer) {
+        AbsoluteCodingSchemeVersionReference sourceCodingScheme;
+        AbsoluteCodingSchemeVersionReference targetCodingScheme;
+        //LexEvsServiceLocator.getInstance().
+      //  getDatabaseServiceManager().getCodedNodeGraphService().getTripleUidsForMappingRelationsContainer(mappingUri, mappingVersion, sourceCodingScheme, targetCodingScheme, relationsContainer, null, start, pageSize)
+    return null;
+    }
+
+    private AbsoluteCodingSchemeVersionReference getSourceSchemeReference(CodingScheme scheme) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    private CodingScheme resolveMappingMetaData() {
+        CodingScheme scheme;
+        try {
+            scheme = LexBIGServiceImpl.defaultInstance().resolveCodingScheme(mappingUri, 
+                    Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion));
+        } catch (LBInvocationException | LBParameterException e) {
+            throw new RuntimeException("Mapping Scheme " + mappingUri + ":" + mappingVersion + " may not exist", e);
+        }
+        return scheme;
+    }
+
     /* (non-Javadoc)
      * @see org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.Mapping#resolveMapping()
      */

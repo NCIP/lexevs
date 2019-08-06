@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
@@ -819,6 +820,22 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 								targetCodingSchemeUid, 
 								relationsContainerName, 
 								tripleUids);
+	}
+	
+	public List<Triple> getMappingTripleForContainerOnly(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String relationsContainerName){
+		String mappingCodingSchemeUid = this.
+				getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+				getCodedNodeGraphDao(
+						codingSchemeUri, 
+						codingSchemeVersion).
+						getTriplesForMappingRelationsContainer(
+								mappingCodingSchemeUid,  
+								relationsContainerName);
 	}
 
 	@Override

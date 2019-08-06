@@ -30,6 +30,7 @@ import org.LexGrid.relations.Relations;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
@@ -79,6 +80,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_WITH_SORT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodesWithSort";
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_NO_SORT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodesNoSort";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
+	private static String GET_MINIMAL_TRIPLES_FOR_MAPPING_CONTAINER_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getMinimalTriplesForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerAndCodesCount";
 	private static String GET_MAP_AND_TERMS_FOR_MAPPING_CONTAINER_AND_REFERENCES  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getFullMapOfTerminologyWithEntityNames";
@@ -945,6 +947,21 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 								bean);
 		
 	}
+	
+	@SuppressWarnings("unchecked")
+	@CacheMethod
+	@Override
+	public List<Triple> getTriplesForMappingRelationsContainer(String mappingCodingSchemeUid,
+			String relationsContainerName) {
+		String mappingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		PrefixedParameter bean = new PrefixedParameter(mappingSchemePrefix, relationsContainerName);
+		return (List<Triple>) 
+				this.getSqlMapClientTemplate().
+				queryForList(
+						GET_MINIMAL_TRIPLES_FOR_MAPPING_CONTAINER_SQL,
+						bean);
+	}
 
 	@CacheMethod
 	@Override
@@ -1114,4 +1131,5 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			this.sortList = sortList;
 		}
 	}
+
 }

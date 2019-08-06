@@ -27,6 +27,7 @@ import org.LexGrid.custom.relations.TerminologyMapBean;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
@@ -280,4 +281,7 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 
 	public List<TerminologyMapBean> getMapAndTermsForMappingAndReferences(String mappingCodingSchemUid,
 			String sourceCodingSchemeUid, String targetCodingSchemeUid, Relations rel, String qualifierName);
+
+	public List<Triple> getTriplesForMappingRelationsContainer(String mappingCodingSchemeUid,
+			String relationsContainerName);
 }
