@@ -20,9 +20,15 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -47,6 +53,7 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.apache.commons.collections.CollectionUtils;
 import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -69,8 +76,9 @@ public class CodedNodeSetBackedMapping implements Mapping {
     
     private CodedNodeSet sourceOrTargetCodesCodedNodeSet;
     
-    private ConcurrentHashMap<String, String> sourceIdAndNamespaceMap;
-    private ConcurrentHashMap<String, String> targetIdAndNamespaceMap;
+    private Map<String, String> sourceIdAndNamespaceMap;
+    private Map<String, String> targetIdAndNamespaceMap;
+    private Map<String, List<String>> mapOfMap;
     
     private AbsoluteCodingSchemeVersionReference sourceReference;
     private AbsoluteCodingSchemeVersionReference targetReference;
@@ -110,26 +118,50 @@ public class CodedNodeSetBackedMapping implements Mapping {
         this.mappingUri = ref.getCodingSchemeURN();
         this.mappingVersion = ref.getCodingSchemeVersion();
         this.relationsContainerName = relationsContainerName;
-        initSourceAndTargeCaching(mappingUri, mappingVersion, relationsContainerName);
+        initSourceAndTargetCaching(mappingUri, mappingVersion, relationsContainerName);
     }
     
-    protected void initSourceAndTargeCaching(String mappingUri, String mappingVersion, String relationsContainerName){
+    protected void initSourceAndTargetCaching(String mappingUri, String mappingVersion, String relationsContainerName){
+        List<Triple> triples = LexEvsServiceLocator.getInstance().
+        getDatabaseServiceManager().getCodedNodeGraphService().
+      getMappingTripleForContainerOnly(
+                mappingUri, mappingVersion, relationsContainerName);
         mappingSchemeMetadata = resolveMappingMetaData();
-        sourceIdAndNamespaceMap = getSourceMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName);
-        targetIdAndNamespaceMap = getTargetMappingIdsAndNamespace(mappingSchemeMetadata);
+        sourceIdAndNamespaceMap = getSourceMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName, triples);
+        targetIdAndNamespaceMap = getTargetMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName, triples);
+        mapOfMap = getTotalMappingsAsMap(relationsContainerName, triples);
     }
     
-    private ConcurrentHashMap<String, String> getTargetMappingIdsAndNamespace(CodingScheme scheme) {
-        // TODO Auto-generated method stub
+    private Map<String, List<String>> getTotalMappingsAsMap(String relationsContainerName2, List<Triple> triples) {
+        triples.sort(new Comparator<Triple>(){
+            @Override
+            public int compare(Triple o1, Triple o2) {
+               return o1.getSourceEntityCode().compareTo(o2.getSourceEntityCode());
+            }
+        });
+        for(int i = 0; i < triples.size(); i++){
+           Triple t = triples.get(i);
+        }
+        
         return null;
     }
 
-    private ConcurrentHashMap<String, String> getSourceMappingIdsAndNamespace(CodingScheme scheme, String relationsContainer) {
-        AbsoluteCodingSchemeVersionReference sourceCodingScheme;
-        AbsoluteCodingSchemeVersionReference targetCodingScheme;
-        //LexEvsServiceLocator.getInstance().
-      //  getDatabaseServiceManager().getCodedNodeGraphService().getTripleUidsForMappingRelationsContainer(mappingUri, mappingVersion, sourceCodingScheme, targetCodingScheme, relationsContainer, null, start, pageSize)
-    return null;
+    private Map<String, String> getTargetMappingIdsAndNamespace(
+            CodingScheme scheme, 
+            String relationsContainer, 
+            List<Triple> triples) {
+        return triples.stream().collect(
+                Collectors.toMap(Triple::getSourceEntityCode, 
+                        Triple::getSourceEntityNamespace));
+    }
+
+    private Map<String, String> getSourceMappingIdsAndNamespace(
+            CodingScheme scheme, 
+            String relationsContainer, 
+            List<Triple> triples) {
+        return triples.stream().collect(
+                Collectors.toMap(Triple::getSourceEntityCode, 
+                        Triple::getSourceEntityNamespace));
     }
 
     private AbsoluteCodingSchemeVersionReference getSourceSchemeReference(CodingScheme scheme) {

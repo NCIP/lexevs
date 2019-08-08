@@ -955,7 +955,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			String relationsContainerName) {
 		String mappingSchemePrefix = this.getPrefixResolver().
 				resolvePrefixForCodingScheme(mappingCodingSchemeUid);
-		PrefixedParameter bean = new PrefixedParameter(mappingSchemePrefix, relationsContainerName);
+		PrefixedParameterTuple bean = new PrefixedParameterTuple();
+		bean.setPrefix(mappingSchemePrefix);
+		bean.setParam1(mappingCodingSchemeUid);
+		bean.setParam2(relationsContainerName);
 		return (List<Triple>) 
 				this.getSqlMapClientTemplate().
 				queryForList(

@@ -2422,10 +2422,11 @@
 			quals.referenceGuid = assns.entityAssnsGuid 
 		AND
 			quals.qualifierName = #param1#
+	</select>
 		
 	<select id="getMinimalTriplesForMappingContainer" remapResults="true" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		resultMap="Association.triple">
+		resultMap="Association.tripleResult">
 		SELECT 
 			pred.associationPredicateGuid, 
 			assn.sourceEntityCode, 
@@ -2433,15 +2434,15 @@
 			assn.targetEntityCode, 
 			assn.targetEntityCodeNamespace
 		FROM 
-			$prefix$entityAssnsToEntity AS assn 
+			$prefix$entityAssnsToEntity assn 
 		JOIN 
-			$prefix$associationPredicate AS pred 
+			$prefix$associationPredicate pred 
 		ON 
 			assn.associationPredicateGuid = pred.associationPredicateGuid 
 		JOIN 
-			$prefix$frelation as rel 
+			$prefix$relation rel 
 		on 
-			pred.relationGuid` = rel.relationGuid 
+			pred.relationGuid = rel.relationGuid 
 		where 
 			rel.containerName = #param1#
 	</select>

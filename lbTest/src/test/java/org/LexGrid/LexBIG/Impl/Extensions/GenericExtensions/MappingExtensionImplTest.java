@@ -451,6 +451,33 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
+	public void testGetResourceSummariesTargetRestrictionPerformanceTest() throws Exception {
+		
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				"urn:oid:C3645687.SNOMEDCT_US.ICD10", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("20180901"), "C3645687");
+		
+		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("A00.9", "ICD10", null), SearchContext.TARGET_CODES);
+//		MappingSortOption mapOp = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.ASC);
+//		List<MappingSortOption> list = new ArrayList<MappingSortOption>();
+//		list.add(mapOp);
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		int count = 0;
+		int numberRemaining = itr.numberRemaining();
+		while(itr.hasNext()){
+			ResolvedConceptReference ref = itr.next();
+			System.out.println(ref.getCode());
+			count++;
+		}
+		
+		assertEquals(count, numberRemaining);
+	}	
+	
+	@Test
 //	 @Category(RemoveFromDistributedTests.class)
 	public void testGetResourceSummariesTargetRestrictionCorrectNumRemainingNoSort() throws Exception {
 		
