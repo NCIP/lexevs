@@ -460,7 +460,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 				"urn:oid:C3645687.SNOMEDCT_US.ICD10", 
 				Constructors.createCodingSchemeVersionOrTagFromVersion("20180901"), "C3645687");
 		
-		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("A00.9", "ICD10", null), SearchContext.TARGET_CODES);
+		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("A00.9", "ICD10"), SearchContext.TARGET_CODES);
 //		MappingSortOption mapOp = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.ASC);
 //		List<MappingSortOption> list = new ArrayList<MappingSortOption>();
 //		list.add(mapOp);

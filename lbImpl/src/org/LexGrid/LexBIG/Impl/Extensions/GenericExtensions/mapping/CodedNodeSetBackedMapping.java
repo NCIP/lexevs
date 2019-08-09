@@ -20,6 +20,7 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -119,8 +121,30 @@ public class CodedNodeSetBackedMapping implements Mapping {
         this.mappingVersion = ref.getCodingSchemeVersion();
         this.relationsContainerName = relationsContainerName;
         initSourceAndTargetCaching(mappingUri, mappingVersion, relationsContainerName);
+        resolveSourceAndTargetSchemeReferences();
     }
     
+    private void resolveSourceAndTargetSchemeReferences() {
+      try {
+        sourceReference = this.getSourceSchemeReference(this.mappingSchemeMetadata);
+        targetReference = this.getTargetSchemeReference(this.mappingSchemeMetadata);
+    } catch (LBParameterException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+
+        
+    }
+
+    private AbsoluteCodingSchemeVersionReference getTargetSchemeReference(CodingScheme mappingScheme) throws LBParameterException {
+        String target = mappingScheme.getRelationsAsReference().get(0).getTargetCodingScheme();
+        if(target == null){throw new RuntimeException("Target cannot be null");}
+        String targetVersion = mappingScheme.getRelationsAsReference().get(0).getTargetCodingSchemeVersion();
+        target = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(target, targetVersion);
+        if(targetVersion == null){targetVersion = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalVersionStringForTag(target, "PRODUCTION");}
+        return Constructors.createAbsoluteCodingSchemeVersionReference(target, targetVersion);
+    }
+
     protected void initSourceAndTargetCaching(String mappingUri, String mappingVersion, String relationsContainerName){
         List<Triple> triples = LexEvsServiceLocator.getInstance().
         getDatabaseServiceManager().getCodedNodeGraphService().
@@ -154,19 +178,26 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 Collectors.toMap(Triple::getSourceEntityCode, 
                         Triple::getSourceEntityNamespace));
     }
-
+//TODO: These methods need to deal in some manner with the duplicate keys where there is a record of the value when that value is different
     private Map<String, String> getSourceMappingIdsAndNamespace(
             CodingScheme scheme, 
             String relationsContainer, 
             List<Triple> triples) {
         return triples.stream().collect(
                 Collectors.toMap(Triple::getSourceEntityCode, 
-                        Triple::getSourceEntityNamespace));
+                        Triple::getSourceEntityNamespace, (k1,k2)-> k1 ));
     }
 
-    private AbsoluteCodingSchemeVersionReference getSourceSchemeReference(CodingScheme scheme) {
-        // TODO Auto-generated method stub
-        return null;
+    private AbsoluteCodingSchemeVersionReference getSourceSchemeReference(CodingScheme mappingScheme) throws LBParameterException {
+        if(mappingScheme.getRelations() == null || mappingScheme.getRelations().length < 1){
+            throw new RuntimeException("Invalid mapping scheme " + mappingScheme.getCodingSchemeName() + " has no relations containers");
+        }
+        
+        String source = mappingScheme.getRelationsAsReference().get(0).getSourceCodingScheme();
+        if(source == null){ throw new RuntimeException("Source cannot be null");}
+        String sourceVersion = mappingScheme.getRelationsAsReference().get(0).getSourceCodingSchemeVersion();
+        if(sourceVersion == null){sourceVersion = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalVersionStringForTag(source, "PRODUCTION");}
+       return null;
     }
 
     private CodingScheme resolveMappingMetaData() {
@@ -440,7 +471,59 @@ public class CodedNodeSetBackedMapping implements Mapping {
 
             @Override
             public CodedNodeSet restrict(CodedNodeSet codedNodeSet) throws LBParameterException, LBInvocationException {
-                return codedNodeSet.restrictToCodes(codeList);
+                ConceptReferenceList updatedCodeList = areCodesContainedInContext(codeList, searchContext);
+                if(updatedCodeList.getConceptReferenceCount() > 0)
+                {return codedNodeSet.restrictToCodes(updatedCodeList);}
+                else return codedNodeSet;
+            }
+
+            private ConceptReferenceList areCodesContainedInContext(ConceptReferenceList codeList, SearchContext searchContext) {
+             ConceptReferenceList results = new ConceptReferenceList();
+                if(searchContext.equals(SearchContext.SOURCE_CODES)){
+                results.setConceptReference(
+                        (ConceptReference[]) Arrays
+                        .stream(codeList.getConceptReference())
+                        .filter(x-> sourceIdAndNamespaceMap.containsValue(
+                                x.getConceptCode()))
+                        .toArray(ConceptReference[]::new));
+                
+                return results;
+            }
+            if (searchContext.equals(SearchContext.TARGET_CODES)){
+                results.setConceptReference(
+                        (ConceptReference[]) Arrays
+                        .stream(codeList.getConceptReference())
+                        .filter(x-> targetIdAndNamespaceMap.containsValue(
+                                x.getConceptCode()))
+                        .toArray(ConceptReference[]::new));
+                
+                return results;
+            }
+            
+            if (searchContext.equals(SearchContext.SOURCE_OR_TARGET_CODES)){
+
+                       ConceptReference[] targets = Arrays
+                        .stream(codeList.getConceptReference())
+                        .filter(x-> targetIdAndNamespaceMap.containsValue(
+                                x.getConceptCode()))
+                        .toArray(ConceptReference[]::new);
+                       
+
+                       ConceptReference[] sources =  Arrays
+                        .stream(codeList.getConceptReference())
+                        .filter(x-> sourceIdAndNamespaceMap.containsValue(
+                                x.getConceptCode()))
+                        .toArray(ConceptReference[]::new);
+                       
+                       results.setConceptReference(
+                               Stream.concat(Arrays
+                                .stream(targets), 
+                                       Arrays.stream(sources))
+                               .toArray(ConceptReference[]::new));
+
+                return results;
+            }
+                return results;
             }
             
         }, searchContext);
@@ -476,7 +559,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
             
             case TARGET_CODES : {
                 if(this.targetCodesCodedNodeSet == null){
-                    this.targetCodesCodedNodeSet = this.createCodedNodeSet();
+                    this.targetCodesCodedNodeSet = this.createTargetCodedNodeSet();
                 }
                 return this.targetCodesCodedNodeSet;
             }
@@ -498,6 +581,30 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 getNodeSet(
                         this.mappingUri, 
                         Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion), 
+                        null);
+        } catch (LBException e) {
+            throw new LBParameterException(e.getMessage());
+        }
+    }
+    
+    protected CodedNodeSet createSourceCodedNodeSet() throws LBParameterException{
+        try {
+            return LexBIGServiceImpl.defaultInstance().
+                getNodeSet(
+                        this.sourceReference.getCodingSchemeURN(), 
+                        Constructors.createCodingSchemeVersionOrTagFromVersion(this.sourceReference.getCodingSchemeVersion()), 
+                        null);
+        } catch (LBException e) {
+            throw new LBParameterException(e.getMessage());
+        }
+    }
+    
+    protected CodedNodeSet createTargetCodedNodeSet() throws LBParameterException{
+        try {
+            return LexBIGServiceImpl.defaultInstance().
+                getNodeSet(
+                        this.targetReference.getCodingSchemeURN(), 
+                        Constructors.createCodingSchemeVersionOrTagFromVersion(this.targetReference.getCodingSchemeVersion()), 
                         null);
         } catch (LBException e) {
             throw new LBParameterException(e.getMessage());
