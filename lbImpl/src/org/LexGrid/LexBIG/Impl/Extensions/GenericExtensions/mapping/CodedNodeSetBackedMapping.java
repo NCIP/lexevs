@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -80,7 +81,6 @@ public class CodedNodeSetBackedMapping implements Mapping {
     
     private Map<String, String> sourceIdAndNamespaceMap;
     private Map<String, String> targetIdAndNamespaceMap;
-    private Map<String, List<String>> mapOfMap;
     
     private AbsoluteCodingSchemeVersionReference sourceReference;
     private AbsoluteCodingSchemeVersionReference targetReference;
@@ -151,32 +151,19 @@ public class CodedNodeSetBackedMapping implements Mapping {
       getMappingTripleForContainerOnly(
                 mappingUri, mappingVersion, relationsContainerName);
         mappingSchemeMetadata = resolveMappingMetaData();
-        sourceIdAndNamespaceMap = getSourceMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName, triples);
-        targetIdAndNamespaceMap = getTargetMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName, triples);
-        mapOfMap = getTotalMappingsAsMap(relationsContainerName, triples);
-    }
-    
-    private Map<String, List<String>> getTotalMappingsAsMap(String relationsContainerName2, List<Triple> triples) {
-        triples.sort(new Comparator<Triple>(){
-            @Override
-            public int compare(Triple o1, Triple o2) {
-               return o1.getSourceEntityCode().compareTo(o2.getSourceEntityCode());
-            }
-        });
-        for(int i = 0; i < triples.size(); i++){
-           Triple t = triples.get(i);
-        }
-        
-        return null;
-    }
+        sourceIdAndNamespaceMap = Collections.unmodifiableMap(
+                getSourceMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName, triples));
+        targetIdAndNamespaceMap = Collections.unmodifiableMap(
+                getTargetMappingIdsAndNamespace(mappingSchemeMetadata, relationsContainerName, triples));
+}
 
     private Map<String, String> getTargetMappingIdsAndNamespace(
             CodingScheme scheme, 
             String relationsContainer, 
             List<Triple> triples) {
         return triples.stream().collect(
-                Collectors.toMap(Triple::getSourceEntityCode, 
-                        Triple::getSourceEntityNamespace));
+                Collectors.toMap(Triple::getTargetEntityCode, 
+                        Triple::getTargetEntityNamespace,  (k1,k2)-> k1 ));
     }
 //TODO: These methods need to deal in some manner with the duplicate keys where there is a record of the value when that value is different
     private Map<String, String> getSourceMappingIdsAndNamespace(
@@ -197,7 +184,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
         if(source == null){ throw new RuntimeException("Source cannot be null");}
         String sourceVersion = mappingScheme.getRelationsAsReference().get(0).getSourceCodingSchemeVersion();
         if(sourceVersion == null){sourceVersion = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalVersionStringForTag(source, "PRODUCTION");}
-       return null;
+        return Constructors.createAbsoluteCodingSchemeVersionReference(source, sourceVersion);
     }
 
     private CodingScheme resolveMappingMetaData() {
@@ -483,7 +470,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 results.setConceptReference(
                         (ConceptReference[]) Arrays
                         .stream(codeList.getConceptReference())
-                        .filter(x-> sourceIdAndNamespaceMap.containsValue(
+                        .filter(x-> sourceIdAndNamespaceMap.containsKey(
                                 x.getConceptCode()))
                         .toArray(ConceptReference[]::new));
                 
@@ -493,7 +480,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 results.setConceptReference(
                         (ConceptReference[]) Arrays
                         .stream(codeList.getConceptReference())
-                        .filter(x-> targetIdAndNamespaceMap.containsValue(
+                        .filter(x-> targetIdAndNamespaceMap.containsKey(
                                 x.getConceptCode()))
                         .toArray(ConceptReference[]::new));
                 
@@ -504,14 +491,14 @@ public class CodedNodeSetBackedMapping implements Mapping {
 
                        ConceptReference[] targets = Arrays
                         .stream(codeList.getConceptReference())
-                        .filter(x-> targetIdAndNamespaceMap.containsValue(
+                        .filter(x-> targetIdAndNamespaceMap.containsKey(
                                 x.getConceptCode()))
                         .toArray(ConceptReference[]::new);
                        
 
                        ConceptReference[] sources =  Arrays
                         .stream(codeList.getConceptReference())
-                        .filter(x-> sourceIdAndNamespaceMap.containsValue(
+                        .filter(x-> sourceIdAndNamespaceMap.containsKey(
                                 x.getConceptCode()))
                         .toArray(ConceptReference[]::new);
                        
@@ -552,7 +539,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
         
             case SOURCE_CODES : {
                 if(this.sourceCodesCodedNodeSet == null){
-                    this.sourceCodesCodedNodeSet = this.createCodedNodeSet();
+                    this.sourceCodesCodedNodeSet = this.createSourceCodedNodeSet();
                 }
                 return this.sourceCodesCodedNodeSet;
             }
@@ -577,11 +564,9 @@ public class CodedNodeSetBackedMapping implements Mapping {
     
     protected CodedNodeSet createCodedNodeSet() throws LBParameterException{
         try {
-            return LexBIGServiceImpl.defaultInstance().
-                getNodeSet(
-                        this.mappingUri, 
-                        Constructors.createCodingSchemeVersionOrTagFromVersion(mappingVersion), 
-                        null);
+            CodedNodeSet source =  createSourceCodedNodeSet();
+            CodedNodeSet target =  createTargetCodedNodeSet();
+            return source.union(target);
         } catch (LBException e) {
             throw new LBParameterException(e.getMessage());
         }
