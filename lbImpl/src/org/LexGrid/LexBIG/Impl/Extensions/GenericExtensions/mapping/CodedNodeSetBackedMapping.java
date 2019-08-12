@@ -165,7 +165,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
                 Collectors.toMap(Triple::getTargetEntityCode, 
                         Triple::getTargetEntityNamespace,  (k1,k2)-> k1 ));
     }
-//TODO: These methods need to deal in some manner with the duplicate keys where there is a record of the value when that value is different
+
     private Map<String, String> getSourceMappingIdsAndNamespace(
             CodingScheme scheme, 
             String relationsContainer, 
@@ -184,6 +184,7 @@ public class CodedNodeSetBackedMapping implements Mapping {
         if(source == null){ throw new RuntimeException("Source cannot be null");}
         String sourceVersion = mappingScheme.getRelationsAsReference().get(0).getSourceCodingSchemeVersion();
         if(sourceVersion == null){sourceVersion = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalVersionStringForTag(source, "PRODUCTION");}
+        source = LexEvsServiceLocator.getInstance().getSystemResourceService().getUriForUserCodingSchemeName(source, sourceVersion);
         return Constructors.createAbsoluteCodingSchemeVersionReference(source, sourceVersion);
     }
 
