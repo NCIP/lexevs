@@ -699,4 +699,18 @@ public class CodedNodeSetBackedMapping implements Mapping {
     public String getRelationsContainerName(){
         return this.relationsContainerName;
     }
+
+    /**
+     * @return the sourceIdAndNamespaceMap
+     */
+    public Map<String, String> getSourceIdAndNamespaceMap() {
+        return sourceIdAndNamespaceMap;
+    }
+
+    /**
+     * @return the targetIdAndNamespaceMap
+     */
+    public Map<String, String> getTargetIdAndNamespaceMap() {
+        return targetIdAndNamespaceMap;
+    }
 }
