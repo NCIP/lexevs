@@ -21,15 +21,10 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -467,51 +462,97 @@ public class CodedNodeSetBackedMapping implements Mapping {
 
             private ConceptReferenceList areCodesContainedInContext(ConceptReferenceList codeList, SearchContext searchContext) {
              ConceptReferenceList results = new ConceptReferenceList();
-                if(searchContext.equals(SearchContext.SOURCE_CODES)){
-                results.setConceptReference(
-                        (ConceptReference[]) Arrays
-                        .stream(codeList.getConceptReference())
-                        .filter(x-> sourceIdAndNamespaceMap.containsKey(
-                                x.getConceptCode()))
-                        .toArray(ConceptReference[]::new));
+             
+             switch(searchContext)
+             {
+             case SOURCE_CODES:
+                 results.setConceptReference(
+                         (ConceptReference[]) Arrays
+                         .stream(codeList.getConceptReference())
+                         .filter(x-> sourceIdAndNamespaceMap.containsKey(
+                                 x.getConceptCode()))
+                         .toArray(ConceptReference[]::new));
+                 return results;
+                 
+             case TARGET_CODES:
+                 results.setConceptReference(
+                         (ConceptReference[]) Arrays
+                         .stream(codeList.getConceptReference())
+                         .filter(x-> targetIdAndNamespaceMap.containsKey(
+                                 x.getConceptCode()))
+                         .toArray(ConceptReference[]::new));
+                 
+                 return results;
+                 
+             case SOURCE_OR_TARGET_CODES:
+                 ConceptReference[] targets = Arrays
+                 .stream(codeList.getConceptReference())
+                 .filter(x-> targetIdAndNamespaceMap.containsKey(
+                         x.getConceptCode()))
+                 .toArray(ConceptReference[]::new);
                 
-                return results;
-            }
-            if (searchContext.equals(SearchContext.TARGET_CODES)){
-                results.setConceptReference(
-                        (ConceptReference[]) Arrays
-                        .stream(codeList.getConceptReference())
-                        .filter(x-> targetIdAndNamespaceMap.containsKey(
-                                x.getConceptCode()))
-                        .toArray(ConceptReference[]::new));
+
+                ConceptReference[] sources =  Arrays
+                 .stream(codeList.getConceptReference())
+                 .filter(x-> sourceIdAndNamespaceMap.containsKey(
+                         x.getConceptCode()))
+                 .toArray(ConceptReference[]::new);
                 
+                results.setConceptReference(
+                        Stream.concat(Arrays
+                         .stream(targets), 
+                                Arrays.stream(sources))
+                        .toArray(ConceptReference[]::new));
                 return results;
-            }
-            
-            if (searchContext.equals(SearchContext.SOURCE_OR_TARGET_CODES)){
-
-                       ConceptReference[] targets = Arrays
-                        .stream(codeList.getConceptReference())
-                        .filter(x-> targetIdAndNamespaceMap.containsKey(
-                                x.getConceptCode()))
-                        .toArray(ConceptReference[]::new);
-                       
-
-                       ConceptReference[] sources =  Arrays
-                        .stream(codeList.getConceptReference())
-                        .filter(x-> sourceIdAndNamespaceMap.containsKey(
-                                x.getConceptCode()))
-                        .toArray(ConceptReference[]::new);
-                       
-                       results.setConceptReference(
-                               Stream.concat(Arrays
-                                .stream(targets), 
-                                       Arrays.stream(sources))
-                               .toArray(ConceptReference[]::new));
-
-                return results;
-            }
-                return results;
+                
+             default:
+                 return results;
+             }
+//                if(searchContext.equals(SearchContext.SOURCE_CODES)){
+//                results.setConceptReference(
+//                        (ConceptReference[]) Arrays
+//                        .stream(codeList.getConceptReference())
+//                        .filter(x-> sourceIdAndNamespaceMap.containsKey(
+//                                x.getConceptCode()))
+//                        .toArray(ConceptReference[]::new));
+//                
+//                return results;
+//            }
+//            if (searchContext.equals(SearchContext.TARGET_CODES)){
+//                results.setConceptReference(
+//                        (ConceptReference[]) Arrays
+//                        .stream(codeList.getConceptReference())
+//                        .filter(x-> targetIdAndNamespaceMap.containsKey(
+//                                x.getConceptCode()))
+//                        .toArray(ConceptReference[]::new));
+//                
+//                return results;
+//            }
+//            
+//            if (searchContext.equals(SearchContext.SOURCE_OR_TARGET_CODES)){
+//
+//                       ConceptReference[] targets = Arrays
+//                        .stream(codeList.getConceptReference())
+//                        .filter(x-> targetIdAndNamespaceMap.containsKey(
+//                                x.getConceptCode()))
+//                        .toArray(ConceptReference[]::new);
+//                       
+//
+//                       ConceptReference[] sources =  Arrays
+//                        .stream(codeList.getConceptReference())
+//                        .filter(x-> sourceIdAndNamespaceMap.containsKey(
+//                                x.getConceptCode()))
+//                        .toArray(ConceptReference[]::new);
+//                       
+//                       results.setConceptReference(
+//                               Stream.concat(Arrays
+//                                .stream(targets), 
+//                                       Arrays.stream(sources))
+//                               .toArray(ConceptReference[]::new));
+//
+//                return results;
+//            }
+//                return results;
             }
             
         }, searchContext);
