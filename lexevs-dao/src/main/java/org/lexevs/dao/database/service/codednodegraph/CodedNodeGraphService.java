@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery;
@@ -575,6 +576,19 @@ public interface CodedNodeGraphService {
 			AbsoluteCodingSchemeVersionReference targetCodingScheme,
 			String relationsContainerName, 
 			List<String> tripleUids);
+	
+	
+	/**
+	 * Gets the mapping triples as a Triple list
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param codingSchemeVersion the coding scheme version
+	 * @param relationsContainerName the relations container name
+	 */
+	public List<Triple> getMappingTripleForContainerOnly(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String relationsContainerName);
 	
 	/**
 	 * Gets the mapping triples count.

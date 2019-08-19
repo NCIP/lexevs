@@ -91,6 +91,14 @@
 		<result property="entityDescription.content" column="targetEntityDescription"/>
 		<result property="_associationQualifiers._nameAndValueList" resultMap="Association.associationQualificationResult"/>
 	</resultMap>
+	
+	<resultMap id="mappingTripleResult" class="org.lexevs.dao.database.access.association.model.Triple" >
+		<result property="sourceEntityCode" column="sourceEntityCode" />
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
+		<result property="targetEntityCode" column="targetEntityCode" />
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+		<result property="associationPredicateId" column="associationPredicateGuid"/>
+	</resultMap>
 
 	<resultMap id="associationQualificationResult" class="associationQualification" groupBy="name,content">
 		<result property="name" column="qualifierName" />
@@ -2414,6 +2422,28 @@
 			quals.referenceGuid = assns.entityAssnsGuid 
 		AND
 			quals.qualifierName = #param1#
+	</select>
 		
+	<select id="getMinimalTriplesForMappingContainer" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		resultMap="Association.tripleResult">
+		SELECT 
+			pred.associationPredicateGuid, 
+			assn.sourceEntityCode, 
+			assn.sourceEntityCodeNamespace, 
+			assn.targetEntityCode, 
+			assn.targetEntityCodeNamespace
+		FROM 
+			$prefix$entityAssnsToEntity assn 
+		JOIN 
+			$prefix$associationPredicate pred 
+		ON 
+			assn.associationPredicateGuid = pred.associationPredicateGuid 
+		JOIN 
+			$prefix$relation rel 
+		on 
+			pred.relationGuid = rel.relationGuid 
+		where 
+			rel.containerName = #param1#
 	</select>
 </sqlMap>
