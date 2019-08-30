@@ -949,4 +949,19 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 							relationsContainerName);
 	}
 
+	@Override
+	public List<Triple> getValidTriplesOfAssociation(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String uid) {
+	String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+				codingSchemeUri, 
+				codingSchemeVersion).
+			getValidTriplesOfAssociation(codingSchemeUid,
+							uid);
+	}
+
 }

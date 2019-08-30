@@ -2441,9 +2441,62 @@
 			assn.associationPredicateGuid = pred.associationPredicateGuid 
 		JOIN 
 			$prefix$relation rel 
-		on 
+		ON 
 			pred.relationGuid = rel.relationGuid 
-		where 
+		WHERE 
 			rel.containerName = #param1#
 	</select>
+	
+	<select id="getNaturualRootsForAssociationUid" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		 resultClass="java.lang.String">
+		SELECT 
+			distinct(targetEntityCode) 
+		FROM 
+			$prefix$entityAssnsToEntity assn 
+		JOIN 
+			$prefix$entity ent 
+		ON 
+			assn.targetEntityCode = ent.entityCode 
+		WHERE 
+			assn.associationPredicateGuid = #param1# 
+		AND 
+			ent.isAnonymous = '0' 
+		AND 
+			targetEntityCode 
+		NOT IN
+			(SELECT 
+				sourceEntityCode 
+			 FROM 
+				$prefix$entityAssnsToEntity 
+			 WHERE 
+			 	associationPredicateGuid = #param1#)
+	</select>
+	
+	<select id="getValidTriplesForAssociationPredicateGuid" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		 resultMap="Association.tripleResult">
+			SELECT 			
+				eae.sourceEntityCode,
+				eae.sourceEntityCodeNamespace,
+				eae.targetEntityCode,
+				eae.targetEntityCodeNamespace,
+				eae.associationPredicateGuid 
+			FROM 
+				$prefix$entityAssnsToEntity eae 
+			RIGHT JOIN 
+				$prefix$entity ent1 
+			ON 
+				eae.sourceEntityCode = ent1.entityCode 
+			RIGHT JOIN 
+				$prefix$entity ent2 
+			ON 
+				eae.targetEntityCode = ent2.entityCode 
+			WHERE 
+				eae.associationPredicateGuid = #param1# 
+			AND 
+				ent1.isAnonymous = '0' 
+			AND 
+				ent2.isAnonymous = '0'
+		</select>
 </sqlMap>

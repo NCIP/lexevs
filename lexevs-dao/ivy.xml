@@ -80,5 +80,8 @@
 		<dependency org="org.apache.lucene" name="lucene-join" rev="5.3.1" force="true" conf="default"/>
 		<dependency org="org.apache.lucene" name="lucene-queryparser" rev="5.3.1" force="true" conf="default"/>
 		<dependency org="org.apache.lucene" name="lucene-sandbox" rev="5.3.1" force="true" conf="default"/>
+		<!-- https://mvnrepository.com/artifact/com.arangodb/arangodb-java-driver -->
+		<dependency org="com.arangodb" name="arangodb-java-driver" rev="6.1.0" conf="default"/>
+		<dependency org="com.arangodb" name="velocypack-module-jdk8" rev="1.1.0" conf="default"/>
    	 </dependencies>
 </ivy-module>
