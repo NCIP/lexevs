@@ -2,7 +2,7 @@ package org.lexevs.dao.database.operation;
 
 import java.util.List;
 
-public class LexEVSArandoDBGraphingOperations implements LexEVSGraphingDataBaseOperations {
+public class LexEVSArangoDBGraphingOperations implements LexEVSGraphingDataBaseOperations {
 
 	@Override
 	public void createDatabase(String uri) {

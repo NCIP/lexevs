@@ -1,7 +1,5 @@
 package org.lexevs.dao.database.datasource;
 
-import org.apache.commons.logging.LogFactory;
-import org.apache.log4j.LogManager;
 import org.lexevs.logging.Logger;
 import org.lexevs.system.constants.SystemVariables;
 

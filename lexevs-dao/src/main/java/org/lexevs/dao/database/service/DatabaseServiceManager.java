@@ -28,6 +28,7 @@ import org.lexevs.dao.database.service.entity.EntityService;
 import org.lexevs.dao.database.service.error.ErrorCallbackDatabaseServiceFactory;
 import org.lexevs.dao.database.service.error.ErrorCallbackListener;
 import org.lexevs.dao.database.service.event.registry.ListenerRegistry;
+import org.lexevs.dao.database.service.graphdb.GraphingDataBaseService;
 import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.service.property.PropertyService;
 import org.lexevs.dao.database.service.relation.RelationService;
@@ -91,6 +92,9 @@ public class DatabaseServiceManager {
 	
 	/** The coded node graph service. */
 	private CodedNodeGraphService codedNodeGraphService;
+	
+	/** The coded node graph service. */
+	private GraphingDataBaseService graphDbService;
 	
 	/** The nci history service. */
 	private NciHistoryService nciHistoryService;
@@ -321,6 +325,14 @@ public class DatabaseServiceManager {
 	 */
 	public CodedNodeGraphService getCodedNodeGraphService() {
 		return codedNodeGraphService;
+	}
+
+	public GraphingDataBaseService getGraphDbService() {
+		return graphDbService;
+	}
+
+	public void setGraphDbService(GraphingDataBaseService graphDbService) {
+		this.graphDbService = graphDbService;
 	}
 
 	/**
