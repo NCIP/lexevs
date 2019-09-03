@@ -91,6 +91,9 @@ public class SystemVariables {
 	private String graphdbUser;
     private String graphdbpwd;
     private String graphdbUrl;
+	private String graphdbPort;
+	private String graphdbMaxConnections;
+	private String graphdbConnectTimeOutLength;
 
     private boolean singleTableMode = true;
     private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
@@ -338,9 +341,12 @@ public class SystemVariables {
             autoLoadDBUsername_ = getProperty(props, "DB_USER");
             autoLoadDBPassword_ = getProperty(props, "DB_PASSWORD");
             
-//        	graphdbUser = getProperty(props, "GRAPH_DB_USER");
-//        	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
-//            graphdbUrl = getProperty(props, "GRAPH_DB_PATH");
+        	graphdbUser = getProperty(props, "GRAPH_DB_USER");
+        	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
+        	graphdbUrl = getProperty(props, "GRAPH_DB_PATH");
+        	graphdbPort = getProperty(props, "GRAPH_DB_PORT");
+        	graphdbMaxConnections = getProperty(props, "GRAPH_DB_MAX_CONNECTIONS");
+        	graphdbConnectTimeOutLength = getProperty(props, "GRAPH_DB_CONNECTION_TIMEOUT_LENGTH");
 
             
             mysql_collation= getNullableProperty(props, "MYSQL_COLLATION", DEFAULT_MYSQL_COLLATION);
@@ -822,6 +828,48 @@ public class SystemVariables {
 		this.graphdbUrl = graphdbUrl;
 	}
 	
+	/**
+	 * @return the graphdbPort
+	 */
+	public String getGraphdbPort() {
+		return graphdbPort;
+	}
+
+	/**
+	 * @param graphdbPort the graphdbPort to set
+	 */
+	public void setGraphdbPort(String graphdbPort) {
+		this.graphdbPort = graphdbPort;
+	}
+
+	/**
+	 * @return the graphdbMaxConnections
+	 */
+	public String getGraphdbMaxConnections() {
+		return graphdbMaxConnections;
+	}
+
+	/**
+	 * @param graphdbMaxConnections the graphdbMaxConnections to set
+	 */
+	public void setGraphdbMaxConnections(String graphdbMaxConnections) {
+		this.graphdbMaxConnections = graphdbMaxConnections;
+	}
+
+	/**
+	 * @return the graphdbConnectTimeOutLength
+	 */
+	public String getGraphdbConnectTimeOutLength() {
+		return graphdbConnectTimeOutLength;
+	}
+
+	/**
+	 * @param graphdbConnectTimeOutLength the graphdbConnectTimeOutLength to set
+	 */
+	public void setGraphdbConnectTimeOutLength(String graphdbConnectTimeOutLength) {
+		this.graphdbConnectTimeOutLength = graphdbConnectTimeOutLength;
+	}
+
 	public void setAssertedValueSetVersion(String assertedValueSetVersion) {
 		this.assertedValueSetVersion = assertedValueSetVersion;
 	}
@@ -872,6 +920,8 @@ public class SystemVariables {
     	tempFile = new File(tempFile, "lbIndex");
     	return tempFile.getAbsolutePath();
     }
+
+
     
 
 }

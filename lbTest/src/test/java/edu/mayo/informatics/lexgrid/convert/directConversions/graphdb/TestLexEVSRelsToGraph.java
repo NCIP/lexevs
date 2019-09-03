@@ -26,8 +26,9 @@ public class TestLexEVSRelsToGraph {
 	
 	@Test
 	public void testGetRootsForAssociationName(){
-		List<Triple> triples = graphRels.getRootsForAssociationNames("subClassOf");
+		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("subClassOf");
 		assertTrue(triples != null);
 		assertTrue(triples.size() > 0);
+		triples.stream().forEach(x -> assertTrue(!x.getSourceEntityCode().contains("@") &&  ! x.getTargetEntityCode().contains("@")));
 	}
 }
