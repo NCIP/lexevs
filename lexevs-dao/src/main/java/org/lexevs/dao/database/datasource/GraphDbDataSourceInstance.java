@@ -3,6 +3,9 @@ package org.lexevs.dao.database.datasource;
 import org.lexevs.logging.Logger;
 import org.lexevs.system.constants.SystemVariables;
 
+import com.arangodb.ArangoDB;
+import com.arangodb.ArangoDatabase;
+
 public class GraphDbDataSourceInstance {
 	
 	private String GRAPH_DB_USER;
@@ -12,6 +15,8 @@ public class GraphDbDataSourceInstance {
 	private String GRAPH_DB_MAX_CONNECTIONS;
 	private String GRAPH_DB_CONNECTION_TIMEOUT_LENGTH;
 	private String GRAPH_DB_NAME;
+	private ArangoDB arangoDb;
+	private ArangoDatabase dbInstance;
 	
 	public GraphDbDataSourceInstance(String DB_NAME){
 		this.GRAPH_DB_NAME = DB_NAME;
@@ -32,6 +37,7 @@ public class GraphDbDataSourceInstance {
 		this.GRAPH_DB_MAX_CONNECTIONS = DB_MAX_CONNECTIONS;
 		this.GRAPH_DB_CONNECTION_TIMEOUT_LENGTH = DB_CONNECTION_TIMEOUT_LENGTH;	
 		this.GRAPH_DB_NAME = DB_NAME;
+		initArangoDB();
 	}
 	
 	
@@ -49,7 +55,52 @@ public class GraphDbDataSourceInstance {
 		this.GRAPH_DB_PORT = vars.getGraphdbPort();
 		this.GRAPH_DB_MAX_CONNECTIONS = vars.getGraphdbMaxConnections();
 		this.GRAPH_DB_CONNECTION_TIMEOUT_LENGTH = vars.getGraphdbConnectTimeOutLength();	
-		
+		initArangoDB();
+	}
+	
+	private void initArangoDB(){
+		if(GRAPH_DB_URL == null || 
+				GRAPH_DB_USER == null || 
+				GRAPH_DB_PORT == null|| 
+				GRAPH_DB_PWD == null ||
+				GRAPH_DB_MAX_CONNECTIONS == null ||
+				GRAPH_DB_CONNECTION_TIMEOUT_LENGTH == null
+				){
+			throw new RuntimeException("Some graphdb configurations could not be found."
+					+ "  Check configuration file and restart");
+		}
+		this.arangoDb = new ArangoDB
+				.Builder()
+				.host(GRAPH_DB_URL, 
+						Integer.getInteger(GRAPH_DB_PORT))
+				.user(GRAPH_DB_USER)
+				.password(GRAPH_DB_PWD)
+				.maxConnections(
+						Integer.getInteger(GRAPH_DB_MAX_CONNECTIONS))
+				.connectionTtl(
+						Integer.getInteger(GRAPH_DB_CONNECTION_TIMEOUT_LENGTH).longValue())
+				.build();
+		if(arangoDb.createDatabase(GRAPH_DB_NAME)){this.dbInstance = arangoDb.db(GRAPH_DB_NAME);}
+		else{
+			System.out.println("A database by this name already exists"
+					+ " no duplicate connection will be made:  " 
+						+ GRAPH_DB_NAME);
+			return;
+		}
+	}
+
+	/**
+	 * @return the arangoDb
+	 */
+	public ArangoDB getArangoDb() {
+		return arangoDb;
+	}
+
+	/**
+	 * @return the dbInstance
+	 */
+	public ArangoDatabase getDbInstance() {
+		return dbInstance;
 	}
 
 
