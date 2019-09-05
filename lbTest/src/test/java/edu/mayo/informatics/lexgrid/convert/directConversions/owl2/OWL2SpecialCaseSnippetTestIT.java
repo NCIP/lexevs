@@ -17,6 +17,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -410,6 +411,32 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	itr = rootNodes.iterateResolvedConceptReference();
 	assertTrue(validateCodeInList("DiseasesDisordersFindings", itr));
 	}
+	
+	@Test
+	public void testIsCodeRetired() throws Exception {
+		// This test validates that C99996 is retired. This should be true because:
+		// The preference file has the following line:   
+		// <MatchConceptStatus>P310</MatchConceptStatus> 
+		// This is validating that a code can be set for the MatchConceptStatus, instead 
+		// of using the name, Concept_Status.
+		
+		LexBIGServiceConvenienceMethods lbscm = null;
+		
+		try {
+			lbscm = (LexBIGServiceConvenienceMethods)lbs.getGenericExtension("LexBIGServiceConvenienceMethods");
+			lbscm.setLexBIGService(lbs);
+		} catch (LBException e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
+		
+		boolean isRetired = lbscm.isCodeRetired("C99996", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+		assertTrue(isRetired);
+	}
+
 	
 	@Test
 	public void testLoadofOBODefinedQualifiers() throws LBInvocationException, LBParameterException{
