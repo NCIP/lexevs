@@ -4,7 +4,6 @@
   xsi:schemaLocation="../lbModel/master.preferences/OWLLoadPreferences
   ../lbModel/master.preferences/OWLLoadPreferences.xsd">
 
-  <MatchConceptStatus>P310</MatchConceptStatus>
 
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
 
