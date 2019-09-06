@@ -14,7 +14,12 @@ import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexOnt.CodingSchemeManifest;
 
-public class LexEVSArangoGraphingDBLoader implements GraphingDBLoader {
+public class LexEVSGraphingDBLoader implements GraphingDBLoader {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -8116266082860733013L;
 
     @Override
     public void load(URI resource) {
@@ -124,9 +129,5 @@ public class LexEVSArangoGraphingDBLoader implements GraphingDBLoader {
         return null;
     }
 
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
-
-    }
 
 }

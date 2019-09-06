@@ -2,7 +2,10 @@ package org.lexevs.dao.database.operation;
 
 import java.util.List;
 
-public class LexEVSArangoDBGraphingOperations implements LexEVSGraphingDataBaseOperations {
+import com.arangodb.ArangoDB;
+
+public class LexEVSArangoDBGraphingOperationsImpl implements LexEVSGraphingDataBaseOperations {
+	ArangoDB db;
 
 	@Override
 	public void createDatabase(String uri) {

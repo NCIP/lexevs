@@ -18,7 +18,7 @@ import com.arangodb.ArangoDB;
 
 public class ErrorReportingGraphDbDataSourceManager implements InitializingBean {
 	LgLoggerIF log;
-	ConcurrentHashMap<String, GraphDbDataSourceInstance> dbCache = 
+	ConcurrentHashMap<String, GraphDbDataSourceInstance> graphDbCache = 
 			new ConcurrentHashMap<String, GraphDbDataSourceInstance>();
 	private boolean strictArangoRequirement = false;
 	
@@ -33,6 +33,8 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		log = getLogger();
 		String url = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbUrl();
 		String port = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbPort();
+		log.info("Connecting to graph database");
+		System.out.println("Connecting to graph database");
 		ArangoDB db = new ArangoDB.Builder().host(url, Integer.getInteger(port)).build();
 		if(db == null && strictArangoRequirement){
 			log.fatal("Unable to connect to ArangoDb at: " + url + ":" + port);
@@ -41,17 +43,19 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		else{
 			log.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
 					+ "Continuing with LexEVS db support only");
+			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
+					+ "Continuing with LexEVS db support only");
 		}
 		db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
 	}
 	
 	public GraphDbDataSourceInstance getDataSource(String schemeUri){
-		if(dbCache.containsKey(schemeUri)){
-			return dbCache.get(schemeUri);
+		if(graphDbCache.containsKey(schemeUri)){
+			return graphDbCache.get(schemeUri);
 		}
 		else{
 			GraphDbDataSourceInstance gbDataSource = getFreshDataSource(schemeUri);
-			dbCache.put(schemeUri, gbDataSource);
+			graphDbCache.put(schemeUri, gbDataSource);
 			return gbDataSource;
 		}
 	}
@@ -86,8 +90,7 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 	public RegistryEntry getProductionEntry(List<RegistryEntry> list){
 		return  list
 				.stream()
-				.filter(x -> x.getTag()
-						.equals("PRODUCTION")).
+				.filter(x -> x.getTag().equals("PRODUCTION")).
 				findFirst().
 				get();
 
@@ -117,5 +120,5 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 	public void setStrictArangoRequirement(boolean strictArangoRequirement) {
 		this.strictArangoRequirement = strictArangoRequirement;
 	}
-	
+
 }
