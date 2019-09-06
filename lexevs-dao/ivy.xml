@@ -82,6 +82,10 @@
 		<dependency org="org.apache.lucene" name="lucene-sandbox" rev="5.3.1" force="true" conf="default"/>
 		<!-- https://mvnrepository.com/artifact/com.arangodb/arangodb-java-driver -->
 		<dependency org="com.arangodb" name="arangodb-java-driver" rev="6.1.0" conf="default"/>
-		<dependency org="com.arangodb" name="velocypack-module-jdk8" rev="1.1.0" conf="default"/>
+		<!-- https://mvnrepository.com/artifact/com.arangodb/velocypack -->
+		<dependency org="com.arangodb" name="velocypack" rev="1.4.2" conf="default"/>
+		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
+		<dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.10.0.pr2" conf="default"/>
+		
    	 </dependencies>
 </ivy-module>

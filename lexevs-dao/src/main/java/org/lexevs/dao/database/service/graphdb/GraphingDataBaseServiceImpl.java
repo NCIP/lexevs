@@ -4,52 +4,42 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.lexevs.dao.database.access.association.model.LexVertex;
-import org.lexevs.dao.database.access.association.model.NodeEdge;
 import org.lexevs.dao.database.access.association.model.Triple;
-import org.lexevs.dao.database.operation.LexEVSRelsToGraph;
+import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.Logger;
-import org.lexevs.logging.LoggerFactory;
 
 import com.arangodb.ArangoDatabase;
+import com.arangodb.entity.GraphEntity;
 
 public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
-	LexEVSRelsToGraph rels2graph;
+	
+	private LexEVSRelsToGraphDao rels2graph;
+	private LgLoggerIF logger;
+	
 	
 	@Override
-	public void insertEdge(NodeEdge edge) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void insertVertex(LexVertex vertex) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void getGraphingDataBaseForURI(String uri) {
-		// TODO Auto-generated method stub
-
-	}
-	
 	public void loadGraphsForTerminologyURIAndVersion(String uri, String version){
 		if(version == null){
 			loadGraphsForTerminolgyProductionTerminologyUri(uri);
 		}
 		List<String> assos = rels2graph.getSupportedAssociationNamesForScheme(uri, version);
-		assos.parallelStream().forEach(associationName -> loadGraph(associationName, uri, version));
+		assos.stream().forEach(associationName -> loadGraph(associationName, uri, version));
 	}
 
-	private void loadGraphsForTerminolgyProductionTerminologyUri(String uri) {
+	@Override
+	public void loadGraphsForTerminolgyProductionTerminologyUri(String uri) {
 		loadGraphsForTerminologyURIAndVersion(uri, getVersionForProductionTaggedTerminology(uri));
 	}
 	
 	private void loadGraph(String graphName, String uri, String version){
 		List<Triple> triples = rels2graph.getValidTriplesForAssociationNames(graphName, uri, version);
+
 		ArangoDatabase db = rels2graph.getGraphSourceMgr().getDataSource(uri).getDbInstance();
+		GraphEntity graph =	rels2graph.createGraphFromDataBaseAndCollections(
+				db, 
+				graphName, 
+				rels2graph.getAssociationEdgeNameForRow(graphName),
+				rels2graph.getVertexCollectionName(graphName));
 		triples.stream().forEach(triple -> rels2graph.processEdgeAndVertexToGraphDb(triple, graphName, db));		
 	}
 	
@@ -60,7 +50,7 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 					.getSystemResourceService()
 					.getInternalVersionStringForTag(uri, "PRODUCTION");
 		} catch (LBParameterException e) {
-			getLogger().error("There was a problem getting a version"
+			logger.error("There was a problem getting a version"
 					+ " string for the PRODUCTION tagged "
 					+ "terminology identified by url: " + uri);
 			throw new RuntimeException("There was a problem getting a version"
@@ -70,8 +60,33 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 		
 	}
 
-	private LgLoggerIF getLogger() {
-		return LoggerFactory.getLogger();
+	/**
+	 * @return the rels2graph
+	 */
+	public LexEVSRelsToGraphDao getRels2graph() {
+		return rels2graph;
 	}
+
+	/**
+	 * @param rels2graph the rels2graph to set
+	 */
+	public void setRels2graph(LexEVSRelsToGraphDao rels2graph) {
+		this.rels2graph = rels2graph;
+	}
+
+	/**
+	 * @return the logger
+	 */
+	public LgLoggerIF getLogger() {
+		return logger;
+	}
+
+	/**
+	 * @param logger the logger to set
+	 */
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
+	}
+
 
 }

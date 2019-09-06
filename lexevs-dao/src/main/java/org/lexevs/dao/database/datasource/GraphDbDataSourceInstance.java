@@ -4,6 +4,7 @@ import org.lexevs.logging.Logger;
 import org.lexevs.system.constants.SystemVariables;
 
 import com.arangodb.ArangoDB;
+import com.arangodb.ArangoDBException;
 import com.arangodb.ArangoDatabase;
 
 public class GraphDbDataSourceInstance {
@@ -72,20 +73,28 @@ public class GraphDbDataSourceInstance {
 		this.arangoDb = new ArangoDB
 				.Builder()
 				.host(GRAPH_DB_URL, 
-						Integer.getInteger(GRAPH_DB_PORT))
+						Integer.valueOf(GRAPH_DB_PORT).intValue())
 				.user(GRAPH_DB_USER)
 				.password(GRAPH_DB_PWD)
 				.maxConnections(
-						Integer.getInteger(GRAPH_DB_MAX_CONNECTIONS))
+						Integer.valueOf(GRAPH_DB_MAX_CONNECTIONS).intValue())
 				.connectionTtl(
-						Integer.getInteger(GRAPH_DB_CONNECTION_TIMEOUT_LENGTH).longValue())
+						Integer.valueOf(GRAPH_DB_CONNECTION_TIMEOUT_LENGTH).longValue())
 				.build();
-		if(arangoDb.createDatabase(GRAPH_DB_NAME)){this.dbInstance = arangoDb.db(GRAPH_DB_NAME);}
-		else{
-			System.out.println("A database by this name already exists"
-					+ " no duplicate connection will be made:  " 
+		if(arangoDb.getDatabases().contains(GRAPH_DB_NAME)){
+			this.dbInstance = arangoDb.db(GRAPH_DB_NAME);
+			}
+		else {
+			try {
+				arangoDb.createDatabase(GRAPH_DB_NAME);
+				this.dbInstance = arangoDb.db(GRAPH_DB_NAME);
+			} catch (ArangoDBException e) {
+				System.out.println("A database by this name already exists" + 
+			" no duplicate connection will be made:  "
 						+ GRAPH_DB_NAME);
-			return;
+				return;
+			}
+
 		}
 	}
 

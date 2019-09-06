@@ -1,14 +1,16 @@
-package org.lexevs.dao.database.operation;
+package org.lexevs.dao.database.graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.access.association.model.NodeEdge;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.datasource.ErrorReportingGraphDbDataSourceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.arangodb.ArangoDatabase;
@@ -19,14 +21,14 @@ import com.arangodb.entity.GraphEntity;
 import com.arangodb.entity.VertexEntity;
 import com.arangodb.model.GraphCreateOptions;
 
-public class LexEVSRelsToGraph implements InitializingBean {
+public class LexEVSRelsToGraphDao implements InitializingBean {
 	
-	ErrorReportingGraphDbDataSourceManager graphSourceMgr;
-
+	private ErrorReportingGraphDbDataSourceManager graphSourceMgr;
+	private LgLoggerIF logger;
     
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		
+		System.out.println("Starting Graph Dao");
 	}
 
     
@@ -57,24 +59,24 @@ public class LexEVSRelsToGraph implements InitializingBean {
         LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
         LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace());
         ArangoVertexCollection collection = db.graph(getAssociationEdgeNameForRow(
-        		row.getAssociationPredicateId(), db))
+        		associationName))
         		.vertexCollection(getVertexCollectionName(
-        				row.getAssociationPredicateId(), db));
+        				associationName));
         VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);
         VertexEntity Bb = collection.getVertex(B.getCode(), VertexEntity.class) ;
         if(Aa == null){
-            Aa = storeVertex(A, db, db.name(), getVertexCollectionName( row.getAssociationPredicateId(), db));
+            Aa = storeVertex(A, db, associationName, getVertexCollectionName( associationName));
         }
         if(Bb == null){
-            Bb = storeVertex(B, db, db.name(), getVertexCollectionName( row.getAssociationPredicateId(), db));
+            Bb = storeVertex(B, db, associationName, getVertexCollectionName( associationName));
         }
 
         if(Aa == null || Bb == null){return;}
         storeEdge(new NodeEdge(Aa.getId(), Bb.getId(), false, true,
-                row.getAssociationPredicateId()), 
+                associationName), 
         		db, 
-        		db.name(), 
-        		getAssociationEdgeNameForRow( row.getAssociationPredicateId(), db)
+        		associationName, 
+        		getAssociationEdgeNameForRow( associationName)
         		);
     }
     
@@ -85,13 +87,12 @@ public class LexEVSRelsToGraph implements InitializingBean {
 			return graph.create(Arrays.asList(edgeDefinition), new GraphCreateOptions());
     }
     
-    private String getVertexCollectionName(String associationName, ArangoDatabase db) {
-       return null;
+    public String getVertexCollectionName(String associationName) {
+       return "LexTEXsFor"+ associationName;
     }
 
-    private String getAssociationEdgeNameForRow(String associationName,  ArangoDatabase db) {
-        // TODO Auto-generated method stub
-        return null;
+    public String getAssociationEdgeNameForRow(String associationName) {
+       return "NodeEdgeFor"+ associationName;
     }
 
     private void storeEdge(NodeEdge edge, ArangoDatabase db, String graphName, String edgeCollectionName){
@@ -120,6 +121,22 @@ public class LexEVSRelsToGraph implements InitializingBean {
 	 */
 	public void setGraphSourceMgr(ErrorReportingGraphDbDataSourceManager graphSourceMgr) {
 		this.graphSourceMgr = graphSourceMgr;
+	}
+
+
+	/**
+	 * @return the logger
+	 */
+	public LgLoggerIF getLogger() {
+		return logger;
+	}
+
+
+	/**
+	 * @param logger the logger to set
+	 */
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
 	}
 
 

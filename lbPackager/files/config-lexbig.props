@@ -204,6 +204,7 @@ GRAPH_DB_URL=
 GRAPH_DB_PORT=
 GRAPH_DB_MAX_CONNECTIONS=
 GRAPH_DB_CONNECTION_TIMEOUT_LENGTH=
+STRICT_ARANGO_REQUIREMENT=
 
 ############# Lucene Configuration
 # The number of boolean 'clauses' Lucene will attempt to create for wildcard

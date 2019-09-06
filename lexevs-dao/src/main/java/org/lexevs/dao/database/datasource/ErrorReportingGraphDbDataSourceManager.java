@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.log4j.LogManager;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -12,41 +13,40 @@ import org.lexevs.logging.Logger;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.system.service.CodingSchemeAliasHolder;
+import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.arangodb.ArangoDB;
 
 public class ErrorReportingGraphDbDataSourceManager implements InitializingBean {
-	LgLoggerIF log;
-	ConcurrentHashMap<String, GraphDbDataSourceInstance> graphDbCache = 
+	private LgLoggerIF logger;
+	private boolean strictArangoRequirement;
+	private ConcurrentHashMap<String, GraphDbDataSourceInstance> graphDbCache = 
 			new ConcurrentHashMap<String, GraphDbDataSourceInstance>();
-	private boolean strictArangoRequirement = false;
-	
-    protected LgLoggerIF getLogger() {
-        return LoggerFactory.getLogger();
-    }
+
 	
 	
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		log = getLogger();
-		String url = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbUrl();
-		String port = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbPort();
-		log.info("Connecting to graph database");
-		System.out.println("Connecting to graph database");
-		ArangoDB db = new ArangoDB.Builder().host(url, Integer.getInteger(port)).build();
-		if(db == null && strictArangoRequirement){
-			log.fatal("Unable to connect to ArangoDb at: " + url + ":" + port);
-			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
-		}
-		else{
-			log.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-					+ "Continuing with LexEVS db support only");
-			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-					+ "Continuing with LexEVS db support only");
-		}
-		db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
+//
+//		String url = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbUrl();
+//		String port = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbPort();
+//		logger.info("Connecting to graph database");
+		System.out.println("Starting Graph Database Source Manager");
+//		ArangoDB db = new ArangoDB.Builder().host(url, Integer.getInteger(port)).build();
+//		if(db == null && strictArangoRequirement){
+//			logger.fatal("Unable to connect to ArangoDb at: " + url + ":" + port);
+//			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
+//		}
+//		else{
+//			logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
+//					+ "Continuing with LexEVS db support only");
+//			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
+//					+ "Continuing with LexEVS db support only");
+//		}
+//		db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
 	}
 	
 	public GraphDbDataSourceInstance getDataSource(String schemeUri){
@@ -82,8 +82,15 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 					.filter(x -> x.getLastUpdateDate().equals(tmstp.get(0)))
 					.collect(Collectors.toList())
 					.get(0);}
-
-		return new GraphDbDataSourceInstance(entry.getResourceUri());
+		String name = null;
+		try {
+			name = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(entry.getResourceUri(), entry.getResourceVersion());
+		} catch (LBParameterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return new GraphDbDataSourceInstance(name);
 	}
 	
 	
@@ -119,6 +126,20 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 	 */
 	public void setStrictArangoRequirement(boolean strictArangoRequirement) {
 		this.strictArangoRequirement = strictArangoRequirement;
+	}
+
+	/**
+	 * @return the logger
+	 */
+	public LgLoggerIF getLogger() {
+		return logger;
+	}
+
+	/**
+	 * @param logger the logger to set
+	 */
+	public void setLogger(LgLoggerIF logger) {
+		this.logger = logger;
 	}
 
 }

@@ -94,7 +94,7 @@ public class DatabaseServiceManager {
 	private CodedNodeGraphService codedNodeGraphService;
 	
 	/** The coded node graph service. */
-	private GraphingDataBaseService graphDbService;
+	private GraphingDataBaseService graphingDatabaseService;
 	
 	/** The nci history service. */
 	private NciHistoryService nciHistoryService;
@@ -327,13 +327,6 @@ public class DatabaseServiceManager {
 		return codedNodeGraphService;
 	}
 
-	public GraphingDataBaseService getGraphDbService() {
-		return graphDbService;
-	}
-
-	public void setGraphDbService(GraphingDataBaseService graphDbService) {
-		this.graphDbService = graphDbService;
-	}
 
 	/**
 	 * Gets the relation service.
@@ -389,6 +382,20 @@ public class DatabaseServiceManager {
 	public void setAssociationDataService(
 			AssociationDataService associationDataService) {
 		this.associationDataService = associationDataService;
+	}
+
+	/**
+	 * @return the graphingDatabaseService
+	 */
+	public GraphingDataBaseService getGraphingDatabaseService() {
+		return graphingDatabaseService;
+	}
+
+	/**
+	 * @param graphingDatabaseService the graphingDatabaseService to set
+	 */
+	public void setGraphingDatabaseService(GraphingDataBaseService graphingDatabaseService) {
+		this.graphingDatabaseService = graphingDatabaseService;
 	}
 
 	/**

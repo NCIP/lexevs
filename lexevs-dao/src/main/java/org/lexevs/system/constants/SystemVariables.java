@@ -80,6 +80,7 @@ public class SystemVariables {
     private String autoLoadDBDriver_;
     private String autoLoadDBUsername_;
     private String autoLoadDBPassword_;
+    private String autoLoadStrictArrangoRequirement_;
     private String relativePathStart_;
     
     private String assertedValueSetVersion;
@@ -343,10 +344,11 @@ public class SystemVariables {
             
         	graphdbUser = getProperty(props, "GRAPH_DB_USER");
         	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
-        	graphdbUrl = getProperty(props, "GRAPH_DB_PATH");
+        	graphdbUrl = getProperty(props, "GRAPH_DB_URL");
         	graphdbPort = getProperty(props, "GRAPH_DB_PORT");
         	graphdbMaxConnections = getProperty(props, "GRAPH_DB_MAX_CONNECTIONS");
         	graphdbConnectTimeOutLength = getProperty(props, "GRAPH_DB_CONNECTION_TIMEOUT_LENGTH");
+        	autoLoadStrictArrangoRequirement_ = getProperty(props, "STRICT_ARANGO_REQUIREMENT");
 
             
             mysql_collation= getNullableProperty(props, "MYSQL_COLLATION", DEFAULT_MYSQL_COLLATION);
@@ -623,6 +625,20 @@ public class SystemVariables {
     }
 
     /**
+	 * @return the autoLoadStrictArrangoRequirement_
+	 */
+	public String getAutoLoadStrictArrangoRequirement() {
+		return autoLoadStrictArrangoRequirement_;
+	}
+
+	/**
+	 * @param autoLoadStrictArrangoRequirement_ the autoLoadStrictArrangoRequirement_ to set
+	 */
+	public void setAutoLoadStrictArrangoRequirement_(String autoLoadStrictArrangoRequirement_) {
+		this.autoLoadStrictArrangoRequirement_ = autoLoadStrictArrangoRequirement_;
+	}
+
+	/**
      * @return the logLocation
      */
     public String getLogLocation() {
