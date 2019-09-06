@@ -434,7 +434,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		versionOrTag.setVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
 		
 		boolean isRetired = lbscm.isCodeRetired("C99996", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
-		assertTrue(isRetired);
+		assertEquals(false, isRetired);
 	}
 
 	
