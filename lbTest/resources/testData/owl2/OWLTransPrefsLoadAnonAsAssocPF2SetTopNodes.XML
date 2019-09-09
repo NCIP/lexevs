@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <OWLLoaderPreferences xmlns="http://LexGrid.org/schema/LexBIG/2009/01/Preferences/load/OWLLoadPreferences"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="../lbModel/master.preferences/OWLLoadPreferences
   ../lbModel/master.preferences/OWLLoadPreferences.xsd">
+
+
   <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
-  
-  <MatchXMLRepformNames>term-group</MatchXMLRepformNames> 
-  <!--MatchXMLRepformNames>P383</MatchXMLRepformNames--> 
-    
+
+  <MatchXMLRepformNames>term-group</MatchXMLRepformNames>
+  <!--MatchXMLRepformNames>P383</MatchXMLRepformNames-->
+
   <MatchXMLSourceNames>source|P384|P378</MatchXMLSourceNames>
   <!--MatchXMLSourceNames>term-source|source|def-source</MatchXMLSourceNames-->
-  
-  <ProcessComplexProps>true</ProcessComplexProps>  
+
+  <ProcessComplexProps>true</ProcessComplexProps>
   <StrictOWLImplementation>false</StrictOWLImplementation>
   <PrioritizedPresentationNames>
   <name>editor preferred term</name>

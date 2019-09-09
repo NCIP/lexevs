@@ -1288,7 +1288,8 @@ public class OwlApi2LG {
             // set directly as attributes on the LexGrid concept.
             if (propName.matches(prefManager.getMatchPattern_conceptCode())) {
                 lgEntity.setEntityCode(resolvedText);
-            } else if (lgLabel != null && lgLabel.matches(prefManager.getMatchPattern_conceptStatus())) {
+            } else if ((lgLabel != null && lgLabel.matches(prefManager.getMatchPattern_conceptStatus())) ||
+                       (propName.matches(prefManager.getMatchPattern_conceptStatus())))  {
                 // trim to 50, if needed.
                 if (resolvedText.length() > 50){
                     System.out.println("Trimming Concept_Status to 50 characters: " + resolvedText);
