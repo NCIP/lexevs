@@ -58,8 +58,8 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
     public void processEdgeAndVertexToGraphDb(Triple row, String associationName, ArangoDatabase db){
         LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
         LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace());
-        ArangoVertexCollection collection = db.graph(getAssociationEdgeNameForRow(
-        		associationName))
+        ArangoVertexCollection collection = db.graph(
+        		associationName)
         		.vertexCollection(getVertexCollectionName(
         				associationName));
         VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);
@@ -83,16 +83,15 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
     public GraphEntity createGraphFromDataBaseAndCollections(ArangoDatabase db, String associationName, String edgeCollectionName, String vertexCollectionName){
 		final EdgeDefinition edgeDefinition = new EdgeDefinition().collection(edgeCollectionName)
 				.from(vertexCollectionName).to(vertexCollectionName);
-			ArangoGraph graph = db.graph(associationName);
-			return graph.create(Arrays.asList(edgeDefinition), new GraphCreateOptions());
+			return db.createGraph(associationName, Arrays.asList(edgeDefinition), null);
     }
     
     public String getVertexCollectionName(String associationName) {
-       return "LexTEXsFor"+ associationName;
+       return ("V"+ associationName).length() > 64? ("V"+ associationName).substring(0,63):"V"+ associationName;
     }
 
     public String getAssociationEdgeNameForRow(String associationName) {
-       return "NodeEdgeFor"+ associationName;
+       return ("E"+ associationName).length() > 64? ("E"+ associationName).substring(0,63):"E"+ associationName;
     }
 
     private void storeEdge(NodeEdge edge, ArangoDatabase db, String graphName, String edgeCollectionName){

@@ -26,11 +26,13 @@ public class LexEVSArangoGraphingDbLoader extends LexEVSGraphingDBLoader {
     
     @Override
     public void load(URI resource) {
+        long start = System.currentTimeMillis();
         LexEvsServiceLocator
         .getInstance()
         .getDatabaseServiceManager()
         .getGraphingDatabaseService()
         .loadGraphsForTerminologyURIAndVersion(resource.toString(), versionOrTag);
+        System.out.println("Total graph load time for  " + resource.toString() + ": " + ((System.currentTimeMillis() - start) /1000));
     }
     
     public void useVersionOrTag(String versionOrTag){

@@ -19,11 +19,16 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 	
 	@Override
 	public void loadGraphsForTerminologyURIAndVersion(String uri, String version){
+		try{
 		if(version == null){
 			loadGraphsForTerminolgyProductionTerminologyUri(uri);
 		}
 		List<String> assos = rels2graph.getSupportedAssociationNamesForScheme(uri, version);
 		assos.stream().forEach(associationName -> loadGraph(associationName, uri, version));
+		rels2graph.getGraphSourceMgr().getDataSource(uri).getArangoDb().shutdown();
+		}catch(Exception e){
+			rels2graph.getGraphSourceMgr().getDataSource(uri).getArangoDb().shutdown();
+		}
 	}
 
 	@Override
@@ -32,15 +37,17 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 	}
 	
 	private void loadGraph(String graphName, String uri, String version){
+		long start = System.currentTimeMillis();
 		List<Triple> triples = rels2graph.getValidTriplesForAssociationNames(graphName, uri, version);
-
+		System.out.println("Starting load of : " + triples.size() + " edges for graph " + graphName);
 		ArangoDatabase db = rels2graph.getGraphSourceMgr().getDataSource(uri).getDbInstance();
 		GraphEntity graph =	rels2graph.createGraphFromDataBaseAndCollections(
 				db, 
 				graphName, 
 				rels2graph.getAssociationEdgeNameForRow(graphName),
 				rels2graph.getVertexCollectionName(graphName));
-		triples.stream().forEach(triple -> rels2graph.processEdgeAndVertexToGraphDb(triple, graphName, db));		
+		triples.stream().forEach(triple -> rels2graph.processEdgeAndVertexToGraphDb(triple, graphName, db));
+		System.out.println("Load Time including edge retrieval from source: " + ((System.currentTimeMillis() - start)/1000) + " seconds\n");
 	}
 	
 	private String getVersionForProductionTaggedTerminology(final String uri){
