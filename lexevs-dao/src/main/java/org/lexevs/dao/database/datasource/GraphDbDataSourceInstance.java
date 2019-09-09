@@ -49,13 +49,13 @@ public class GraphDbDataSourceInstance {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		this.GRAPH_DB_USER = vars.getGraphdbUser();
 		this.GRAPH_DB_PWD = vars.getGraphdbpwd();
 		this.GRAPH_DB_URL = vars.getGraphdbUrl();
 		this.GRAPH_DB_PORT = vars.getGraphdbPort();
 		this.GRAPH_DB_MAX_CONNECTIONS = vars.getGraphdbMaxConnections();
-		this.GRAPH_DB_CONNECTION_TIMEOUT_LENGTH = vars.getGraphdbConnectTimeOutLength();	
+		this.GRAPH_DB_CONNECTION_TIMEOUT_LENGTH = vars.getGraphdbConnectTimeOutLength();
 		initArangoDB();
 	}
 	
@@ -81,17 +81,16 @@ public class GraphDbDataSourceInstance {
 				.connectionTtl(
 						Integer.valueOf(GRAPH_DB_CONNECTION_TIMEOUT_LENGTH).longValue())
 				.build();
-		if(arangoDb.getDatabases().contains(GRAPH_DB_NAME)){
+		if (arangoDb.getDatabases().contains(GRAPH_DB_NAME)) {
 			this.dbInstance = arangoDb.db(GRAPH_DB_NAME);
-			}
-		else {
+		} else {
 			try {
 				arangoDb.createDatabase(GRAPH_DB_NAME);
 				this.dbInstance = arangoDb.db(GRAPH_DB_NAME);
 			} catch (ArangoDBException e) {
-				System.out.println("A database by this name already exists" + 
-			" no duplicate connection will be made:  "
-						+ GRAPH_DB_NAME);
+				System.out.println("A database by this name already exists" 
+								+ " no duplicate connection will be made:  "
+									+ GRAPH_DB_NAME);
 				return;
 			}
 

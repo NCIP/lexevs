@@ -22,90 +22,87 @@ import com.arangodb.entity.VertexEntity;
 import com.arangodb.model.GraphCreateOptions;
 
 public class LexEVSRelsToGraphDao implements InitializingBean {
-	
+
 	private ErrorReportingGraphDbDataSourceManager graphSourceMgr;
 	private LgLoggerIF logger;
-    
+	private static final String VERTEX_COLLECTION_PREFIX = "V_";
+	private static final String EDGE_COLLECTION_PREFIX = "E_";
+	
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		System.out.println("Starting Graph Dao");
 	}
 
-    
-    public List<String> getSupportedAssociationNamesForScheme(String uri, String version){
+	public List<String> getSupportedAssociationNamesForScheme(String uri, String version) {
 
-        return LexEvsServiceLocator.getInstance()
-                .getDatabaseServiceManager()
-                .getCodedNodeGraphService()
-                .getAssociationPredicateNamesForCodingScheme(uri, version, null);
-    }
-    
-    public List<Triple> getValidTriplesForAssociationNames(String association, String codingSchemeUri, String version){
-       List<String> associationNames = new ArrayList<String>();
-       associationNames.add(association);
-    List<String> uids = LexEvsServiceLocator.getInstance()
-            .getDatabaseServiceManager().getCodedNodeGraphService()
-            .getAssociationPredicateUidsForNames(
-                    codingSchemeUri, version, null, associationNames );
-    String uid = uids.get(0);
-    return LexEvsServiceLocator.getInstance()
-    .getDatabaseServiceManager().getCodedNodeGraphService()
-    .getValidTriplesOfAssociation(
-            codingSchemeUri, version, uid);
-    }
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService()
+				.getAssociationPredicateNamesForCodingScheme(uri, version, null);
+	}
 
-    
-    public void processEdgeAndVertexToGraphDb(Triple row, String associationName, ArangoDatabase db){
-        LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
-        LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace());
-        ArangoVertexCollection collection = db.graph(
-        		associationName)
-        		.vertexCollection(getVertexCollectionName(
-        				associationName));
-        VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);
-        VertexEntity Bb = collection.getVertex(B.getCode(), VertexEntity.class) ;
-        if(Aa == null){
-            Aa = storeVertex(A, db, associationName, getVertexCollectionName( associationName));
-        }
-        if(Bb == null){
-            Bb = storeVertex(B, db, associationName, getVertexCollectionName( associationName));
-        }
+	public List<Triple> getValidTriplesForAssociationNames(String association, String codingSchemeUri, String version) {
+		List<String> associationNames = new ArrayList<String>();
+		associationNames.add(association);
+		List<String> uids = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService()
+				.getAssociationPredicateUidsForNames(codingSchemeUri, version, null, associationNames);
+		String uid = uids.get(0);
+		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService()
+				.getValidTriplesOfAssociation(codingSchemeUri, version, uid);
+	}
 
-        if(Aa == null || Bb == null){return;}
-        storeEdge(new NodeEdge(Aa.getId(), Bb.getId(), false, true,
-                associationName), 
-        		db, 
-        		associationName, 
-        		getAssociationEdgeNameForRow( associationName)
-        		);
-    }
-    
-    public GraphEntity createGraphFromDataBaseAndCollections(ArangoDatabase db, String associationName, String edgeCollectionName, String vertexCollectionName){
-		final EdgeDefinition edgeDefinition = new EdgeDefinition().collection(edgeCollectionName)
-				.from(vertexCollectionName).to(vertexCollectionName);
-			return db.createGraph(associationName, Arrays.asList(edgeDefinition), null);
-    }
-    
-    public String getVertexCollectionName(String associationName) {
-       return ("V"+ associationName).length() > 64? ("V"+ associationName).substring(0,63):"V"+ associationName;
-    }
+	public void processEdgeAndVertexToGraphDb(Triple row, String associationName, ArangoDatabase db) {
+		LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
+		LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace());
+		ArangoVertexCollection collection = db.graph(associationName)
+				.vertexCollection(getVertexCollectionName(associationName));
+		VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);
+		VertexEntity Bb = collection.getVertex(B.getCode(), VertexEntity.class);
+		if (Aa == null) {
+			Aa = storeVertex(A, db, associationName, getVertexCollectionName(associationName));
+		}
+		if (Bb == null) {
+			Bb = storeVertex(B, db, associationName, getVertexCollectionName(associationName));
+		}
 
-    public String getAssociationEdgeNameForRow(String associationName) {
-       return ("E"+ associationName).length() > 64? ("E"+ associationName).substring(0,63):"E"+ associationName;
-    }
+		if (Aa == null || Bb == null) {
+			return;
+		}
+		storeEdge(new NodeEdge(Aa.getId(), Bb.getId(), false, true, associationName), db, associationName,
+				getAssociationEdgeNameForRow(associationName));
+	}
 
-    private void storeEdge(NodeEdge edge, ArangoDatabase db, String graphName, String edgeCollectionName){
-    	db.graph(graphName).edgeCollection(edgeCollectionName).insertEdge(edge);
-    }
-    
-    private VertexEntity storeVertex(LexVertex vertex, ArangoDatabase db, String graphName, String vertexCollectionName){
+	public GraphEntity createGraphFromDataBaseAndCollections(ArangoDatabase db, String associationName,
+			String edgeCollectionName, String vertexCollectionName) {
+		final EdgeDefinition edgeDefinition = new EdgeDefinition()
+				.collection(edgeCollectionName)
+				.from(vertexCollectionName)
+				.to(vertexCollectionName);
+		return db.createGraph(associationName, Arrays.asList(edgeDefinition), null);
+	}
+
+	public String getVertexCollectionName(String associationName) {
+		return (VERTEX_COLLECTION_PREFIX + associationName).length() > 64 ? 
+				(VERTEX_COLLECTION_PREFIX + associationName).substring(0, 63) :
+					VERTEX_COLLECTION_PREFIX + associationName;
+	}
+
+	public String getAssociationEdgeNameForRow(String associationName) {
+		return (EDGE_COLLECTION_PREFIX + associationName).length() > 64 ? 
+				(EDGE_COLLECTION_PREFIX + associationName).substring(0, 63) :
+					EDGE_COLLECTION_PREFIX + associationName;
+	}
+
+	private void storeEdge(NodeEdge edge, ArangoDatabase db, String graphName, String edgeCollectionName) {
+		db.graph(graphName).edgeCollection(edgeCollectionName).insertEdge(edge);
+	}
+
+	private VertexEntity storeVertex(LexVertex vertex, ArangoDatabase db, String graphName,
+			String vertexCollectionName) {
 		return db.graph(graphName).vertexCollection(vertexCollectionName).insertVertex(vertex);
-    }
-    
-    public ArangoDatabase getDataBaseConnectionForScheme(String nameOrUri, String version){
-        return graphSourceMgr.getDataSource(nameOrUri).getDbInstance();
-    }
+	}
 
+	public ArangoDatabase getDataBaseConnectionForScheme(String nameOrUri, String version) {
+		return graphSourceMgr.getDataSource(nameOrUri).getDbInstance();
+	}
 
 	/**
 	 * @return the graphSourceMgr
@@ -114,14 +111,13 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 		return graphSourceMgr;
 	}
 
-
 	/**
-	 * @param graphSourceMgr the graphSourceMgr to set
+	 * @param graphSourceMgr
+	 *            the graphSourceMgr to set
 	 */
 	public void setGraphSourceMgr(ErrorReportingGraphDbDataSourceManager graphSourceMgr) {
 		this.graphSourceMgr = graphSourceMgr;
 	}
-
 
 	/**
 	 * @return the logger
@@ -130,15 +126,12 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 		return logger;
 	}
 
-
 	/**
-	 * @param logger the logger to set
+	 * @param logger
+	 *            the logger to set
 	 */
 	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
 	}
-
-
-
 
 }

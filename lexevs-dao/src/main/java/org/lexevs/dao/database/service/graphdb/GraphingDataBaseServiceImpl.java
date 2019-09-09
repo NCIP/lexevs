@@ -41,8 +41,9 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 		List<Triple> triples = rels2graph.getValidTriplesForAssociationNames(graphName, uri, version);
 		System.out.println("Starting load of : " + triples.size() + " edges for graph " + graphName);
 		ArangoDatabase db = rels2graph.getGraphSourceMgr().getDataSource(uri).getDbInstance();
-		GraphEntity graph = rels2graph.createGraphFromDataBaseAndCollections(db, graphName,
-				rels2graph.getAssociationEdgeNameForRow(graphName), rels2graph.getVertexCollectionName(graphName));
+		rels2graph.createGraphFromDataBaseAndCollections(db, graphName,
+			rels2graph.getAssociationEdgeNameForRow(graphName), 
+			rels2graph.getVertexCollectionName(graphName));
 		triples.stream().forEach(triple -> rels2graph.processEdgeAndVertexToGraphDb(triple, graphName, db));
 		System.out.println("Load Time including edge retrieval from source: "
 				+ ((System.currentTimeMillis() - start) / 1000) + " seconds\n");

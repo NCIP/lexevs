@@ -13,6 +13,7 @@ public class LexEVSArangoGraphingDbLoader extends LexEVSGraphingDBLoader {
      */
     private static final long serialVersionUID = -8949642539009509699L;
 
+    //TODO: Move To Launcher and set up command line processing
     public static void main(String[] args) {
         LexEVSArangoGraphingDbLoader loader = new LexEVSArangoGraphingDbLoader();
         loader.useVersionOrTag("18.05b");
