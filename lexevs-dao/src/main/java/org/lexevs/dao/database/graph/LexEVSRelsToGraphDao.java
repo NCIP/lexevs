@@ -82,13 +82,13 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 
 	public String getVertexCollectionName(String associationName) {
 		return (VERTEX_COLLECTION_PREFIX + associationName).length() > 64 ? 
-				(VERTEX_COLLECTION_PREFIX + associationName).substring(0, 63) :
+				(VERTEX_COLLECTION_PREFIX + associationName).substring(0, 64) :
 					VERTEX_COLLECTION_PREFIX + associationName;
 	}
 
 	public String getAssociationEdgeNameForRow(String associationName) {
 		return (EDGE_COLLECTION_PREFIX + associationName).length() > 64 ? 
-				(EDGE_COLLECTION_PREFIX + associationName).substring(0, 63) :
+				(EDGE_COLLECTION_PREFIX + associationName).substring(0, 64) :
 					EDGE_COLLECTION_PREFIX + associationName;
 	}
 
@@ -140,7 +140,7 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 		if(result.startsWith("_")){
 			result = result.substring(1);
 		}
-		return StringUtils.replace(graphName, " ", "_");
+		return StringUtils.replace(result, " ", "_");
 	}
 
 }

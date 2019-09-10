@@ -37,4 +37,26 @@ public class TestLexEVSRelsToGraph {
 		triples.stream().forEach(
 				x -> assertTrue(!x.getSourceEntityCode().contains("@") && !x.getTargetEntityCode().contains("@")));
 	}
+	
+	@Test
+	public void testNormaliseGraphNames(){
+		String notNormalName = " _this isn't normal ";
+		String result = graphRels.normalizeGraphName(notNormalName);
+		assertEquals( "this_isn't_normal", result);
+	}
+	
+	@Test
+	public void testGetVertexCollectionName(){
+		String notNormalName = "ThisIsAnVertexCollectionThatIsLongerThan_Any_VertexName_shouldbe_but_some_descriptions-JustKEepGoing";
+		String result = graphRels.getVertexCollectionName(notNormalName);
+		assertEquals( "V_ThisIsAnVertexCollectionThatIsLongerThan_Any_VertexName_should", result);
+	}
+	
+	@Test
+	public void testGetEdgeCollectionName(){
+		String notNormalName = "ThisIsAnEdgeThatIsLongerThan_Any_EdgeName_shouldbe_but_some_descriptions_of_edges-JustKEepGoing";
+		String result = graphRels.getAssociationEdgeNameForRow(notNormalName);
+		assertEquals( "E_ThisIsAnEdgeThatIsLongerThan_Any_EdgeName_shouldbe_but_some_de", result);
+	}
+	
 }
