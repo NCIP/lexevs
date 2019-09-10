@@ -96,6 +96,10 @@ public class GraphDbDataSourceInstance {
 
 		}
 	}
+	
+	public void dropGraphsAndDatabaseForDataSource() {
+		dbInstance.drop();
+	}
 
 	/**
 	 * @return the arangoDb
@@ -110,6 +114,8 @@ public class GraphDbDataSourceInstance {
 	public ArangoDatabase getDbInstance() {
 		return dbInstance;
 	}
+
+
 
 
 }

@@ -41,7 +41,7 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
 
     private static final long serialVersionUID = 5405545553067402760L;
     public final static String name = "LexGrid_Loader";
-    private final static String description = "This loader loads LexGrid XML files into the LexGrid database.";
+    public final static String description = "This loader loads LexGrid XML files into the LexGrid database.";
     
     public final static String VALIDATE = "Validate";
     private static boolean validate = true;

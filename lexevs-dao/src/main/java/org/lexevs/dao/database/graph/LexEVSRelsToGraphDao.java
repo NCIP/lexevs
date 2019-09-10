@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.access.association.model.NodeEdge;
 import org.lexevs.dao.database.access.association.model.Triple;
@@ -132,6 +133,14 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 	 */
 	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
+	}
+
+	public String normalizeGraphName(String graphName) {
+		String result = graphName.trim();
+		if(result.startsWith("_")){
+			result = result.substring(1);
+		}
+		return StringUtils.replace(graphName, " ", "_");
 	}
 
 }

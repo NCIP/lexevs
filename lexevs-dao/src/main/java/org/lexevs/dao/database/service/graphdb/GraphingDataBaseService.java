@@ -10,4 +10,6 @@ public interface GraphingDataBaseService {
 
 	public LexEVSRelsToGraphDao getRels2graph();
 
+	public void loadGraph(String graphName, String uri, String version);
+
 }

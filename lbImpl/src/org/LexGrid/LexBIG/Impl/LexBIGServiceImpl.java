@@ -89,6 +89,7 @@ import org.LexGrid.LexBIG.Impl.exporters.OBOExport;
 import org.LexGrid.LexBIG.Impl.exporters.OwlRdfExporterImpl;
 import org.LexGrid.LexBIG.Impl.loaders.ClaMLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.HL7LoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.LexEVSArangoGraphingDbLoader;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexGridMultiResolvedValueSetLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl;
@@ -612,6 +613,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SemNetLoaderImpl().register();
         new MedDRALoaderImpl().register();
         new MIFVocabularyLoaderImpl().register();
+        new LexEVSArangoGraphingDbLoader().register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();

@@ -67,7 +67,7 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		.getAllRegistryEntriesOfTypeAndURI(
 				ResourceType.CODING_SCHEME, schemeUri);
 		RegistryEntry entry;
-		if(entries.stream().anyMatch(x -> x.getTag().equals("PRODUCTION"))){
+		if(entries.stream().anyMatch(x -> x.getTag() != null && x.getTag().equals("PRODUCTION"))){
 		entry =  entries
 				.stream()
 				.filter(x -> x.getTag()
@@ -113,6 +113,13 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		.collect(Collectors.toList())
 		.get(0);
 		}
+	
+	public void removeDataSource(String schemeUri){
+		if(graphDbCache.containsKey(schemeUri)){
+			graphDbCache.get(schemeUri).dropGraphsAndDatabaseForDataSource();
+			graphDbCache.remove(schemeUri);
+		}
+	}
 
 	/**
 	 * @return the strictArangoRequirement

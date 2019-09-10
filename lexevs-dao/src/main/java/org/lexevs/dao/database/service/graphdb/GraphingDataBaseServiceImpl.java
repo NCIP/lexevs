@@ -27,6 +27,10 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 			assos.stream().forEach(associationName -> loadGraph(associationName, uri, version));
 			rels2graph.getGraphSourceMgr().getDataSource(uri).getArangoDb().shutdown();
 		} catch (Exception e) {
+			System.out.println("Error Loading graphs for coding scheme defined by uri: " + uri + " version: " + version);
+			System.out.println(e.getLocalizedMessage());
+			logger.error("Exception while Loading graphs for coding scheme defined by uri: " + uri + " version: " + version);
+			logger.error(e.getLocalizedMessage());
 			rels2graph.getGraphSourceMgr().getDataSource(uri).getArangoDb().shutdown();
 		}
 	}
@@ -36,15 +40,17 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 		loadGraphsForTerminologyURIAndVersion(uri, getVersionForProductionTaggedTerminology(uri));
 	}
 	
-	private void loadGraph(String graphName, String uri, String version) {
+	@Override
+	public void loadGraph(String graphName, String uri, String version) {
 		long start = System.currentTimeMillis();
 		List<Triple> triples = rels2graph.getValidTriplesForAssociationNames(graphName, uri, version);
-		System.out.println("Starting load of : " + triples.size() + " edges for graph " + graphName);
+		final String normGraphName = rels2graph.normalizeGraphName(graphName);
+		System.out.println("Starting load of : " + triples.size() + " edges for graph " + normGraphName);
 		ArangoDatabase db = rels2graph.getGraphSourceMgr().getDataSource(uri).getDbInstance();
-		rels2graph.createGraphFromDataBaseAndCollections(db, graphName,
-			rels2graph.getAssociationEdgeNameForRow(graphName), 
-			rels2graph.getVertexCollectionName(graphName));
-		triples.stream().forEach(triple -> rels2graph.processEdgeAndVertexToGraphDb(triple, graphName, db));
+		rels2graph.createGraphFromDataBaseAndCollections(db, normGraphName,
+			rels2graph.getAssociationEdgeNameForRow(normGraphName), 
+			rels2graph.getVertexCollectionName(normGraphName));
+		triples.stream().forEach(triple -> rels2graph.processEdgeAndVertexToGraphDb(triple, normGraphName, db));
 		System.out.println("Load Time including edge retrieval from source: "
 				+ ((System.currentTimeMillis() - start) / 1000) + " seconds\n");
 	}
@@ -63,6 +69,7 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 		}
 
 	}
+	
 
 	/**
 	 * @return the rels2graph
