@@ -3,6 +3,7 @@ package edu.mayo.informatics.lexgrid.convert.directConversions.graphdb;
 import static org.junit.Assert.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -43,6 +44,14 @@ public class TestLexEVSRelsToGraphDao {
 		// Have anonymous nodes been removed?
 		triples.stream().forEach(
 				x -> assertTrue(!x.getSourceEntityCode().contains("@") && !x.getTargetEntityCode().contains("@")));
+	}
+	
+	@Test
+	public void testEdgesPersisted(){
+		List<String> rels = graphRels
+				.getSupportedAssociationNamesForScheme("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+//		rels.stream().map(associationName -> graphRels.getValidTriplesForAssociationNames(associationName,
+//				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5")).collect(Collectors.groupingBy(List::add::addAll));
 	}
 	
 	
