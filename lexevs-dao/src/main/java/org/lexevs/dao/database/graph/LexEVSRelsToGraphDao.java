@@ -41,6 +41,10 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 	}
 
 	public List<Triple> getValidTriplesForAssociationNames(String association, String codingSchemeUri, String version) {
+		if(association == null || codingSchemeUri == null || version == null)
+		{
+			throw new RuntimeException("Association, coding scheme uri, and coding scheme version, must not be null to get valid scheme triples");
+		}
 		List<String> associationNames = new ArrayList<String>();
 		associationNames.add(association);
 		List<String> uids = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService()
@@ -51,6 +55,11 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 	}
 
 	public void processEdgeAndVertexToGraphDb(Triple row, String associationName, ArangoDatabase db) {
+		if(row == null || associationName == null || db == null)
+		{
+			throw new RuntimeException("Database instance, association triple, and associatin name, "
+					+ "must not be null to process triple to the graph data base");
+		}
 		LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
 		LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace());
 		ArangoVertexCollection collection = db.graph(associationName)
@@ -73,6 +82,10 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 
 	public GraphEntity createGraphFromDataBaseAndCollections(ArangoDatabase db, String associationName,
 			String edgeCollectionName, String vertexCollectionName) {
+		if(associationName == null || db == null || edgeCollectionName == null || vertexCollectionName == null)
+		{
+			throw new RuntimeException("Database instance, association name, edge and vertex collection names must not be null to create a graph in the graph database");
+		}
 		final EdgeDefinition edgeDefinition = new EdgeDefinition()
 				.collection(edgeCollectionName)
 				.from(vertexCollectionName)

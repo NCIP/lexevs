@@ -16,9 +16,11 @@ import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.CodingSchemeAliasHolder;
 import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.arangodb.ArangoDB;
+import com.arangodb.ArangoDBException;
 
 public class ErrorReportingGraphDbDataSourceManager implements InitializingBean {
 	private LgLoggerIF logger;
@@ -39,8 +41,22 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		String port = systemVariables.getGraphdbPort();
 		String user = systemVariables.getGraphdbUser();
 		String password = systemVariables.getGraphdbpwd();
-		ArangoDB db = new ArangoDB.Builder().host(url, Integer.valueOf(port).intValue()).user(user)
-				.password(password).build();
+		ArangoDB db = null;
+		try {
+			db = new ArangoDB.Builder().host(url, Integer.valueOf(port).intValue()).user(user).password(password)
+					.build();
+		} catch (BeanCreationException | ArangoDBException e) {
+			if (strictArangoRequirement) {
+				System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
+				logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
+				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
+			}
+			logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
+					+ "Continuing with LexEVS db support only");
+			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
+					+ "Continuing with LexEVS db support only");
+			return;
+		}
 		if (db == null) {
 			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
 			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
@@ -55,11 +71,21 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 
 		}
 		System.out.println("Displaying loaded graph databases");
-		db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
-		db.shutdown();
+		try {
+			db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
+		} catch (ArangoDBException e) {
+			logger.warn("Able to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred", e);
+			System.out.println("Able to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred");
+			e.printStackTrace();
+		} finally {
+			if(db != null)
+			{db.shutdown();}
+		}
 	}
 	
 	public GraphDbDataSourceInstance getDataSource(String schemeUri){
+		if(schemeUri == null)
+			{throw new RuntimeException("Cannot create data source when scheme URI is null");}
 		if(graphDbCache.containsKey(schemeUri)){
 			return graphDbCache.get(schemeUri);
 		}
@@ -109,6 +135,8 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 	
 	
 	public RegistryEntry getProductionEntry(List<RegistryEntry> list){
+		if(list == null || list.size() == 0)
+		{ throw new RuntimeException("Registry Entry list has no information, cannot return PRODUCTION entry"); }
 		return  list
 				.stream()
 				.filter(x -> x.getTag().equals("PRODUCTION")).
@@ -118,6 +146,8 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 	}
 	
 	public RegistryEntry getLatestUpdateEntry(List<RegistryEntry> list){
+		if(list == null || list.size() == 0)
+		{ throw new RuntimeException("Registry Entry list has no information, cannot return latest entry"); }
 		List<Timestamp> tmstp = list.stream().map(x -> x.getLastUpdateDate()).collect(Collectors.toList());
 		tmstp.sort((e1, e2)-> e1.compareTo(e2));
 		
@@ -129,6 +159,8 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		}
 	
 	public void removeDataSource(String schemeUri){
+		if(schemeUri == null)
+		{throw new RuntimeException("Cannot drop data source when scheme URI is null");}
 		if(graphDbCache.containsKey(schemeUri)){
 			graphDbCache.get(schemeUri).dropGraphsAndDatabaseForDataSource();
 			graphDbCache.remove(schemeUri);
