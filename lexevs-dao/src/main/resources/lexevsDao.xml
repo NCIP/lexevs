@@ -309,6 +309,7 @@
 		class="org.lexevs.dao.database.datasource.ErrorReportingGraphDbDataSourceManager">
 		<property name="logger" ref="loggerFactory"/>
 		<property name="strictArangoRequirement"   ref="strictArangoRequirement"/>
+		<property name="systemVariables"  ref="systemVariables"/>
 	</bean>
 	
 	<bean id="extensionLoadingListenerRegistry" 

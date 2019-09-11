@@ -30,7 +30,7 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 			System.out.println("Error Loading graphs for coding scheme defined by uri: " + uri + " version: " + version);
 			System.out.println(e.getLocalizedMessage());
 			logger.error("Exception while Loading graphs for coding scheme defined by uri: " + uri + " version: " + version);
-			logger.error(e.getLocalizedMessage());
+			logger.error(e.toString());
 			rels2graph.getGraphSourceMgr().getDataSource(uri).getArangoDb().shutdown();
 		}
 	}
@@ -55,7 +55,7 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 				+ ((System.currentTimeMillis() - start) / 1000) + " seconds\n");
 	}
 	
-	private String getVersionForProductionTaggedTerminology(final String uri) {
+	public String getVersionForProductionTaggedTerminology(final String uri) {
 		try {
 			return LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalVersionStringForTag(uri,
 					"PRODUCTION");

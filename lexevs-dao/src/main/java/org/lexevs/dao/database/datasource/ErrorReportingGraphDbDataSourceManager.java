@@ -13,6 +13,7 @@ import org.lexevs.logging.Logger;
 import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.lexevs.system.constants.SystemVariables;
 import org.lexevs.system.service.CodingSchemeAliasHolder;
 import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
 import org.springframework.beans.factory.InitializingBean;
@@ -22,6 +23,7 @@ import com.arangodb.ArangoDB;
 public class ErrorReportingGraphDbDataSourceManager implements InitializingBean {
 	private LgLoggerIF logger;
 	private boolean strictArangoRequirement;
+	private SystemVariables systemVariables;
 	private ConcurrentHashMap<String, GraphDbDataSourceInstance> graphDbCache = 
 			new ConcurrentHashMap<String, GraphDbDataSourceInstance>();
 
@@ -30,23 +32,31 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-//
-//		String url = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbUrl();
-//		String port = LexEvsServiceLocator.getInstance().getSystemResourceService().getSystemVariables().getGraphdbPort();
-//		logger.info("Connecting to graph database");
+
+		logger.info("Connecting to graph database");
 		System.out.println("Starting Graph Database Source Manager");
-//		ArangoDB db = new ArangoDB.Builder().host(url, Integer.getInteger(port)).build();
-//		if(db == null && strictArangoRequirement){
-//			logger.fatal("Unable to connect to ArangoDb at: " + url + ":" + port);
-//			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
-//		}
-//		else{
-//			logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-//					+ "Continuing with LexEVS db support only");
-//			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-//					+ "Continuing with LexEVS db support only");
-//		}
-//		db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
+		String url = systemVariables.getGraphdbUrl();
+		String port = systemVariables.getGraphdbPort();
+		String user = systemVariables.getGraphdbUser();
+		String password = systemVariables.getGraphdbpwd();
+		ArangoDB db = new ArangoDB.Builder().host(url, Integer.valueOf(port).intValue()).user(user)
+				.password(password).build();
+		if (db == null) {
+			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
+			logger.fatal("Unable to connect to ArangoDb at: " + url + ":" + port);
+			if (strictArangoRequirement) {
+				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
+			} else {
+				logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
+						+ "Continuing with LexEVS db support only");
+				System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
+						+ "Continuing with LexEVS db support only");
+			}
+
+		}
+		System.out.println("Displaying loaded graph databases");
+		db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
+		db.shutdown();
 	}
 	
 	public GraphDbDataSourceInstance getDataSource(String schemeUri){
@@ -67,26 +77,30 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		.getAllRegistryEntriesOfTypeAndURI(
 				ResourceType.CODING_SCHEME, schemeUri);
 		RegistryEntry entry;
-		if(entries.stream().anyMatch(x -> x.getTag() != null && x.getTag().equals("PRODUCTION"))){
+
 		entry =  entries
 				.stream()
-				.filter(x -> x.getTag()
+				.filter(x -> x.getTag() != null && x.getTag()
 						.equals("PRODUCTION"))
 				.collect(Collectors.toList())
-				.get(0);}
-		else{
+				.get(0);
+			if(entry == null){
 			List<Timestamp> tmstp = entries.stream().map(x -> x.getLastUpdateDate()).collect(Collectors.toList());
 			tmstp.sort((e1, e2)-> e1.compareTo(e2));
 			entry = entries
 					.stream()
 					.filter(x -> x.getLastUpdateDate().equals(tmstp.get(0)))
 					.collect(Collectors.toList())
-					.get(0);}
+					.get(0);
+			}
 		String name = null;
 		try {
-			name = LexEvsServiceLocator.getInstance().getSystemResourceService().getInternalCodingSchemeNameForUserCodingSchemeName(entry.getResourceUri(), entry.getResourceVersion());
+			name = LexEvsServiceLocator
+					.getInstance()
+					.getSystemResourceService()
+					.getInternalCodingSchemeNameForUserCodingSchemeName(
+							entry.getResourceUri(), entry.getResourceVersion());
 		} catch (LBParameterException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -147,6 +161,20 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 	 */
 	public void setLogger(LgLoggerIF logger) {
 		this.logger = logger;
+	}
+
+	/**
+	 * @return the systemVariables
+	 */
+	public SystemVariables getSystemVariables() {
+		return systemVariables;
+	}
+
+	/**
+	 * @param systemVariables the systemVariables to set
+	 */
+	public void setSystemVariables(SystemVariables systemVariables) {
+		this.systemVariables = systemVariables;
 	}
 
 }

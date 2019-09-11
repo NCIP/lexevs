@@ -12,7 +12,10 @@ import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
 import org.lexevs.dao.database.service.graphdb.GraphingDataBaseService;
+import org.lexevs.dao.database.service.graphdb.GraphingDataBaseServiceImpl;
 import org.lexevs.locator.LexEvsServiceLocator;
+
+import com.arangodb.ArangoDatabase;
 
 public class TestLexEVSRelsToGraphDao {
 
@@ -50,8 +53,22 @@ public class TestLexEVSRelsToGraphDao {
 	public void testEdgesPersisted(){
 		List<String> rels = graphRels
 				.getSupportedAssociationNamesForScheme("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-//		rels.stream().map(associationName -> graphRels.getValidTriplesForAssociationNames(associationName,
-//				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5")).collect(Collectors.groupingBy(List::add::addAll));
+		List <Triple> triples = rels.stream().map(associationName -> graphRels.getValidTriplesForAssociationNames(associationName,
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5")).flatMap(List::stream).collect(Collectors.toList());
+		assertNotNull(triples);
+		assertTrue(triples.size() > 0);
+		assertEquals(triples.size(), 165);
+	}
+	
+	@Test
+	public void testGetDataBaseConnectionForURIandVersion(){
+	ArangoDatabase db = graphRels.
+			getDataBaseConnectionForScheme(
+					"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+	assertNotNull(db);
+	assertTrue(db.getAccessibleDatabases().stream().anyMatch(z -> z.equals("owl2lexevs")));
+	db.getCollections().stream().map(x -> x.getName()).forEach(System.out::println);
+	assertTrue(db.getCollections().stream().anyMatch(x -> x.getName().equals("E_subClassOf")));
 	}
 	
 	
@@ -74,6 +91,13 @@ public class TestLexEVSRelsToGraphDao {
 		String notNormalName = "ThisIsAnEdgeThatIsLongerThan_Any_EdgeName_shouldbe_but_some_descriptions_of_edges-JustKEepGoing";
 		String result = graphRels.getAssociationEdgeNameForRow(notNormalName);
 		assertEquals( "E_ThisIsAnEdgeThatIsLongerThan_Any_EdgeName_shouldbe_but_some_de", result);
+	}
+	
+	@Test
+	public void testGetProductionVersionForURI(){
+		String version = ((GraphingDataBaseServiceImpl)LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()).getVersionForProductionTaggedTerminology("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+		assertNotNull(version);
+		assertEquals("0.1.5", version);
 	}
 	
 	@AfterClass
