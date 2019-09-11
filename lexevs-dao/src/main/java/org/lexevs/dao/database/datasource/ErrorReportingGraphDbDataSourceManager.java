@@ -43,7 +43,7 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 				.password(password).build();
 		if (db == null) {
 			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
-			logger.fatal("Unable to connect to ArangoDb at: " + url + ":" + port);
+			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
 			if (strictArangoRequirement) {
 				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
 			} else {
