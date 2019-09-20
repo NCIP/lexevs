@@ -9,6 +9,5 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/lgUtil"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lexevs-dao"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=lgConverter&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry exported="true" kind="lib" path="/Users/bauerhs/.ivy2/com.arangodb/arangodb-java-driver/jars/arangodb-java-driver-6.1.0.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

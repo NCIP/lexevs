@@ -13,6 +13,7 @@ import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
 import org.lexevs.dao.database.service.graphdb.GraphingDataBaseService;
 import org.lexevs.dao.database.service.graphdb.GraphingDataBaseServiceImpl;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 import com.arangodb.ArangoDatabase;
@@ -75,7 +76,7 @@ public class TestLexEVSRelsToGraphDao {
 	@Test
 	public void testNormaliseGraphNames(){
 		String notNormalName = " _this isn't normal ";
-		String result = graphRels.normalizeGraphName(notNormalName);
+		String result = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(notNormalName);
 		assertEquals( "this_isn't_normal", result);
 	}
 	
