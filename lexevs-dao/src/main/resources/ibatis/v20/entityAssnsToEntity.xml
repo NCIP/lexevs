@@ -2495,8 +2495,8 @@
 			WHERE 
 				eae.associationPredicateGuid = #param1# 
 			AND 
-				ent1.isAnonymous = '0' 
+				(ent1.isAnonymous = '0' OR ent1.isAnonymous is null)
 			AND 
-				ent2.isAnonymous = '0'
+				(ent2.isAnonymous = '0' OR ent2.isAnonymous is null)
 		</select>
 </sqlMap>
