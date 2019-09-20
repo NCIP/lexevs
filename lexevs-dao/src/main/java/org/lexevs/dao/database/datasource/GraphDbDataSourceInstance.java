@@ -88,9 +88,9 @@ public class GraphDbDataSourceInstance {
 				arangoDb.createDatabase(GRAPH_DB_NAME);
 				this.dbInstance = arangoDb.db(GRAPH_DB_NAME);
 			} catch (ArangoDBException e) {
-				System.out.println("A database by this name already exists" 
+				System.out.println("This database name is invalid or A database by this name already exists" 
 								+ " no duplicate connection will be made:  "
-									+ GRAPH_DB_NAME);
+									+ GRAPH_DB_NAME + e.getErrorMessage());
 				return;
 			}
 

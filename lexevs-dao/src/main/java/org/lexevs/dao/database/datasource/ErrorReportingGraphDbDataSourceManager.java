@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.apache.log4j.LogManager;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.Logger;
 import org.lexevs.logging.LoggerFactory;
@@ -102,14 +103,16 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		.getRegistry()
 		.getAllRegistryEntriesOfTypeAndURI(
 				ResourceType.CODING_SCHEME, schemeUri);
-		RegistryEntry entry;
-
+		RegistryEntry entry = null;
+		if(entries.stream().anyMatch(x -> x.getTag() != null && x.getTag()
+				.equals("PRODUCTION"))) {
 		entry =  entries
 				.stream()
 				.filter(x -> x.getTag() != null && x.getTag()
 						.equals("PRODUCTION"))
 				.collect(Collectors.toList())
 				.get(0);
+		}
 			if(entry == null){
 			List<Timestamp> tmstp = entries.stream().map(x -> x.getLastUpdateDate()).collect(Collectors.toList());
 			tmstp.sort((e1, e2)-> e1.compareTo(e2));
@@ -130,7 +133,7 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 			e.printStackTrace();
 		}
 		
-		return new GraphDbDataSourceInstance(name);
+		return new GraphDbDataSourceInstance(GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(name));
 	}
 	
 	

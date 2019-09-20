@@ -148,12 +148,4 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 		this.logger = logger;
 	}
 
-	public String normalizeGraphName(String graphName) {
-		String result = graphName.trim();
-		if(result.startsWith("_")){
-			result = result.substring(1);
-		}
-		return StringUtils.replace(result, " ", "_");
-	}
-
 }

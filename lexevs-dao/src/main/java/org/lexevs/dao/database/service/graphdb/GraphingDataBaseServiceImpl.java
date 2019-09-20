@@ -6,6 +6,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 import com.arangodb.ArangoDatabase;
@@ -44,13 +45,16 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 	public void loadGraph(String graphName, String uri, String version) {
 		long start = System.currentTimeMillis();
 		List<Triple> triples = rels2graph.getValidTriplesForAssociationNames(graphName, uri, version);
-		final String normGraphName = rels2graph.normalizeGraphName(graphName);
+		final String normGraphName = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(graphName);
+		logger.info("Starting load of : " + triples.size() + " edges for graph " + normGraphName);
 		System.out.println("Starting load of : " + triples.size() + " edges for graph " + normGraphName);
 		ArangoDatabase db = rels2graph.getGraphSourceMgr().getDataSource(uri).getDbInstance();
 		rels2graph.createGraphFromDataBaseAndCollections(db, normGraphName,
 			rels2graph.getAssociationEdgeNameForRow(normGraphName), 
 			rels2graph.getVertexCollectionName(normGraphName));
 		triples.stream().forEach(triple -> rels2graph.processEdgeAndVertexToGraphDb(triple, normGraphName, db));
+		logger.info("Load Time including edge retrieval from source: "
+				+ ((System.currentTimeMillis() - start) / 1000) + " seconds\n");
 		System.out.println("Load Time including edge retrieval from source: "
 				+ ((System.currentTimeMillis() - start) / 1000) + " seconds\n");
 	}
@@ -62,10 +66,10 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 		} catch (LBParameterException e) {
 			logger.error("There was a problem getting a version" 
 					+ " string for the PRODUCTION tagged "
-					+ "terminology identified by url: " + uri);
+					+ "terminology identified by url: " + uri + e.getMessage());
 			throw new RuntimeException("There was a problem getting a version"
 					+ " string for the PRODUCTION tagged "
-					+ "terminology identified by url: " + uri);
+					+ "terminology identified by url: " + uri + e.getMessage());
 		}
 
 	}
