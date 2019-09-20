@@ -262,10 +262,14 @@ SMTP_SERVER=yourserver.edu
 EMAIL_TO=yourAddress@.edu
 
 #graph-db config
-GRAPH_DB_USER=admin
-GRAPH_DB_PWD=admin
-GRAPH_DB_PATH=local:/Users/m029206/software/orientdb-graphed-1.4.0-SNAPSHOT/databases/testbpData
-
+############# Graph Database Configuration
+GRAPH_DB_USER=root
+GRAPH_DB_PWD=lexgrid
+GRAPH_DB_URL=localhost
+GRAPH_DB_PORT=8529
+GRAPH_DB_MAX_CONNECTIONS=200
+GRAPH_DB_CONNECTION_TIMEOUT_LENGTH=60000
+STRICT_ARANGO_REQUIREMENT=false
 ##############################################################################
 # Source Asserted Value Set information.
 ##############################################################################
