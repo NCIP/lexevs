@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class TestLexEVSRelsToGraph {
@@ -41,7 +42,7 @@ public class TestLexEVSRelsToGraph {
 	@Test
 	public void testNormaliseGraphNames(){
 		String notNormalName = " _this isn't normal ";
-		String result = graphRels.normalizeGraphName(notNormalName);
+		String result = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(notNormalName);
 		assertEquals( "this_isn't_normal", result);
 	}
 	
