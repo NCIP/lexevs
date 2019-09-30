@@ -1,7 +1,10 @@
 package org.LexGrid.LexBIG.admin;
 
 import java.net.URI;
+import java.util.Enumeration;
 
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.loaders.LexEVSArangoGraphingDbLoader;
@@ -38,11 +41,9 @@ public class LoadGraphDatabase {
             CommandLine cl = null;
             String vl = null;
             Options options = getCommandOptions();
-
+            
             try {
                 cl = new BasicParser().parse(options, args);
-                if (cl.hasOption("v"))
-                    vl = cl.getOptionValue("v");
             } catch (Exception e) {
                 Util
                         .displayCommandOptions(
@@ -51,21 +52,47 @@ public class LoadGraphDatabase {
                                 "\n LoadGraphDatabase -in \"http://target.terminology url\" -v \"1.0\"", e);
                 return;
             }
-
+                        
             // Interpret provided values ...
-            URI source = new URI(cl.getOptionValue("in"));
+            String urn = cl.getOptionValue("in");
+            String ver = cl.getOptionValue("v");
+            CodingSchemeSummary css = null;
 
+            // Find in list of registered vocabularies ...
+            if (urn != null && ver != null) {
+                urn = urn.trim();
+                ver = ver.trim();
+                LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+                        .enumerateCodingSchemeRendering();
+                while (schemes.hasMoreElements() && css == null) {
+                    CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
+                    if (urn.equalsIgnoreCase(summary.getCodingSchemeURI())
+                            && ver.equalsIgnoreCase(summary.getRepresentsVersion()))
+                        css = summary;
+                }
+            }
+
+            // Found CodingScheme? If not, prompt...
+            if (css == null) {
+                if (urn != null || ver != null) {
+                    Util.displayMessage("No matching coding scheme was found for the given URN or version.");
+                    Util.displayMessage("");
+                }
+                css = Util.promptForCodeSystem();
+                if (css == null)
+                    return;
+            }
+            
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
             LexEVSArangoGraphingDbLoader loader = (LexEVSArangoGraphingDbLoader) lbsm
                     .getLoader(org.LexGrid.LexBIG.Impl.loaders.LexEVSArangoGraphingDbLoader.name);
 
-            if(vl != null){
-                loader.useVersionOrTag(vl);}
-                loader.load(source);
-
-
+            URI source = new URI(css.getCodingSchemeURI());
+            loader.useVersionOrTag(css.getRepresentsVersion());
+            loader.load(source);
         }
     }
 
@@ -75,7 +102,7 @@ public class LoadGraphDatabase {
 
         o = new Option("in", "input", true, "Unique URI identifier of the source terminology");
         o.setArgName("uri");
-        o.setRequired(true);
+        o.setRequired(false);
         options.addOption(o);
 
         o = new Option("v", "version", true, "Terminology version");
@@ -83,9 +110,7 @@ public class LoadGraphDatabase {
         o.setRequired(false);
         options.addOption(o);
 
-
         return options;
     }
 
-    
 }
