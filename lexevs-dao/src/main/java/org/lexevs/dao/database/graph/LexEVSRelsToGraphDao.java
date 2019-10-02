@@ -5,22 +5,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.access.association.model.NodeEdge;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.datasource.ErrorReportingGraphDbDataSourceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import com.arangodb.ArangoDatabase;
-import com.arangodb.ArangoGraph;
 import com.arangodb.ArangoVertexCollection;
 import com.arangodb.entity.EdgeDefinition;
 import com.arangodb.entity.GraphEntity;
 import com.arangodb.entity.VertexEntity;
-import com.arangodb.model.GraphCreateOptions;
 
 public class LexEVSRelsToGraphDao implements InitializingBean {
 
@@ -56,10 +52,29 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 
 	public void processEdgeAndVertexToGraphDb(Triple row, String associationName, ArangoDatabase db) {
 		if(row == null || associationName == null || db == null)
-		{
-			throw new RuntimeException("Database instance, association triple, and associatin name, "
+		{   logger.error("Database instance, association triple, and association name, "
+				+ "must not be null to process triple to the graph data base");
+			throw new RuntimeException("Database instance, association triple, and association name, "
 					+ "must not be null to process triple to the graph data base");
 		}
+		if(row.getSourceEntityCode().equals(row.getTargetEntityCode())){
+			logger.warn("Row entity source and target codes are both the same: " + row.getSourceEntityCode() 
+			+ " A node with an edge that points back to itself will not be stored. " +
+					"If the node is not in a collection, "
+					+ "it will be stored for possible use in a legitimate relationship");
+			System.out.println("Row entity source and target codes are both the same: " + row.getSourceEntityCode() 
+			+ " A node with an edge that points back to itself will not be stored. " +
+					"If the node is not in a collection, "
+					+ "it will be stored for possible use in a legitimate relationship");
+			LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
+			ArangoVertexCollection collection = db.graph(associationName)
+					.vertexCollection(getVertexCollectionName(associationName));
+			VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);
+			if (Aa == null) {
+				Aa = storeVertex(A, db, associationName, getVertexCollectionName(associationName));
+			}
+		}
+		else{
 		LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
 		LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace());
 		ArangoVertexCollection collection = db.graph(associationName)
@@ -78,6 +93,7 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 		}
 		storeEdge(new NodeEdge(Aa.getId(), Bb.getId(), false, true, associationName), db, associationName,
 				getAssociationEdgeNameForRow(associationName));
+		}
 	}
 
 	public GraphEntity createGraphFromDataBaseAndCollections(ArangoDatabase db, String associationName,

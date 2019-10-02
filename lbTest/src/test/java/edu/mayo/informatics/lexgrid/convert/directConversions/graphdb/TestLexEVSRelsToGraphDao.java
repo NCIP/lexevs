@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
-import org.lexevs.dao.database.service.graphdb.GraphingDataBaseService;
 import org.lexevs.dao.database.service.graphdb.GraphingDataBaseServiceImpl;
 import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
