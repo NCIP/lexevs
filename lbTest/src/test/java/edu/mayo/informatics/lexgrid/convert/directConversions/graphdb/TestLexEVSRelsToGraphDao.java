@@ -5,6 +5,14 @@ import static org.junit.Assert.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,6 +27,7 @@ import com.arangodb.ArangoDatabase;
 public class TestLexEVSRelsToGraphDao {
 
 	static LexEVSRelsToGraphDao graphRels;
+	static LexBIGService lbs;
 
 	@BeforeClass
 	public static void setUp() throws Exception {
@@ -26,6 +35,7 @@ public class TestLexEVSRelsToGraphDao {
 				.getRels2graph();
 		LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()
 				.loadGraphsForTerminologyURIAndVersion("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		lbs = LexBIGServiceImpl.defaultInstance();
 	}
 
 	@Test
@@ -33,7 +43,7 @@ public class TestLexEVSRelsToGraphDao {
 		List<String> rels = graphRels
 				.getSupportedAssociationNamesForScheme("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		rels.stream().forEach(x -> System.out.println(x));
-		assertEquals(rels.size(), 65);
+		assertEquals(rels.size(), 61);
 	}
 
 	@Test
@@ -42,10 +52,35 @@ public class TestLexEVSRelsToGraphDao {
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		assertTrue(triples != null);
 		assertTrue(triples.size() > 0);
-		assertEquals(triples.size(), 55);
+		assertEquals(triples.size(), 52);
 		// Have anonymous nodes been removed?
 		triples.stream().forEach(
 				x -> assertTrue(!x.getSourceEntityCode().contains("@") && !x.getTargetEntityCode().contains("@")));
+	}
+	
+	@Test
+	public void testGetEdgesForAssociationNameWhereIsAnonymousIsNull() {
+		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("hasSubtype",
+				"urn:oid:11.11.0.2", "2.0");
+		assertTrue(triples != null);
+		assertTrue(triples.size() > 0);
+		CodedNodeSet set = null;
+		Boolean isNull = false;
+		try {
+			set = lbs.getCodingSchemeConcepts("urn:oid:11.11.0.2", Constructors.createCodingSchemeVersionOrTagFromVersion("2.0"));
+			isNull = set
+			.restrictToCodes(
+					Constructors.createConceptReferenceList(
+							triples.get(0).getSourceEntityCode()))
+			.resolve(null, null, null)
+			.next()
+			.getEntity()
+			.getIsAnonymous() == null;
+		} catch (LBException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertTrue(isNull);
 	}
 	
 	@Test
@@ -56,7 +91,7 @@ public class TestLexEVSRelsToGraphDao {
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5")).flatMap(List::stream).collect(Collectors.toList());
 		assertNotNull(triples);
 		assertTrue(triples.size() > 0);
-		assertEquals(triples.size(), 165);
+		assertEquals(triples.size(), 169);
 	}
 	
 	@Test
@@ -75,7 +110,7 @@ public class TestLexEVSRelsToGraphDao {
 	public void testNormaliseGraphNames(){
 		String notNormalName = " _this isn't normal ";
 		String result = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(notNormalName);
-		assertEquals( "this_isn't_normal", result);
+		assertEquals( "this_isn_t_normal", result);
 	}
 	
 	@Test
