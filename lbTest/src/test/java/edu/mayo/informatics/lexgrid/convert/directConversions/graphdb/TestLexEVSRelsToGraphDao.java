@@ -16,6 +16,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
 import org.lexevs.dao.database.service.graphdb.GraphingDataBaseServiceImpl;
@@ -47,7 +48,25 @@ public class TestLexEVSRelsToGraphDao {
 	}
 
 	@Test
-	public void testGetEdgesForAssociationName() {
+	public void testNoFailOnSelfReferencingEntity(){
+		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("disjointUnion",
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		assertTrue(triples != null);
+		assertTrue(triples.size() > 0);
+ 
+		assertTrue(triples.stream().anyMatch(x -> x.getSourceEntityCode().equals("C123") && x.getTargetEntityCode().equals("C123")));
+		Triple trip = triples.stream().filter(x -> x.getSourceEntityCode().equals("C123") && x.getTargetEntityCode().equals("C123")).findFirst().get();
+		assertNotNull(trip);
+		assertEquals(trip.getSourceEntityCode(), trip.getTargetEntityCode());
+		System.out.println("self referencing triple contents: " + trip.getSourceEntityCode() + " " + trip.getTargetEntityCode());
+		LexVertex vertex = graphRels.getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl").getDbInstance().collection("V_disjointUnion").getDocument("C123", LexVertex.class);
+		assertNotNull(vertex);
+		System.out.println("Vertex Code: " + vertex.getCode());
+		
+	}
+	
+	@Test
+	public void  testGetEdgesForAssociationName() {
 		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("subClassOf",
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		assertTrue(triples != null);

@@ -15,6 +15,10 @@ public class LexVertex {
 		private String revision;
 
 		private String namespace;
+		
+		public LexVertex(){
+			super();
+		}
 
 		public LexVertex(String code, String namespace) {
 			this.code = code;

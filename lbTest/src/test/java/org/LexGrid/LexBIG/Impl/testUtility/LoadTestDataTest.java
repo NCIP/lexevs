@@ -508,9 +508,6 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 
-		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0],
-				LBConstants.KnownTags.PRODUCTION.toString());
-
 	}
 
     @Test
@@ -649,6 +646,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 		assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+		lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], "PRODUCTION");
 	}
 
     @Test
