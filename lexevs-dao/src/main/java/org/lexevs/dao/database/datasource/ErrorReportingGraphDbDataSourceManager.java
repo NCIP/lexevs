@@ -77,11 +77,11 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		} catch (ArangoDBException e) {
 			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred", e);
 			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred");
-			
+			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
 		}finally {
 			if(db != null){
 				db.shutdown();
-				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
+				
 			}
 		}
 	}
