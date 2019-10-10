@@ -27,7 +27,7 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		System.out.println("Starting Graph Dao");
+		
 	}
 
 	public List<String> getSupportedAssociationNamesForScheme(String uri, String version) {

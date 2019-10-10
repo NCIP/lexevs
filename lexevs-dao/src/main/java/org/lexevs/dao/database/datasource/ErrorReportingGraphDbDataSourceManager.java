@@ -7,16 +7,11 @@ import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.log4j.LogManager;
 import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
-import org.lexevs.logging.Logger;
-import org.lexevs.logging.LoggerFactory;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
 import org.lexevs.system.constants.SystemVariables;
-import org.lexevs.system.service.CodingSchemeAliasHolder;
-import org.lexevs.system.service.SystemResourceService.CodingSchemeMatcher;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -30,57 +25,48 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 	private ConcurrentHashMap<String, GraphDbDataSourceInstance> graphDbCache = 
 			new ConcurrentHashMap<String, GraphDbDataSourceInstance>();
 
-	
-	
-
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
+		boolean strictArangoRequirement = Boolean.valueOf(systemVariables.getAutoLoadStrictArrangoRequirement());
+		if (!strictArangoRequirement){
+			logger.info("Skipping graph database connection");
+			System.out.println("Skipping graph database connection");
+			return;
+		}
+		
 		logger.info("Connecting to graph database");
 		System.out.println("Starting Graph Database Source Manager");
 		String url = systemVariables.getGraphdbUrl();
-		String port = systemVariables.getGraphdbPort();
+		int port = systemVariables.getGraphdbPort();
 		String user = systemVariables.getGraphdbUser();
 		String password = systemVariables.getGraphdbpwd();
 		ArangoDB db = null;
+		
 		try {
-			db = new ArangoDB.Builder().host(url, Integer.valueOf(port).intValue()).user(user).password(password)
+			db = new ArangoDB.Builder().host(url, port).user(user).password(password)
 					.build();
 		} catch (BeanCreationException | ArangoDBException e) {
-			if (strictArangoRequirement) {
-				System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
-				logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
-				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
-			}
-			logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-					+ "Continuing with LexEVS db support only");
-			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-					+ "Continuing with LexEVS db support only");
-			return;
+			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
+			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
+			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
 		}
 		if (db == null) {
 			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
 			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
-			if (strictArangoRequirement) {
-				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
-			} else {
-				logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-						+ "Continuing with LexEVS db support only");
-				System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-						+ "Continuing with LexEVS db support only");
-			}
-
+			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
 		}
 		System.out.println("Displaying loaded graph databases");
 		try {
 			db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
 		} catch (ArangoDBException e) {
-			logger.warn("Able to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred", e);
-			System.out.println("Able to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred");
-			e.printStackTrace();
-		} finally {
-			if(db != null)
-			{db.shutdown();}
+			logger.error("Unable to access ArangoDb at: " + url + ":" + port + ". " + "An error occurred. ", e);
+			System.out.println("Unable to access ArangoDb at: " + url + ":" + port + ". " + "An error occurred. ");
+			throw new RuntimeException("Unable to access ArangoDb at: " + url + ":" + port);
+		}finally {
+			if(db != null){
+				db.shutdown();
+			}
 		}
 	}
 	

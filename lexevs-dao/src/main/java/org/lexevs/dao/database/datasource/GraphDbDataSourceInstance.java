@@ -12,9 +12,9 @@ public class GraphDbDataSourceInstance {
 	private String GRAPH_DB_USER;
 	private String GRAPH_DB_PWD;
 	private String GRAPH_DB_URL;
-	private String GRAPH_DB_PORT;
-	private String GRAPH_DB_MAX_CONNECTIONS;
-	private String GRAPH_DB_CONNECTION_TIMEOUT_LENGTH;
+	private int GRAPH_DB_PORT;
+	private int GRAPH_DB_MAX_CONNECTIONS;
+	private int GRAPH_DB_CONNECTION_TIMEOUT_LENGTH;
 	private String GRAPH_DB_NAME;
 	private ArangoDB arangoDb;
 	private ArangoDatabase dbInstance;
@@ -27,9 +27,9 @@ public class GraphDbDataSourceInstance {
 	public GraphDbDataSourceInstance(String DB_USER,
 			String DB_PWD,
 			String DB_URL,
-			String DB_PORT,
-			String DB_MAX_CONNECTIONS,
-			String DB_CONNECTION_TIMEOUT_LENGTH, 
+			int DB_PORT,
+			int DB_MAX_CONNECTIONS,
+			int DB_CONNECTION_TIMEOUT_LENGTH, 
 			String DB_NAME){
 		this.GRAPH_DB_USER = DB_USER;
 		this.GRAPH_DB_PWD = DB_PWD;
@@ -62,10 +62,7 @@ public class GraphDbDataSourceInstance {
 	private void initArangoDB(){
 		if(GRAPH_DB_URL == null || 
 				GRAPH_DB_USER == null || 
-				GRAPH_DB_PORT == null|| 
-				GRAPH_DB_PWD == null ||
-				GRAPH_DB_MAX_CONNECTIONS == null ||
-				GRAPH_DB_CONNECTION_TIMEOUT_LENGTH == null
+				GRAPH_DB_PWD == null 
 				){
 			throw new RuntimeException("Some graphdb configurations could not be found."
 					+ "  Check configuration file and restart");
