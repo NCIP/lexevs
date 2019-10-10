@@ -15,7 +15,8 @@ public class TestGraphingDatabaseUtil {
 			"http://purl.org/dc/terms/source", 
 			" Captain Kirk of the Enterprise", 
 			"_underscoredName", 
-			"{do not replace with _"};
+			"{do not replace with _",
+			"______underscores galore"};
 
 	@Before
 	public void setUp() throws Exception {
@@ -31,6 +32,7 @@ public class TestGraphingDatabaseUtil {
 		assertTrue(Arrays.stream(testSet).anyMatch(x -> GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(x).equals("Captain_Kirk_of_the_Enterprise")));
 		assertTrue(Arrays.stream(testSet).anyMatch(x -> GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(x).equals("underscoredName")));
 		assertTrue(Arrays.stream(testSet).anyMatch(x -> GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(x).equals("do_not_replace_with__")));
+		assertTrue(Arrays.stream(testSet).anyMatch(x -> GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(x).equals("underscores_galore")));
 
 	}
 
