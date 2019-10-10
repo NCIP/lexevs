@@ -824,6 +824,7 @@
             <rdf:Description rdf:about="&owl2lexevs;SOS"/>
             <rdf:Description rdf:about="&owl2lexevs;actin"/>
             <rdf:Description rdf:about="&owl2lexevs;k-Ras"/>
+            <rdf:Description rdf:about="&owl2lexevs;C123"/>
         </owl:disjointUnionOf>
     </owl:Class>
     <owl:Axiom>

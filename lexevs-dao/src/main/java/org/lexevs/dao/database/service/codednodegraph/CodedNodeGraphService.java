@@ -620,4 +620,6 @@ public interface CodedNodeGraphService {
 	public List<Node> getTargetsFromSource(String codingSchemeUri, String version, String code, String namespace,
 			String associationPredicateUid);
 
+	public List<Triple> getValidTriplesOfAssociation(String codingSchemeUri, String codingSchemeVersion, String uid);
+
 }

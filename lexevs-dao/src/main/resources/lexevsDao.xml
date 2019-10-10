@@ -290,6 +290,26 @@
 		<property name="authoringService" ref="authoringService"></property>
 		<property name="nciHistoryService" ref="nciHistoryService"/>
 		<property name="listenerRegistry" ref="extensionLoadingListenerRegistry"/>
+		<property name="graphingDatabaseService" ref="graphingDatabaseService"/>
+	</bean>
+	
+	<bean id="graphingDatabaseService"
+		class="org.lexevs.dao.database.service.graphdb.GraphingDataBaseServiceImpl">
+		<property name="rels2graph" ref="relsToGraphDao"/>
+		<property name="logger" ref="loggerFactory"/>
+	</bean>
+	
+	<bean id="relsToGraphDao"
+		class="org.lexevs.dao.database.graph.LexEVSRelsToGraphDao">
+		<property name="graphSourceMgr" ref="errorReportingGraphDbDataSourceManager"/>
+		<property name="logger" ref="loggerFactory"/>
+	</bean>
+	
+	<bean id="errorReportingGraphDbDataSourceManager"
+		class="org.lexevs.dao.database.datasource.ErrorReportingGraphDbDataSourceManager">
+		<property name="logger" ref="loggerFactory"/>
+		<property name="strictArangoRequirement"   ref="strictArangoRequirement"/>
+		<property name="systemVariables"  ref="systemVariables"/>
 	</bean>
 	
 	<bean id="extensionLoadingListenerRegistry" 
@@ -542,6 +562,10 @@
     
     <bean id="dbConnections" parent="abstractSystemVariableFactory">
     	<property name="variableName" value="MaxConnectionsPerDB"/>
+    </bean>
+    
+    <bean id="strictArangoRequirement" parent="abstractSystemVariableFactory">
+    	<property name="variableName" value="AutoLoadStrictArrangoRequirement"/>
     </bean>
     
     <bean id="dbcpDataSource" class="org.apache.commons.dbcp.PoolingDataSource" depends-on="poolableConnectionFactory">

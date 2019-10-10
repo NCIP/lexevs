@@ -59,6 +59,7 @@ import org.springframework.util.CollectionUtils;
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
 
 
+
 /** The supported datebase version. */
 private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
@@ -89,6 +90,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	
 	private static String GET_TRANSITIVE_TABLE_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTransitiveTableCount";
 	private static String DELETE_FROM_TRANSITIVE_TABLE_BY_CODINGSCHEME_UID_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "deleteFromTransitiveTableByCodingSchemeUid";
+	private static final String GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL =  IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidTriplesForAssociationPredicateGuid";
 	
 	@Override
 	public int getTransitiveTableCount(String codingSchemeUid){
@@ -986,6 +988,22 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			(Integer) 
 				this.getSqlMapClientTemplate().queryForObject(GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL, bean) > 0;
 	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Triple> getValidTriplesOfAssociation(String codingSchemeUid, String assocUid) {
+		String codingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(codingSchemeUid);
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(codingSchemePrefix);
+		bean.setParam1(assocUid);
+		return (List<Triple>) 
+				this.getSqlMapClientTemplate().
+				queryForList(
+						GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL,
+						bean);
+	}
 
 	private List<? extends ResolvedConceptReference> sortList(List<TripleUidReferencingResolvedConceptReference> list, List<String> tripleUids){
 		Map<String,ResolvedConceptReference> keyedMap = new HashMap<String,ResolvedConceptReference>();
@@ -1134,5 +1152,6 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			this.sortList = sortList;
 		}
 	}
+
 
 }
