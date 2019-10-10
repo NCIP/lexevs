@@ -47,41 +47,25 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 			db = new ArangoDB.Builder().host(url, port).user(user).password(password)
 					.build();
 		} catch (BeanCreationException | ArangoDBException e) {
-			if (strictArangoRequirement) {
-				System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
-				logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
-				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
-			}
-			logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-					+ "Continuing with LexEVS db support only");
-			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-					+ "Continuing with LexEVS db support only");
-			return;
+			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
+			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
+			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
 		}
 		if (db == null) {
 			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port);
 			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port);
-			if (strictArangoRequirement) {
-				throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
-			} else {
-				logger.warn("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-						+ "Continuing with LexEVS db support only");
-				System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". "
-						+ "Continuing with LexEVS db support only");
-			}
-
+			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
 		}
 		System.out.println("Displaying loaded graph databases");
 		try {
 			db.getAccessibleDatabases().stream().forEach(x -> System.out.println(x));
 		} catch (ArangoDBException e) {
-			logger.error("Unable to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred", e);
-			System.out.println("Unable to connect to ArangoDb at: " + url + ":" + port + ". " + "but an error occurred");
-			throw new RuntimeException("Unable to connect to ArangoDb at: " + url + ":" + port);
+			logger.error("Unable to access ArangoDb at: " + url + ":" + port + ". " + "An error occurred. ", e);
+			System.out.println("Unable to access ArangoDb at: " + url + ":" + port + ". " + "An error occurred. ");
+			throw new RuntimeException("Unable to access ArangoDb at: " + url + ":" + port);
 		}finally {
 			if(db != null){
 				db.shutdown();
-				
 			}
 		}
 	}
