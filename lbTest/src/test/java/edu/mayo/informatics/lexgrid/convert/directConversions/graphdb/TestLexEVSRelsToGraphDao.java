@@ -109,7 +109,7 @@ public class TestLexEVSRelsToGraphDao {
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5")).flatMap(List::stream).collect(Collectors.toList());
 		assertNotNull(triples);
 		assertTrue(triples.size() > 0);
-		assertEquals(triples.size(), 169);
+		assertEquals(triples.size(), 178);
 	}
 	
 	@Test
@@ -149,7 +149,7 @@ public class TestLexEVSRelsToGraphDao {
 	public void testGetVersionForURI(){
 		String version = ((GraphingDataBaseServiceImpl)LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()).getVersionForProductionTaggedTerminology("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
 		assertNotNull(version);
-		assertEquals("0.1.2", version);
+		assertEquals("0.1.5", version);
 	}
 	
 	@AfterClass
