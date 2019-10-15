@@ -1,14 +1,13 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.graphdb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
-import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
-import org.LexGrid.LexBIG.Exceptions.LBParameterException;
-import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
@@ -59,7 +58,7 @@ public class TestLexEVSRelsToGraphDao {
 		assertNotNull(trip);
 		assertEquals(trip.getSourceEntityCode(), trip.getTargetEntityCode());
 		System.out.println("self referencing triple contents: " + trip.getSourceEntityCode() + " " + trip.getTargetEntityCode());
-		LexVertex vertex = graphRels.getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl").getDbInstance().collection("V_disjointUnion").getDocument("C123", LexVertex.class);
+		LexVertex vertex = graphRels.getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5").getDbInstance().collection("V_disjointUnion").getDocument("C123", LexVertex.class);
 		assertNotNull(vertex);
 		System.out.println("Vertex Code: " + vertex.getCode());
 		
@@ -147,15 +146,15 @@ public class TestLexEVSRelsToGraphDao {
 	}
 	
 	@Test
-	public void testGetProductionVersionForURI(){
+	public void testGetVersionForURI(){
 		String version = ((GraphingDataBaseServiceImpl)LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()).getVersionForProductionTaggedTerminology("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
 		assertNotNull(version);
-		assertEquals("0.1.5", version);
+		assertEquals("0.1.2", version);
 	}
 	
 	@AfterClass
 	public static void after(){
-		graphRels.getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl").dropGraphsAndDatabaseForDataSource();
+		graphRels.getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5").dropGraphsAndDatabaseForDataSource();
 	}
 	
 }

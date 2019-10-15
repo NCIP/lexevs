@@ -26,13 +26,13 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 			}
 			List<String> assos = rels2graph.getSupportedAssociationNamesForScheme(uri, version);
 			assos.stream().forEach(associationName -> loadGraph(associationName, uri, version));
-			rels2graph.getGraphSourceMgr().getDataSource(uri).getArangoDb().shutdown();
+			rels2graph.getGraphSourceMgr().getDataSource(uri, version).getArangoDb().shutdown();
 		} catch (Exception e) {
 			System.out.println("Error Loading graphs for coding scheme defined by uri: " + uri + " version: " + version);
 			System.out.println(e.getLocalizedMessage());
 			logger.error("Exception while Loading graphs for coding scheme defined by uri: " + uri + " version: " + version);
 			logger.error(e.toString());
-			rels2graph.getGraphSourceMgr().getDataSource(uri).getArangoDb().shutdown();
+			rels2graph.getGraphSourceMgr().getDataSource(uri, version).getArangoDb().shutdown();
 		}
 	}
 
@@ -48,7 +48,7 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 		final String normGraphName = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(graphName);
 		logger.info("Starting load of : " + triples.size() + " edges for graph " + normGraphName);
 		System.out.println("Starting load of : " + triples.size() + " edges for graph " + normGraphName);
-		ArangoDatabase db = rels2graph.getGraphSourceMgr().getDataSource(uri).getDbInstance();
+		ArangoDatabase db = rels2graph.getGraphSourceMgr().getDataSource(uri, version).getDbInstance();
 		rels2graph.createGraphFromDataBaseAndCollections(db, normGraphName,
 			rels2graph.getAssociationEdgeNameForRow(normGraphName), 
 			rels2graph.getVertexCollectionName(normGraphName));
