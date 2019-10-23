@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Enumeration;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
+import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
@@ -57,6 +58,7 @@ public class LoadGraphDatabase {
             String urn = cl.getOptionValue("in");
             String ver = cl.getOptionValue("v");
             CodingSchemeSummary css = null;
+            boolean isActive = false;
 
             // Find in list of registered vocabularies ...
             if (urn != null && ver != null) {
@@ -66,10 +68,13 @@ public class LoadGraphDatabase {
                 Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
                         .enumerateCodingSchemeRendering();
                 while (schemes.hasMoreElements() && css == null) {
-                    CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
+                    CodingSchemeRendering rendering = schemes.nextElement();
+                    CodingSchemeSummary summary = rendering.getCodingSchemeSummary();
                     if (urn.equalsIgnoreCase(summary.getCodingSchemeURI())
                             && ver.equalsIgnoreCase(summary.getRepresentsVersion()))
                         css = summary;
+                        isActive = rendering.getRenderingDetail().getVersionStatus().equals(
+                            CodingSchemeVersionStatus.ACTIVE);
                 }
             }
 
@@ -82,6 +87,17 @@ public class LoadGraphDatabase {
                 css = Util.promptForCodeSystem();
                 if (css == null)
                     return;
+                CodingSchemeRendering csr = Util.getRenderingDetail(css);
+                isActive = csr != null
+                        && csr.getRenderingDetail().getVersionStatus().equals(CodingSchemeVersionStatus.ACTIVE);
+            }
+            
+            // Coding Scheme must be active before loading the graph.
+            if (!isActive) {
+                Util.displayAndLogMessage("Coding Scheme " + css.getFormalName() +
+                        " must be active before loading its graph.");
+                Util.displayAndLogMessage("Request complete");
+                return;
             }
             
             // Find the registered extension handling this type of load ...

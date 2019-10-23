@@ -131,7 +131,7 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 	}
 
 	public ArangoDatabase getDataBaseConnectionForScheme(String nameOrUri, String version) {
-		return graphSourceMgr.getDataSource(nameOrUri).getDbInstance();
+		return graphSourceMgr.getDataSource(nameOrUri, version).getDbInstance();
 	}
 
 	/**

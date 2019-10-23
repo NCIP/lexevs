@@ -22,11 +22,8 @@ public class TestGraphQueryMethods {
 	@BeforeClass
 	public static void setUp() throws Exception {
 	db =  LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()
-				.getRels2graph().getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#").getDbInstance();
+				.getRels2graph().getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.05b").getDbInstance();
 	}
-	
-	
-	
 
 	@Test
 	public void queryAllVertices() throws ArangoDBException {

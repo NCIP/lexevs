@@ -70,44 +70,35 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		}
 	}
 	
-	public GraphDbDataSourceInstance getDataSource(String schemeUri){
+	public GraphDbDataSourceInstance getDataSource(String schemeUri, String version){
 		if(schemeUri == null)
 			{throw new RuntimeException("Cannot create data source when scheme URI is null");}
 		if(graphDbCache.containsKey(schemeUri)){
 			return graphDbCache.get(schemeUri);
 		}
 		else{
-			GraphDbDataSourceInstance gbDataSource = getFreshDataSource(schemeUri);
+			GraphDbDataSourceInstance gbDataSource = getFreshDataSource(schemeUri, version);
 			graphDbCache.put(schemeUri, gbDataSource);
 			return gbDataSource;
 		}
 	}
 	
-	private GraphDbDataSourceInstance getFreshDataSource(String schemeUri){
+	private GraphDbDataSourceInstance getFreshDataSource(String schemeUri, String version){
 		List<RegistryEntry> entries = LexEvsServiceLocator
 		.getInstance()
 		.getRegistry()
 		.getAllRegistryEntriesOfTypeAndURI(
 				ResourceType.CODING_SCHEME, schemeUri);
 		RegistryEntry entry = null;
-		if(entries.stream().anyMatch(x -> x.getTag() != null && x.getTag()
-				.equals("PRODUCTION"))) {
-		entry =  entries
+		if(entries.stream().anyMatch(x -> x.getResourceVersion() != null && x.getResourceVersion()
+				.equals(version))) {
+			entry = entries
 				.stream()
-				.filter(x -> x.getTag() != null && x.getTag()
-						.equals("PRODUCTION"))
+				.filter(x -> x.getResourceVersion() != null && x.getResourceVersion()
+						.equals(version))
 				.collect(Collectors.toList())
 				.get(0);
 		}
-			if(entry == null){
-			List<Timestamp> tmstp = entries.stream().map(x -> x.getLastUpdateDate()).collect(Collectors.toList());
-			tmstp.sort((e1, e2)-> e1.compareTo(e2));
-			entry = entries
-					.stream()
-					.filter(x -> x.getLastUpdateDate().equals(tmstp.get(0)))
-					.collect(Collectors.toList())
-					.get(0);
-			}
 		String name = null;
 		try {
 			name = LexEvsServiceLocator
