@@ -301,6 +301,23 @@ public class ServiceUtility {
             throw new LBParameterException(localId + " is not a valid Parameter.");
         }
     }
+    
+    public static boolean IsValidParameter(String codingSchemeNameOrUri, String codingSchemeVersion, String localId,
+            Class<? extends URIMap> supportedAttributeClass) throws LBParameterException{
+        if (StringUtils.isBlank(localId)) {
+            return false;
+        }
+
+        String codingSchemeUri = LexEvsServiceLocator.getInstance().getSystemResourceService()
+                .getUriForUserCodingSchemeName(codingSchemeNameOrUri, codingSchemeVersion);
+
+        CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
+                .getCodingSchemeService();
+
+        return codingSchemeService.validatedSupportedAttribute(codingSchemeUri, codingSchemeVersion, localId,
+                supportedAttributeClass);
+           
+    }
 
     /**
      * Validate filters.
@@ -731,6 +748,16 @@ public class ServiceUtility {
             });
         
         return relations;
+    }
+
+    public static Boolean isSourceOfAssociationTarget(String entityCode, String associationName) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public static Boolean isTargetOfAssociationSource(String entityCode, String associationName) {
+        // TODO Auto-generated method stub
+        return null;
     }
    
 }

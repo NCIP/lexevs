@@ -30,6 +30,10 @@
 		<result property="value" column="relationshipsCount" javaType="int" />
 	</resultMap>
 	
+	<resultMap id="basicCountResult" class="java.util.Integer">
+		<result property="value" column="value" javaType="int" />
+	</resultMap>
+	
 	<resultMap id="tripleResult" class="triple" groupBy="tripleGuid">
 		<result property="sourceEntityCode" column="sourceEntityCode" />
 		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
@@ -2498,5 +2502,22 @@
 				(ent1.isAnonymous = '0' OR ent1.isAnonymous is null)
 			AND 
 				(ent2.isAnonymous = '0' OR ent2.isAnonymous is null)
+		</select>
+		
+		<select
+		 id="validateNodeInAssociation" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
+		 resultMap="java.Util.String">
+		SELECT 
+			count(entityAssnGuid) 
+		FROM 
+			lbaadnentityAssnsToEntity
+		WHERE 
+			associationPredicateGuid=#param1#
+		AND 
+			(sourceEntityCode` = #param2# OR targetEntityCode = #param2#) 
+		AND 
+			(`sourceEntityCode` not like "@%" or targetEntityCode = "@%")
+		
 		</select>
 </sqlMap>
