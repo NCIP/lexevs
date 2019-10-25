@@ -286,12 +286,12 @@ public class AllTestsNormalConfig {
         
         
         // Graph DB Tests
-        TestSuite graphDBTests = new TestSuite("graphDBTests");
-        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphQueryMethods.class));
-        mainSuite.addTest(graphDBTests);
+//        TestSuite graphDBTests = new TestSuite("graphDBTests");
+//        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphQueryMethods.class));
+//        mainSuite.addTest(graphDBTests);
         
         
 //        TestSuite owlLoaderSuite = new TestSuite("OWL Tests");
