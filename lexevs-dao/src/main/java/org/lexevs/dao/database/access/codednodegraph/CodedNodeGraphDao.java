@@ -286,4 +286,6 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 			String relationsContainerName);
 
 	public List<Triple> getValidTriplesOfAssociation(String codingSchemeUid, String assocUid);
+
+	public Integer validateNodeInAssociation(String codingSchemeUid, String assocUid, String entityCode);
 }

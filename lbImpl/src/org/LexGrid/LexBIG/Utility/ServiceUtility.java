@@ -750,14 +750,19 @@ public class ServiceUtility {
         return relations;
     }
 
-    public static Boolean isSourceOfAssociationTarget(String entityCode, String associationName) {
-        // TODO Auto-generated method stub
-        return null;
+    public static boolean isValidNodeForAssociation( AbsoluteCodingSchemeVersionReference ref, String entityCode, String associationName) {
+        return 
+                LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getCodedNodeGraphService()
+                .validateNodeForAssociation(
+                        ref.getCodingSchemeURN(), 
+                        ref.getCodingSchemeVersion(), 
+                        associationName, 
+                        entityCode) > 0;
     }
 
-    public static Boolean isTargetOfAssociationSource(String entityCode, String associationName) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+
    
 }

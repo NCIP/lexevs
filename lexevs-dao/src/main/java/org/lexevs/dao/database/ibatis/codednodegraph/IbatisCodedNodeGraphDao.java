@@ -91,6 +91,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_TRANSITIVE_TABLE_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTransitiveTableCount";
 	private static String DELETE_FROM_TRANSITIVE_TABLE_BY_CODINGSCHEME_UID_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "deleteFromTransitiveTableByCodingSchemeUid";
 	private static final String GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL =  IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidTriplesForAssociationPredicateGuid";
+
+	private static final String VALIDATE_NODE_FOR_ASSOCIATION = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "validateNodeInAssociation";
 	
 	@Override
 	public int getTransitiveTableCount(String codingSchemeUid){
@@ -1003,6 +1005,18 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				queryForList(
 						GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL,
 						bean);
+	}
+	
+	@Override
+	public Integer validateNodeInAssociation(String codingSchemeUid, String assocUid, String entityCode) {
+		String codingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(codingSchemeUid);
+		PrefixedParameterTuple bean = new PrefixedParameterTuple();
+		bean.setPrefix(codingSchemePrefix);
+		bean.setParam1(assocUid);
+		bean.setParam2(entityCode);
+		return  
+			(Integer) this.getSqlMapClientTemplate().queryForObject(VALIDATE_NODE_FOR_ASSOCIATION, bean);
 	}
 
 	private List<? extends ResolvedConceptReference> sortList(List<TripleUidReferencingResolvedConceptReference> list, List<String> tripleUids){
