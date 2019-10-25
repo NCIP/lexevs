@@ -46,6 +46,7 @@
 		<dependency org="org.springframework" name="spring-context-support" rev="3.1.0.RELEASE" conf="default" />
 		<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.1.0.RELEASE" conf="default" />
 		<dependency org="org.springframework.batch" name="spring-batch-infrastructure" rev="2.1.0.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-web" rev="3.1.0.RELEASE" conf="default" />
 		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.10.Final" conf="default" />
 		<dependency org="org.hibernate.common" name="hibernate-commons-annotations" rev="4.0.0.Final" conf="default" />
 		<dependency org="org.jboss.logging" name="jboss-logging" rev="3.1.2.GA" conf="default" />
