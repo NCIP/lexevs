@@ -248,50 +248,50 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(OrderingTestRunnerTest.class);
         mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
-        mainSuite.addTestSuite(CodeToReturnTest.class);
-        mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
-        mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
-        mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
-        mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
-        mainSuite.addTestSuite(CodedNodeSetImplTest.class);
-        mainSuite.addTestSuite(CodedNodeSetSerializationTest.class);
-        mainSuite.addTestSuite(TestMetaDataSearch.class);
-        mainSuite.addTestSuite(ServiceManagerTest.class);
-        mainSuite.addTestSuite(RegistryTest.class);
-        mainSuite.addTestSuite(TestNCIThesMetadata.class);
-        mainSuite.addTestSuite(ResourceManagerTest.class); 
-        mainSuite.addTestSuite(SQLImplementedMethodsTest.class);  
-        mainSuite.addTestSuite(ResolvedConceptReferencesIteratorImplTest.class);
+//        mainSuite.addTestSuite(CodeToReturnTest.class);
+//        mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
+//        mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
+//        mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
+//        mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
+//        mainSuite.addTestSuite(CodedNodeSetImplTest.class);
+//        mainSuite.addTestSuite(CodedNodeSetSerializationTest.class);
+//        mainSuite.addTestSuite(TestMetaDataSearch.class);
+//        mainSuite.addTestSuite(ServiceManagerTest.class);
+//        mainSuite.addTestSuite(RegistryTest.class);
+//        mainSuite.addTestSuite(TestNCIThesMetadata.class);
+//        mainSuite.addTestSuite(ResourceManagerTest.class); 
+//        mainSuite.addTestSuite(SQLImplementedMethodsTest.class);  
+//        mainSuite.addTestSuite(ResolvedConceptReferencesIteratorImplTest.class);
+//        
+//        mainSuite.addTestSuite(AbstractSortTest.class);
+//        mainSuite.addTestSuite(AbstractSearchTest.class);
         
-        mainSuite.addTestSuite(AbstractSortTest.class);
-        mainSuite.addTestSuite(AbstractSearchTest.class);
-        
-        TestSuite metaLoaderSuite = new TestSuite("MetaLoader Tests");
-        metaLoaderSuite.addTestSuite(DefinitionPropertyDataTestIT.class);
-        metaLoaderSuite.addTestSuite(DefinitionQualifiersDataTestIT.class);
-        metaLoaderSuite.addTestSuite(EntityAssnsToEntityDataTestIT.class);
-        metaLoaderSuite.addTestSuite(EntityAssnsToEntityQualsDataTestIT.class);
-        metaLoaderSuite.addTestSuite(EntityDataTestIT.class);
-        metaLoaderSuite.addTestSuite(MetadataLoadTestIT.class);
-        metaLoaderSuite.addTestSuite(MrstyPropertyDataTestIT.class);
-        metaLoaderSuite.addTestSuite(MrhierAssocQualifierTestIT.class);
-        metaLoaderSuite.addTestSuite(MrhierPropertyQualifierTestIT.class);
-        metaLoaderSuite.addTestSuite(MrrankQualifierDataTestIT.class);
-        metaLoaderSuite.addTestSuite(PresentationPropertyDataTestIT.class);
-        metaLoaderSuite.addTestSuite(PresentationQualifiersDataTestIT.class);
-        metaLoaderSuite.addTestSuite(MetaVersionTestIT.class);
-        metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
-
-        mainSuite.addTest(metaLoaderSuite);
+//        TestSuite metaLoaderSuite = new TestSuite("MetaLoader Tests");
+//        metaLoaderSuite.addTestSuite(DefinitionPropertyDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(DefinitionQualifiersDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(EntityAssnsToEntityDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(EntityAssnsToEntityQualsDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(EntityDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(MetadataLoadTestIT.class);
+//        metaLoaderSuite.addTestSuite(MrstyPropertyDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(MrhierAssocQualifierTestIT.class);
+//        metaLoaderSuite.addTestSuite(MrhierPropertyQualifierTestIT.class);
+//        metaLoaderSuite.addTestSuite(MrrankQualifierDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(PresentationPropertyDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(PresentationQualifiersDataTestIT.class);
+//        metaLoaderSuite.addTestSuite(MetaVersionTestIT.class);
+//        metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
+//
+//        mainSuite.addTest(metaLoaderSuite);
         
         
         // Graph DB Tests
-//        TestSuite graphDBTests = new TestSuite("graphDBTests");
-//        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
-//        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
-//        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
-//        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphQueryMethods.class));
-//        mainSuite.addTest(graphDBTests);
+        TestSuite graphDBTests = new TestSuite("graphDBTests");
+        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphQueryMethods.class));
+        mainSuite.addTest(graphDBTests);
         
         
 //        TestSuite owlLoaderSuite = new TestSuite("OWL Tests");
@@ -577,18 +577,18 @@ public class AllTestsNormalConfig {
 
         
         // Clean Up Function tests
-        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
-        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
-
-        //*******Always run this last and just before the JVM exits since ***********
-        //*******it breaks a lot of things that are created in ServiceHolder********* 
-        mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
-        // $JUnit-END$
+//        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
+//        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
+//
+//        //*******Always run this last and just before the JVM exits since ***********
+//        //*******it breaks a lot of things that are created in ServiceHolder********* 
+//        mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
+//        // $JUnit-END$
 
         return mainSuite;
     }

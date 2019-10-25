@@ -115,287 +115,270 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
         lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
     }
-
-    @Test
-    @Order(1)
-    public void testLoadAutombilesExtension() throws LBParameterException, LBInvocationException, InterruptedException,
-    LBException {
-    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-    	LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
-
-    	loader.load(new File("resources/testData/testExtension.xml").toURI(), true, true);
-
-    	while (loader.getStatus().getEndTime() == null) {
-    		Thread.sleep(1000);
-    	}
-
-    	assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-    	assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-    	lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-    	lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-    	
-    	lbsm.registerCodingSchemeAsSupplement(
-    			Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION), 
-    			Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_EXTENSION_URN, AUTO_EXTENSION_VERSION));
-    			
-    }
-
-    @Test
-    @Order(2)
-    public void testLoadGermanMadeParts() throws LBException, InterruptedException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
-
-        // load non-async - this should block
-        loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, false);
-
-    	while (loader.getStatus().getEndTime() == null) {
-    		Thread.sleep(1000);
-    	}
-        assertTrue(loader.getStatus().getEndTime() != null);
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-    }
-
-    @Test
-    @Order(3)
-    public void testLoadBoostScheme() throws LBException, InterruptedException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
-
-        // load non-async - this should block
-        loader.load(new File("resources/testData/BoostedQuery.xml").toURI(), true, false);
-
-    	while (loader.getStatus().getEndTime() == null) {
-    		Thread.sleep(1000);
-    	}
-        assertTrue(loader.getStatus().getEndTime() != null);
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-    }
-
-    @Test
-    @Order(4)
-    public void testLoadNCIMeta() throws Exception {
-    	String[] args  = {"-in",  new File("resources/testData/sampleNciMeta").toURI().toString()};
-    	
-    	LoadMetaBatchWithMetadata metaBatch = new LoadMetaBatchWithMetadata();
-    	metaBatch.run(args);
-    	
-    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
-    	lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
-    }
-
-    @Test
-    @Order(5)
-    public void testLoadNCItHistory() throws InterruptedException, LBException {
- 
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        NCIHistoryLoader hloader = (NCIHistoryLoader) lbsm.getLoader("NCIThesaurusHistoryLoader");
-
-        hloader.load(new File("resources/testData/Filtered_pipe_out_12f.txt").toURI(), new File(
-                "resources/testData/SystemReleaseHistory.txt").toURI(), false, true, false);
-
-        assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
-        assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
-    }
-
-    @Test
-    @Order(6)
-    public void testLoadMetaHistory() throws LBException {
-        ServiceHolder.configureForSingleConfig();
-        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
-        UMLSHistoryLoader loader = (UMLSHistoryLoader) lbsm
-                .getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl.name);
-        loader.load((new File("resources/testData/sampleNciMeta/sampleNciMetaHistory")).toURI(), false, true, false);
-
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-    }
-
-    @Test
-    @Order(7)
-    public void testLoadObo() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
-
-        loader.load(new File("resources/testData/cell.obo").toURI(), null, true, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-    }
-
-    @Test
-    @Order(8)
-    public void testLoadLongSourceObo() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
-
-        loader.load(new File("resources/testData/testLoadLongsource.obo").toURI(), null, true, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-        
-        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "urn:lsid:bioontology.org:test", "UNASSIGNED");
-
-        lbsm.deactivateCodingSchemeVersion(a, null);
-        lbsm.removeCodingSchemeVersion(a);
-
-    }
-
-    @Test
-    @Order(9)
-    public void testLoadOwl() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
- 
-        CodingSchemeManifest csm = new CodingSchemeManifest();
-        CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
-        csm.setId("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
-        uri.setContent("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
-        uri.setToOverride(true);
-        csm.setCodingSchemeURI(uri);
-        loader.setCodingSchemeManifest(csm);
-        
-        loader.load(new File("resources/testData/pizza.owl").toURI(), null, 1, false, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
-    }
-
-    @Test
-    @Order(10)
-    public void testLoadOwlThesaurus() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
- 
-        CodingSchemeManifest csm = new CodingSchemeManifest();
-        CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
-        csm.setId("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
-        uri.setContent("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
-        uri.setToOverride(true);
-        csm.setCodingSchemeURI(uri);
-        loader.setCodingSchemeManifest(csm);
-        
-        loader.load(new File("resources/testData/sample.owl").toURI(), null, 1, false, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
-    }
-
-    @Test
-    @Order(11)
-    public void testLoadOwlLoaderPreferences() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
-
-        loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
-        loader.load(new File("resources/testData/camera.owl").toURI(), new File(
-                "resources/testData/Camera-manifest.xml").toURI(), 1, false, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
-    }
-
-    @Test
-    @Order(12)
-    public void testLoadGenericOwl() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
-        loader.load(new File("resources/testData/amino-acid.owl").toURI(), new File(
-                "resources/testData/amino-acid-manifest.xml").toURI(), 0, true, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
-    }
-
-    @Test
-    @Order(13)
-    public void testLoadGenericOwlWithInstanceData() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
-        loader.load(new File("resources/testData/OvarianMass_SNOMED_ValueSets.owl").toURI(), null,  1, false, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
-    }
-    
-//    public void testLoadGenericOwlWithNPOsansQuals() throws InterruptedException, LBException {
+//
+//    @Test
+//    @Order(1)
+//    public void testLoadAutombilesExtension() throws LBParameterException, LBInvocationException, InterruptedException,
+//    LBException {
+//    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//    	LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+//
+//    	loader.load(new File("resources/testData/testExtension.xml").toURI(), true, true);
+//
+//    	while (loader.getStatus().getEndTime() == null) {
+//    		Thread.sleep(1000);
+//    	}
+//
+//    	assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//    	assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//    	lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//    	lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//    	
+//    	lbsm.registerCodingSchemeAsSupplement(
+//    			Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_URN, AUTO_VERSION), 
+//    			Constructors.createAbsoluteCodingSchemeVersionReference(AUTO_EXTENSION_URN, AUTO_EXTENSION_VERSION));
+//    			
+//    }
+//
+//    @Test
+//    @Order(2)
+//    public void testLoadGermanMadeParts() throws LBException, InterruptedException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+//
+//        // load non-async - this should block
+//        loader.load(new File("resources/testData/German_Made_Parts.xml").toURI(), true, false);
+//
+//    	while (loader.getStatus().getEndTime() == null) {
+//    		Thread.sleep(1000);
+//    	}
+//        assertTrue(loader.getStatus().getEndTime() != null);
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//    }
+//
+//    @Test
+//    @Order(3)
+//    public void testLoadBoostScheme() throws LBException, InterruptedException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        LexGridMultiLoaderImpl loader = (LexGridMultiLoaderImpl) lbsm.getLoader("LexGrid_Loader");
+//
+//        // load non-async - this should block
+//        loader.load(new File("resources/testData/BoostedQuery.xml").toURI(), true, false);
+//
+//    	while (loader.getStatus().getEndTime() == null) {
+//    		Thread.sleep(1000);
+//    	}
+//        assertTrue(loader.getStatus().getEndTime() != null);
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//    }
+//
+//    @Test
+//    @Order(4)
+//    public void testLoadNCIMeta() throws Exception {
+//    	String[] args  = {"-in",  new File("resources/testData/sampleNciMeta").toURI().toString()};
+//    	
+//    	LoadMetaBatchWithMetadata metaBatch = new LoadMetaBatchWithMetadata();
+//    	metaBatch.run(args);
+//    	
+//    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//    	lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
+//    }
+//
+//    @Test
+//    @Order(5)
+//    public void testLoadNCItHistory() throws InterruptedException, LBException {
+// 
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        NCIHistoryLoader hloader = (NCIHistoryLoader) lbsm.getLoader("NCIThesaurusHistoryLoader");
+//
+//        hloader.load(new File("resources/testData/Filtered_pipe_out_12f.txt").toURI(), new File(
+//                "resources/testData/SystemReleaseHistory.txt").toURI(), false, true, false);
+//
+//        assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
+//        assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
+//    }
+//
+//    @Test
+//    @Order(6)
+//    public void testLoadMetaHistory() throws LBException {
+//        ServiceHolder.configureForSingleConfig();
+//        LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
+//        UMLSHistoryLoader loader = (UMLSHistoryLoader) lbsm
+//                .getLoader(org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl.name);
+//        loader.load((new File("resources/testData/sampleNciMeta/sampleNciMetaHistory")).toURI(), false, true, false);
+//
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//    }
+//
+//    @Test
+//    @Order(7)
+//    public void testLoadObo() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
+//
+//        loader.load(new File("resources/testData/cell.obo").toURI(), null, true, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(500);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//    }
+//
+//    @Test
+//    @Order(8)
+//    public void testLoadLongSourceObo() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OBO_Loader loader = (OBO_Loader) lbsm.getLoader("OBOLoader");
+//
+//        loader.load(new File("resources/testData/testLoadLongsource.obo").toURI(), null, true, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(500);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//        
+//        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+//                "urn:lsid:bioontology.org:test", "UNASSIGNED");
+//
+//        lbsm.deactivateCodingSchemeVersion(a, null);
+//        lbsm.removeCodingSchemeVersion(a);
+//
+//    }
+//
+//    @Test
+//    @Order(9)
+//    public void testLoadOwl() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+// 
+//        CodingSchemeManifest csm = new CodingSchemeManifest();
+//        CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
+//        csm.setId("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
+//        uri.setContent("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
+//        uri.setToOverride(true);
+//        csm.setCodingSchemeURI(uri);
+//        loader.setCodingSchemeManifest(csm);
+//        
+//        loader.load(new File("resources/testData/pizza.owl").toURI(), null, 1, false, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(1000);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//
+//    }
+//
+//    @Test
+//    @Order(10)
+//    public void testLoadOwlThesaurus() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+// 
+//        CodingSchemeManifest csm = new CodingSchemeManifest();
+//        CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
+//        csm.setId("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+//        uri.setContent("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+//        uri.setToOverride(true);
+//        csm.setCodingSchemeURI(uri);
+//        loader.setCodingSchemeManifest(csm);
+//        
+//        loader.load(new File("resources/testData/sample.owl").toURI(), null, 1, false, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(1000);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//
+//    }
+//
+//    @Test
+//    @Order(11)
+//    public void testLoadOwlLoaderPreferences() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+//
+//        loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
+//        loader.load(new File("resources/testData/camera.owl").toURI(), new File(
+//                "resources/testData/Camera-manifest.xml").toURI(), 1, false, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(1000);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//
+//    }
+//
+//    @Test
+//    @Order(12)
+//    public void testLoadGenericOwl() throws InterruptedException, LBException {
 //        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 //
 //        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
-//        loader.load(new File("resources/testData/npotest.owl").toURI(), null,  1, false, true);
+//        loader.load(new File("resources/testData/amino-acid.owl").toURI(), new File(
+//                "resources/testData/amino-acid-manifest.xml").toURI(), 0, true, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(1000);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//
+//    }
+//
+//    @Test
+//    @Order(13)
+//    public void testLoadGenericOwlWithInstanceData() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+//        loader.load(new File("resources/testData/OvarianMass_SNOMED_ValueSets.owl").toURI(), null,  1, false, true);
 //
 //        while (loader.getStatus().getEndTime() == null) {
 //            Thread.sleep(1000);
@@ -407,88 +390,105 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 //        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
 //
 //    }
-
-    @Test
-    @Order(14)
-    public void testLoadOWL2NPOwMultiNamespace() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
-        loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
-        loader.load(new File("resources/testData/multiName_npo-2011-12-08_inferred.owl").toURI(), 
-        		new File("resources/testData/NPOMF.xml").toURI(),  1, false, true);
-        
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-
-    }
-
-    @Test
-    @Order(15)
-    public void testLoadCompPropsOwl() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
-        loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
-        
-        CodingSchemeManifest csm = new CodingSchemeManifest();
-        csm.setId("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
-        CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
-        uri.setContent("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
-        uri.setToOverride(true);
-        csm.setCodingSchemeURI(uri);
-        loader.setCodingSchemeManifest(csm);
-        
-        loader.load(new File("resources/testData/sample.cp.2.owl").toURI(),
-                null, 0, true, true);
-        
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(500);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-    }
-
-    @Test
-    @Order(16)
-    public void testLoadNCIMeta2() throws Exception {
-    	String[] args  = {"-in",  new File("resources/testData/SAMPLEMETA").toURI().toString()};
-    	
-    	LoadMetaBatchWithMetadata metaBatch = new LoadMetaBatchWithMetadata();
-    	metaBatch.run(args);
-    	
-    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
-        lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
-        lbsm.setVersionTag(metaBatch.getCodingSchemeRef(), LBConstants.KnownTags.PRODUCTION.toString());
-    }
-
-    @Test
-    @Order(17)
-    public void testLoadMedDRA() throws InterruptedException, LBException {
-        LexBIGServiceManager lbsm = getLexBIGServiceManager();
-    	File accessPath = new File("resources/testData/medDRA");
-
-        MedDRA_Loader loader = (MedDRALoaderImpl) lbsm.getLoader("MedDRALoader");
-        loader.load(accessPath.toURI(), null, true, true);
-
-        while (loader.getStatus().getEndTime() == null) {
-            Thread.sleep(1000);
-        }
-        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
-        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
-
-        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
-
-        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
-    }
+//    
+////    public void testLoadGenericOwlWithNPOsansQuals() throws InterruptedException, LBException {
+////        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+////
+////        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+////        loader.load(new File("resources/testData/npotest.owl").toURI(), null,  1, false, true);
+////
+////        while (loader.getStatus().getEndTime() == null) {
+////            Thread.sleep(1000);
+////        }
+////        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+////        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+////
+////        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+////        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+////
+////    }
+//
+//    @Test
+//    @Order(14)
+//    public void testLoadOWL2NPOwMultiNamespace() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+//        loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
+//        loader.load(new File("resources/testData/multiName_npo-2011-12-08_inferred.owl").toURI(), 
+//        		new File("resources/testData/NPOMF.xml").toURI(),  1, false, true);
+//        
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(1000);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//
+//    }
+//
+//    @Test
+//    @Order(15)
+//    public void testLoadCompPropsOwl() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//
+//        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+//        loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
+//        
+//        CodingSchemeManifest csm = new CodingSchemeManifest();
+//        csm.setId("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+//        CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
+//        uri.setContent("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#");
+//        uri.setToOverride(true);
+//        csm.setCodingSchemeURI(uri);
+//        loader.setCodingSchemeManifest(csm);
+//        
+//        loader.load(new File("resources/testData/sample.cp.2.owl").toURI(),
+//                null, 0, true, true);
+//        
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(500);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//    }
+//
+//    @Test
+//    @Order(16)
+//    public void testLoadNCIMeta2() throws Exception {
+//    	String[] args  = {"-in",  new File("resources/testData/SAMPLEMETA").toURI().toString()};
+//    	
+//    	LoadMetaBatchWithMetadata metaBatch = new LoadMetaBatchWithMetadata();
+//    	metaBatch.run(args);
+//    	
+//    	LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//        lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
+//        lbsm.setVersionTag(metaBatch.getCodingSchemeRef(), LBConstants.KnownTags.PRODUCTION.toString());
+//    }
+//
+//    @Test
+//    @Order(17)
+//    public void testLoadMedDRA() throws InterruptedException, LBException {
+//        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+//    	File accessPath = new File("resources/testData/medDRA");
+//
+//        MedDRA_Loader loader = (MedDRALoaderImpl) lbsm.getLoader("MedDRALoader");
+//        loader.load(accessPath.toURI(), null, true, true);
+//
+//        while (loader.getStatus().getEndTime() == null) {
+//            Thread.sleep(1000);
+//        }
+//        assertTrue(loader.getStatus().getState().equals(ProcessState.COMPLETED));
+//        assertFalse(loader.getStatus().getErrorsLogged().booleanValue());
+//
+//        lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
+//
+//        lbsm.setVersionTag(loader.getCodingSchemeReferences()[0], LBConstants.KnownTags.PRODUCTION.toString());
+//    }
 
     @Test
     @Order(18)
