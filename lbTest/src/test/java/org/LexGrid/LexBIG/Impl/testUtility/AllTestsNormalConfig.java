@@ -247,7 +247,7 @@ public class AllTestsNormalConfig {
 
         mainSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(OrderingTestRunnerTest.class);
-        mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
+        //mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
 //        mainSuite.addTestSuite(CodeToReturnTest.class);
 //        mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
 //        mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
@@ -290,7 +290,6 @@ public class AllTestsNormalConfig {
         graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
         graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
         graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphQueryMethods.class));
         mainSuite.addTest(graphDBTests);
         
         

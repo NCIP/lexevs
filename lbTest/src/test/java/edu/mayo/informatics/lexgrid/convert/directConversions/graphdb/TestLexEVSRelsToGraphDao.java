@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -22,6 +23,8 @@ import org.lexevs.dao.database.service.graphdb.GraphingDataBaseServiceImpl;
 import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 
+import com.arangodb.ArangoCursor;
+import com.arangodb.ArangoDBException;
 import com.arangodb.ArangoDatabase;
 
 public class TestLexEVSRelsToGraphDao {
@@ -37,7 +40,7 @@ public class TestLexEVSRelsToGraphDao {
 				.loadGraphsForTerminologyURIAndVersion("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		lbs = LexBIGServiceImpl.defaultInstance();
 	}
-
+	
 	@Test
 	public void testGetSupportedAssociationNamesForScheme() {
 		List<String> rels = graphRels
