@@ -1,8 +1,11 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -20,6 +23,9 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 import org.LexGrid.naming.SupportedAssociation;
+import org.lexevs.dao.database.graph.rest.client.LexEVSSpringRestClientImpl;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
+import org.lexevs.locator.LexEvsServiceLocator;
 
 public class NodeGraphResolutionExtensionImpl extends AbstractExtendable implements NodeGraphResolutionExtension {
 
@@ -27,8 +33,10 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
      * 
      */
     private static final long serialVersionUID = -2869847921528174582L;
+
+    private static final String TARGET_OF = null;
     
-    
+    LexEVSSpringRestClientImpl lexClientService;
 
 
     @Override
@@ -47,7 +55,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     + reference.getCodingSchemeVersion());}
             set = this.getCodedNodeSetForScheme(reference);
             set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-            return getConceptReferenceListForValidatedAssociation(associationName, set).iterator();
+            return getConceptReferenceListForValidatedAssociation(reference, associationName, TARGET_OF, set).iterator();
            
         } catch (LBException e) {
             throw new RuntimeException("Not able to resolve a graph for this coding scheme and graph "
@@ -105,9 +113,23 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     }
     
     
-    protected List<ConceptReference> getConceptReferenceListForValidatedAssociation(String associationName, CodedNodeSet set){
+    protected List<ConceptReference> getConceptReferenceListForValidatedAssociation(
+            AbsoluteCodingSchemeVersionReference ref, 
+            String associationName, 
+            String direction,  
+            CodedNodeSet set){
+        List<ConceptReference> crefs = new ArrayList<ConceptReference>();
         try {
-            ResolvedConceptReferencesIterator itr = set.resolve(null, null, null);
+            ResolvedConceptReferenceList list = set.resolveToList(null, null, null, 10);
+            if(isGetTargetOF(direction)){
+            Stream.of(list.getResolvedConceptReference())
+            .map(x -> lexClientService
+                    .getOutBoundForGraphNode(
+                            lexClientService.getBaseUrl(), 
+                            getNormalizedDbNameForTermServiceIdentifiers(ref),
+                            associationName, 
+                            x.getCode()));
+            }
         } catch (LBInvocationException | LBParameterException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -115,6 +137,11 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return null;
     }
     
+    private boolean isGetTargetOF(String direction) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     protected Boolean isValidAssociation(String associationName, AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
         return ServiceUtility.IsValidParameter(ref.getCodingSchemeURN(),ref.getCodingSchemeVersion(), associationName, SupportedAssociation.class);
     }
@@ -123,12 +150,24 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return ServiceUtility.isValidNodeForAssociation(ref, entityCode, associationName);
     }
     
+
+    private String getNormalizedDbNameForTermServiceIdentifiers(AbsoluteCodingSchemeVersionReference ref){
+        try {
+            return GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(LexEvsServiceLocator
+                    .getInstance()
+                    .getSystemResourceService()
+                    .getInternalCodingSchemeNameForUserCodingSchemeName(
+                            ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
+        } catch (LBParameterException e) {
+            throw new RuntimeException("Unable to retrieve and normalize database name for uri :" 
+                    + ref.getCodingSchemeURN()
+                    + " version: " + ref.getCodingSchemeVersion());
+        }
+    }
+    
     public static void main(String ...args){
         AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.05b");
         new NodeGraphResolutionExtensionImpl().getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "subClassOf", "Blood", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME);
     }
-    
-    
-    
 
 }
