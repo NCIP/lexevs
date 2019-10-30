@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.graph.rest.client;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -52,8 +53,15 @@ public class LexEVSSpringRestClientImpl {
 		restTemplate.setMessageConverters(messageConverters);
 		LexEVSGraphClientResponseErrorHandler handler = new LexEVSGraphClientResponseErrorHandler(scheme, graph, code);
 		restTemplate.setErrorHandler(handler);
-		ResponseEntity<LexVertex[]> response = restTemplate.exchange(url + CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, scheme, graph, code);
-		List<LexVertex> vertexes = Arrays.asList(response.getBody());
+		ResponseEntity<LexVertex[]> response = null;
+		List<LexVertex> vertexes = null;
+		try{
+		response = restTemplate.exchange(url + CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, scheme, graph, code);
+		vertexes = Arrays.asList(response.getBody());
+		}catch(Exception i){
+			System.out.println(i.getMessage());
+			return new ArrayList<LexVertex>();
+		}
 		return vertexes;
 	}
 	

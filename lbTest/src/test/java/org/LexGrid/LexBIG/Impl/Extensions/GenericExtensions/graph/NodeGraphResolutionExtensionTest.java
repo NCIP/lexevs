@@ -1,5 +1,6 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
@@ -28,7 +29,13 @@ public class NodeGraphResolutionExtensionTest {
 	@Test
 	public void testValidNodeInAssociation() {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.05b");
-		assertTrue(ngr.isValidNodeForTargetOfAssociation(ref, "C12434", "subClassOf"));
+		assertTrue(ngr.isValidNodeForAssociation(ref, "C12434", "subClassOf"));
+	}
+	
+	@Test
+	public void testValidNodeInAssociationNot() {
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.05b");
+		assertFalse(ngr.isValidNodeForAssociation(ref, "C19448", "Anatomic_Structure_Is_Physical_Part_Of"));
 	}
 
 }

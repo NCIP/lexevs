@@ -760,7 +760,7 @@ public class ServiceUtility {
                         ref.getCodingSchemeURN(), 
                         ref.getCodingSchemeVersion(), 
                         associationName, 
-                        entityCode) > 0;
+                        entityCode).intValue() > 0;
     }
 
 

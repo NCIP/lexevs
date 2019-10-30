@@ -4,6 +4,8 @@ import java.util.Iterator;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
+import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.AlgorithmMatch;
+import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.ModelMatch;
 
 public interface NodeGraphResolutionExtension extends GenericExtension {
 	
@@ -33,14 +35,13 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 		PROPERTY
 	}
 	
-	public Iterator<ConceptReference> getConceptReferencesForEntityCodeAndAssociationTargetOf(
-			AbsoluteCodingSchemeVersionReference reference, 
-			String associationName, String textMatch, 
-			AlgorithmMatch alg, ModelMatch model);
-	
 	public Iterator<ConceptReference> getConceptReferencesForEntityCodeAndAssociationSourceOf(
 			AbsoluteCodingSchemeVersionReference reference, 
 			String associationName, String textMatch, 
-			AlgorithmMatch alg, ModelMatch model);
+			AlgorithmMatch alg, ModelMatch model, String url);
+
+	public Iterator<ConceptReference> getConceptReferencesForEntityCodeAndAssociationTargetOf(
+			AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
+			AlgorithmMatch alg, ModelMatch model, String url);
 
 }
