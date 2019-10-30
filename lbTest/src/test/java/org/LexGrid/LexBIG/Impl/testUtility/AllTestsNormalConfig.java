@@ -250,11 +250,11 @@ public class AllTestsNormalConfig {
         mainSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(OrderingTestRunnerTest.class);
         mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
-//        mainSuite.addTestSuite(CodeToReturnTest.class);
-//        mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
-//        mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
-//        mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
-//        mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
+        mainSuite.addTestSuite(CodeToReturnTest.class);
+        mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
+        mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
+        mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
+        mainSuite.addTestSuite(CodedNodeGraphImplTest.class);
 //        mainSuite.addTestSuite(CodedNodeSetImplTest.class);
 //        mainSuite.addTestSuite(CodedNodeSetSerializationTest.class);
 //        mainSuite.addTestSuite(TestMetaDataSearch.class);
