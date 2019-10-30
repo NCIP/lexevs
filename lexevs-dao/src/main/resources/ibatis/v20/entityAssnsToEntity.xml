@@ -2509,9 +2509,8 @@
 			WHERE 
 				associationPredicateGuid=#param1#
 			AND 
-				(sourceEntityCode = #param2# AND targetEntityCode not like "@%")
-			OR
-				(targetEntityCode = #param2# AND sourceEntityCode not like "@%")
-		
+				(sourceEntityCode = #param2# OR targetEntityCode = #param2# )
+			AND
+				(targetEntityCode not like "@%" OR sourceEntityCode not like "@%")		
 		</select>
 </sqlMap>

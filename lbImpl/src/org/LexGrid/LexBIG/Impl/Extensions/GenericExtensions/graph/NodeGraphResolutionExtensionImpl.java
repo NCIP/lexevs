@@ -182,7 +182,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
        ResolvedConceptReferenceList list =  set.resolveToList(null, null, null, 10);
        return Stream
                .of(list.getResolvedConceptReference())
-                   .filter(x -> isValidNodeForAssociation(ref, association, x.getCode()))
+                   .filter(x -> isValidNodeForAssociation(ref, x.getCode(), association))
                    .collect(Collectors.toList())
                    .toArray(new ResolvedConceptReference[]{});
     }
@@ -230,17 +230,58 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        System.out.println("Startup Query");
+        long start0 = System.currentTimeMillis();
+        Iterator<ConceptReference> target0list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+//        while(targetlist.hasNext()){
+//            System.out.println(targetlist.next().getCode());
+//        }
+        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start0));
+        System.out.println("\ntarget of Blood");
+        long start = System.currentTimeMillis();
         Iterator<ConceptReference> targetlist = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
-        System.out.println("target of");
-        while(targetlist.hasNext()){
-            System.out.println(targetlist.next().getCode());
-        }
-        Iterator<ConceptReference> sourcelist = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
-        System.out.println("source of");
-        while(sourcelist.hasNext()){
-            System.out.println(sourcelist.next().getCode());
-        }
+//        while(targetlist.hasNext()){
+//            System.out.println(targetlist.next().getCode());
+//        }
+        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start));
+        System.out.println("\nsource of Blood");
+        long start2 = System.currentTimeMillis();
+        Iterator<ConceptReference> sourcelist = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+//        while(sourcelist.hasNext()){
+//            System.out.println(sourcelist.next().getCode());
+//        }
+        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start2));
         
+        System.out.println("\ntarget of C61410");
+        long start3 = System.currentTimeMillis();
+        Iterator<ConceptReference> target2list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "subClassOf", "Clinical Data Interchange Standards Consortium Terminology", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+//        while(target2list.hasNext()){
+//            System.out.println(target2list.next().getCode());
+//        }
+        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start3));
+        System.out.println("\nsource of C61410");
+        long start4 = System.currentTimeMillis();
+        Iterator<ConceptReference> source2list = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, "subClassOf", "Clinical Data Interchange Standards Consortium Terminology", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+//        while(source2list.hasNext()){
+//            System.out.println(source2list.next().getCode());
+//        }
+        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start4));
+        
+        System.out.println("\ntarget of Pharmacologic Substance");
+        long start5 = System.currentTimeMillis();
+        Iterator<ConceptReference> target5list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "subClassOf", "Pharmacologic Substance", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+//        while(target2list.hasNext()){
+//            System.out.println(target2list.next().getCode());
+//        }
+        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start3));
+        System.out.println("\nsource of Pharmacologic Substance");
+        long start6 = System.currentTimeMillis();
+        Iterator<ConceptReference> source6list = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, "subClassOf", "Pharmacologic Substance", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+//        while(source2list.hasNext()){
+//            System.out.println(source2list.next().getCode());
+//        }
+        
+        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start4));
     }
 
 }
