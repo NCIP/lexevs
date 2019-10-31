@@ -697,29 +697,29 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
 
 		lbsm.activateCodingSchemeVersion(loader.getCodingSchemeReferences()[0]);
 	}
-//    @Test
-//    @Order(26)
-//	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
-//			InterruptedException {
-//		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
-//				.getServiceManager(null);
-//		MIFVocabularyLoader loader = null;
-//		try {
-//			lbsm = getLexBIGServiceManager();
-//			loader = (MIFVocabularyLoaderImpl) lbsm
-//					.getLoader(org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl.name);
-//			loader.load(new File("resources/testData/German_Made_Parts.xml")
-//					.toURI(), null, true, false);
-//		} catch (RuntimeException e) {
-//			assertEquals(
-//					"Source file is invalid. Please check to see if this is a valid HL7 vocabulary mif file",
-//					e.getMessage());
-//		} finally {
-//			while (loader.getStatus().getEndTime() == null) {
-//				Thread.sleep(1000);
-//			}
-//		}
-//	}
+    @Test
+    @Order(26)
+	public void testLoadHL7JMifVocabularyForBadSource() throws LBException,
+			InterruptedException {
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+		MIFVocabularyLoader loader = null;
+		try {
+			lbsm = getLexBIGServiceManager();
+			loader = (MIFVocabularyLoaderImpl) lbsm
+					.getLoader(org.LexGrid.LexBIG.Impl.loaders.MIFVocabularyLoaderImpl.name);
+			loader.load(new File("resources/testData/German_Made_Parts.xml")
+					.toURI(), null, true, false);
+		} catch (RuntimeException e) {
+			assertEquals(
+					"Source file is invalid. Please check to see if this is a valid HL7 vocabulary mif file",
+					e.getMessage());
+		} finally {
+			while (loader.getStatus().getEndTime() == null) {
+				Thread.sleep(1000);
+			}
+		}
+	}
 
     @Test
     @Order(27)
