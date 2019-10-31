@@ -35,7 +35,7 @@ public class SingleTestsNormalConfig {
          //loader.testLoadGenericOwl();
          //loader.testLoadOwl();
          //loader.testLoadOwlLoaderPreferences();
-//         loader.testLoadAutombiles();
+         loader.testLoadAutombiles();
         //mainSuite.addTestSuite(LoadTestDataTest.class);
         mainSuite.addTestSuite(LexBIGServiceConvenienceMethodsImplTest.class);
         //mainSuite.addTestSuite(TestCodedNodeGraphSqlGeneration.class);
