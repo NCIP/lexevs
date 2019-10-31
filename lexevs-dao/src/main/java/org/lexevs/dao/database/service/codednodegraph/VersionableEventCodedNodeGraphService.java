@@ -978,4 +978,16 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				codingSchemeVersion).validateNodeInAssociation(codingSchemeUid, uid, code);
 	}
 
+	@Override
+	public List<String> getValidAssociationsforTargetandSourceOf(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String code) {
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+			return this.getDaoManager().
+				getCodedNodeGraphDao(
+					codingSchemeUri, 
+					codingSchemeVersion).getValidPredicatesForTargetandSourceOf(codingSchemeUid, code);
+	}
+
 }

@@ -763,6 +763,17 @@ public class ServiceUtility {
                         entityCode).intValue() > 0;
     }
 
+    public static List<String> getValidAssociationsForTargetOrSource( AbsoluteCodingSchemeVersionReference ref, String entityCode) {
+        return 
+                LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getCodedNodeGraphService()
+                .getValidAssociationsforTargetandSourceOf(
+                        ref.getCodingSchemeURN(), 
+                        ref.getCodingSchemeVersion(), 
+                        entityCode);
+    }
 
    
 }
