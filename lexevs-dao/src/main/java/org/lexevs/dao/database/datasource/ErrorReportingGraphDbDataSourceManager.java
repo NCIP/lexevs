@@ -43,21 +43,6 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		String password = systemVariables.getGraphdbpwd();
 		ArangoDB db = null;
 		
-		System.out.println("** CONNECTION INFO **: ");
-		
-		System.out.println("** DEBUG INFO **: " +
-				"\n url = " + url +
-				"\n port = " + port +
-				"\n user = " + user +
-				"\n password = " + password );
-		
-        logger.error("** DEBUG INFO **: " +
-                "\n url = " + url +
-                "\n port = " + port +
-                "\n user = " + user +
-                "\n password = " + password );
-		
-		
 		try {
 			db = new ArangoDB.Builder().host(url, port).user(user).password(password)
 					.build();
