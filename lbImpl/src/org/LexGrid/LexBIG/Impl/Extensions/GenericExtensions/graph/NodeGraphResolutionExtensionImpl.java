@@ -12,6 +12,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -36,8 +37,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
      */
     private static final long serialVersionUID = -2869847921528174582L;
 
-    private static final String TARGET_OF = "outBound";
-    private static final String SOURCE_OF = "inBound";
+//    private static final String TARGET_OF = "outBound";
+//    private static final String SOURCE_OF = "inBound";
     
    // LexEVSSpringRestClientImpl lexClientService;
 
@@ -47,7 +48,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
 
     @Override
-    public Iterator<ConceptReference> getConceptReferencesForEntityCodeAndAssociationTargetOf(
+    public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationTargetOf(
             AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
             AlgorithmMatch alg, ModelMatch model, String url){
         CodedNodeSet set = null; 
@@ -56,7 +57,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             if(associationName == null){ 
                 set = this.getCodedNodeSetForScheme(reference);
                 set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-                return getConceptReferenceListForAllAssociations(reference, TARGET_OF, set, url).iterator();
+                return new GraphNodeContentTrackingIterator(getConceptReferenceListForAllAssociations(reference, Direction.TARGET_OF, set, url));
             }
             if(!this.isValidAssociation(associationName, reference))
             {throw new RuntimeException("Not a valid association name: " 
@@ -67,7 +68,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     + reference.getCodingSchemeVersion());}
             set = this.getCodedNodeSetForScheme(reference);
             set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-            return getConceptReferenceListForValidatedAssociation(reference, associationName, TARGET_OF, set, url).iterator();
+            return new GraphNodeContentTrackingIterator(getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.TARGET_OF, set, url));
            
         } catch (LBException e) {
             throw new RuntimeException("Not able to resolve an outgoing edge graph for this coding scheme and graph "
@@ -80,7 +81,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     }
 
     @Override
-    public Iterator<ConceptReference> getConceptReferencesForEntityCodeAndAssociationSourceOf(
+    public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationSourceOf(
             AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
             AlgorithmMatch alg, ModelMatch model, String url) {
     CodedNodeSet set = null; 
@@ -89,7 +90,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         if(associationName == null){ 
             set = this.getCodedNodeSetForScheme(reference);
             set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-            return getConceptReferenceListForAllAssociations(reference, SOURCE_OF, set, url).iterator();
+            return new GraphNodeContentTrackingIterator(getConceptReferenceListForAllAssociations(reference, Direction.SOURCE_OF, set, url));
         }
         if(!this.isValidAssociation(associationName, reference))
         {throw new RuntimeException("Not a valid association name: " 
@@ -100,7 +101,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                 + reference.getCodingSchemeVersion());}
         set = this.getCodedNodeSetForScheme(reference);
         set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-        return getConceptReferenceListForValidatedAssociation(reference, associationName, SOURCE_OF, set, url).iterator();
+        return new GraphNodeContentTrackingIterator(getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.SOURCE_OF, set, url));
        
     } catch (LBException e) {
         throw new RuntimeException("Not able to resolve an incoming edge graph for this coding scheme and graph "
@@ -141,7 +142,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         switch(model){
         case NAME: return set.restrictToMatchingDesignations(text, SearchDesignationOption.PREFERRED_ONLY, alg.getMatch(), null);
         case CODE: return set.restrictToCodes(Constructors.createConceptReferenceList(text));
-        case PROPERTY: return set.restrictToMatchingProperties(null, null, text, alg.getMatch(), null);
+        case PROPERTY: 
+            return set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, text, alg.getMatch(), null);
         default: return set;
         }
     }
@@ -150,7 +152,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     protected List<ConceptReference> getConceptReferenceListForValidatedAssociation(
             AbsoluteCodingSchemeVersionReference ref, 
             String associationName, 
-            String direction,  
+            Direction direction,  
             CodedNodeSet set, 
             String url){
 
@@ -191,7 +193,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     }
     
     private List<ConceptReference> getConceptReferenceListForAllAssociations(AbsoluteCodingSchemeVersionReference ref,
-            String direction, CodedNodeSet set, String url) {
+            Direction direction, CodedNodeSet set, String url) {
         LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
         try{            
             ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
@@ -202,41 +204,101 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                                     Function.identity(), 
                                         s -> getValidAssociationsForTargetOrSourceOf(ref, s)));
         if(isGetTargetOF(direction)){
-            return map.entrySet().stream().flatMap(entry ->
-                    entry
-                    .getValue()
-                    .stream()
-                    .map(x -> lexClientService
-                            .getInBoundForGraphNode(
+            return map.entrySet().stream()
+                    .flatMap(entry -> entry.getValue()
+                        .stream()
+                        .map(x -> lexClientService
+                                .getInBoundForGraphNode(
                                     lexClientService.getBaseUrl(), 
                                     getNormalizedDbNameForTermServiceIdentifiers(ref),
                                     x, 
-                                    entry.getKey()))).flatMap(y -> y.stream())                                .map(z -> 
-                                    Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+                                    entry.getKey())))
+                    .flatMap(y -> y.stream())
+                    .map(z -> 
+                          Constructors
+                              .createConceptReference(z.getCode(), z.getNamespace()))
                     .collect(Collectors.toList());
         }
         if(isGetSourceOF(direction)){
-            return map.entrySet().stream().flatMap(entry ->
-            entry
-            .getValue()
-            .stream()
-            .map(x -> lexClientService
-                    .getOutBoundForGraphNode(
-                            lexClientService.getBaseUrl(), 
-                            getNormalizedDbNameForTermServiceIdentifiers(ref),
-                            x, 
-                            entry.getKey()))).flatMap(y -> y.stream())                                .map(z -> 
-                            Constructors.createConceptReference(z.getCode(), z.getNamespace()))
-            .collect(Collectors.toList());
+            return map.entrySet().stream()
+             .flatMap(entry -> entry.getValue()
+                     .stream()
+                     .map(x -> lexClientService
+                             .getOutBoundForGraphNode(
+                                     lexClientService.getBaseUrl(), 
+                                     getNormalizedDbNameForTermServiceIdentifiers(ref),
+                                     x, 
+                                     entry.getKey())))
+             .flatMap(y -> y.stream())                                
+             .map(z -> 
+                    Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+             .collect(Collectors.toList());
         }    
         } catch (LBInvocationException | LBParameterException e) {
             e.printStackTrace();
         }
         return null;
     }
+    
+
+    @Override
+    public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
+            AbsoluteCodingSchemeVersionReference reference,
+            String associationName, 
+            Direction direction, 
+            String entityCode, 
+            String url) {
+        LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
+        if(isGetTargetOF(direction)){
+        return lexClientService
+        .getInBoundForGraphNode(
+            lexClientService.getBaseUrl(), 
+            getNormalizedDbNameForTermServiceIdentifiers(reference),
+            associationName, 
+            entityCode).stream().map(z -> 
+            Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+                .collect(Collectors.toList());
+        } else{
+            return lexClientService
+                    .getInBoundForGraphNode(
+                        lexClientService.getBaseUrl(), 
+                        getNormalizedDbNameForTermServiceIdentifiers(reference),
+                        associationName, 
+                        entityCode).stream().map(z -> 
+                        Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+                            .collect(Collectors.toList());
+            
+        }
+    }
 
 
-    private ResolvedConceptReference[] getValidatedList(AbsoluteCodingSchemeVersionReference ref, String association, CodedNodeSet set) throws LBInvocationException, LBParameterException {
+    @Override
+    public List<ResolvedConceptReference> getCandidateConceptReferencesForTextAndAssociation(
+            AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
+            AlgorithmMatch alg, ModelMatch model, String url) {
+        CodedNodeSet set = null;
+        try {
+            set = this.getCodedNodeSetForScheme(reference);
+            set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
+            ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
+            return Stream
+            .of(list).filter(
+                    x -> isValidNodeForAssociation(reference, x.getCode(), 
+                            associationName))
+            .collect(Collectors.toList());
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    private ResolvedConceptReference[] getValidatedList(
+            AbsoluteCodingSchemeVersionReference ref, 
+            String association, 
+            CodedNodeSet set) throws LBInvocationException, LBParameterException {
        ResolvedConceptReferenceList list =  set.resolveToList(null, null, null, 10);
        return Stream
                .of(list.getResolvedConceptReference())
@@ -246,14 +308,14 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     }
 
 
-    private boolean isGetSourceOF(String direction) {
+    private boolean isGetSourceOF(Direction direction) {
         // TODO Auto-generated method stub
-        return direction.equals(SOURCE_OF);
+        return direction.equals(Direction.SOURCE_OF);
     }
 
-    private boolean isGetTargetOF(String direction) {
+    private boolean isGetTargetOF(Direction direction) {
         // TODO Auto-generated method stub
-        return direction.equals(TARGET_OF);
+        return direction.equals(Direction.TARGET_OF);
     }
 
     protected Boolean isValidAssociation(String associationName, AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
@@ -283,6 +345,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         }
     }
     
+
+    
     public static void main(String ...args){
         AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.05b");
         NodeGraphResolutionExtensionImpl extension = null;
@@ -294,21 +358,21 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         }
         System.out.println("Startup Query");
         long start0 = System.currentTimeMillis();
-        Iterator<ConceptReference> target0list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
-//        while(targetlist.hasNext()){
-//            System.out.println(targetlist.next().getCode());
-//        }
+        Iterator<ConceptReference> target0list = extension.getConceptReferencesForTextSearchAndAssociationTargetOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+        while(target0list.hasNext()){
+            System.out.println(target0list.next().getCode());
+        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start0));
         System.out.println("\ntarget of Blood");
         long start = System.currentTimeMillis();
-        Iterator<ConceptReference> targetlist = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+        Iterator<ConceptReference> targetlist = extension.getConceptReferencesForTextSearchAndAssociationTargetOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
 //        while(targetlist.hasNext()){
 //            System.out.println(targetlist.next().getCode());
 //        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start));
         System.out.println("\nsource of Blood");
         long start2 = System.currentTimeMillis();
-        Iterator<ConceptReference> sourcelist = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+        Iterator<ConceptReference> sourcelist = extension.getConceptReferencesForTextSearchAndAssociationSourceOf(ref, "Anatomic_Structure_Is_Physical_Part_Of", "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
 //        while(sourcelist.hasNext()){
 //            System.out.println(sourcelist.next().getCode());
 //        }
@@ -316,14 +380,14 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         
         System.out.println("\ntarget of C61410");
         long start3 = System.currentTimeMillis();
-        Iterator<ConceptReference> target2list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "subClassOf", "Clinical Data Interchange Standards Consortium Terminology", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+        Iterator<ConceptReference> target2list = extension.getConceptReferencesForTextSearchAndAssociationTargetOf(ref, "subClassOf", "Clinical Data Interchange Standards Consortium Terminology", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
 //        while(target2list.hasNext()){
 //            System.out.println(target2list.next().getCode());
 //        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start3));
         System.out.println("\nsource of C61410");
         long start4 = System.currentTimeMillis();
-        Iterator<ConceptReference> source2list = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, "subClassOf", "Clinical Data Interchange Standards Consortium Terminology", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+        Iterator<ConceptReference> source2list = extension.getConceptReferencesForTextSearchAndAssociationSourceOf(ref, "subClassOf", "Clinical Data Interchange Standards Consortium Terminology", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
 //        while(source2list.hasNext()){
 //            System.out.println(source2list.next().getCode());
 //        }
@@ -331,51 +395,59 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         
         System.out.println("\ntarget of Pharmacologic Substance");
         long start5 = System.currentTimeMillis();
-        Iterator<ConceptReference> target5list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, "subClassOf", "Pharmacologic Substance", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+        Iterator<ConceptReference> target5list = extension.getConceptReferencesForTextSearchAndAssociationTargetOf(ref, "subClassOf", "Pharmacologic Substance", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
 //        while(target2list.hasNext()){
 //            System.out.println(target2list.next().getCode());
 //        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start5));
         System.out.println("\nsource of Pharmacologic Substance");
         long start6 = System.currentTimeMillis();
-        Iterator<ConceptReference> source6list = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, "subClassOf", "Pharmacologic Substance", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+        Iterator<ConceptReference> source6list = extension.getConceptReferencesForTextSearchAndAssociationSourceOf(ref, "subClassOf", "Pharmacologic Substance", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
 //        while(source2list.hasNext()){
 //            System.out.println(source2list.next().getCode());
 //        }
         
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start6));
         
-        System.out.println("\nsource of Blood for all Associations");
+        System.out.println("\nSourceOf Contains Blood for all Associations");
         long start7 = System.currentTimeMillis();
-        Iterator<ConceptReference> source7list = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, null, "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+        Iterator<ConceptReference> source7list = extension.getConceptReferencesForTextSearchAndAssociationSourceOf(ref, null, "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
 //        while(sourcelist.hasNext()){
 //            System.out.println(sourcelist.next().getCode());
 //        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start7));
         
-        System.out.println("\nTarget of Blood for all Associations");
+        System.out.println("\nTargetof contains Blood for all Associations");
         long start8 = System.currentTimeMillis();
-        Iterator<ConceptReference> source8list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, null, "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
+        Iterator<ConceptReference> source8list = extension.getConceptReferencesForTextSearchAndAssociationTargetOf(ref, null, "Blood", AlgorithmMatch.CONTAINS, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
 //        while(sourcelist.hasNext()){
 //            System.out.println(sourcelist.next().getCode());
 //        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start8));
         
-        System.out.println("\nsource of Blood for all Associations");
+        System.out.println("\nSourceOf Exact Match Blood for all Associations");
         long start9 = System.currentTimeMillis();
-        Iterator<ConceptReference> source9list = extension.getConceptReferencesForEntityCodeAndAssociationSourceOf(ref, null, "Blood", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
-//        while(sourcelist.hasNext()){
-//            System.out.println(sourcelist.next().getCode());
-//        }
+        GraphNodeContentTrackingIterator source9list = (GraphNodeContentTrackingIterator) extension.getConceptReferencesForTextSearchAndAssociationSourceOf(ref, null, "Blood", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+        while(source9list.hasNext()){
+            System.out.println(source9list.next().getCode());
+        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start9));
         
-        System.out.println("\nTarget of Blood for all Associations");
+        System.out.println("\nTargetOf Exact Match Blood for all Associations");
         long start10 = System.currentTimeMillis();
-        Iterator<ConceptReference> source10list = extension.getConceptReferencesForEntityCodeAndAssociationTargetOf(ref, null, "Blood", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");;
-//        while(sourcelist.hasNext()){
-//            System.out.println(sourcelist.next().getCode());
-//        }
+        GraphNodeContentTrackingIterator source10list = (GraphNodeContentTrackingIterator) extension.getConceptReferencesForTextSearchAndAssociationTargetOf(ref, null, "Blood", AlgorithmMatch.EXACT_MATCH, ModelMatch.NAME, "http://localhost:8080/graph-resolve");
+        while(source10list.hasNext()){
+            System.out.println(source10list.next().getCode());
+        }
         System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start10));
+        
+        List<ConceptReference> cfList = extension.getConceptReferenceListResolvedFromGraphForEntityCode(ref, "Anatomic_Structure_Is_Physical_Part_Of", Direction.TARGET_OF, "C12434", "http://localhost:8080/graph-resolve");
+        cfList.forEach(x -> System.out.println(x.getCode()));
+        
+        List<ResolvedConceptReference> cfLis2 = extension.getCandidateConceptReferencesForTextAndAssociation(ref, "Anatomic_Structure_Is_Physical_Part_Of", "BLOOD", AlgorithmMatch.LUCENE, ModelMatch.PROPERTY, "http://localhost:8080/graph-resolve");
+        cfLis2.forEach(x -> System.out.println(x.getEntityDescription().getContent()));
     }
+
+
 
 }
