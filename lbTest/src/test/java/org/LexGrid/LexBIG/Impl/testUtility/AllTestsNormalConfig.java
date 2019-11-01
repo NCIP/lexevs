@@ -218,6 +218,12 @@ import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.LoadAndUpdateSourceAssertedValueSetsTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.SourceAssertedValueSetSearchIndexServiceTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.graphdb.CleanUpGraphDBDataTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.graphdb.LoadGraphDBDataTest;
+import edu.mayo.informatics.lexgrid.convert.directConversions.graphdb.TestGraphQueryMethods;
+import edu.mayo.informatics.lexgrid.convert.directConversions.graphdb.TestGraphingDatabaseUtil;
+import edu.mayo.informatics.lexgrid.convert.directConversions.graphdb.TestLexEVSRelsToGraph;
+import edu.mayo.informatics.lexgrid.convert.directConversions.graphdb.TestLexEVSRelsToGraphDao;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2SnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.NewOWL2UnannotatedSnippetTestIT;
 import edu.mayo.informatics.lexgrid.convert.directConversions.owl2.OWL2LoaderLexGridTest;
@@ -279,6 +285,17 @@ public class AllTestsNormalConfig {
         metaLoaderSuite.addTestSuite(GenericPropertySourceQualifierTestIT.class);
 
         mainSuite.addTest(metaLoaderSuite);
+        
+        
+        // Graph DB Tests
+        TestSuite graphDBTests = new TestSuite("graphDBTests");
+        graphDBTests.addTest(new JUnit4TestAdapter(LoadGraphDBDataTest.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(CleanUpGraphDBDataTest.class));
+        mainSuite.addTest(graphDBTests);
+        
         
         TestSuite owlLoaderSuite = new TestSuite("OWL Tests");
         owlLoaderSuite.addTestSuite(OWLUnitTests.class);

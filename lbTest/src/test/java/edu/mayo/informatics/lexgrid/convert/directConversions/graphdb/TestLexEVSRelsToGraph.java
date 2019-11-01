@@ -23,15 +23,15 @@ public class TestLexEVSRelsToGraph {
 	@Test
 	public void testGetSupportedAssociationNamesForScheme() {
 		List<String> rels = graphRels
-				.getSupportedAssociationNamesForScheme("http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.05b");
+				.getSupportedAssociationNamesForScheme("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		rels.stream().forEach(x -> System.out.println(x));
-		assertEquals(rels.size(), 128);
+		assertEquals(rels.size(), 61);
 	}
 
 	@Test
 	public void testGetEdgesForAssociationName() {
 		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("subClassOf",
-				"http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "18.05b");
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		assertTrue(triples != null);
 		assertTrue(triples.size() > 0);
 		// Have anonymous nodes been removed?
@@ -43,7 +43,8 @@ public class TestLexEVSRelsToGraph {
 	public void testNormaliseGraphNames(){
 		String notNormalName = " _this isn't normal ";
 		String result = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(notNormalName);
-		assertEquals( "this_isn't_normal", result);
+		System.out.println("RESULT:"+ result);
+		assertEquals( "this_isn_t_normal", result);
 	}
 	
 	@Test

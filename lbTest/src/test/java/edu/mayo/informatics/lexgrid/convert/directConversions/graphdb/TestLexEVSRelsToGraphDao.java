@@ -12,7 +12,6 @@ import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.LexVertex;
@@ -33,11 +32,9 @@ public class TestLexEVSRelsToGraphDao {
 	public static void setUp() throws Exception {
 		graphRels = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()
 				.getRels2graph();
-		LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()
-				.loadGraphsForTerminologyURIAndVersion("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		lbs = LexBIGServiceImpl.defaultInstance();
 	}
-
+	
 	@Test
 	public void testGetSupportedAssociationNamesForScheme() {
 		List<String> rels = graphRels
@@ -114,13 +111,13 @@ public class TestLexEVSRelsToGraphDao {
 	
 	@Test
 	public void testGetDataBaseConnectionForURIandVersion(){
-	ArangoDatabase db = graphRels.
-			getDataBaseConnectionForScheme(
-					"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-	assertNotNull(db);
-	assertTrue(db.getAccessibleDatabases().stream().anyMatch(z -> z.equals("owl2lexevs")));
-	db.getCollections().stream().map(x -> x.getName()).forEach(System.out::println);
-	assertTrue(db.getCollections().stream().anyMatch(x -> x.getName().equals("E_subClassOf")));
+		ArangoDatabase db = graphRels.
+				getDataBaseConnectionForScheme(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		assertNotNull(db);
+		assertTrue(db.getAccessibleDatabases().stream().anyMatch(z -> z.equals("owl2lexevs")));
+		db.getCollections().stream().map(x -> x.getName()).forEach(System.out::println);
+		assertTrue(db.getCollections().stream().anyMatch(x -> x.getName().equals("E_subClassOf")));
 	}
 	
 	
@@ -151,10 +148,5 @@ public class TestLexEVSRelsToGraphDao {
 		assertNotNull(version);
 		assertEquals("0.1.5", version);
 	}
-	
-	@AfterClass
-	public static void after(){
-		graphRels.getGraphSourceMgr().getDataSource("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5").dropGraphsAndDatabaseForDataSource();
-	}
-	
+		
 }
