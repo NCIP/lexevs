@@ -37,12 +37,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
      */
     private static final long serialVersionUID = -2869847921528174582L;
 
-//    private static final String TARGET_OF = "outBound";
-//    private static final String SOURCE_OF = "inBound";
-    
-   // LexEVSSpringRestClientImpl lexClientService;
 
-    private LexEVSSpringRestClientImpl getGraphClientService(String url){
+    LexEVSSpringRestClientImpl getGraphClientService(String url){
       return  new LexEVSSpringRestClientImpl(url); 
     }
 
@@ -198,7 +194,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         try{            
             ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
             Map<String, List<String>> map = Stream
-                    .of(list).map(x->x.getCode())
+                    .of(list)
+                    .map(x->x.getCode())
                     .collect(Collectors
                             .toMap(
                                     Function.identity(), 

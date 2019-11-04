@@ -1,6 +1,5 @@
 package org.lexevs.dao.database.graph.rest.client;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -77,10 +76,11 @@ public class LexEVSSpringRestClientImpl {
 		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getVertexesForGraphNode( 
 				"http://localhost:8080/graph-resolve", GET_OUTBOUND, "NCI_Thesaurus", "subClassOf", "C12434")
  		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
-//		new LexEVSSpringRestClientImpl().getInBoundForGraphNode(
-//				"http://localhost:8080/graph-resolve", "NCI_Thesaurus", "subClassOf", "C12434")
-// 		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
-//		
+		
+		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getInBoundForGraphNode(
+				"http://localhost:8080/graph-resolve", "NCI_Thesaurus", "subClassOf", "C12434")
+ 		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
+		
 		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getOutBoundForGraphNode(
 				"http://localhost:8080/graph-resolve", "NCI_Thesaurus", "subClassOf", "C61410")
  		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));

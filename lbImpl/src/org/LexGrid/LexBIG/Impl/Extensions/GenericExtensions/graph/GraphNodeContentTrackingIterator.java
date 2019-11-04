@@ -43,7 +43,7 @@ public class GraphNodeContentTrackingIterator implements Iterator<ConceptReferen
     }
     
     public int getNumberRemaining(){
-        return inCachePosition;
+        return cache.size() - inCachePosition;
     }
     
     public int getTotalCacheSize(){
