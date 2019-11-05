@@ -3,7 +3,10 @@ package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -166,6 +169,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     .flatMap(y -> y.stream())
                     .map(z -> 
                             Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+                  //Stateful filtering where filter calls distinctByProperty once and predicate.test thereafter
+                    .filter(distinctByProperty(ConceptReference::getCode))
                     .collect(Collectors.toList());
             }
             if(isGetSourceOF(direction)){
@@ -179,6 +184,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                                 .flatMap(y -> y.stream())
                                 .map(z -> 
                                         Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+                                //Stateful filtering where filter calls distinctByProperty once and predicate.test thereafter
+                                .filter(distinctByProperty(ConceptReference::getCode))
                                 .collect(Collectors.toList());
             }
         } catch (LBInvocationException | LBParameterException e) {
@@ -188,6 +195,13 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return null;
     }
     
+    private <T> Predicate<T> distinctByProperty(Function<? super T, ?> getProperty) {
+        Set<Object> exists = ConcurrentHashMap.newKeySet();
+        return t -> exists.add(getProperty.apply(t));
+    }
+
+
+
     private List<ConceptReference> getConceptReferenceListForAllAssociations(AbsoluteCodingSchemeVersionReference ref,
             Direction direction, CodedNodeSet set, String url) {
         LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
@@ -214,6 +228,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     .map(z -> 
                           Constructors
                               .createConceptReference(z.getCode(), z.getNamespace()))
+                  //Stateful filtering where filter calls distinctByProperty once and predicate.test thereafter
+                    .filter(distinctByProperty(ConceptReference::getCode))
                     .collect(Collectors.toList());
         }
         if(isGetSourceOF(direction)){
@@ -229,6 +245,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
              .flatMap(y -> y.stream())                                
              .map(z -> 
                     Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+           //Stateful filtering where filter calls distinctByProperty once and predicate.test thereafter
+             .filter(distinctByProperty(ConceptReference::getCode))
              .collect(Collectors.toList());
         }    
         } catch (LBInvocationException | LBParameterException e) {
