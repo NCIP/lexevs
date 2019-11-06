@@ -321,12 +321,12 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetConceptReferenceListForCodeAndAssociationSourceOF(){
+	public void testGetConceptReferenceListForCodeAndAssociationTargetOF(){
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
 				ref, 
 				"gene_related_to_disease", 
-				Direction.SOURCE_OF, 
+				Direction.TARGET_OF, 
 				"NeoplasticDisease", 
 				url);
 		assertNotNull(refs);
@@ -341,7 +341,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
 				ref, 
 				"Concept_In_Subset", 
-				Direction.SOURCE_OF, 
+				Direction.TARGET_OF, 
 				"C48323", 
 				url);
 		assertNotNull(refs);
@@ -353,7 +353,61 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetResolvedConceptReferenceForContainsName(){
+	public void testGetConceptReferenceListForCodeAndAssociationTargetOfB(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
+				ref, 
+				"subClassOf", 
+				Direction.TARGET_OF, 
+				"Patient", 
+				url);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientWalkingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HealthyPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("CancerPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickCancerPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("TotalPerson")));
+	}
+	
+	@Test
+	public void testGetConceptReferenceListForCodeAndAssociationSourceOfB(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
+				ref, 
+				"subClassOf", 
+				Direction.SOURCE_OF, 
+				"Patient", 
+				url);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientWalkingAround")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HealthyPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("CancerPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("VerySickPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickCancerPatient")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("TotalPerson")));
+	}
+	
+	@Test
+	public void testGetResolvedConceptReferenceForContainsProperty(){
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<ResolvedConceptReference> refs = ngr.getCandidateConceptReferencesForTextAndAssociation(
 				ref, 
@@ -367,6 +421,22 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
 		
+	}
+	
+	@Test
+	public void testGetResolvedConceptReferenceForLuceneProperty(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<ResolvedConceptReference> refs = ngr.getCandidateConceptReferencesForTextAndAssociation(
+				ref, 
+				"subClassOf", 
+				"Patient", 
+				AlgorithmMatch.LUCENE, 
+				ModelMatch.PROPERTY, 
+				url);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
 	}
 
 

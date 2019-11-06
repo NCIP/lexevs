@@ -275,7 +275,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                 .collect(Collectors.toList());
         } else{
             return lexClientService
-                    .getInBoundForGraphNode(
+                    .getOutBoundForGraphNode(
                         lexClientService.getBaseUrl(), 
                         getNormalizedDbNameForTermServiceIdentifiers(reference),
                         associationName, 
