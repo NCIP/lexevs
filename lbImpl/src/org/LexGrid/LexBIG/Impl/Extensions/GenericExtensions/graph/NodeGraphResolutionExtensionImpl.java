@@ -159,6 +159,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         try {
             ResolvedConceptReference[] list = getValidatedList(ref, associationName, set);
             if(isGetTargetOF(direction)){
+                //We are creating a map from an entity code to a list of vertexes
+                //and eventually combining that group of lists to single list of distinct vertexes
             return Stream.of(list)
             .map(x -> lexClientService
                     .getOutBoundForGraphNode(
@@ -174,6 +176,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     .collect(Collectors.toList());
             }
             if(isGetSourceOF(direction)){
+                //We are creating a map from an entity code to a list of vertexes
+                //and eventually combining that group of lists to single list of distinct vertexes
                 return Stream.of(list)
                         .map(x -> lexClientService
                                 .getInBoundForGraphNode(
@@ -189,20 +193,21 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                                 .collect(Collectors.toList());
             }
         } catch (LBInvocationException | LBParameterException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            new RuntimeException("Calls to LexEVS have failed in an unexpected way: ", e);
         }
         return null;
     }
     
-    private <T> Predicate<T> distinctByProperty(Function<? super T, ?> getProperty) {
+    // A filter by property to be called once to create the predicate, which can
+    // then be used to test given property values for duplicates
+    <T> Predicate<T> distinctByProperty(Function<? super T, ?> getProperty) {
         Set<Object> exists = ConcurrentHashMap.newKeySet();
         return t -> exists.add(getProperty.apply(t));
     }
 
 
 
-    private List<ConceptReference> getConceptReferenceListForAllAssociations(AbsoluteCodingSchemeVersionReference ref,
+    protected List<ConceptReference> getConceptReferenceListForAllAssociations(AbsoluteCodingSchemeVersionReference ref,
             Direction direction, CodedNodeSet set, String url) {
         LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
         try{            
@@ -250,7 +255,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
              .collect(Collectors.toList());
         }    
         } catch (LBInvocationException | LBParameterException e) {
-            e.printStackTrace();
+            new RuntimeException("Calls to LexEVS have failed in an unexpected way: ", e);
         }
         return null;
     }
@@ -258,31 +263,23 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
     @Override
     public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
-            AbsoluteCodingSchemeVersionReference reference,
-            String associationName, 
-            Direction direction, 
-            String entityCode, 
-            String url) {
+            AbsoluteCodingSchemeVersionReference reference, String associationName, Direction direction,
+            String entityCode, String url) {
         LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
-        if(isGetTargetOF(direction)){
-        return lexClientService
-        .getInBoundForGraphNode(
-            lexClientService.getBaseUrl(), 
-            getNormalizedDbNameForTermServiceIdentifiers(reference),
-            associationName, 
-            entityCode).stream().map(z -> 
-            Constructors.createConceptReference(z.getCode(), z.getNamespace()))
-                .collect(Collectors.toList());
-        } else{
+        if (isGetTargetOF(direction)) {
             return lexClientService
-                    .getOutBoundForGraphNode(
-                        lexClientService.getBaseUrl(), 
-                        getNormalizedDbNameForTermServiceIdentifiers(reference),
-                        associationName, 
-                        entityCode).stream().map(z -> 
-                        Constructors.createConceptReference(z.getCode(), z.getNamespace()))
-                            .collect(Collectors.toList());
-            
+                    .getInBoundForGraphNode(lexClientService.getBaseUrl(),
+                            getNormalizedDbNameForTermServiceIdentifiers(reference), associationName, entityCode)
+                    .stream()
+                    .map(z -> Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+                    .collect(Collectors.toList());
+        } else {
+            return lexClientService
+                    .getOutBoundForGraphNode(lexClientService.getBaseUrl(),
+                            getNormalizedDbNameForTermServiceIdentifiers(reference), associationName, entityCode)
+                    .stream()
+                    .map(z -> Constructors.createConceptReference(z.getCode(), z.getNamespace()))
+                    .collect(Collectors.toList());
         }
     }
 
@@ -310,7 +307,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     }
 
 
-    private ResolvedConceptReference[] getValidatedList(
+    ResolvedConceptReference[] getValidatedList(
             AbsoluteCodingSchemeVersionReference ref, 
             String association, 
             CodedNodeSet set) throws LBInvocationException, LBParameterException {
@@ -341,7 +338,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return ServiceUtility.isValidNodeForAssociation(ref, entityCode, associationName);
     }
     
-    private List<String> getValidAssociationsForTargetOrSourceOf(AbsoluteCodingSchemeVersionReference ref, String entityCode){
+    List<String> getValidAssociationsForTargetOrSourceOf(AbsoluteCodingSchemeVersionReference ref, String entityCode){
         return ServiceUtility.getValidAssociationsForTargetOrSource(ref, entityCode);
     }
     

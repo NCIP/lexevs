@@ -6,17 +6,22 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.AlgorithmMatch;
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.Direction;
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.ModelMatch;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
@@ -537,6 +542,146 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
 	}
-
-
+	
+	
+	@Test
+	public void testGetAssnsForRelandCode(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> assns = ngr.getValidAssociationsForTargetOrSourceOf(ref, "BRaf");
+		assertNotNull(assns);
+		assertTrue(assns.size() > 0);
+		assertEquals(4, assns.size());
+		assertTrue(assns.stream().anyMatch(x -> x.equals("gene_expressed_in")));
+		assertTrue(assns.stream().anyMatch(x -> x.equals("subClassOf")));
+		assertTrue(assns.stream().anyMatch(x -> x.equals("equivalentClass")));
+		assertTrue(assns.stream().anyMatch(x -> x.equals("disjointUnion")));
+		
+	}
+	
+	@Test
+	public void testGetAssnsForRelandCodeOneDifferent(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> assns = ngr.getValidAssociationsForTargetOrSourceOf(ref, "Ras");
+		assertNotNull(assns);
+		assertTrue(assns.size() > 0);
+		assertEquals(4, assns.size());
+		assertTrue(assns.stream().anyMatch(x -> x.equals("disjointUnion")));
+		assertTrue(assns.stream().anyMatch(x -> x.equals("subClassOf")));
+		assertTrue(assns.stream().anyMatch(x -> x.equals("equivalentClass")));
+		assertTrue(assns.stream().anyMatch(x -> x.equals("has_physical_location")));
+		
+	}
+	
+	@Test
+	public void testGetAssnsForRelandCodeOneOnly(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> assns = ngr.getValidAssociationsForTargetOrSourceOf(ref, "C61410");
+		assertNotNull(assns);
+		assertTrue(assns.size() > 0);
+		assertEquals(1, assns.size());
+		assertFalse(assns.stream().anyMatch(x -> x.equals("disjointUnion")));
+		assertTrue(assns.stream().anyMatch(x -> x.equals("subClassOf")));
+		assertFalse(assns.stream().anyMatch(x -> x.equals("equivalentClass")));
+		assertFalse(assns.stream().anyMatch(x -> x.equals("has_physical_location")));
+		assertFalse(assns.stream().anyMatch(x -> x.equals("non_existent_rel")));
+	}
+	
+	@Test
+	public void testIsValidNodeForAssnOne(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		assertTrue(ngr.isValidNodeForAssociation(ref, "C61410", "subClassOf"));
+		assertFalse(ngr.isValidNodeForAssociation(ref, "C61410", "disjointUnion"));
+		assertFalse(ngr.isValidNodeForAssociation(ref, "C61410", "equivalentClass"));		
+	}
+	
+	@Test
+	public void testIsValidNodeForAssnMultiple(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		assertTrue(ngr.isValidNodeForAssociation(ref, "Ras", "subClassOf"));
+		assertTrue(ngr.isValidNodeForAssociation(ref, "Ras", "disjointUnion"));
+		assertTrue(ngr.isValidNodeForAssociation(ref, "Ras", "equivalentClass"));	
+		assertTrue(ngr.isValidNodeForAssociation(ref, "Ras", "has_physical_location"));
+		assertFalse(ngr.isValidNodeForAssociation(ref, "Ras", "gene_expressed_in"));
+		assertFalse(ngr.isValidNodeForAssociation(ref, "Ras", "non_existent_rel"));
+	}
+	
+	@Test
+	public void testGetDistinctByProperty(){
+		String[] strings = new String[]{"cat", "dog", "rat", "chicken", "horse", "bat"};
+		List<String> filteredList = 
+		Stream.of(strings).filter(ngr.distinctByProperty(String::length)).collect(Collectors.toList());
+		assertTrue(filteredList.size() > 0);
+		assertEquals(3, filteredList.size());
+		assertTrue(filteredList.contains("cat"));
+		assertFalse(filteredList.contains("dog"));
+		assertFalse(filteredList.contains("rat"));
+		assertTrue(filteredList.contains("chicken"));
+		assertTrue(filteredList.contains("horse"));
+		assertFalse(filteredList.contains("bat"));	
+	}
+	
+	@Test
+	public void testGetConceptReferenceListForValidatedAssociation() throws LBException{
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.CODE, AlgorithmMatch.EXACT_MATCH, "C61410");
+		List<ConceptReference> refs = ngr.getConceptReferenceListForValidatedAssociation(ref, "subClassOf", Direction.TARGET_OF, set, url);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertEquals("C54443", refs.get(0).getCode());
+	}
+	
+	@Test
+	public void testIsValidAssociation() throws LBParameterException{
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		assertTrue(ngr.isValidAssociation("subClassOf", ref));
+		assertTrue(ngr.isValidAssociation("AllDifferent", ref));
+		assertFalse(ngr.isValidAssociation("FalseAssociation", ref));
+	}
+	
+	@Test
+	public void testGetValidatedList() throws LBException{
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		ResolvedConceptReference[] refs = ngr.getValidatedList(ref, "subClassOf", set);
+		assertNotNull(refs);
+		assertTrue(refs.length > 0);
+		assertTrue(Stream.of(refs).anyMatch(x -> x.getCode().equals("Patient")));
+		assertTrue(Stream.of(refs).anyMatch(x -> x.getCode().equals("PatientWithCold")));
+	}
+	
+	@Test
+	public void testGetValidatedListEmpty() throws LBException{
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		ResolvedConceptReference[] refs = ngr.getValidatedList(ref, "AllDifferent", set);
+		assertNotNull(refs);
+		assertFalse(refs.length > 0);
+	}
+	
+	@Test
+	public void testGetConceptReferenceListForAllAssociations() throws LBException{
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set, url);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertEquals(11, refs.size());
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("patient_has_prognosis")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+	}
+	
+	@Test
+	public void testGetConceptReferenceListForAllAssociationsLeaf() throws LBException{
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "PatientWithCold");
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set, url);
+		assertNotNull(refs);
+		assertFalse(refs.size() > 0);
+	}
 }
