@@ -53,6 +53,7 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -774,6 +775,12 @@ public class ServiceUtility {
                         ref.getCodingSchemeVersion(), 
                         entityCode);
     }
-
-   
+    
+    public static String normalizeGraphandGraphDatabaseName(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException{
+        return GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(LexEvsServiceLocator
+            .getInstance()
+            .getSystemResourceService()
+            .getInternalCodingSchemeNameForUserCodingSchemeName(
+                    ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
+    }
 }

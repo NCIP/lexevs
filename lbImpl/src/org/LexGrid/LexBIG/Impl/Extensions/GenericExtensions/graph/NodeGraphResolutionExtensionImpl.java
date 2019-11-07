@@ -28,17 +28,35 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.naming.SupportedAssociation;
 import org.lexevs.dao.database.graph.rest.client.LexEVSSpringRestClientImpl;
 import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.lexevs.logging.LoggerFactory;
 
 public class NodeGraphResolutionExtensionImpl extends AbstractExtendable implements NodeGraphResolutionExtension {
 
+    
     /**
      * 
      */
     private static final long serialVersionUID = -2869847921528174582L;
+    
+    
+    public LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
+    
+    public void logAndThrowRuntimeException(String message){
+        getLogger().error(message);
+        throw new RuntimeException(message);
+    }
+    
+    public void logAndThrowRuntimeException(String message, Exception e){
+        getLogger().error(message);
+        throw new RuntimeException(message, e);
+    }
 
 
     LexEVSSpringRestClientImpl getGraphClientService(String url){
@@ -59,7 +77,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                 return new GraphNodeContentTrackingIterator(getConceptReferenceListForAllAssociations(reference, Direction.TARGET_OF, set, url));
             }
             if(!this.isValidAssociation(associationName, reference))
-            {throw new RuntimeException("Not a valid association name: " 
+            {
+                logAndThrowRuntimeException("Not a valid association name: " 
                     + associationName 
                     + " CodingScheme " 
                     + reference.getCodingSchemeURN() 
@@ -70,13 +89,14 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             return new GraphNodeContentTrackingIterator(getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.TARGET_OF, set, url));
            
         } catch (LBException e) {
-            throw new RuntimeException("Not able to resolve an outgoing edge graph for this coding scheme and graph "
+            logAndThrowRuntimeException("Not able to resolve an outgoing edge graph for this coding scheme and graph "
                     + associationName 
                     + " CodingScheme " 
                     + reference.getCodingSchemeURN() 
                     + " version " 
-                    + reference.getCodingSchemeVersion());     
+                    + reference.getCodingSchemeVersion(), e);     
         }
+        return null;
     }
 
     @Override
@@ -92,7 +112,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             return new GraphNodeContentTrackingIterator(getConceptReferenceListForAllAssociations(reference, Direction.SOURCE_OF, set, url));
         }
         if(!this.isValidAssociation(associationName, reference))
-        {throw new RuntimeException("Not a valid association name: " 
+        {logAndThrowRuntimeException("Not a valid association name: " 
                 + associationName 
                 + " CodingScheme " 
                 + reference.getCodingSchemeURN() 
@@ -103,13 +123,14 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return new GraphNodeContentTrackingIterator(getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.SOURCE_OF, set, url));
        
     } catch (LBException e) {
-        throw new RuntimeException("Not able to resolve an incoming edge graph for this coding scheme and graph "
+        logAndThrowRuntimeException("Not able to resolve an incoming edge graph for this coding scheme and graph "
                 + associationName 
                 + " CodingScheme " 
                 + reference.getCodingSchemeURN() 
                 + " version " 
-                + reference.getCodingSchemeVersion());     
+                + reference.getCodingSchemeVersion(), e);     
     }
+    return null;
     }
 
     @Override
@@ -193,7 +214,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                                 .collect(Collectors.toList());
             }
         } catch (LBInvocationException | LBParameterException e) {
-            new RuntimeException("Calls to LexEVS have failed in an unexpected way: ", e);
+            logAndThrowRuntimeException("Calls to LexEVS have failed in an unexpected way: ", e);
         }
         return null;
     }
@@ -224,7 +245,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     .flatMap(entry -> entry.getValue()
                         .stream()
                         .map(x -> lexClientService
-                                .getInBoundForGraphNode(
+                                .getOutBoundForGraphNode(
                                     lexClientService.getBaseUrl(), 
                                     getNormalizedDbNameForTermServiceIdentifiers(ref),
                                     x, 
@@ -242,7 +263,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
              .flatMap(entry -> entry.getValue()
                      .stream()
                      .map(x -> lexClientService
-                             .getOutBoundForGraphNode(
+                             .getInBoundForGraphNode(
                                      lexClientService.getBaseUrl(), 
                                      getNormalizedDbNameForTermServiceIdentifiers(ref),
                                      x, 
@@ -255,7 +276,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
              .collect(Collectors.toList());
         }    
         } catch (LBInvocationException | LBParameterException e) {
-            new RuntimeException("Calls to LexEVS have failed in an unexpected way: ", e);
+            logAndThrowRuntimeException("Calls to LexEVS have failed in an unexpected way: ", e);
         }
         return null;
     }
@@ -268,14 +289,14 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
         if (isGetTargetOF(direction)) {
             return lexClientService
-                    .getInBoundForGraphNode(lexClientService.getBaseUrl(),
+                    .getOutBoundForGraphNode(lexClientService.getBaseUrl(),
                             getNormalizedDbNameForTermServiceIdentifiers(reference), associationName, entityCode)
                     .stream()
                     .map(z -> Constructors.createConceptReference(z.getCode(), z.getNamespace()))
                     .collect(Collectors.toList());
         } else {
             return lexClientService
-                    .getOutBoundForGraphNode(lexClientService.getBaseUrl(),
+                    .getInBoundForGraphNode(lexClientService.getBaseUrl(),
                             getNormalizedDbNameForTermServiceIdentifiers(reference), associationName, entityCode)
                     .stream()
                     .map(z -> Constructors.createConceptReference(z.getCode(), z.getNamespace()))
@@ -293,16 +314,16 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             set = this.getCodedNodeSetForScheme(reference);
             set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
             ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
-            return Stream
-            .of(list).filter(
+            return Stream.of(list)
+            .filter(
                     x -> isValidNodeForAssociation(reference, x.getCode(), 
                             associationName))
             .collect(Collectors.toList());
         } catch (LBException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logAndThrowRuntimeException("Something went wrong while querying for "
+                    + "candidate matches for:  " + textMatch + " associated with: "
+                    + associationName, e);
         }
-
         return null;
     }
 
@@ -321,12 +342,10 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
 
     private boolean isGetSourceOF(Direction direction) {
-        // TODO Auto-generated method stub
         return direction.equals(Direction.SOURCE_OF);
     }
 
     private boolean isGetTargetOF(Direction direction) {
-        // TODO Auto-generated method stub
         return direction.equals(Direction.TARGET_OF);
     }
 
@@ -345,24 +364,13 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
     private String getNormalizedDbNameForTermServiceIdentifiers(AbsoluteCodingSchemeVersionReference ref){
         try {
-            return GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(LexEvsServiceLocator
-                    .getInstance()
-                    .getSystemResourceService()
-                    .getInternalCodingSchemeNameForUserCodingSchemeName(
-                            ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
+            return ServiceUtility.normalizeGraphandGraphDatabaseName(ref);
         } catch (LBParameterException e) {
-            throw new RuntimeException("Unable to retrieve and normalize database name for uri :" 
+            logAndThrowRuntimeException("Unable to retrieve and normalize database name for uri: " 
                     + ref.getCodingSchemeURN()
-                    + " version: " + ref.getCodingSchemeVersion());
+                    + " version: " + ref.getCodingSchemeVersion(), e);
         }
+        return null;
     }
-    
-
-    
-    public static void main(String ...args){
-
-    }
-
-
 
 }

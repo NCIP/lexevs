@@ -60,13 +60,13 @@ public class NodeGraphResolutionExtensionTest {
 		assertFalse(ngr.isValidNodeForAssociation(ref, "C19448", "subClassOf"));
 	}
 	@Test
-	public void testInGoingAllAssnSourceOfCode() {
+	public void testInGoingAllAssnTargetOfCode() {
 		AbsoluteCodingSchemeVersionReference ref = Constructors
 				.createAbsoluteCodingSchemeVersionReference(
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
 						"0.1.5");
 		GraphNodeContentTrackingIterator  itr = (GraphNodeContentTrackingIterator) ngr.
-				getConceptReferencesForTextSearchAndAssociationSourceOf(
+				getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				null, 
 				"Brca1", 
@@ -365,12 +365,12 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetConceptReferenceListForCodeAndAssociationTargetOF(){
+	public void testGetConceptReferenceListForCodeAndAssociationSourceOF(){
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
 				ref, 
 				"gene_related_to_disease", 
-				Direction.TARGET_OF, 
+				Direction.SOURCE_OF, 
 				"NeoplasticDisease", 
 				url);
 		assertNotNull(refs);
@@ -380,12 +380,12 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetConceptReferenceListForCodeAndAssociationTargetOf(){
+	public void testGetConceptReferenceListForCodeAndAssociationSourceOf(){
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
 				ref, 
 				"Concept_In_Subset", 
-				Direction.TARGET_OF, 
+				Direction.SOURCE_OF, 
 				"C48323", 
 				url);
 		assertNotNull(refs);
@@ -397,12 +397,12 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetConceptReferenceListForCodeAndAssociationSourceOf(){
+	public void testGetConceptReferenceListForCodeAndAssociationTargetOf(){
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
 				ref, 
 				"Concept_In_Subset", 
-				Direction.SOURCE_OF, 
+				Direction.TARGET_OF, 
 				"C48323", 
 				url);
 		assertNotNull(refs);
@@ -441,12 +441,12 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetConceptReferenceListForCodeAndAssociationTargetOfB(){
+	public void testGetConceptReferenceListForCodeAndAssociationSourceOfB(){
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
 				ref, 
 				"subClassOf", 
-				Direction.TARGET_OF, 
+				Direction.SOURCE_OF, 
 				"Patient", 
 				url);
 		assertNotNull(refs);
@@ -468,12 +468,12 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetConceptReferenceListForCodeAndAssociationSourceOfB(){
+	public void testGetConceptReferenceListForCodeAndAssociationTargetOfB(){
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<ConceptReference> refs = ngr.getConceptReferenceListResolvedFromGraphForEntityCode(
 				ref, 
 				"subClassOf", 
-				Direction.SOURCE_OF, 
+				Direction.TARGET_OF, 
 				"Patient", 
 				url);
 		assertNotNull(refs);
@@ -662,17 +662,33 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetConceptReferenceListForAllAssociations() throws LBException{
+	public void testGetConceptReferenceListForAllAssociationsSource() throws LBException{
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set, url);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.SOURCE_OF, set, url);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals(11, refs.size());
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("patient_has_prognosis")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+	}
+	
+	@Test
+	public void testGetConceptReferenceListForAllAssociationsTarget() throws LBException{
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set, url);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertEquals(5, refs.size());
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Cold")));
 	}
 	
 	@Test
