@@ -59,6 +59,14 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	
 	
 	/**
+	 * @param url service url for REST service
+	 * 
+	 * This must be called after constructor to initialize service
+	 */
+	public void init(String url);
+	
+	
+	/**
 	 * @param reference The minimal reference to the coding scheme
 	 * @param associationName The relation declaration for this query
 	 * @param textMatch Text for Lucene match
@@ -162,14 +170,6 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 * database naming convention.
 	 */
 	public String getNormalizedDbNameForTermServiceIdentifiers(AbsoluteCodingSchemeVersionReference ref);
-	
-	
-	/**
-	 * @param url service url for REST service
-	 * 
-	 * This must be called after constructor to initialize service
-	 */
-	public void init(String url);
 
 
 }
