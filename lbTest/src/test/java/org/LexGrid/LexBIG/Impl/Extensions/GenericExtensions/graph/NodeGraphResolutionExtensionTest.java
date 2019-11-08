@@ -683,7 +683,6 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testGetGraphNamesForDatabaseName(){
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<String> list = ngr.getGraphsForCodingSchemeName("owl2lexevs");
 		assertNotNull(list);
 		assertTrue(list.size() > 0);
