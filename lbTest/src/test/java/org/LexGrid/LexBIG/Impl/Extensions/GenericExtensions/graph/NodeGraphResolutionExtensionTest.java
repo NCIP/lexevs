@@ -672,4 +672,28 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(refs);
 		assertFalse(refs.size() > 0);
 	}
+	
+	@Test
+	public void testGetSystemMetaRepresentationOfDatabases(){
+		List<String> list = ngr.getTerminologyGraphDatabaseList();
+		assertNotNull(list);
+		assertTrue(list.size() > 0);
+		assertTrue(list.stream().anyMatch(x -> x.equals("owl2lexevs")));
+	}
+	
+	@Test
+	public void testGetGraphNamesForDatabaseName(){
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> list = ngr.getGraphsForCodingSchemeName("owl2lexevs");
+		assertNotNull(list);
+		assertTrue(list.size() > 0);
+		assertTrue(list.stream().anyMatch(x -> x.equals("subClassOf")));
+		assertTrue(list.stream().anyMatch(x -> x.equals("subPropertyOf")));
+		assertTrue(list.stream().anyMatch(x -> x.equals("AssociationURI")));
+		assertTrue(list.stream().anyMatch(x -> x.equals("Concept_In_Subset")));
+		assertTrue(list.stream().anyMatch(x -> x.equals("AllDifferent")));
+		assertTrue(list.stream().anyMatch(x -> x.equals("has_grain")));
+		assertTrue(list.stream().anyMatch(x -> x.equals("IAO_0000116")));
+		assertTrue(list.stream().anyMatch(x -> x.equals("IAO_0000136")));
+	}
 }

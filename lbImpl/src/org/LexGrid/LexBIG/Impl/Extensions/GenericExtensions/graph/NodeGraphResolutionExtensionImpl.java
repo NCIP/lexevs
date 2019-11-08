@@ -420,7 +420,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     }
 
     @Override
-    public List<String> getGraphsForTerminologyFormalName(String name) {
+    public List<String> getGraphsForCodingSchemeName(String name) {
         return getGraphClientService().getGraphDatabaseMetadata(name).getGraphs();
     }
 

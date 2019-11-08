@@ -156,7 +156,7 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 * This returns a list of graph names suitable for use in querying the graph database for the named terminology.
 	 * These names should be a slightly modified version of the association name in LexEVS
 	 */
-	public List<String> getGraphsForTerminologyFormalName(String name);	
+	public List<String> getGraphsForCodingSchemeName(String name);	
 	
 	/**
 	 * @param ref uri and version for a terminology in the LexEVS service
