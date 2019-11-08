@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,6 +36,7 @@ public class NodeGraphResolutionExtensionTest {
 		ngr = (NodeGraphResolutionExtensionImpl) LexBIGServiceImpl
 				.defaultInstance()
 				.getGenericExtension("NodeGraphResolution");
+		ngr.init(url);
 	}
 
 	
@@ -71,8 +71,7 @@ public class NodeGraphResolutionExtensionTest {
 				null, 
 				"Brca1", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE, 
-				url);
+				ModelMatch.CODE);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(3, itr.getTotalCacheSize());
@@ -89,8 +88,7 @@ public class NodeGraphResolutionExtensionTest {
 				"patient_has_prognosis", 
 				"CancerPatient", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME);
 		assertNotNull(itr);
 		assertFalse(itr.hasNext());
 	}
@@ -103,8 +101,7 @@ public class NodeGraphResolutionExtensionTest {
 				"patient_has_prognosis", 
 				"CancerPatient", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(2, itr.getTotalCacheSize());
@@ -119,8 +116,7 @@ public class NodeGraphResolutionExtensionTest {
 				"patient_has_prognosis", 
 				"PrognosisBad", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME);
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(2, itr.getTotalCacheSize());
@@ -136,8 +132,7 @@ public class NodeGraphResolutionExtensionTest {
 				"patient_has_prognosis", 
 				"PrognosisBad", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME);
 		assertNotNull(itr);
 		assertFalse(itr.hasNext());
 		
@@ -145,14 +140,13 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testOutGoingOnlyContainsName2() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"); 
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"Concept_In_Subset", 
 				"black", 
 				AlgorithmMatch.CONTAINS, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertNotSame(5, itr.getTotalCacheSize());
@@ -170,8 +164,7 @@ public class NodeGraphResolutionExtensionTest {
 				"Concept_In_Subset", 
 				"black", 
 				AlgorithmMatch.CONTAINS, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(4, itr.getTotalCacheSize());
@@ -190,8 +183,7 @@ public class NodeGraphResolutionExtensionTest {
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
 				AlgorithmMatch.CONTAINS, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME );
 		assertNotNull(itr);
 		assertFalse(itr.hasNext());
 		
@@ -205,8 +197,7 @@ public class NodeGraphResolutionExtensionTest {
 				"Concept_In_Subset", 
 				"black", 
 				AlgorithmMatch.LUCENE, 
-				ModelMatch.PROPERTY, 
-				url);
+				ModelMatch.PROPERTY );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertNotSame(3, itr.getTotalCacheSize());
@@ -223,8 +214,7 @@ public class NodeGraphResolutionExtensionTest {
 				"Concept_In_Subset", 
 				"black", 
 				AlgorithmMatch.CONTAINS, 
-				ModelMatch.PROPERTY, 
-				url);
+				ModelMatch.PROPERTY );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(4, itr.getTotalCacheSize());
@@ -243,8 +233,7 @@ public class NodeGraphResolutionExtensionTest {
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
 				AlgorithmMatch.CONTAINS, 
-				ModelMatch.PROPERTY, 
-				url);
+				ModelMatch.PROPERTY );
 		assertNotNull(itr);
 		assertFalse(itr.hasNext());
 		
@@ -258,8 +247,7 @@ public class NodeGraphResolutionExtensionTest {
 				"Concept_In_Subset", 
 				"C48323", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE, 
-				url);
+				ModelMatch.CODE );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertNotSame(3, itr.getTotalCacheSize());
@@ -276,8 +264,7 @@ public class NodeGraphResolutionExtensionTest {
 				"Concept_In_Subset", 
 				"C48323", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE, 
-				url);
+				ModelMatch.CODE );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(4, itr.getTotalCacheSize());
@@ -296,8 +283,7 @@ public class NodeGraphResolutionExtensionTest {
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE, 
-				url);
+				ModelMatch.CODE );
 		assertNotNull(itr);
 		assertFalse(itr.hasNext());	
 	}
@@ -310,8 +296,7 @@ public class NodeGraphResolutionExtensionTest {
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE, 
-				url);
+				ModelMatch.CODE );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());	
 		assertEquals("SHH", itr.next().getCode());
@@ -327,8 +312,7 @@ public class NodeGraphResolutionExtensionTest {
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
 				AlgorithmMatch.CONTAINS, 
-				ModelMatch.PROPERTY, 
-				url);
+				ModelMatch.PROPERTY );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("NeoplasticDisease")));
@@ -342,8 +326,7 @@ public class NodeGraphResolutionExtensionTest {
 				"Concept_In_Subset", 
 				"black", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.NAME, 
-				url);
+				ModelMatch.NAME );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C48323")));;
@@ -357,8 +340,7 @@ public class NodeGraphResolutionExtensionTest {
 				"Concept_In_Subset", 
 				"C48323", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE, 
-				url);
+				ModelMatch.CODE );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C48323")));;
@@ -371,8 +353,7 @@ public class NodeGraphResolutionExtensionTest {
 				ref, 
 				"gene_related_to_disease", 
 				Direction.SOURCE_OF, 
-				"NeoplasticDisease", 
-				url);
+				"NeoplasticDisease" );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SHH")));
@@ -386,8 +367,7 @@ public class NodeGraphResolutionExtensionTest {
 				ref, 
 				"Concept_In_Subset", 
 				Direction.SOURCE_OF, 
-				"C48323", 
-				url);
+				"C48323" );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C99999")));
@@ -403,8 +383,7 @@ public class NodeGraphResolutionExtensionTest {
 				ref, 
 				"Concept_In_Subset", 
 				Direction.TARGET_OF, 
-				"C48323", 
-				url);
+				"C48323" );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("C99999")));
@@ -421,8 +400,7 @@ public class NodeGraphResolutionExtensionTest {
 				ref, 
 				"AllDifferent", 
 				Direction.SOURCE_OF, 
-				"C48323", 
-				url);
+				"C48323" );
 		assertNotNull(refs);
 		assertFalse(refs.size() > 0);
 	}
@@ -434,8 +412,7 @@ public class NodeGraphResolutionExtensionTest {
 				ref, 
 				"AllDifferent", 
 				Direction.TARGET_OF, 
-				"C48323", 
-				url);
+				"C48323" );
 		assertNotNull(refs);
 		assertFalse(refs.size() > 0);
 	}
@@ -447,8 +424,7 @@ public class NodeGraphResolutionExtensionTest {
 				ref, 
 				"subClassOf", 
 				Direction.SOURCE_OF, 
-				"Patient", 
-				url);
+				"Patient" );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
@@ -474,8 +450,7 @@ public class NodeGraphResolutionExtensionTest {
 				ref, 
 				"subClassOf", 
 				Direction.TARGET_OF, 
-				"Patient", 
-				url);
+				"Patient" );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
@@ -502,8 +477,7 @@ public class NodeGraphResolutionExtensionTest {
 				"subClassOf", 
 				"Patient", 
 				AlgorithmMatch.CONTAINS, 
-				ModelMatch.PROPERTY, 
-				url);
+				ModelMatch.PROPERTY );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
@@ -519,8 +493,7 @@ public class NodeGraphResolutionExtensionTest {
 				"subClassOf", 
 				"Patient", 
 				AlgorithmMatch.LUCENE, 
-				ModelMatch.PROPERTY, 
-				url);
+				ModelMatch.PROPERTY );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
@@ -536,8 +509,7 @@ public class NodeGraphResolutionExtensionTest {
 				"subClassOf", 
 				"Patient", 
 				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE, 
-				url);
+				ModelMatch.CODE );
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
@@ -625,7 +597,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.CODE, AlgorithmMatch.EXACT_MATCH, "C61410");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForValidatedAssociation(ref, "subClassOf", Direction.TARGET_OF, set, url);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForValidatedAssociation(ref, "subClassOf", Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals("C54443", refs.get(0).getCode());
@@ -666,7 +638,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.SOURCE_OF, set, url);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.SOURCE_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals(11, refs.size());
@@ -680,7 +652,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set, url);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals(5, refs.size());
@@ -696,7 +668,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "PatientWithCold");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set, url);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertFalse(refs.size() > 0);
 	}

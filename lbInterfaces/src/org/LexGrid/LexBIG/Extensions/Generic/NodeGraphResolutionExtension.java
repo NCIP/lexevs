@@ -83,7 +83,7 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationSourceOf(
 			AbsoluteCodingSchemeVersionReference reference, 
 			String associationName, String textMatch, 
-			AlgorithmMatch alg, ModelMatch model, String url);
+			AlgorithmMatch alg, ModelMatch model);
 
 	/**
 	 * @param reference The minimal reference to the coding scheme
@@ -107,7 +107,7 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 */
 	public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationTargetOf(
 			AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
-			AlgorithmMatch alg, ModelMatch model, String url);
+			AlgorithmMatch alg, ModelMatch model);
 	
 	/**
 	 * @param reference The minimal reference to the coding scheme
@@ -125,7 +125,7 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 * consistent with the restrictions on properties, codes, and designations which are used in the Coded Node Set interface. No null value parameters are allowed.
 	 */
 	public List<ResolvedConceptReference> getCandidateConceptReferencesForTextAndAssociation(AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
-			AlgorithmMatch alg, ModelMatch model, String url);
+			AlgorithmMatch alg, ModelMatch model);
 	
 	/**
 	 * @param reference The minimal reference to the coding scheme
@@ -139,9 +139,39 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 * The resolution will be done on incoming edges for a Direction of SOURCE_OF and out going edges for a Direction of TARGET_OF.  No parameter values can
 	 * can be null.  
 	 */
-	public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(AbsoluteCodingSchemeVersionReference reference, String associationName, Direction direction, String entityCode,
-			String url);
+	public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(AbsoluteCodingSchemeVersionReference reference, String associationName, Direction direction, String entityCode);
 	
+	
+	/**
+	 * @return a List of normalized database names in the graph service
+	 */
+	public List<String> getTerminologyGraphDatabaseList();
+	
+	/**
+	 * @param name This must be a name either retrieved from the graph database list or normalized using the
+	 * name normalizing function in this interface
+	 * 
+	 * @return A list of association names normalized as graph names for the REST service
+	 * 
+	 * This returns a list of graph names suitable for use in querying the graph database for the named terminology.
+	 * These names should be a slightly modified version of the association name in LexEVS
+	 */
+	public List<String> getGraphsForTerminologyFormalName(String name);	
+	
+	/**
+	 * @param ref uri and version for a terminology in the LexEVS service
+	 * @return String should reliably return a database name that has been normalized for use with arangos
+	 * database naming convention.
+	 */
+	public String getNormalizedDbNameForTermServiceIdentifiers(AbsoluteCodingSchemeVersionReference ref);
+	
+	
+	/**
+	 * @param url service url for REST service
+	 * 
+	 * This must be called after constructor to initialize service
+	 */
+	public void init(String url);
 
 
 }

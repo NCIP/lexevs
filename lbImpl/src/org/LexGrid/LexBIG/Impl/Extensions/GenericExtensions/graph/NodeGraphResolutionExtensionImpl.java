@@ -15,7 +15,6 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
-import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
@@ -25,18 +24,21 @@ import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.naming.SupportedAssociation;
 import org.lexevs.dao.database.graph.rest.client.LexEVSSpringRestClientImpl;
-import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
-import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
 
 public class NodeGraphResolutionExtensionImpl extends AbstractExtendable implements NodeGraphResolutionExtension {
 
+    /**
+     * url is the REST service URL.  It must be initialized by calling init()
+     */
+    String url;
     
     /**
      * 
@@ -53,28 +55,39 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         throw new RuntimeException(message);
     }
     
-    public void logAndThrowRuntimeException(String message, Exception e){
+    public void logAndThrowRuntimeException(
+            String message, 
+            Exception e){
         getLogger().error(message);
         throw new RuntimeException(message, e);
     }
+    
+    @Override
+    public void init(String url){
+        this.url = url;
+    }
 
 
-    LexEVSSpringRestClientImpl getGraphClientService(String url){
+    LexEVSSpringRestClientImpl getGraphClientService(){
       return  new LexEVSSpringRestClientImpl(url); 
     }
 
 
     @Override
     public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationTargetOf(
-            AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
-            AlgorithmMatch alg, ModelMatch model, String url){
+            AbsoluteCodingSchemeVersionReference reference, 
+            String associationName, 
+            String textMatch,
+            AlgorithmMatch alg, 
+            ModelMatch model){
         CodedNodeSet set = null; 
 
         try {
             if(associationName == null){ 
                 set = this.getCodedNodeSetForScheme(reference);
                 set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-                return new GraphNodeContentTrackingIterator(getConceptReferenceListForAllAssociations(reference, Direction.TARGET_OF, set, url));
+                return new GraphNodeContentTrackingIterator(
+                        getConceptReferenceListForAllAssociations(reference, Direction.TARGET_OF, set));
             }
             if(!this.isValidAssociation(associationName, reference))
             {
@@ -86,7 +99,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     + reference.getCodingSchemeVersion());}
             set = this.getCodedNodeSetForScheme(reference);
             set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-            return new GraphNodeContentTrackingIterator(getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.TARGET_OF, set, url));
+            return new GraphNodeContentTrackingIterator(
+                    getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.TARGET_OF, set));
            
         } catch (LBException e) {
             logAndThrowRuntimeException("Not able to resolve an outgoing edge graph for this coding scheme and graph "
@@ -101,15 +115,19 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
     @Override
     public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationSourceOf(
-            AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
-            AlgorithmMatch alg, ModelMatch model, String url) {
+            AbsoluteCodingSchemeVersionReference reference, 
+            String associationName, 
+            String textMatch,
+            AlgorithmMatch alg, 
+            ModelMatch model) {
     CodedNodeSet set = null; 
 
     try {
         if(associationName == null){ 
             set = this.getCodedNodeSetForScheme(reference);
             set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-            return new GraphNodeContentTrackingIterator(getConceptReferenceListForAllAssociations(reference, Direction.SOURCE_OF, set, url));
+            return new GraphNodeContentTrackingIterator(
+                    getConceptReferenceListForAllAssociations(reference, Direction.SOURCE_OF, set));
         }
         if(!this.isValidAssociation(associationName, reference))
         {logAndThrowRuntimeException("Not a valid association name: " 
@@ -120,7 +138,8 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                 + reference.getCodingSchemeVersion());}
         set = this.getCodedNodeSetForScheme(reference);
         set = this.getCodedNodeSetForModelMatch(set, model, alg, textMatch);
-        return new GraphNodeContentTrackingIterator(getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.SOURCE_OF, set, url));
+        return new GraphNodeContentTrackingIterator(
+                getConceptReferenceListForValidatedAssociation(reference, associationName, Direction.SOURCE_OF, set));
        
     } catch (LBException e) {
         logAndThrowRuntimeException("Not able to resolve an incoming edge graph for this coding scheme and graph "
@@ -134,7 +153,9 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     }
 
     @Override
-    protected void doRegister(ExtensionRegistry registry, ExtensionDescription description) throws LBParameterException {
+    protected void doRegister(
+            ExtensionRegistry registry, 
+            ExtensionDescription description) throws LBParameterException {
         registry.registerGenericExtension(description);
     }
 
@@ -151,14 +172,19 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return ed;
     }
     
-    protected CodedNodeSet getCodedNodeSetForScheme(AbsoluteCodingSchemeVersionReference ref) throws LBException{
+    protected CodedNodeSet getCodedNodeSetForScheme(
+            AbsoluteCodingSchemeVersionReference ref) throws LBException{
         return LexBIGServiceImpl.defaultInstance()
                 .getCodingSchemeConcepts(
                         ref.getCodingSchemeURN(), 
                         Constructors.createCodingSchemeVersionOrTagFromVersion(ref.getCodingSchemeVersion()));
     }
     
-    protected CodedNodeSet getCodedNodeSetForModelMatch(CodedNodeSet set, ModelMatch model, AlgorithmMatch alg, String text) throws LBInvocationException, LBParameterException{
+    protected CodedNodeSet getCodedNodeSetForModelMatch(
+            CodedNodeSet set, 
+            ModelMatch model, 
+            AlgorithmMatch alg, 
+            String text) throws LBInvocationException, LBParameterException{
         switch(model){
         case NAME: return set.restrictToMatchingDesignations(text, SearchDesignationOption.PREFERRED_ONLY, alg.getMatch(), null);
         case CODE: return set.restrictToCodes(Constructors.createConceptReferenceList(text));
@@ -173,10 +199,9 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             AbsoluteCodingSchemeVersionReference ref, 
             String associationName, 
             Direction direction,  
-            CodedNodeSet set, 
-            String url){
+            CodedNodeSet set){
 
-        LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
+        LexEVSSpringRestClientImpl lexClientService = getGraphClientService();
         try {
             ResolvedConceptReference[] list = getValidatedList(ref, associationName, set);
             if(isGetTargetOF(direction)){
@@ -219,7 +244,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return null;
     }
     
-    // A filter by property to be called once to create the predicate, which can
+    // A filter (by property) to be called once to create the predicate, which can
     // then be used to test given property values for duplicates
     <T> Predicate<T> distinctByProperty(Function<? super T, ?> getProperty) {
         Set<Object> exists = ConcurrentHashMap.newKeySet();
@@ -228,9 +253,11 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
 
 
-    protected List<ConceptReference> getConceptReferenceListForAllAssociations(AbsoluteCodingSchemeVersionReference ref,
-            Direction direction, CodedNodeSet set, String url) {
-        LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
+    protected List<ConceptReference> getConceptReferenceListForAllAssociations(
+            AbsoluteCodingSchemeVersionReference ref,
+            Direction direction, 
+            CodedNodeSet set) {
+        LexEVSSpringRestClientImpl lexClientService = getGraphClientService();
         try{            
             ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
             Map<String, List<String>> map = Stream
@@ -284,9 +311,11 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
     @Override
     public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
-            AbsoluteCodingSchemeVersionReference reference, String associationName, Direction direction,
-            String entityCode, String url) {
-        LexEVSSpringRestClientImpl lexClientService = getGraphClientService(url);
+            AbsoluteCodingSchemeVersionReference reference, 
+            String associationName, 
+            Direction direction,
+            String entityCode) {
+        LexEVSSpringRestClientImpl lexClientService = getGraphClientService();
         if (isGetTargetOF(direction)) {
             return lexClientService
                     .getOutBoundForGraphNode(lexClientService.getBaseUrl(),
@@ -307,8 +336,11 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
     @Override
     public List<ResolvedConceptReference> getCandidateConceptReferencesForTextAndAssociation(
-            AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
-            AlgorithmMatch alg, ModelMatch model, String url) {
+            AbsoluteCodingSchemeVersionReference reference, 
+            String associationName, 
+            String textMatch,
+            AlgorithmMatch alg, 
+            ModelMatch model) {
         CodedNodeSet set = null;
         try {
             set = this.getCodedNodeSetForScheme(reference);
@@ -349,20 +381,29 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return direction.equals(Direction.TARGET_OF);
     }
 
-    protected Boolean isValidAssociation(String associationName, AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
+    protected Boolean isValidAssociation(
+            String associationName, 
+            AbsoluteCodingSchemeVersionReference ref) throws LBParameterException {
         return ServiceUtility.IsValidParameter(ref.getCodingSchemeURN(),ref.getCodingSchemeVersion(), associationName, SupportedAssociation.class);
     }
     
-    boolean isValidNodeForAssociation( AbsoluteCodingSchemeVersionReference ref, String entityCode, String associationName){
+    boolean isValidNodeForAssociation( 
+            AbsoluteCodingSchemeVersionReference ref, 
+            String entityCode, 
+            String associationName){
         return ServiceUtility.isValidNodeForAssociation(ref, entityCode, associationName);
     }
     
-    List<String> getValidAssociationsForTargetOrSourceOf(AbsoluteCodingSchemeVersionReference ref, String entityCode){
+    List<String> getValidAssociationsForTargetOrSourceOf(
+            AbsoluteCodingSchemeVersionReference ref, 
+            String entityCode){
         return ServiceUtility.getValidAssociationsForTargetOrSource(ref, entityCode);
     }
     
 
-    private String getNormalizedDbNameForTermServiceIdentifiers(AbsoluteCodingSchemeVersionReference ref){
+    @Override
+    public String getNormalizedDbNameForTermServiceIdentifiers(
+            AbsoluteCodingSchemeVersionReference ref){
         try {
             return ServiceUtility.normalizeGraphandGraphDatabaseName(ref);
         } catch (LBParameterException e) {
@@ -371,6 +412,16 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     + " version: " + ref.getCodingSchemeVersion(), e);
         }
         return null;
+    }
+
+    @Override
+    public List<String> getTerminologyGraphDatabaseList() {
+        return getGraphClientService().systemMetadata().getDataBases();
+    }
+
+    @Override
+    public List<String> getGraphsForTerminologyFormalName(String name) {
+        return getGraphClientService().getGraphDatabaseMetadata(name).getGraphs();
     }
 
 }

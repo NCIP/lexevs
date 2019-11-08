@@ -1,31 +1,37 @@
 package org.lexevs.dao.database.graph.rest.client;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.graph.rest.client.model.GraphDatabase;
+import org.lexevs.dao.database.graph.rest.client.model.SystemMetadata;
 
 public class LexEVSSpringRestClientImplTest {
 	String uri = "http://localhost:8080/graph-resolve";
 
-	@Before
-	public void setUp() throws Exception {
-	}
 
 	@Test
 	public void testDbExists() {
-		String json = new LexEVSSpringRestClientImpl(uri).databases( "http://localhost:8080/graph-resolve");
+		String json = new LexEVSSpringRestClientImpl(uri).databases();
 		assertNotNull(json);
 		assertTrue(json.contains("owl2lexevs"));
 	}
 	
 	@Test
+	public void testDbExistsInList() {
+		SystemMetadata sm = new LexEVSSpringRestClientImpl(uri).systemMetadata();
+		assertNotNull(sm);
+		assertTrue(sm.getDataBases().contains("owl2lexevs"));
+	}
+	
+	@Test
 	public void getGraphsForDbTest(){
-		GraphDatabase db = new LexEVSSpringRestClientImpl(uri).getGraphDatabaseMetadata(uri, "owl2lexevs");
+		GraphDatabase db = new LexEVSSpringRestClientImpl(uri).getGraphDatabaseMetadata("owl2lexevs");
 		assertNotNull(db.getGraphDbName());
 		assertEquals("owl2lexevs", db.getGraphDbName());
 		assertNotNull(db.graphs);
@@ -89,6 +95,13 @@ public class LexEVSSpringRestClientImplTest {
 				"http://localhost:8080/graph-resolve", "owl2lexevs", "Concept_In_Subset", "C117743");
 		assertNotNull(vertexes);
 		assertEquals(0, vertexes.size());
+	}
+	
+	@Test
+	public void getValidatedNameForDbName(){
+		String name = new LexEVSSpringRestClientImpl(uri).getServiceDataBaseNameForCanonicalTerminologyName( "owl2lexevs");
+		assertNotNull(name);
+		assertEquals("owl2lexevs", name);
 	}
 	
 

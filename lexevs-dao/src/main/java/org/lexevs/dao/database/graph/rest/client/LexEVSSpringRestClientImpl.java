@@ -8,12 +8,14 @@ import java.util.List;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.graph.rest.client.errorhandler.LexEVSGraphClientResponseErrorHandler;
 import org.lexevs.dao.database.graph.rest.client.model.GraphDatabase;
+import org.lexevs.dao.database.graph.rest.client.model.SystemMetadata;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 
 public class LexEVSSpringRestClientImpl {
 
@@ -34,24 +36,34 @@ public class LexEVSSpringRestClientImpl {
 		this.url = url;
 	}
 	
-	public String databases(final String uri){
-	    return new RestTemplate().getForObject(uri + CORRECTED_URL_FOR_DBS, String.class, DBS);
+	public String databases(){
+	    return new RestTemplate().getForObject(url + CORRECTED_URL_FOR_DBS, String.class, DBS);
+	}
+	
+	public SystemMetadata systemMetadata(){
+	    return new RestTemplate().getForObject(url + CORRECTED_URL_FOR_DBS, SystemMetadata.class, DBS);
 	}
 	
 	
-	public GraphDatabase getGraphDatabaseMetadata(String uri, final String database){
-		return new RestTemplate().getForObject(uri + CORRECTED_URL_FOR_GRAPHDBS, GraphDatabase.class, GRAPH_DBS, database);
+	public GraphDatabase getGraphDatabaseMetadata( final String database){
+		return new RestTemplate().getForObject(url + CORRECTED_URL_FOR_GRAPHDBS, GraphDatabase.class, GRAPH_DBS, database);
 	}
 	
-	private List<LexVertex> getVertexesForGraphNode(String url, String direction, String scheme, String graph, String code){
+	List<LexVertex> getVertexesForGraphNode(String direction, String scheme, String graph, String code){
 		RestTemplate restTemplate = new RestTemplate();
+		
+		//Setting message converter to accept all kinds of results including JSON
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
 		MappingJacksonHttpMessageConverter converter = new MappingJacksonHttpMessageConverter();
 		converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
 		messageConverters.add(converter);
 		restTemplate.setMessageConverters(messageConverters);
+		
+		//Adding an error handler that will manage some of the custom exceptions
 		LexEVSGraphClientResponseErrorHandler handler = new LexEVSGraphClientResponseErrorHandler(scheme, graph, code);
 		restTemplate.setErrorHandler(handler);
+		
+		//Getting response entities and resulting list
 		ResponseEntity<LexVertex[]> response = null;
 		List<LexVertex> vertexes = null;
 		try{
@@ -65,40 +77,25 @@ public class LexEVSSpringRestClientImpl {
 	}
 	
 	public List<LexVertex> getInBoundForGraphNode(String url, final String scheme, final String graph, final String code){
-		return getVertexesForGraphNode(url, GET_INBOUND, scheme, graph, code);
+		return getVertexesForGraphNode( GET_INBOUND, scheme, graph, code);
 	}
 
 	public List<LexVertex> getOutBoundForGraphNode(String url, final String scheme, final String graph, final String code){
-		return getVertexesForGraphNode(url, GET_OUTBOUND, scheme, graph, code);
-	}
-	public static void main(String...strings){
-		System.out.println(new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").databases( "http://localhost:8080/graph-resolve"));
-		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getVertexesForGraphNode( 
-				"http://localhost:8080/graph-resolve", GET_OUTBOUND, "NCI_Thesaurus", "subClassOf", "C12434")
- 		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
-		
-		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getInBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "NCI_Thesaurus", "subClassOf", "C12434")
- 		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
-		
-		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getOutBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "NCI_Thesaurus", "subClassOf", "C61410")
- 		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
-		
-		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getGraphDatabaseMetadata(
-				"http://localhost:8080/graph-resolve", "NCI_Thesaurus")
-					.getGraphs().forEach(x -> System.out.println(x));
+		return getVertexesForGraphNode(GET_OUTBOUND, scheme, graph, code);
 	}
 	
 	public String getServiceDataBaseNameForCanonicalTerminologyName(String name){
-	    
-		return null;
+		RestTemplate template = new RestTemplate();
+			SystemMetadata svcMeta = template.getForObject(url + CORRECTED_URL_FOR_DBS, SystemMetadata.class, DBS);
+		String dbName = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(name);
+		if(svcMeta.getDataBases().contains(dbName))
+			{return dbName;}
+		else
+			{return null;}
 	}
-
 
 	public String getBaseUrl() {
 		return url;
 	}
 	
-
 }
