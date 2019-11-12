@@ -55,6 +55,7 @@ import org.LexGrid.LexBIG.Extensions.Query.Sort;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConvenienceMethodsImpl;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph.NodeGraphResolutionExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.MappingExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchExtensionImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SourceAssertedValueSetSearchExtensionImpl;
@@ -723,6 +724,7 @@ public class LexBIGServiceImpl implements LexBIGService {
         new HierarchyCheckingPostProcessor().register();
         new SearchExtensionImpl().register();
         new SourceAssertedValueSetSearchExtensionImpl().register();
+        new NodeGraphResolutionExtensionImpl().register();
         
         //Tree Extension (Deprecated)
         ExtensionDescription treeExt = new ExtensionDescription();

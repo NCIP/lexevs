@@ -622,4 +622,9 @@ public interface CodedNodeGraphService {
 
 	public List<Triple> getValidTriplesOfAssociation(String codingSchemeUri, String codingSchemeVersion, String uid);
 
+	public Integer validateNodeForAssociation(String codingSchemeUri, String codingSchemeVersion, String associationName, String code);
+	
+	public List<String> getValidAssociationsforTargetandSourceOf(String codingSchemeUri, String codingSchemeVersion, String code);
+
+
 }

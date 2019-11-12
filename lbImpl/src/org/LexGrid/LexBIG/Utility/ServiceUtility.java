@@ -53,6 +53,7 @@ import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -300,6 +301,23 @@ public class ServiceUtility {
                 supportedAttributeClass)) {
             throw new LBParameterException(localId + " is not a valid Parameter.");
         }
+    }
+    
+    public static boolean IsValidParameter(String codingSchemeNameOrUri, String codingSchemeVersion, String localId,
+            Class<? extends URIMap> supportedAttributeClass) throws LBParameterException{
+        if (StringUtils.isBlank(localId)) {
+            return false;
+        }
+
+        String codingSchemeUri = LexEvsServiceLocator.getInstance().getSystemResourceService()
+                .getUriForUserCodingSchemeName(codingSchemeNameOrUri, codingSchemeVersion);
+
+        CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
+                .getCodingSchemeService();
+
+        return codingSchemeService.validatedSupportedAttribute(codingSchemeUri, codingSchemeVersion, localId,
+                supportedAttributeClass);
+           
     }
 
     /**
@@ -732,5 +750,37 @@ public class ServiceUtility {
         
         return relations;
     }
-   
+
+    public static boolean isValidNodeForAssociation( AbsoluteCodingSchemeVersionReference ref, String entityCode, String associationName) {
+        return 
+                LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getCodedNodeGraphService()
+                .validateNodeForAssociation(
+                        ref.getCodingSchemeURN(), 
+                        ref.getCodingSchemeVersion(), 
+                        associationName, 
+                        entityCode).intValue() > 0;
+    }
+
+    public static List<String> getValidAssociationsForTargetOrSource( AbsoluteCodingSchemeVersionReference ref, String entityCode) {
+        return 
+                LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getCodedNodeGraphService()
+                .getValidAssociationsforTargetandSourceOf(
+                        ref.getCodingSchemeURN(), 
+                        ref.getCodingSchemeVersion(), 
+                        entityCode);
+    }
+    
+    public static String normalizeGraphandGraphDatabaseName(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException{
+        return GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(LexEvsServiceLocator
+            .getInstance()
+            .getSystemResourceService()
+            .getInternalCodingSchemeNameForUserCodingSchemeName(
+                    ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
+    }
 }

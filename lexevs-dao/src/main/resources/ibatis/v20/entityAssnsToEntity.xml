@@ -2499,4 +2499,40 @@
 			AND 
 				(ent2.isAnonymous = '0' OR ent2.isAnonymous is null)
 		</select>
-</sqlMap>
+		
+		<select id="validateNodeInAssociation"  remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="java.lang.Integer" >
+			SELECT 
+				count(entityAssnsGuid) 
+			FROM 
+				$prefix$entityAssnsToEntity
+			WHERE 
+				associationPredicateGuid=#param1#
+			AND 
+				(sourceEntityCode = #param2# OR targetEntityCode = #param2# )
+			AND
+				(targetEntityCode not like "@%" OR sourceEntityCode not like "@%")		
+		</select>
+		
+		<select id="getValidAssociationPredicatesForTargetOrSourceOf" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+		resultClass="java.lang.String" >
+			SELECT
+			DISTINCT(pred.associationName) 
+			FROM
+		  		$prefix$associationPredicate 
+			AS
+		  		pred 
+			JOIN 
+				$prefix$entityAssnsToEntity 
+			AS
+				assn 
+			ON 
+				pred.associationPredicateGuid = assn.associationPredicateGuid
+	 		WHERE
+	 			(assn.sourceEntityCode = #param1#  OR assn.targetEntityCode = #param1#)
+	 		AND 
+	 			(assn.`sourceEntityCode` not like "@%" OR assn.`targetEntityCode` not like "@%")
+		</select>
+ </sqlMap>
