@@ -321,11 +321,10 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         try {
             ResolvedConceptReference[] list = getValidatedList(ref, associationName, set);
             if(isGetTargetOF(direction)){
-                //We are creating a map from an entity code to a list of vertexes
+                //We are creating a map from an entity code to a list of vertexes resolved from a graph
                 //and eventually combining that group of lists to single list of distinct vertexes
             return Stream.of(list)
-            .map(x -> lexClientService
-                    .getOutBoundForGraphNode(
+            .map(x -> lexClientService.getOutBoundForGraphNode(
                             lexClientService.getBaseUrl(), 
                             getNormalizedDbNameForTermServiceIdentifiers(ref),
                             associationName, 
@@ -338,11 +337,10 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     .collect(Collectors.toList());
             }
             if(isGetSourceOF(direction)){
-                //We are creating a map from an entity code to a list of vertexes
+                //We are creating a map from an entity code to a list of vertexes resolved from a graph
                 //and eventually combining that group of lists to single list of distinct vertexes
                 return Stream.of(list)
-                        .map(x -> lexClientService
-                                .getInBoundForGraphNode(
+                        .map(x -> lexClientService.getInBoundForGraphNode(
                                         lexClientService.getBaseUrl(), 
                                         getNormalizedDbNameForTermServiceIdentifiers(ref),
                                         associationName, 
@@ -367,25 +365,26 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             CodedNodeSet set) {
         LexEVSSpringRestClientImpl lexClientService = getGraphClientService();
         try{            
-            ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
-            Map<String, List<String>> map = Stream
-                    .of(list)
+            ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10)
+                    .getResolvedConceptReference();
+            Map<String, List<String>> map = Stream.of(list)
                     .map(x->x.getCode())
                     .collect(Collectors
-                            .toMap(
-                                    Function.identity(), 
+                            .toMap(Function.identity(), 
                                         s -> getValidAssociationsForTargetOrSourceOf(ref, s)));
         if(isGetTargetOF(direction)){
+            //We are using a map from an entity code to a list of associations to create a set of 
+            //vertexes resolved from the graph of each association.  
+            //Eventually we combine the groups of lists to single list of distinct vertexes
             return map.entrySet().stream()
                     .flatMap(entry -> entry.getValue()
                         .stream()
-                        .map(x -> lexClientService
-                                .getOutBoundForGraphNode(
+                        .map(x -> lexClientService.getOutBoundForGraphNode(
                                     lexClientService.getBaseUrl(), 
                                     getNormalizedDbNameForTermServiceIdentifiers(ref),
                                     x, 
                                     entry.getKey())))
-                    .flatMap(y -> y.stream())
+                        .flatMap(y -> y.stream())
                     .map(z -> 
                           Constructors
                               .createConceptReference(z.getCode(), z.getNamespace()))
@@ -394,16 +393,18 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     .collect(Collectors.toList());
         }
         if(isGetSourceOF(direction)){
+            //We are using a map from an entity code to a list of associations to create a set of 
+            //vertexes resolved from the graph of each association.  
+            //Eventually we combine the groups of lists to single list of distinct vertexes
             return map.entrySet().stream()
              .flatMap(entry -> entry.getValue()
                      .stream()
-                     .map(x -> lexClientService
-                             .getInBoundForGraphNode(
+                     .map(x -> lexClientService.getInBoundForGraphNode(
                                      lexClientService.getBaseUrl(), 
                                      getNormalizedDbNameForTermServiceIdentifiers(ref),
                                      x, 
                                      entry.getKey())))
-             .flatMap(y -> y.stream())                                
+                     .flatMap(y -> y.stream())                                
              .map(z -> 
                     Constructors.createConceptReference(z.getCode(), z.getNamespace()))
            //Stateful filtering where filter calls distinctByProperty once and predicate.test thereafter

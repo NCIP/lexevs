@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.graph.rest.client.errorhandler.LexEVSGraphClientResponseErrorHandler;
 import org.lexevs.dao.database.graph.rest.client.model.GraphDatabase;
@@ -16,8 +17,13 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
+import org.lexevs.logging.LoggerFactory;
 
 public class LexEVSSpringRestClientImpl {
+	
+    private LgLoggerIF getLogger() {
+        return LoggerFactory.getLogger();
+    }
 
 
 
@@ -70,6 +76,7 @@ public class LexEVSSpringRestClientImpl {
 		response = restTemplate.exchange(url + CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, scheme, graph, code);
 		vertexes = Arrays.asList(response.getBody());
 		}catch(Exception i){
+			getLogger().warn(i.getMessage());
 			System.out.println(i.getMessage());
 			return new ArrayList<LexVertex>();
 		}

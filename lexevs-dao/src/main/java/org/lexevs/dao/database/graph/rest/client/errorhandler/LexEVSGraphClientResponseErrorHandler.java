@@ -34,10 +34,10 @@ public class LexEVSGraphClientResponseErrorHandler implements ResponseErrorHandl
  
         if (httpResponse.getStatusCode()
           .series() == HttpStatus.Series.SERVER_ERROR) {
-            System.out.println("Server Error");
+            System.out.println("Graph Server Error");
         } else if (httpResponse.getStatusCode()
           .series() == HttpStatus.Series.CLIENT_ERROR) {
-        	System.out.println("Client side Error");
+        	System.out.println("Graph Client side Error");
             if (httpResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
 					throw new IOException("Value or Vertex not found for "
 							+ "database: " + graphDb 
