@@ -297,6 +297,12 @@ public class RestrictionImplementations {
                     NameAndValue qualNameAndValue = propertyQualifiers.getNameAndValue(i);
                     String name = qualNameAndValue.getName();
                     String value = qualNameAndValue.getContent();
+                    if(name.equals("source-code")){
+                        nestedQuery.add(new BooleanClause(new TermQuery(new Term("hasSource", name)), Occur.SHOULD));
+                            if(value != null){
+                                nestedQuery.add(new BooleanClause(new TermQuery(new Term("sourceValue", value)), Occur.SHOULD));
+                            }
+                        }
                     QueryParser parser = new QueryParser("qualifiers",LuceneLoaderCode.getAnaylzer());
                     Query queryNameAndValue = parser.parse("\"" +name
                                 + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
