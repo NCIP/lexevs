@@ -40,6 +40,26 @@ public class TestUntokenizedQualifierForSourceCode extends LexBIGServiceTestCase
         assertTrue(Stream.of(nodeRefs.getResolvedConceptReference())
         		.anyMatch(x -> entityPropertyQualifierExistsForValue(x , "CTESTCODE")));
 	}
+	
+	@Test
+	public void testToo() throws LBException {
+        CodedNodeSet cns = ServiceHolder.instance().getLexBIGService()
+        		.getCodingSchemeConcepts(OWL2_SNIPPET_INDIVIDUAL_URN, 
+        				Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION));
+        cns.restrictToProperties(null, 
+        		new PropertyType[]{PropertyType.PRESENTATION}, 
+        		null, 
+        		null, 
+        		Constructors.createNameAndValueList("source-code", "CTESTCODETOO"));
+        ResolvedConceptReferenceList nodeRefs = cns.resolveToList(null, null, null, -1);
+        assertNotNull(nodeRefs);
+        assertTrue(nodeRefs.getResolvedConceptReferenceCount() > 0);
+        assertEquals(1, nodeRefs.getResolvedConceptReferenceCount());
+        assertTrue(Stream.of(nodeRefs.getResolvedConceptReference())
+        		.anyMatch(x -> entityPropertyQualifierExistsForName(x , "source-code")));
+        assertTrue(Stream.of(nodeRefs.getResolvedConceptReference())
+        		.anyMatch(x -> entityPropertyQualifierExistsForValue(x , "CTESTCODETOO")));
+	}
 
 	@Override
 	protected String getTestID() {

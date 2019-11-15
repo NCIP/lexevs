@@ -298,10 +298,15 @@ public class RestrictionImplementations {
                     String name = qualNameAndValue.getName();
                     String value = qualNameAndValue.getContent();
                     if(name.equals("source-code")){
-                        nestedQuery.add(new BooleanClause(new TermQuery(new Term("hasSource", name)), Occur.SHOULD));
+                        BooleanQuery.Builder deepQuery = new BooleanQuery.Builder();
+                        deepQuery.setMinimumNumberShouldMatch(1);
+                        deepQuery.add(new BooleanClause(new TermQuery(new Term("hasSource", name)), Occur.SHOULD));
                             if(value != null){
-                                nestedQuery.add(new BooleanClause(new TermQuery(new Term("sourceValue", value)), Occur.SHOULD));
+                                deepQuery.add(new BooleanClause(new TermQuery(new Term("sourceValue", value)), Occur.SHOULD));
                             }
+                            
+                       
+                        nestedQuery.add(new BooleanClause(deepQuery.build(), Occur.MUST));
                         }
                     QueryParser parser = new QueryParser("qualifiers",LuceneLoaderCode.getAnaylzer());
                     Query queryNameAndValue = parser.parse("\"" +name
