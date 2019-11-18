@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,6 +66,10 @@ public class NodeGraphResolutionExtensionTest {
 				.createAbsoluteCodingSchemeVersionReference(
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
 						"0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("EpithelialCell");
+		codes.add("string");
+		codes.add("C123");
 		GraphNodeContentTrackingIterator  itr = (GraphNodeContentTrackingIterator) ngr.
 				getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
@@ -75,9 +80,11 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(3, itr.getTotalCacheSize());
-		assertTrue(itr.next().getCode().equals("EpithelialCell"));
-		assertTrue(itr.next().getCode().equals("string"));
-		assertTrue(itr.next().getCode().equals("C123"));
+
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -110,7 +117,12 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testInGoingOnlyExactMatchName2() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("CancerPatient");
+		codes.add("VerySickCancerPatient");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"patient_has_prognosis", 
@@ -120,8 +132,31 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(2, itr.getTotalCacheSize());
-		ConceptReference cref = itr.next();
-		assertTrue(cref.getCode().equals("MildlySickCancerPatient") || cref.getCode().equals("CancerPatient") );
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testInGoingOnlyExactMatchNameSlightVariant() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("CancerPatient");
+		codes.add("MildlySickCancerPatient");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				ref, 
+				"patient_has_prognosis", 
+				"PrognosisGood", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.NAME);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(2, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -139,8 +174,12 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testOutGoingOnlyContainsName2() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5"); 
+	public void testOutGoingOnlyContainsName3() {
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C117743");
+		codes.add("C54453");
+		codes.add("C48323");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"Concept_In_Subset", 
@@ -151,14 +190,22 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(itr.hasNext());
 		assertNotSame(5, itr.getTotalCacheSize());
 		assertEquals(3, itr.getTotalCacheSize());
-		assertTrue(itr.next().getCode().equals("C117743"));
-		itr.next();
-		assertTrue(itr.next().getCode().equals("C48323"));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
 	public void testInGoingOnlyContainsName4() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref 
+		= Constructors.createAbsoluteCodingSchemeVersionReference(
+				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C99999");
+		codes.add("C99998");
+		codes.add("C99988");
+		codes.add("C99989");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"Concept_In_Subset", 
@@ -168,11 +215,11 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(4, itr.getTotalCacheSize());
-		ConceptReference cref = itr.next();
-		assertTrue(cref.getCode().equals("C99999"));
-		assertTrue(itr.next().getCode().equals("C99998"));
-		assertTrue(itr.next().getCode().equals("C99988"));
-		assertTrue(itr.next().getCode().equals("C99989"));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -191,7 +238,12 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testOutGoingOnlyLuceneProperty2() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C117743");
+		codes.add("C54453");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"Concept_In_Subset", 
@@ -202,13 +254,21 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(itr.hasNext());
 		assertNotSame(3, itr.getTotalCacheSize());
 		assertEquals(2, itr.getTotalCacheSize());
-		assertTrue(itr.next().getCode().equals("C117743"));
-		assertTrue(itr.next().getCode().equals("C54453"));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
 	public void testInGoingOnlyLuceneProperty4() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C99999");
+		codes.add("C99998");
+		codes.add("C99988");
+		codes.add("C99989");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"Concept_In_Subset", 
@@ -218,11 +278,11 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(4, itr.getTotalCacheSize());
-		ConceptReference cref = itr.next();
-		assertTrue(cref.getCode().equals("C99999"));
-		assertTrue(itr.next().getCode().equals("C99998"));
-		assertTrue(itr.next().getCode().equals("C99988"));
-		assertTrue(itr.next().getCode().equals("C99989"));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -241,7 +301,12 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testOutGoingOnlyExactMatchCode() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C117743");
+		codes.add("C54453");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"Concept_In_Subset", 
@@ -252,13 +317,21 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(itr.hasNext());
 		assertNotSame(3, itr.getTotalCacheSize());
 		assertEquals(2, itr.getTotalCacheSize());
-		assertTrue(itr.next().getCode().equals("C117743"));
-		assertTrue(itr.next().getCode().equals("C54453"));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
 	public void testInGoingOnlyExactMatchCode4() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C99999");
+		codes.add("C99998");
+		codes.add("C99988");
+		codes.add("C99989");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"Concept_In_Subset", 
@@ -268,11 +341,11 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertEquals(4, itr.getTotalCacheSize());
-		ConceptReference cref = itr.next();
-		assertTrue(cref.getCode().equals("C99999"));
-		assertTrue(itr.next().getCode().equals("C99998"));
-		assertTrue(itr.next().getCode().equals("C99988"));
-		assertTrue(itr.next().getCode().equals("C99989"));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
@@ -290,7 +363,12 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testInGoingOnlyEmptyExactMatchCode() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("SHH");
+		codes.add("SOS");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"gene_related_to_disease", 
@@ -299,8 +377,9 @@ public class NodeGraphResolutionExtensionTest {
 				ModelMatch.CODE );
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());	
-		assertEquals("SHH", itr.next().getCode());
-		assertEquals("SOS",itr.next().getCode());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
 		
 	}
 	
