@@ -676,7 +676,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.CODE, AlgorithmMatch.EXACT_MATCH, "C61410");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForValidatedAssociation(ref, "subClassOf", Direction.TARGET_OF, set);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForValidatedAssociation(-1, ref, "subClassOf", Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals("C54443", refs.get(0).getCode());
@@ -717,7 +717,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.SOURCE_OF, set);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(-1, ref, Direction.SOURCE_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals(11, refs.size());
@@ -731,7 +731,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations( -1, ref, Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals(5, refs.size());
@@ -747,7 +747,7 @@ public class NodeGraphResolutionExtensionTest {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
 		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "PatientWithCold");
-		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(ref, Direction.TARGET_OF, set);
+		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(-1, ref, Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertFalse(refs.size() > 0);
 	}
