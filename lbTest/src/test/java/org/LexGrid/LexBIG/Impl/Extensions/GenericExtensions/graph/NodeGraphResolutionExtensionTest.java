@@ -349,6 +349,251 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
+	public void testInGoingOnlyExactMatchCodeDepth1() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C99999");
+		codes.add("C99998");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				1,
+				ref, 
+				"Concept_In_Subset", 
+				"C48323", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(2, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testInGoingOnlyExactMatchCodeDepth2() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C99999");
+		codes.add("C99998");
+		codes.add("C99988");
+		codes.add("C99989");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				2,
+				ref, 
+				"Concept_In_Subset", 
+				"C48323", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(4, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testOutGoingOnlyExactMatchCodeDepth1() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C117743");
+		codes.add("C54453");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+				1,
+				ref, 
+				"Concept_In_Subset", 
+				"C48323", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(2, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testOutGoingExactMatchCodeDepthPatient1() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("Person");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+				1,
+				ref, 
+				"subClassOf", 
+				"Patient", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(1, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testOutGoingExactMatchCodeDepthPatient2NoChange() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("Person");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+				2,
+				ref, 
+				"subClassOf", 
+				"Patient", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(1, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testInComingExactMatchCodeDepthPatientDepth1() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("HappyPatientDrivingAround");
+		codes.add("HappyPatientWalkingAround");
+		codes.add("HealthyPatient");
+		codes.add("SickPatient");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				1,
+				ref, 
+				"subClassOf", 
+				"Patient", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(4, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testInComingExactMatchCodeDepthPatientDepth2() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("HappyPatientDrivingAround");
+		codes.add("HappyPatientWalkingAround");
+		codes.add("HealthyPatient");
+		codes.add("SickPatient");
+		codes.add("VerySickPatient");
+		codes.add("MildlySickPatient");
+		codes.add("CancerPatient");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				2,
+				ref, 
+				"subClassOf", 
+				"Patient", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(7, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
+	public void testInComingExactMatchCodeDepthPatientDepth3() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("HappyPatientDrivingAround");
+		codes.add("HappyPatientWalkingAround");
+		codes.add("HealthyPatient");
+		codes.add("SickPatient");
+		codes.add("VerySickPatient");
+		codes.add("MildlySickPatient");
+		codes.add("CancerPatient");
+		codes.add("VerySickCancerPatient");
+		codes.add("PatientWithCold");
+		codes.add("MildlySickCancerPatient");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				3,
+				ref, 
+				"subClassOf", 
+				"Patient", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(10, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	
+	
+	
+	@Test
+	public void testOutGoingOnlyExactMatchCodeDepth2NoChange() {
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C117743");
+		codes.add("C54453");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+				2,
+				ref, 
+				"Concept_In_Subset", 
+				"C48323", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertEquals(2, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
 	public void testOutGoingOnlyEmptyExactMatchCode() {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(

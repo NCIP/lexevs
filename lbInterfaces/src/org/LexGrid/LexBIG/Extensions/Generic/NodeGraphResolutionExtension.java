@@ -131,6 +131,7 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 			AlgorithmMatch alg, ModelMatch model);
 	
 	/**
+	 * @param int Depth of the graph to resolve 1 = 1 level, n = n levels
 	 * @param reference The minimal reference to the coding scheme
 	 * @param associationName The relation declaration for this query
 	 * @param textMatch Text for Lucene match
@@ -181,7 +182,6 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 			AlgorithmMatch alg, ModelMatch model);
 	
 	/**
-	 * @param int Depth of the graph to resolve 1 = 1 level, n = n levels
 	 * @param reference The minimal reference to the coding scheme
 	 * @param associationName The relation declaration for this query
 	 * @param textMatch Text for Lucene match
@@ -214,6 +214,19 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(AbsoluteCodingSchemeVersionReference reference, String associationName, Direction direction, String entityCode);
 	
 
+	/**
+	 * @param reference The minimal reference to the coding scheme
+	 * @param int Depth of the graph to resolve 1 = 1 level, n = n levels
+	 * @param associationName The relation declaration for this query
+	 * @param direction target or source indicating in or out bound edges
+	 * @param entityCode Unique id used to define start vertex for graph
+	 * @param url Service Url for Graph Service
+	 * @return List<ConceptReference> Minimal reference representation to be used to resolve values later
+	 * 
+	 * This method returns values from a complete resolution of a graph based on the association name and an entity code that designations the starting vertex.
+	 * The resolution will be done on incoming edges for a Direction of SOURCE_OF and out going edges for a Direction of TARGET_OF.  No parameter values can
+	 * can be null.  
+	 */
 	public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
 			AbsoluteCodingSchemeVersionReference reference, int depth, String associationName, Direction direction,
 			String entityCode);

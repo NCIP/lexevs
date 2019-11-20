@@ -55,6 +55,9 @@ public class LexEVSSpringRestClientImpl {
 	}
 	
 	public List<LexVertex> getVertexesForGraphNode(String direction, int depth, String scheme, String graph, String code){
+		if(depth == 0){throw new RuntimeException("Depth of Traversal cannot be 0. "
+				+ "Enter -1 to traverse all or another number indicating level to traverse to.");}
+		
 		RestTemplate restTemplate = new RestTemplate();
 		
 		//Setting message converter to accept all kinds of results including JSON
@@ -72,8 +75,16 @@ public class LexEVSSpringRestClientImpl {
 		ResponseEntity<LexVertex[]> response = null;
 		List<LexVertex> vertexes = null;
 		try{
-		response = restTemplate.exchange(url + CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, scheme, graph, code);
-		vertexes = Arrays.asList(response.getBody());
+			if(depth < 0){
+				response = restTemplate.exchange(
+						url + CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, scheme, graph, code);
+				vertexes = Arrays.asList(response.getBody());
+			}
+			else{
+				response = restTemplate.exchange(
+					url + DEPTH_CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, String.valueOf(depth), scheme, graph, code);
+				vertexes = Arrays.asList(response.getBody());
+		}
 		}catch(Exception i){
 			getLogger().warn(i.getMessage());
 			System.out.println(i.getMessage());
