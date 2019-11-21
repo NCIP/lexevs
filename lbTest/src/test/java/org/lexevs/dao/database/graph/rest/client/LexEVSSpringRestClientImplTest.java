@@ -6,14 +6,23 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph.GraphDbValidateConnnection;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.graph.rest.client.model.GraphDatabase;
 import org.lexevs.dao.database.graph.rest.client.model.SystemMetadata;
 
 public class LexEVSSpringRestClientImplTest {
-	String uri = "http://localhost:8080/graph-resolve";
+	
+	static String uri = "http://localhost:8080/graph-resolve";
 
+	
+	@BeforeClass
+	public static void checkConnection(){
+		Assume.assumeTrue(new GraphDbValidateConnnection(uri).connect());
+	}
 
 	@Test
 	public void testDbExists() {
