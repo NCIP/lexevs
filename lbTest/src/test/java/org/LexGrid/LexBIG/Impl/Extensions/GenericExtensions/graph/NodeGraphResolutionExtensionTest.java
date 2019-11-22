@@ -7,9 +7,12 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+import java.io.File;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -31,9 +34,9 @@ public class NodeGraphResolutionExtensionTest {
 
 	
 	NodeGraphResolutionExtensionImpl ngr;
-
+	Properties p;
 	
-	public static String url = "http://localhost:8080/graph-resolve";
+	public static String url;
 
 
 	@Before
@@ -41,6 +44,9 @@ public class NodeGraphResolutionExtensionTest {
 		ngr = (NodeGraphResolutionExtensionImpl) LexBIGServiceImpl
 				.defaultInstance()
 				.getGenericExtension("NodeGraphResolution");
+		Properties p = new Properties();
+		p.load(new FileReader(new File("resources/test.properties")));
+		url = p.getProperty("grapdbURL");
 		ngr.init(url);
 	}
 

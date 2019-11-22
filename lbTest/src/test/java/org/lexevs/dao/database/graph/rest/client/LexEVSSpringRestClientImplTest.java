@@ -4,7 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph.GraphDbValidateConnnection;
 import org.junit.Assume;
@@ -20,7 +25,10 @@ public class LexEVSSpringRestClientImplTest {
 
 	
 	@BeforeClass
-	public static void checkConnection(){
+	public static void checkConnection() throws FileNotFoundException, IOException{
+		Properties p = new Properties();
+		p.load(new FileReader(new File("resources/test.properties")));
+		uri = p.getProperty("grapdbURL");
 		Assume.assumeTrue(new GraphDbValidateConnnection(uri).connect());
 	}
 
