@@ -440,6 +440,12 @@
         <rdfs:label>term-source</rdfs:label>
     </owl:AnnotationProperty>
     
+    <owl:AnnotationProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P385">
+        <P108>source-code</P108>
+        <NHC0>P385</NHC0>
+        <rdfs:label>source-code</rdfs:label>
+    </owl:AnnotationProperty>
+    
     
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -1028,6 +1034,12 @@
         <owl:annotatedSource rdf:resource="&owl2lexevs;EpithelialCell"/>
         <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
         <owl:annotatedProperty rdf:resource="&rdfs;subClassOf"/>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <P385>CTESTCODE</P385>
     </owl:Axiom>
     <owl:Axiom>
         <provenance rdf:datatype="&xsd;string">NLM</provenance>
@@ -2267,6 +2279,12 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <owl:annotatedTarget rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Clinical Infection</owl:annotatedTarget>
         <term-group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">PT</term-group>
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
+    </owl:Axiom>
+        <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <P385>CTESTCODETOO</P385>
     </owl:Axiom>
 
     <!-- http://purl.obolibrary.org/obo/OBI_0000699 -->

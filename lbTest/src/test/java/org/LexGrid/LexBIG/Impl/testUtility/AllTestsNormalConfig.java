@@ -139,6 +139,7 @@ import org.LexGrid.LexBIG.Impl.function.query.TestSpecifyReturnOrder;
 import org.LexGrid.LexBIG.Impl.function.query.TestSubsetExtraction;
 import org.LexGrid.LexBIG.Impl.function.query.TestTransitiveClosure;
 import org.LexGrid.LexBIG.Impl.function.query.TestTraverseGraphviaRoleLinks;
+import org.LexGrid.LexBIG.Impl.function.query.TestUntokenizedQualifierForSourceCode;
 import org.LexGrid.LexBIG.Impl.function.query.TestVersionChanges;
 import org.LexGrid.LexBIG.Impl.function.query.TestVersioningandAuthorityEnumeration;
 import org.LexGrid.LexBIG.Impl.function.query.TestforCurrentOrObsoleteConcept;
@@ -468,6 +469,7 @@ public class AllTestsNormalConfig {
         functionalTests.addTestSuite(TestOWLLoaderPreferences.class);
         functionalTests.addTestSuite(TestSameCodeDifferentNamespace.class);
         functionalTests.addTestSuite(TestPasswordEncryption.class);
+        functionalTests.addTestSuite(TestUntokenizedQualifierForSourceCode.class);
         mainSuite.addTest(functionalTests);
 
         TestSuite treeTests = new TestSuite("tree extension tests");

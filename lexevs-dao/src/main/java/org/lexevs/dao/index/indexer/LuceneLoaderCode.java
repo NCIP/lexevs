@@ -369,6 +369,12 @@ public abstract class LuceneLoaderCode {
         if (qualifiers != null && qualifiers.length > 0) {
             StringBuffer temp = new StringBuffer();
             for (int i = 0; i < qualifiers.length; i++) {
+            	if(qualifiers[i].qualifierName.equals("source-code")){
+            		generator_.addTextField("hasSource", qualifiers[i].qualifierName, false, true, false);
+            		if(qualifiers[i].qualifierValue != null){
+            		generator_.addTextField("sourceValue", qualifiers[i].qualifierValue, false, true, false);
+            		}
+            	}
                 temp.append(qualifiers[i].qualifierName + QUALIFIER_NAME_VALUE_SPLIT_TOKEN
                         + qualifiers[i].qualifierValue);
                 if (i + 1 < qualifiers.length) {
