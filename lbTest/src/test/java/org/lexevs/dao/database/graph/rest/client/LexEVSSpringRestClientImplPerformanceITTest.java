@@ -1,5 +1,6 @@
 package org.lexevs.dao.database.graph.rest.client;
 
+import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -20,21 +21,19 @@ public class LexEVSSpringRestClientImplPerformanceITTest {
 		System.out.println("\nGetting outbound for vertex 'blood': ");
 		long start = System.currentTimeMillis();
 		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getVertexesForGraphNode( 
-				 LexEVSSpringRestClientImpl.GET_OUTBOUND, "NCI_Thesaurus", "subClassOf", "C12434")
+				 NodeGraphResolutionExtension.GET_OUTBOUND, -1, "NCI_Thesaurus", "subClassOf", "C12434")
  		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
 		System.out.println("Millisecond executiontime: " + (System.currentTimeMillis() - start));
 		
 		System.out.println("\nGetting inbound for vertex 'blood': ");
 		long start1 = System.currentTimeMillis();
-		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getInBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "NCI_Thesaurus", "subClassOf", "C12434")
+		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getVertexesForGraphNode( "getInbound", -1, "NCI_Thesaurus", "subClassOf", "C12434")
  		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
 		System.out.println("Millisecond executiontime: " + (System.currentTimeMillis() - start1));
 		
 		System.out.println("\nGetting outbound for vertex 'C61410': ");
 		long start2 = System.currentTimeMillis();
-		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getOutBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "NCI_Thesaurus", "subClassOf", "C61410")
+		new LexEVSSpringRestClientImpl("http://localhost:8080/graph-resolve").getVertexesForGraphNode( "getOutbound", -1, "NCI_Thesaurus", "subClassOf", "C61410")
  		.forEach(x -> System.out.println(x.getCode() + ":" + x.getNamespace()));
 		System.out.println("Millisecond executiontime: " + (System.currentTimeMillis() - start2));
 		

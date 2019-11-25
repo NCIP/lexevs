@@ -46,8 +46,8 @@ public class LexEVSSpringRestClientImplTest {
 	
 	@Test
 	public void getInboundEdgesForCodePopulated(){
-		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getInBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "owl2lexevs", "subClassOf", "C123");
+		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getVertexesForGraphNode( "getInbound", -1,
+				 "owl2lexevs", "subClassOf", "C123");
 		assertNotNull(vertexes);
 		assertTrue(vertexes.size() > 0);
 		assertTrue(vertexes.stream().anyMatch(x -> x.getCode().equals("BRaf")));
@@ -59,40 +59,35 @@ public class LexEVSSpringRestClientImplTest {
 	
 	@Test
 	public void getOutboundEdgesForCodeEmpty(){
-		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getOutBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "owl2lexevs", "subClassOf", "C123");
+		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getVertexesForGraphNode( "getOutbound", -1, "owl2lexevs", "subClassOf", "C123");
 		assertNotNull(vertexes);
 		assertEquals(0, vertexes.size());
 	}
 	
 	@Test
 	public void getOutboundEdgesForCodeSize2(){
-		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getOutBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "owl2lexevs", "Concept_In_Subset", "C48323");
+		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getVertexesForGraphNode( "getOutbound", -1,"owl2lexevs", "Concept_In_Subset", "C48323");
 		assertNotNull(vertexes);
 		assertEquals(2 , vertexes.size());
 	}
 	
 	@Test
 	public void getInboundEdgesForCodeSize4(){
-		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getInBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "owl2lexevs", "Concept_In_Subset", "C48323");
+		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getVertexesForGraphNode( "getInbound", -1,"owl2lexevs", "Concept_In_Subset", "C48323");
 		assertNotNull(vertexes);
 		assertEquals(4, vertexes.size());
 	}
 	
 	@Test
 	public void getInboundEdgesForCodeSize5(){
-		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getInBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "owl2lexevs", "Concept_In_Subset", "C117743");
+		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getVertexesForGraphNode( "getInbound", -1, "owl2lexevs", "Concept_In_Subset", "C117743");
 		assertNotNull(vertexes);
 		assertEquals(6, vertexes.size());
 	}
 	
 	@Test
 	public void getOutoundEdgesForCodeNone(){
-		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getOutBoundForGraphNode(
-				"http://localhost:8080/graph-resolve", "owl2lexevs", "Concept_In_Subset", "C117743");
+		List<LexVertex> vertexes = new LexEVSSpringRestClientImpl(uri).getVertexesForGraphNode( "getOutbound", -1, "owl2lexevs", "Concept_In_Subset", "C117743");
 		assertNotNull(vertexes);
 		assertEquals(0, vertexes.size());
 	}

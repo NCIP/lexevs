@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.Direction;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.graph.rest.client.errorhandler.LexEVSGraphClientResponseErrorHandler;
@@ -26,12 +27,10 @@ public class LexEVSSpringRestClientImpl {
     }
 
 
-
-	public static final String GET_INBOUND = "getInbound";
-	public static final String GET_OUTBOUND = "getOutbound";
 	public static final String DBS = "databases";
 	public static final String GRAPH_DBS = "graphDbs";
 	public static final String CORRECTED_URL = "/{direction}/{scheme}/{graph}/{code}";
+	public static final String DEPTH_CORRECTED_URL = "/{direction}/{depth}/{scheme}/{graph}/{code}";
 	public static final String CORRECTED_URL_FOR_DBS = "/{dbs}";
 	public static final String CORRECTED_URL_FOR_GRAPHDBS = "/{gDbs}/{database}";
 	private String url;
@@ -55,7 +54,10 @@ public class LexEVSSpringRestClientImpl {
 		return new RestTemplate().getForObject(url + CORRECTED_URL_FOR_GRAPHDBS, GraphDatabase.class, GRAPH_DBS, database);
 	}
 	
-	List<LexVertex> getVertexesForGraphNode(String direction, String scheme, String graph, String code){
+	public List<LexVertex> getVertexesForGraphNode(String direction, int depth, String scheme, String graph, String code){
+		if(depth == 0){throw new RuntimeException("Depth of Traversal cannot be 0. "
+				+ "Enter -1 to traverse all or another number indicating level to traverse to.");}
+		
 		RestTemplate restTemplate = new RestTemplate();
 		
 		//Setting message converter to accept all kinds of results including JSON
@@ -73,22 +75,22 @@ public class LexEVSSpringRestClientImpl {
 		ResponseEntity<LexVertex[]> response = null;
 		List<LexVertex> vertexes = null;
 		try{
-		response = restTemplate.exchange(url + CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, scheme, graph, code);
-		vertexes = Arrays.asList(response.getBody());
+			if(depth < 0){
+				response = restTemplate.exchange(
+						url + CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, scheme, graph, code);
+				vertexes = Arrays.asList(response.getBody());
+			}
+			else{
+				response = restTemplate.exchange(
+					url + DEPTH_CORRECTED_URL, HttpMethod.GET, null, LexVertex[].class, direction, String.valueOf(depth), scheme, graph, code);
+				vertexes = Arrays.asList(response.getBody());
+		}
 		}catch(Exception i){
 			getLogger().warn(i.getMessage());
 			System.out.println(i.getMessage());
 			return new ArrayList<LexVertex>();
 		}
 		return vertexes;
-	}
-	
-	public List<LexVertex> getInBoundForGraphNode(String url, final String scheme, final String graph, final String code){
-		return getVertexesForGraphNode( GET_INBOUND, scheme, graph, code);
-	}
-
-	public List<LexVertex> getOutBoundForGraphNode(String url, final String scheme, final String graph, final String code){
-		return getVertexesForGraphNode(GET_OUTBOUND, scheme, graph, code);
 	}
 	
 	public String getServiceDataBaseNameForCanonicalTerminologyName(String name){

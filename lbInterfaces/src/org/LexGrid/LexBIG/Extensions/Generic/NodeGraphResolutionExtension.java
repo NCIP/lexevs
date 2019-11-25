@@ -6,6 +6,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.Direction;
 
 /**
  * @author bauerhs
@@ -53,10 +54,24 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 *
 	 */
 	public enum Direction {
-	    TARGET_OF,
-	    SOURCE_OF
+	    TARGET_OF("getOutbound"),
+	    SOURCE_OF("getInbound");
+
+		private String direction;
+		
+		private Direction(String direction){
+			this.direction = direction;
+		}
+		
+
+		
+		public String getDirection(){
+			return direction;
+		}
 	}
-	
+
+	public static final String GET_INBOUND = "getInbound";
+	public static final String GET_OUTBOUND = "getOutbound";
 	
 	/**
 	 * @param url service url for REST service
@@ -116,6 +131,57 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 			AlgorithmMatch alg, ModelMatch model);
 	
 	/**
+	 * @param int Depth of the graph to resolve 1 = 1 level, n = n levels
+	 * @param reference The minimal reference to the coding scheme
+	 * @param associationName The relation declaration for this query
+	 * @param textMatch Text for Lucene match
+	 * @param alg AlgorithmMatch type declaration
+	 * @param model ModelMatch type declaration
+	 * @param url Service Url for Graph Service
+	 * @return Iterator<ConceptReference> This must be implemented as the GraphNodeContentAwareIterator to
+	 * take advantage of the ability to get the remaining number of values
+	 * 
+	 * This 'source of' text based search and resolve hybrid works from a subset of text search results programmatically restricted to 
+	 * 10 values.  Result accuracy will require some knowledge of the terminology and search algorithms to get meaningful results.
+	 * Model matches against names and codes should return more accurate and meaningful results than matches against properties. 
+	 * The resulting iterator does no active paging to the database and may return as many as hundreds of thousands of values at once.  
+	 * SourceOf is idiomatic to LexEVS and as such implies incoming edges since for LexEVS the direction of edges is leaf to root. 
+	 * Reference, textMatch, alg, and url cannot be null. Null associationNames will trigger an all associations resolution which 
+	 * may return many results that are not meaningful to the intent of the user.  Association resolutions are only done so in 
+	 * an unbroken chain -- no other association valid for a given matching vertex can be substituted during that resolution.
+	 * 
+	 */
+	public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationSourceOf( int depth,
+			AbsoluteCodingSchemeVersionReference reference, 
+			String associationName, String textMatch, 
+			AlgorithmMatch alg, ModelMatch model);
+
+	/**
+	 * @param int Depth of the graph to resolve 1 = 1 level, n = n levels
+	 * @param reference The minimal reference to the coding scheme
+	 * @param associationName The relation declaration for this query
+	 * @param textMatch Text for Lucene match
+	 * @param alg AlgorithmMatch type declaration
+	 * @param model ModelMatch type declaration
+	 * @param url Service Url for Graph Service
+	 * @return Iterator<ConceptReference> This must be implemented as the GraphNodeContentAwareIterator to
+	 * take advantage of the ability to get the remaining number of values
+	 * 
+	 * This 'target of' text based search and resolve hybrid works from a subset of text search results programmatically restricted to 
+	 * 10 values.  Result accuracy will require some knowledge of the terminology and search algorithms to get meaningful results.
+	 * Model matches against names and codes should return more accurate and meaningful results than matches against properties. 
+	 * The resulting iterator does no active paging to the database and may return as many as hundreds of thousands of values at once.  
+	 * TargetOf is idiomatic to LexEVS and as such implies out going edges since for LexEVS the direction of edges is leaf to root. 
+	 * Reference, textMatch, alg, and url cannot be null. Null associationNames will trigger an all associations resolution which 
+	 * may return many results that are not meaningful to the intent of the user.  Association resolutions are only done so in 
+	 * an unbroken chain -- no other association valid for a given matching vertex can be substituted during that resolution.
+	 * 
+	 */
+	public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationTargetOf(int depth,
+			AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
+			AlgorithmMatch alg, ModelMatch model);
+	
+	/**
 	 * @param reference The minimal reference to the coding scheme
 	 * @param associationName The relation declaration for this query
 	 * @param textMatch Text for Lucene match
@@ -147,6 +213,23 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 */
 	public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(AbsoluteCodingSchemeVersionReference reference, String associationName, Direction direction, String entityCode);
 	
+
+	/**
+	 * @param reference The minimal reference to the coding scheme
+	 * @param int Depth of the graph to resolve 1 = 1 level, n = n levels
+	 * @param associationName The relation declaration for this query
+	 * @param direction target or source indicating in or out bound edges
+	 * @param entityCode Unique id used to define start vertex for graph
+	 * @param url Service Url for Graph Service
+	 * @return List<ConceptReference> Minimal reference representation to be used to resolve values later
+	 * 
+	 * This method returns values from a complete resolution of a graph based on the association name and an entity code that designations the starting vertex.
+	 * The resolution will be done on incoming edges for a Direction of SOURCE_OF and out going edges for a Direction of TARGET_OF.  No parameter values can
+	 * can be null.  
+	 */
+	public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
+			AbsoluteCodingSchemeVersionReference reference, int depth, String associationName, Direction direction,
+			String entityCode);
 	
 	/**
 	 * @return a List of normalized database names in the graph service
@@ -170,6 +253,7 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	 * database naming convention.
 	 */
 	public String getNormalizedDbNameForTermServiceIdentifiers(AbsoluteCodingSchemeVersionReference ref);
+
 
 
 }
