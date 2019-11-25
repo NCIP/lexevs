@@ -4,16 +4,33 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
+import java.util.Properties;
 
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph.GraphDbValidateConnnection;
+import org.junit.Assume;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.graph.rest.client.model.GraphDatabase;
 import org.lexevs.dao.database.graph.rest.client.model.SystemMetadata;
 
 public class LexEVSSpringRestClientImplTest {
-	String uri = "http://localhost:8080/graph-resolve";
+	
+	static String uri = "http://localhost:8080/graph-resolve";
 
+	
+	@BeforeClass
+	public static void checkConnection() throws FileNotFoundException, IOException{
+		Properties p = new Properties();
+		p.load(new FileReader(new File("resources/test.properties")));
+		uri = p.getProperty("grapdbURL");
+		Assume.assumeTrue(new GraphDbValidateConnnection(uri).connect());
+	}
 
 	@Test
 	public void testDbExists() {

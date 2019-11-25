@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.LexBIGServiceConveni
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionImplTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.MappingExtensionSerializationTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.SearchExtensionImplTest;
+import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph.NodeGraphResolutionExtensionTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.BuildMatchAlgorithmQueryTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.ScoreDocIteratoSerializationTest;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search.SearchScoreDocIteratorTest;
@@ -193,6 +194,7 @@ import org.LexGrid.valuesets.sourceasserted.impl.SourceAssertedVSIteratorTest;
 import org.LexGrid.valuesets.sourceasserted.impl.TestAssertedValueSetInitialization;
 import org.junit.runners.model.InitializationError;
 import org.lexevs.dao.database.access.codednodegraph.MappingCodedNodeDaoFunctionTest;
+import org.lexevs.dao.database.graph.rest.client.LexEVSSpringRestClientImplTest;
 import org.lexevs.dao.database.service.listener.DuplicatePropertyIdListenerTest;
 import org.lexevs.dao.database.service.valuesets.ValueSetHierarchyServiceTest;
 import org.lexevs.dao.index.lucene.v2013.search.ValueSetDaoTest;
@@ -294,6 +296,8 @@ public class AllTestsNormalConfig {
         graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
         graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
         graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(NodeGraphResolutionExtensionTest.class));
+        graphDBTests.addTest(new JUnit4TestAdapter(LexEVSSpringRestClientImplTest.class));
         graphDBTests.addTest(new JUnit4TestAdapter(CleanUpGraphDBDataTest.class));
         mainSuite.addTest(graphDBTests);
         
