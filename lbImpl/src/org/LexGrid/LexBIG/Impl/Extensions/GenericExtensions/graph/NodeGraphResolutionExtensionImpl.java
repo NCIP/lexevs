@@ -10,6 +10,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
+import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
@@ -74,25 +76,25 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     
     
     @Override
-    public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
-            AbsoluteCodingSchemeVersionReference reference, 
-            String associationName, 
-            Direction direction,
-            String entityCode) {
-        return getConceptReferenceListResolvedFromGraphForEntityCode(reference, -1, associationName, direction, entityCode);
-    }
-    
-    @Override
     public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationSourceOf(
             int depth, AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
             AlgorithmMatch alg, ModelMatch model) {
+        
+        return getConceptReferencesForTextSearchAndAssociationSourceOf(
+                depth, reference, associationName, textMatch, alg, model, null, null);
+    }
+    
+    @Override
+    public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationSourceOf(int depth,
+            AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
+            AlgorithmMatch alg, ModelMatch model, LocalNameList sources, NameAndValueList qualifiers) {
         CodedNodeSet set = null; 
         if(reference == null || textMatch == null || alg == null || model == null){
             logAndThrowRuntimeException("null value of any parameter but assocationName is not allowed");
         }
         try {
             if(associationName == null){ 
-                set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch);
+                set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch, sources, qualifiers);
                 return new GraphNodeContentTrackingIterator(
                         getConceptReferenceListForAllAssociations(depth, reference, Direction.SOURCE_OF, set));
             }
@@ -104,7 +106,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     + reference.getCodingSchemeURN() 
                     + " version " 
                     + reference.getCodingSchemeVersion());}
-            set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch);
+            set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch, sources, qualifiers);
             return new GraphNodeContentTrackingIterator(
                     getConceptReferenceListForValidatedAssociation(depth, reference, associationName, Direction.SOURCE_OF, set));
            
@@ -119,17 +121,28 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return null;
     }
 
+    
+    
+
     @Override
     public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationTargetOf(
             int depth, AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
             AlgorithmMatch alg, ModelMatch model) {
+        return getConceptReferencesForTextSearchAndAssociationTargetOf(
+                depth, reference, associationName, textMatch, alg, model, null, null);
+    }
+    
+    @Override
+    public Iterator<ConceptReference> getConceptReferencesForTextSearchAndAssociationTargetOf(int depth,
+            AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
+            AlgorithmMatch alg, ModelMatch model, LocalNameList sources, NameAndValueList qualifiers) {
         CodedNodeSet set = null; 
         if(reference == null || textMatch == null || alg == null || model == null){
             logAndThrowRuntimeException("null value of any parameter but assocationName is not allowed");
         }
         try {
             if(associationName == null){ 
-                set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch);
+                set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch, sources, qualifiers);
                 return new GraphNodeContentTrackingIterator(
                         getConceptReferenceListForAllAssociations(depth, reference, Direction.TARGET_OF, set));
             }
@@ -141,7 +154,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                     + reference.getCodingSchemeURN() 
                     + " version " 
                     + reference.getCodingSchemeVersion());}
-            set =  preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch);
+            set =  preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch, sources, qualifiers);
             return new GraphNodeContentTrackingIterator(
                     getConceptReferenceListForValidatedAssociation(depth, reference, associationName, Direction.TARGET_OF, set));
            
@@ -156,6 +169,53 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return null;
     }
 
+
+    @Override
+    public List<ResolvedConceptReference> getCandidateConceptReferencesForTextAndAssociation(
+            AbsoluteCodingSchemeVersionReference reference, 
+            String associationName, 
+            String textMatch,
+            AlgorithmMatch alg, 
+            ModelMatch model) {
+        return getCandidateConceptReferencesForTextAndAssociation(
+                reference, associationName, textMatch, alg, model, null, null);
+
+    }
+    
+
+    @Override
+    public List<ResolvedConceptReference> getCandidateConceptReferencesForTextAndAssociation(
+            AbsoluteCodingSchemeVersionReference reference, String associationName, String textMatch,
+            AlgorithmMatch alg, ModelMatch model, LocalNameList sources, NameAndValueList qualifiers) {
+        if(reference == null || associationName == null || textMatch == null || alg == null || model == null){
+            logAndThrowRuntimeException("null value for any parameter other than sources or qualifiers is not allowed");
+        }
+        CodedNodeSet set = null;
+        try {
+            set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch, sources, qualifiers);
+            ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
+            return Stream.of(list)
+            .filter(
+                    x -> isValidNodeForAssociation(reference, x.getCode(), 
+                            associationName))
+            .collect(Collectors.toList());
+        } catch (LBException e) {
+            logAndThrowRuntimeException("Something went wrong while querying for "
+                    + "candidate matches for:  " + textMatch + " associated with: "
+                    + associationName, e);
+        }
+        return null;
+    }
+
+    
+    @Override
+    public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
+            AbsoluteCodingSchemeVersionReference reference, 
+            String associationName, 
+            Direction direction,
+            String entityCode) {
+        return getConceptReferenceListResolvedFromGraphForEntityCode(reference, -1, associationName, direction, entityCode);
+    }
     
     @Override
     public List<ConceptReference> getConceptReferenceListResolvedFromGraphForEntityCode(
@@ -176,32 +236,6 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                         .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ResolvedConceptReference> getCandidateConceptReferencesForTextAndAssociation(
-            AbsoluteCodingSchemeVersionReference reference, 
-            String associationName, 
-            String textMatch,
-            AlgorithmMatch alg, 
-            ModelMatch model) {
-        if(reference == null || associationName == null || textMatch == null || alg == null || model == null){
-            logAndThrowRuntimeException("null value for any parameter is not allowed");
-        }
-        CodedNodeSet set = null;
-        try {
-            set = preProcessNodeSetForQueryValues(reference, set, model, alg, textMatch);
-            ResolvedConceptReference[] list  =  set.resolveToList(null, null, null, 10).getResolvedConceptReference();
-            return Stream.of(list)
-            .filter(
-                    x -> isValidNodeForAssociation(reference, x.getCode(), 
-                            associationName))
-            .collect(Collectors.toList());
-        } catch (LBException e) {
-            logAndThrowRuntimeException("Something went wrong while querying for "
-                    + "candidate matches for:  " + textMatch + " associated with: "
-                    + associationName, e);
-        }
-        return null;
-    }
 
     @Override
     public String getNormalizedDbNameForTermServiceIdentifiers(
@@ -296,12 +330,19 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
             CodedNodeSet set, 
             ModelMatch model, 
             AlgorithmMatch alg, 
-            String text) throws LBInvocationException, LBParameterException{
+            String text,
+            LocalNameList sourceList,
+            NameAndValueList qualifierList) throws LBInvocationException, LBParameterException{
         switch(model){
         case NAME: return set.restrictToMatchingDesignations(text, SearchDesignationOption.PREFERRED_ONLY, alg.getMatch(), null);
         case CODE: return set.restrictToCodes(Constructors.createConceptReferenceList(text));
         case PROPERTY: 
-            return set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, text, alg.getMatch(), null);
+            return set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, sourceList,
+                    null,
+                    qualifierList,
+                    text,
+                    alg.getMatch(), 
+                    null);
         default: return set;
         }
     }
@@ -316,9 +357,10 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
 
    public CodedNodeSet preProcessNodeSetForQueryValues(
            AbsoluteCodingSchemeVersionReference reference, 
-           CodedNodeSet set, ModelMatch model, AlgorithmMatch alg, String textMatch) throws LBException{
+           CodedNodeSet set, ModelMatch model, AlgorithmMatch alg, 
+           String textMatch, LocalNameList sources, NameAndValueList qualifiers) throws LBException{
        set = getCodedNodeSetForScheme(reference);
-       set = getCodedNodeSetForModelMatch(set, model, alg, textMatch);
+       set = getCodedNodeSetForModelMatch(set, model, alg, textMatch, sources, qualifiers);
        return set;
    }
 
@@ -420,6 +462,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         
         return ed;
     }
+
 
 
 }

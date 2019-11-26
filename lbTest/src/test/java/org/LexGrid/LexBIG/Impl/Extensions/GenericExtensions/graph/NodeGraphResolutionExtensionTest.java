@@ -279,6 +279,99 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
+	public void testIncomingLucentPropertyWSource(){
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("C37927");
+		codes.add("C48323");
+		codes.add("C99998");
+		codes.add("C99999");
+		codes.add("C99988");
+		codes.add("C99989");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				-1, 
+				ref, 
+				"Concept_In_Subset", 
+				"OETESTCD",
+				AlgorithmMatch.LUCENE, 
+				ModelMatch.PROPERTY,
+				Constructors.createLocalNameList("CDISC"),
+				null);
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertNotSame(3, itr.getTotalCacheSize());
+		assertEquals(6, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+				
+	}
+	
+	
+	@Test
+	public void testIncomingLucentPropertyWQual(){
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("EpithelialCell");
+		codes.add("CL_0000148");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				-1, 
+				ref, 
+				"subClassOf", 
+				"purl",
+				AlgorithmMatch.CONTAINS, 
+				ModelMatch.PROPERTY,
+				null,
+				Constructors.createNameAndValueList("source-code", "CTESTCODE"));
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertNotSame(3, itr.getTotalCacheSize());
+		assertEquals(2, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+				
+	}
+	
+	@Test
+	public void testIncomingLucentPropertyWQualToo(){
+		AbsoluteCodingSchemeVersionReference ref = 
+				Constructors.createAbsoluteCodingSchemeVersionReference(
+						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		List<String> codes = new ArrayList<String>();
+		codes.add("EpithelialCell");
+		codes.add("CL_0000148");
+		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				-1, 
+				ref, 
+				"subClassOf", 
+				"obo",
+				AlgorithmMatch.CONTAINS, 
+				ModelMatch.PROPERTY,
+				null,
+				Constructors.createNameAndValueList("source-code", "CTESTCODETOO"));
+		assertNotNull(itr);
+		assertTrue(itr.hasNext());
+		assertNotSame(3, itr.getTotalCacheSize());
+		assertEquals(2, itr.getTotalCacheSize());
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertTrue(codes.remove(itr.next().getCode()));
+		assertFalse(itr.hasNext());
+				
+	}
+	
+	@Test
 	public void testInGoingOnlyLuceneProperty4() {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = 
@@ -966,7 +1059,7 @@ public class NodeGraphResolutionExtensionTest {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
-		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.CODE, AlgorithmMatch.EXACT_MATCH, "C61410");
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.CODE, AlgorithmMatch.EXACT_MATCH, "C61410", null, null);
 		List<ConceptReference> refs = ngr.getConceptReferenceListForValidatedAssociation(-1, ref, "subClassOf", Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
@@ -985,7 +1078,7 @@ public class NodeGraphResolutionExtensionTest {
 	public void testGetValidatedList() throws LBException{
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
-		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient", null, null);
 		ResolvedConceptReference[] refs = ngr.getValidatedList(ref, "subClassOf", set);
 		assertNotNull(refs);
 		assertTrue(refs.length > 0);
@@ -997,7 +1090,7 @@ public class NodeGraphResolutionExtensionTest {
 	public void testGetValidatedListEmpty() throws LBException{
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
-		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient", null, null);
 		ResolvedConceptReference[] refs = ngr.getValidatedList(ref, "AllDifferent", set);
 		assertNotNull(refs);
 		assertFalse(refs.length > 0);
@@ -1008,7 +1101,7 @@ public class NodeGraphResolutionExtensionTest {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
-		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient", null, null);
 		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(-1, ref, Direction.SOURCE_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
@@ -1023,7 +1116,7 @@ public class NodeGraphResolutionExtensionTest {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
-		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient");
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "Patient", null, null);
 		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations( -1, ref, Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
@@ -1040,7 +1133,7 @@ public class NodeGraphResolutionExtensionTest {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
-		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "PatientWithCold");
+		set = ngr.getCodedNodeSetForModelMatch(set, ModelMatch.PROPERTY, AlgorithmMatch.CONTAINS, "PatientWithCold", null, null);
 		List<ConceptReference> refs = ngr.getConceptReferenceListForAllAssociations(-1, ref, Direction.TARGET_OF, set);
 		assertNotNull(refs);
 		assertFalse(refs.size() > 0);
