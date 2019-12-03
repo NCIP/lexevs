@@ -27,7 +27,7 @@ public class LexEVSSpringRestClientImplTest {
 	@BeforeClass
 	public static void checkConnection() throws FileNotFoundException, IOException{
 		Properties p = new Properties();
-		p.load(new FileReader(new File("resources/test.properties")));
+		p.load(new FileReader(new File("resources/testData/test.properties")));
 		uri = p.getProperty("grapdbURL");
 		Assume.assumeTrue(new GraphDbValidateConnnection(uri).connect());
 	}

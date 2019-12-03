@@ -45,7 +45,7 @@ public class NodeGraphResolutionExtensionTest {
 				.defaultInstance()
 				.getGenericExtension("NodeGraphResolution");
 		Properties p = new Properties();
-		p.load(new FileReader(new File("resources/test.properties")));
+		p.load(new FileReader(new File("resources/testData/test.properties")));
 		url = p.getProperty("grapdbURL");
 		ngr.init(url);
 	}
