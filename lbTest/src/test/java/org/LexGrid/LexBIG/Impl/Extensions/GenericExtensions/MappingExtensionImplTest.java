@@ -58,8 +58,10 @@ import org.aspectj.apache.bcel.classfile.Method;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
+import org.junit.experimental.categories.Category;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.locator.LexEvsServiceLocator;
+import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 
 @RunWith(BlockJUnit4ClassRunner.class)
 public class MappingExtensionImplTest extends LexBIGServiceTestCase {
@@ -71,6 +73,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	//Testing Private supporting methods
+	@Category(RemoveFromDistributedTests.class)
 	@Test
 	public void testGetTargetSchemeReference() throws LBException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
@@ -91,6 +94,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertEquals(ref.getCodingSchemeVersion(),GMP_VERSION);
 	}
 	
+	@Category(RemoveFromDistributedTests.class)
 	@Test
 	public void testGetSourceSchemeReference() throws LBException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
@@ -140,6 +144,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(map.containsKey("A0001"));
 	}
 	
+	@Category(RemoveFromDistributedTests.class)
 	@Test
 	public void testResolveMappingMetaData() throws LBException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
