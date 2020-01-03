@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
 import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
@@ -30,7 +31,7 @@ public class TestLexEVSRelsToGraph {
 
 	@Test
 	public void testGetEdgesForAssociationName() {
-		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("subClassOf",
+		List<Sextuple> triples = graphRels.getValidSextuplesForAssociationNames("subClassOf",
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		assertTrue(triples != null);
 		assertTrue(triples.size() > 0);

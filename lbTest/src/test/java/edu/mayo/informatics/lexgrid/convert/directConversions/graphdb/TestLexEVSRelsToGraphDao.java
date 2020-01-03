@@ -15,6 +15,7 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.LexVertex;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
 import org.lexevs.dao.database.service.graphdb.GraphingDataBaseServiceImpl;
@@ -45,13 +46,13 @@ public class TestLexEVSRelsToGraphDao {
 
 	@Test
 	public void testNoFailOnSelfReferencingEntity(){
-		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("disjointUnion",
+		List<Sextuple> triples = graphRels.getValidSextuplesForAssociationNames("disjointUnion",
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		assertTrue(triples != null);
 		assertTrue(triples.size() > 0);
  
 		assertTrue(triples.stream().anyMatch(x -> x.getSourceEntityCode().equals("C123") && x.getTargetEntityCode().equals("C123")));
-		Triple trip = triples.stream().filter(x -> x.getSourceEntityCode().equals("C123") && x.getTargetEntityCode().equals("C123")).findFirst().get();
+		Sextuple trip = triples.stream().filter(x -> x.getSourceEntityCode().equals("C123") && x.getTargetEntityCode().equals("C123")).findFirst().get();
 		assertNotNull(trip);
 		assertEquals(trip.getSourceEntityCode(), trip.getTargetEntityCode());
 		System.out.println("self referencing triple contents: " + trip.getSourceEntityCode() + " " + trip.getTargetEntityCode());
@@ -63,7 +64,7 @@ public class TestLexEVSRelsToGraphDao {
 	
 	@Test
 	public void  testGetEdgesForAssociationName() {
-		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("subClassOf",
+		List<Sextuple> triples = graphRels.getValidSextuplesForAssociationNames("subClassOf",
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		assertTrue(triples != null);
 		assertTrue(triples.size() > 0);
@@ -75,7 +76,7 @@ public class TestLexEVSRelsToGraphDao {
 	
 	@Test
 	public void testGetEdgesForAssociationNameWhereIsAnonymousIsNull() {
-		List<Triple> triples = graphRels.getValidTriplesForAssociationNames("hasSubtype",
+		List<Sextuple> triples = graphRels.getValidSextuplesForAssociationNames("hasSubtype",
 				"urn:oid:11.11.0.2", "2.0");
 		assertTrue(triples != null);
 		assertTrue(triples.size() > 0);
@@ -102,7 +103,7 @@ public class TestLexEVSRelsToGraphDao {
 	public void testEdgesPersisted(){
 		List<String> rels = graphRels
 				.getSupportedAssociationNamesForScheme("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		List <Triple> triples = rels.stream().map(associationName -> graphRels.getValidTriplesForAssociationNames(associationName,
+		List<Sextuple> triples = rels.stream().map(associationName -> graphRels.getValidSextuplesForAssociationNames(associationName,
 				"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5")).flatMap(List::stream).collect(Collectors.toList());
 		assertNotNull(triples);
 		assertTrue(triples.size() > 0);

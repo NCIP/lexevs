@@ -82,7 +82,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("EpithelialCell");
 		codes.add("string");
 		codes.add("C123");
-		GraphNodeContentTrackingIterator  itr = (GraphNodeContentTrackingIterator) ngr.
+		GraphNodeContentTrackingIterator<ConceptReference>  itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.
 				getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				null, 
@@ -116,7 +116,7 @@ public class NodeGraphResolutionExtensionTest {
 	public void testOutGoingOnlyExactMatchName2() {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"patient_has_prognosis", 
 				"CancerPatient", 
@@ -137,7 +137,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("CancerPatient");
 		codes.add("VerySickCancerPatient");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"patient_has_prognosis", 
 				"PrognosisBad", 
@@ -160,7 +160,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("CancerPatient");
 		codes.add("MildlySickCancerPatient");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"patient_has_prognosis", 
 				"PrognosisGood", 
@@ -177,7 +177,7 @@ public class NodeGraphResolutionExtensionTest {
 	@Test
 	public void testInGoingOnlyEmptyExactMatchName() {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"patient_has_prognosis", 
 				"PrognosisBad", 
@@ -196,7 +196,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("C117743");
 		codes.add("C54453");
 		codes.add("C48323");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"Concept_In_Subset", 
 				"black", 
@@ -223,7 +223,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("C99998");
 		codes.add("C99988");
 		codes.add("C99989");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"Concept_In_Subset", 
 				"black", 
@@ -243,7 +243,7 @@ public class NodeGraphResolutionExtensionTest {
 	public void testOutGoingOnlyEmptyContainsName() {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
@@ -263,7 +263,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("C117743");
 		codes.add("C54453");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"Concept_In_Subset", 
 				"black", 
@@ -290,7 +290,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("C99999");
 		codes.add("C99988");
 		codes.add("C99989");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				-1, 
 				ref, 
@@ -323,7 +323,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("EpithelialCell");
 		codes.add("CL_0000148");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				-1, 
 				ref, 
@@ -351,7 +351,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("EpithelialCell");
 		codes.add("CL_0000148");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				-1, 
 				ref, 
@@ -382,7 +382,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("C99998");
 		codes.add("C99988");
 		codes.add("C99989");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"Concept_In_Subset", 
 				"black", 
@@ -402,7 +402,7 @@ public class NodeGraphResolutionExtensionTest {
 	public void testInGoingOnlyEmptyLuceneProperty() {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
@@ -422,7 +422,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("C117743");
 		codes.add("C54453");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"Concept_In_Subset", 
 				"C48323", 
@@ -448,7 +448,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("C99998");
 		codes.add("C99988");
 		codes.add("C99989");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"Concept_In_Subset", 
 				"C48323", 
@@ -473,7 +473,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("C99999");
 		codes.add("C99998");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				1,
 				ref, 
 				"Concept_In_Subset", 
@@ -499,7 +499,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("C99998");
 		codes.add("C99988");
 		codes.add("C99989");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				2,
 				ref, 
 				"Concept_In_Subset", 
@@ -525,7 +525,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("C117743");
 		codes.add("C54453");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				1,
 				ref, 
 				"Concept_In_Subset", 
@@ -548,7 +548,7 @@ public class NodeGraphResolutionExtensionTest {
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<String> codes = new ArrayList<String>();
 		codes.add("Person");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				1,
 				ref, 
@@ -571,7 +571,7 @@ public class NodeGraphResolutionExtensionTest {
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<String> codes = new ArrayList<String>();
 		codes.add("Person");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				2,
 				ref, 
@@ -597,7 +597,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("HappyPatientWalkingAround");
 		codes.add("HealthyPatient");
 		codes.add("SickPatient");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				1,
 				ref, 
@@ -629,7 +629,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("VerySickPatient");
 		codes.add("MildlySickPatient");
 		codes.add("CancerPatient");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				2,
 				ref, 
@@ -667,7 +667,7 @@ public class NodeGraphResolutionExtensionTest {
 		codes.add("VerySickCancerPatient");
 		codes.add("PatientWithCold");
 		codes.add("MildlySickCancerPatient");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) 
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
 				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				3,
 				ref, 
@@ -703,7 +703,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("C117743");
 		codes.add("C54453");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				2,
 				ref, 
 				"Concept_In_Subset", 
@@ -721,7 +721,7 @@ public class NodeGraphResolutionExtensionTest {
 	@Test
 	public void testOutGoingOnlyEmptyExactMatchCode() {
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
@@ -740,7 +740,7 @@ public class NodeGraphResolutionExtensionTest {
 		List<String> codes = new ArrayList<String>();
 		codes.add("SHH");
 		codes.add("SOS");
-		GraphNodeContentTrackingIterator itr = (GraphNodeContentTrackingIterator) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
 				ref, 
 				"gene_related_to_disease", 
 				"NeoplasticDisease", 
