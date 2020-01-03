@@ -482,26 +482,27 @@ public class ServiceUtility {
      * 
      * @throws LBException the LB exception
      */
-    public static Entity getEntity(String codingSchemeUri, String codingSchemeVersion, String entityCode,
+
+    public static ResolvedConceptReference getResolvedConceptReference(String codingSchemeUri, String codingSchemeVersion, String entityCode,
             String entityCodeNamespace) throws LBException {
-        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-        versionOrTag.setVersion(codingSchemeVersion);
-
-        LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
-
-        CodedNodeSet cns = lbsvc.getNodeSet(codingSchemeUri, versionOrTag, null);
-
-        ResolvedConceptReferencesIterator iterator = cns.resolve(null, null, null, null, true);
-        while (iterator.hasNext()) {
-            ResolvedConceptReference conRef = iterator.next();
-            if (conRef.getCode().equalsIgnoreCase(entityCode)
-                    && conRef.getCodeNamespace().equalsIgnoreCase(entityCodeNamespace))
-                return conRef.getEntity();
-
-        }
-
-        return null;
-
+        //long start = System.nanoTime();
+//        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+//        versionOrTag.setVersion(codingSchemeVersion);
+//        LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
+//        CodedNodeSet cns = lbsvc.getNodeSet(codingSchemeUri, versionOrTag, null);
+//        cns =  cns.restrictToCodes(Constructors.createConceptReferenceList(entityCode));
+//        ResolvedConceptReference ref = cns.resolveToList(null, null, null, 1).getResolvedConceptReference(0);
+       // System.out.println("resolve time: " + (System.nanoTime() - start));
+        ResolvedConceptReference ref = new ResolvedConceptReference();
+        ref.setCode(entityCode);
+        ref.setCodeNamespace(entityCodeNamespace);
+        String descrp = LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getEntityService()
+                .getEntityDescriptionAsString(codingSchemeUri, codingSchemeVersion, entityCode, entityCodeNamespace);
+        ref.setEntityDescription(Constructors.createEntityDescription(descrp));
+        return ref;
     }
 
     /**

@@ -30,6 +30,7 @@ import org.LexGrid.relations.Relations;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -91,7 +92,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_TRANSITIVE_TABLE_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTransitiveTableCount";
 	private static String DELETE_FROM_TRANSITIVE_TABLE_BY_CODINGSCHEME_UID_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "deleteFromTransitiveTableByCodingSchemeUid";
 	private static final String GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL =  IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidTriplesForAssociationPredicateGuid";
-
+	private static final String GET_VALID_SEXTUPLES_FOR_ASSOCIATION_UID_SQL =  IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidSextuplesForAssociationPredicateGuid";
 	private static final String VALIDATE_NODE_FOR_ASSOCIATION = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "validateNodeInAssociation";
 	private static final String GET_VALID_PREDICATES_FOR_TARGET_AND_SOURCEOF = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidAssociationPredicatesForTargetOrSourceOf";
 	
@@ -1005,6 +1006,21 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				this.getSqlMapClientTemplate().
 				queryForList(
 						GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL,
+						bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Sextuple> getValidSexTuplesOfAssociation(String codingSchemeUid, String assocUid) {
+		String codingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(codingSchemeUid);
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(codingSchemePrefix);
+		bean.setParam1(assocUid);
+		return (List<Sextuple>) 
+				this.getSqlMapClientTemplate().
+				queryForList(
+						GET_VALID_SEXTUPLES_FOR_ASSOCIATION_UID_SQL,
 						bean);
 	}
 	

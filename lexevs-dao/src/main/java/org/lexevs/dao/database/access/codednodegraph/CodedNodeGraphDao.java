@@ -28,6 +28,7 @@ import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
 import org.lexevs.dao.database.access.association.model.Triple;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
@@ -290,4 +291,6 @@ public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
 	public Integer validateNodeInAssociation(String codingSchemeUid, String assocUid, String entityCode);
 
 	public List<String> getValidPredicatesForTargetandSourceOf(String codingSchemeUid, String entityCode);
+
+	public List<Sextuple> getValidSexTuplesOfAssociation(String codingSchemeUid, String assocUid);
 }

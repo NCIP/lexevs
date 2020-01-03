@@ -1,5 +1,7 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
+import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
@@ -23,14 +26,18 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.ExtensionRegistry;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension;
+import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.AbstractExtendable;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.LexGrid.commonTypes.types.PropertyTypes;
+import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
 import org.lexevs.dao.database.graph.rest.client.LexEVSSpringRestClientImpl;
 import org.lexevs.logging.LoggerFactory;
@@ -234,6 +241,33 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                         .stream()
                         .map(z -> Constructors.createConceptReference(z.getCode(), z.getNamespace()))
                         .collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<ResolvedConceptReference> doGetResolvedConceptReferenceListResolvedFromGraphForEntityCode(
+            AbsoluteCodingSchemeVersionReference reference, 
+            int depth,
+            String associationName, 
+            Direction direction,
+            String entityCode) {
+            if(reference == null || associationName == null || direction == null || entityCode == null){
+                logAndThrowRuntimeException("null value for any parameter is not allowed");
+            }
+            LexEVSSpringRestClientImpl lexClientService = getGraphClientService();
+                return lexClientService
+                        .getVertexesForGraphNode(direction.getDirection(), depth, 
+                                getNormalizedDbNameForTermServiceIdentifiers(reference), associationName, entityCode)
+                        .stream()
+                        .map(z -> createResolvedConceptReference(z.getCode(), z.getNamespace(), z.getDescription()))
+                        .collect(Collectors.toList());
+    }
+    
+    private ResolvedConceptReference createResolvedConceptReference( String code, String namespace, String description){
+        ResolvedConceptReference ref = new ResolvedConceptReference();
+        ref.setCode(code);
+        ref.setCodeNamespace(namespace);
+        ref.setEntityDescription(Constructors.createEntityDescription(description));
+        return ref;
     }
 
 
@@ -463,6 +497,146 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         return ed;
     }
 
+    @Override
+    public GraphNodeContentTrackingIterator<ResolvedConceptReference> getResolvedConceptReferenceListResolvedFromGraphForEntityCode(
+            AbsoluteCodingSchemeVersionReference reference, String associationName, Direction direction,
+            String entityCode) {
+        List<ResolvedConceptReference> list = doGetResolvedConceptReferenceListResolvedFromGraphForEntityCode(
+                reference, -1, associationName, direction, entityCode);
+        return new GraphNodeContentTrackingIterator<ResolvedConceptReference>(list);
+    }
+
+    private ResolvedConceptReference generateMinimalResolvedConceptReference(AbsoluteCodingSchemeVersionReference reference, ConceptReference x) {
+        try {
+            return ServiceUtility.getResolvedConceptReference(reference.getCodingSchemeURN(), reference.getCodingSchemeVersion(), x.getCode(), x.getCodeNamespace());
+        } catch (LBException e) {
+            throw new RuntimeException("Failed to resolve concept reference: " + x.getCode() + ":" + x.getCodeNamespace() 
+            + " from coding scheme: " + reference.getCodingSchemeURN() + ":" + reference.getCodingSchemeVersion(), e);
+        }
+    }
+
+    public static void main(String ...strings){
+        LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
+        try {
+            NodeGraphResolutionExtensionImpl service = (NodeGraphResolutionExtensionImpl) lbs.getGenericExtension("NodeGraphResolution"); 
+            service.init("http://localhost:8080/graph-resolve");
+            
+            long begin = System.currentTimeMillis();
+            
+            List<ConceptReference> itr2 = service.getConceptReferenceListResolvedFromGraphForEntityCode(
+                    Constructors.createAbsoluteCodingSchemeVersionReference(
+                            "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "19.10d"), 
+                            "Anatomic_Structure_Is_Physical_Part_Of", Direction.SOURCE_OF, "C12508");
+            System.out.println("time: " + (System.currentTimeMillis() - begin));
+            System.out.println("size: " + itr2.size());
+            
+            long start = System.currentTimeMillis();
+            GraphNodeContentTrackingIterator<ResolvedConceptReference> itr = service.getResolvedConceptReferenceListResolvedFromGraphForEntityCode(
+                    Constructors.createAbsoluteCodingSchemeVersionReference(
+                            "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "19.10d"), 
+                            "Anatomic_Structure_Is_Physical_Part_Of", Direction.SOURCE_OF, "C12508");
+            System.out.println("time: " + (System.currentTimeMillis() - start));
+            System.out.println("size: " + itr.getTotalCacheSize());
+            
+            long begin2 = System.currentTimeMillis();
+            List<ConceptReference> itr3 = service.getConceptReferenceListResolvedFromGraphForEntityCode(
+                    Constructors.createAbsoluteCodingSchemeVersionReference(
+                            "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "19.10d"), 
+                            "Concept_In_Subset", Direction.SOURCE_OF, "C63923");
+            System.out.println("time: " + (System.currentTimeMillis() - begin2));
+            System.out.println("size: " + itr3.size());
+            
+            long start1 = System.currentTimeMillis();
+            GraphNodeContentTrackingIterator<ResolvedConceptReference> itr4 = service.getResolvedConceptReferenceListResolvedFromGraphForEntityCode(
+                    Constructors.createAbsoluteCodingSchemeVersionReference(
+                            "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", "19.10d"), 
+                            "Concept_In_Subset", Direction.SOURCE_OF, "C63923");
+            System.out.println("time: " + (System.currentTimeMillis() - start1));
+            System.out.println("size: " + itr4.getTotalCacheSize());
+            
+            System.out.println("Timing iterator");
+            long startItr = System.currentTimeMillis();
+            int count = 0;
+            while(itr4.hasNext()){
+               // count++;
+                itr4.next();
+//                if(count == 500){
+//                    break;
+//                }
+            }
+            System.out.println("Iterator time: " + (System.currentTimeMillis() - startItr));
+                   
+            final String interesting = "Terms & Properties Preferred Name:  Blood "
+                    + "Definition:  A liquid tissue; its major function is to transport oxygen throughout the body. "
+                    + "It also supplies the tissues with nutrients, removes waste products, "
+                    + "and contains various components of the immune system defending the body against infection. "
+                    + "Several hormones also travel in the blood.CDISC "
+                    + "Definition:  A liquid tissue with the primary function of transporting oxygen and carbon dioxide. "
+                    + "It supplies the tissues with nutrients, removes waste products, and contains various components "
+                    + "of the immune system defending the body against infection. "
+                    + "NCI-GLOSS Definition:  A tissue with red blood cells, white blood cells, platelets, and other substances "
+                    + "suspended in fluid called plasma. Blood takes oxygen and nutrients to the tissues, and carries away wastes."
+                    + "Display Name:  Blood"
+                    + "Label:  Blood"
+                    + "NCI Thesaurus Code:  C12434 "
+                    + "Blood"
+                    + "blood"
+                    + "BLOOD"
+                    + "Peripheral Blood"
+                    + "peripheral blood"
+                    + "Reticuloendothelial System, Blood"
+                    + "Whole Blood"
+                    + "UMLS CUI    C0005767"
+                    + "code    C12434"
+                    + "Contributing_Source CDISC"
+                    + "Contributing_Source CPTAC"
+                    + "Contributing_Source CTRP"
+                    + "Contributing_Source GDC"
+                    + "Legacy_Concept_Name Blood";
+            final byte[] utf8Bytes = interesting.getBytes("UTF-8");
+            System.out.println("Bytes length for fully resolved concept reference: " + utf8Bytes.length); 
+            final String interestingToo = "Blood C12434 ncit";
+                 
+            final byte[] utf8BytesToo = interestingToo.getBytes("UTF-8");
+            System.out.println("Bytes length for minimally resolved concept reference: " + utf8BytesToo.length); 
+            
+
+        CodedNodeSet cns =  lbs.getCodingSchemeConcepts(
+                "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#", 
+                Constructors.createCodingSchemeVersionOrTagFromVersion("19.10d"));
+        PropertyType[] propertyTypes = new PropertyType[]{PropertyType.PRESENTATION};
+        cns.restrictToMatchingDesignations("blood", SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery", null);
+        ResolvedConceptReferenceList list = cns.resolveToList(null, null, null, 1);
+        ResolvedConceptReference ref =   list.getResolvedConceptReference(0);
+        ref.getCode();
+        } catch (LBException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public List<ResolvedConceptReference> getAssociatedConcepts(CodedNodeSet cns, Direction direction, int depth,
+            NameAndValueList associations) {
+        ResolvedConceptReferenceList list = null;
+       try {
+       list = cns.resolveToList(null, null, null, 10);
+    } catch (LBInvocationException | LBParameterException e) {
+        throw new RuntimeException("Problem Resolving a search for text and search type", e);
+    }
+       List<ResolvedConceptReference> resolvedList = Arrays.asList(list.getResolvedConceptReference());
+       getAllVerticesForTerms(resolvedList, direction, depth, associations);
+        return null;
+    }
+
+    private void getAllVerticesForTerms(List<ResolvedConceptReference> resolvedList, Direction direction, int depth,
+            NameAndValueList associations) {
+        // TODO Auto-generated method stub
+        
+    }
 
 
 }
