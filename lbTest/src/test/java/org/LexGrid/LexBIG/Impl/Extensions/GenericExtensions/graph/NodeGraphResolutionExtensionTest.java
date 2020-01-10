@@ -20,6 +20,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.AlgorithmMatch;
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.Direction;
@@ -722,15 +723,18 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testOutGoingOnlyEmptyExactMatchCode() {
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
-				ref, 
-				"gene_related_to_disease", 
-				"NeoplasticDisease", 
-				AlgorithmMatch.EXACT_MATCH, 
-				ModelMatch.CODE );
-		assertNotNull(itr);
-		assertFalse(itr.hasNext());	
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+//		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+//				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+//		set.
+//		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+//				ref, 
+//				"gene_related_to_disease", 
+//				"NeoplasticDisease", 
+//				AlgorithmMatch.EXACT_MATCH, 
+////				ModelMatch.CODE );
+//		assertNotNull(itr);
+//		assertFalse(itr.hasNext());	
 	}
 	
 	@Test
@@ -1160,8 +1164,8 @@ public class NodeGraphResolutionExtensionTest {
 	@Test
 	public void testGetAssociatedConceptsForAllAssociationsTarget() throws LBException{
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
-		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
-		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
 		set = set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, null,
                 null,
                 null,
@@ -1177,6 +1181,154 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Cold")));
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForAllAssociationsSource() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set = set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, null,
+                null,
+                null,
+                "Patient",
+                "contains", 
+                null);
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set,Direction.SOURCE_OF, -1, null);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertEquals(11, refs.size());
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("patient_has_prognosis")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+	}
+	
+	@Test
+	public void testGetAssociatedConceptReferenceForCodeTargetOfB() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToCodes(Constructors.createConceptReferenceList("Patient"));
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set, Direction.TARGET_OF, -1, Constructors.createNameAndValueList("association", "subClassOf"));
+				assertNotNull(refs);
+				assertTrue(refs.size() > 0);
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientWalkingAround")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HealthyPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("CancerPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("VerySickPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickCancerPatient")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+				assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
+				assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("TotalPerson")));
+	}
+	
+	@Test
+	public void testGetAssociatedConceptReferenceForCodeSourceOfB() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToCodes(Constructors.createConceptReferenceList("Patient"));
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set, Direction.SOURCE_OF, -1, Constructors.createNameAndValueList("association", "subClassOf"));
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientWalkingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HealthyPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("CancerPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickCancerPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("TotalPerson")));
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForCodeAndAssociationTargetOfEmptyGraph() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToCodes(Constructors.createConceptReferenceList("C48323"));
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(
+				set, 
+				Direction.TARGET_OF,
+				-1,
+				 Constructors.createNameAndValueList("associations", "AllDifferent"));
+		assertNotNull(refs);
+		assertFalse(refs.size() > 0);
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForCodeAndAssociationSourceOfEmptyGraph() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToCodes(Constructors.createConceptReferenceList("C48323"));
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(
+				set, 
+				Direction.SOURCE_OF,
+				-1,
+				 Constructors.createNameAndValueList("associations", "AllDifferent"));
+		assertNotNull(refs);
+		assertFalse(refs.size() > 0);
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForCodeAndAssociationTargetOf() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToCodes(Constructors.createConceptReferenceList("C48323"));
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(
+				set, Direction.TARGET_OF, -1, 
+				Constructors.createNameAndValueList("association", "Concept_In_Subset"));
+		assertTrue(refs.size() > 0);
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("C99999")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("C99998")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("C99988")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("C99989")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C54453")));
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForCodeAndAssociationSourceOf() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToCodes(Constructors.createConceptReferenceList("C48323"));
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(
+				set, Direction.SOURCE_OF, -1, 
+				Constructors.createNameAndValueList("association", "Concept_In_Subset"));
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C99999")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C99998")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C99988")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("C99989")));
+		assertFalse(refs.stream().anyMatch(x -> x.getCode().equals("C54453")));
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForForCodeAndAssociationSourceOF() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToCodes(Constructors.createConceptReferenceList("NeoplasticDisease"));
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set, Direction.SOURCE_OF, -1, Constructors.createNameAndValueList("association", "gene_related_to_disease" ));
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SHH")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SOS")));
 	}
 	
 	
