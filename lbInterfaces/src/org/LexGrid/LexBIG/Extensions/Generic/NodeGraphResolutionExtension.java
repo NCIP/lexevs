@@ -362,10 +362,12 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 
 	
 	/**
-	 * @param cns This CodedNodeSet must have a set of restrictions appropriate for query building and fully ready to be resolved.
-	 * @param direction incoming or outgoing edges will have to be designated by one of these Enumerations
-	 * @param depth This allows depth control of the query including resolving only neighbors or a full resolution if depth is known
-	 * @param association The name of the edge in the graph (will have to be a supported association the code system)
+	 * @param cns This CodedNodeSet must have a set of restrictions appropriate for query building and fully ready to be resolved. Cannot be null
+	 * @param direction incoming or outgoing edges will have to be designated by one of these Enumerations. Cannot be null
+	 * @param depth This allows depth control of the query including resolving only neighbors or a full resolution if depth is known. 
+	 * Entering -1 allows full resolution,  0 will return null
+	 * @param associations The name or names of the edges in the graph. (Must exist as a supported association the code system).  
+	 * Null returns all associations
 	 * @return List<ResolvedConceptReference> a list of minimally populated concept references including code, namespace, 
 	 * entity description and coding scheme uri and version. These objects are the result of a graph resolution without 
 	 * any indication of where they existed in the graph before the resolution.
@@ -382,6 +384,9 @@ public interface NodeGraphResolutionExtension extends GenericExtension {
 	* LocalNameList: null No restrictions on property names
 	* PropertyType: null No restrictions on property types
 	* int: 10 Maximum return limited to ten entities
+	* 
+	* Null value for associations will return values for all associations.  Otherwise queries will be generated depending on each
+	* association name.
 	* 
 	* Exceptions would be handled in this method and an appropriately messaged RuntimeException would be thrown on failure.
 	* 

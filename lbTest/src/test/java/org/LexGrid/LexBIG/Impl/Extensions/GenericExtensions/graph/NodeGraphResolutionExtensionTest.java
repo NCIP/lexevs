@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.Direct
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.ModelMatch;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
 import org.junit.Test;
@@ -1140,6 +1141,18 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
+	public void testGetAssociatedConceptsForCode() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set.restrictToMatchingDesignations("PatientWithCold", SearchDesignationOption.ALL, "contains", null);
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set, Direction.TARGET_OF, -1, null);
+		assertNotNull(refs);
+		assertFalse(refs.size() > 0);
+	}
+	
+	
+	@Test
 	public void testGetSystemMetaRepresentationOfDatabases(){
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		List<String> list = ngr.getTerminologyGraphDatabaseList();
@@ -1162,5 +1175,9 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(list.stream().anyMatch(x -> x.equals("has_grain")));
 		assertTrue(list.stream().anyMatch(x -> x.equals("IAO_0000116")));
 		assertTrue(list.stream().anyMatch(x -> x.equals("IAO_0000136")));
+	}
+	
+	private LexBIGServiceImpl getLexBIGService(){
+		return LexBIGServiceImpl.defaultInstance();
 	}
 }

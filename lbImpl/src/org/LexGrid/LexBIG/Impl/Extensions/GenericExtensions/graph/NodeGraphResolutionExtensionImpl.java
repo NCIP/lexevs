@@ -1,6 +1,7 @@
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,8 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
 import org.lexevs.dao.database.graph.rest.client.LexEVSSpringRestClientImpl;
 import org.lexevs.logging.LoggerFactory;
+
+import com.hp.hpl.jena.sparql.function.library.namespace;
 
 public class NodeGraphResolutionExtensionImpl extends AbstractExtendable implements NodeGraphResolutionExtension {
 
@@ -452,6 +455,29 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         
     }
     
+    protected List<ResolvedConceptReference> processVertexesForMinimallyResolvedList(
+            ResolvedConceptReference[] list, 
+            Direction direction, 
+            int depth, 
+            AbsoluteCodingSchemeVersionReference ref, 
+            String associationName){
+        LexEVSSpringRestClientImpl lexClientService = getGraphClientService();
+        //We are creating a map from an entity code to a list of vertexes resolved from a graph
+        //and eventually combining that group of lists to single list of distinct vertexes
+        return Stream.of(list)
+                .map(x -> lexClientService.getVertexesForGraphNode(direction.getDirection(), depth, 
+                        getNormalizedDbNameForTermServiceIdentifiers(ref),
+                        associationName, 
+                        x.getCode()))
+                .flatMap(y -> y.stream())
+                .map(z -> 
+                        createResolvedConceptReference(z.getCode(), z.getNamespace(), z.getDescription()))
+        //Stateful filtering where filter calls distinctByProperty once and predicate.test thereafter
+                .filter(distinctByProperty(ConceptReference::getCode))
+                .collect(Collectors.toList());
+        
+    }
+    
     protected List<ConceptReference> processVertexesForMap(
             Map<String, List<String>> map, 
             Direction direction, 
@@ -621,21 +647,34 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
     @Override
     public List<ResolvedConceptReference> getAssociatedConcepts(CodedNodeSet cns, Direction direction, int depth,
             NameAndValueList associations) {
-        ResolvedConceptReferenceList list = null;
-       try {
-       list = cns.resolveToList(null, null, null, 10);
-    } catch (LBInvocationException | LBParameterException e) {
-        throw new RuntimeException("Problem Resolving a search for text and search type", e);
-    }
-       List<ResolvedConceptReference> resolvedList = Arrays.asList(list.getResolvedConceptReference());
-       getAllVerticesForTerms(resolvedList, direction, depth, associations);
-        return null;
-    }
-
-    private void getAllVerticesForTerms(List<ResolvedConceptReference> resolvedList, Direction direction, int depth,
-            NameAndValueList associations) {
-        // TODO Auto-generated method stub
+        //null and forbidden checks
+        if(cns == null){throw new RuntimeException("CodedNodeSet cannot be null");}
+        if(direction == null){throw new RuntimeException("Direction cannot be null");}
+        if(depth == 0){return null;}
         
+        ResolvedConceptReferenceList list = null;
+        try {
+            list = cns.resolveToList(null, null, null, 10);
+            if(list == null || list.getResolvedConceptReferenceCount() == 0){return new ArrayList<ResolvedConceptReference>();}
+         } catch (LBInvocationException | LBParameterException e) {
+             throw new RuntimeException("Problem Resolving a search for text and search type", e);
+         }
+        List<String> validAssociations = null;
+        if(associations == null){ validAssociations = Stream.of(list.getResolvedConceptReference())
+                .map(ref -> 
+                    getValidAssociationsForTargetOrSourceOf(
+                                Constructors.createAbsoluteCodingSchemeVersionReference(
+                                        ref.getCodingSchemeURI(), ref.getCodingSchemeVersion()), ref.getCode()))
+            .flatMap(names -> names.stream())
+            .collect(Collectors.toList());}
+        else{ validAssociations = Stream.of(associations.getNameAndValue())
+                .map(nv -> nv.getContent())
+                .collect(Collectors.toList());}
+       final ResolvedConceptReference[] array = list.getResolvedConceptReference();
+       return validAssociations.stream()
+               .map(association ->processVertexesForMinimallyResolvedList(array, direction, depth, null, association))
+               .flatMap(y -> y.stream())
+               .collect(Collectors.toList());
     }
 
 
