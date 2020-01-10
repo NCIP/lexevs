@@ -26,6 +26,7 @@ import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.Direct
 import org.LexGrid.LexBIG.Extensions.Generic.NodeGraphResolutionExtension.ModelMatch;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
@@ -1141,14 +1142,41 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetAssociatedConceptsForCode() throws LBException{
+	public void testGetAssociatedConceptsForPropertyNoMatch() throws LBException{
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
 				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
-		set.restrictToMatchingDesignations("PatientWithCold", SearchDesignationOption.ALL, "contains", null);
+		set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, null,
+                null,
+                null,
+                "PatientWithCold",
+                "contains", 
+                null);
 		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set, Direction.TARGET_OF, -1, null);
 		assertNotNull(refs);
 		assertFalse(refs.size() > 0);
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForAllAssociationsTarget() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		CodedNodeSet set = ngr.getCodedNodeSetForScheme(ref);
+		set = set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, null,
+                null,
+                null,
+                "Patient",
+                "contains", 
+                null);
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set, Direction.TARGET_OF, -1, null);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+		assertEquals(5, refs.size());
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Cold")));
 	}
 	
 	

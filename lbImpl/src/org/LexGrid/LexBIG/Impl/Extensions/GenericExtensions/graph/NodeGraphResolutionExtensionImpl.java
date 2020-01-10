@@ -466,7 +466,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         //and eventually combining that group of lists to single list of distinct vertexes
         return Stream.of(list)
                 .map(x -> lexClientService.getVertexesForGraphNode(direction.getDirection(), depth, 
-                        getNormalizedDbNameForTermServiceIdentifiers(ref),
+                        getNormalizedDbNameForTermServiceIdentifiers(ref == null? getCSReferenceFromResolvedRefConcept(x): ref),
                         associationName, 
                         x.getCode()))
                 .flatMap(y -> y.stream())
@@ -478,6 +478,13 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         
     }
     
+    private AbsoluteCodingSchemeVersionReference getCSReferenceFromResolvedRefConcept(ResolvedConceptReference x) {
+        AbsoluteCodingSchemeVersionReference ref = new AbsoluteCodingSchemeVersionReference();
+        ref.setCodingSchemeURN(x.getCodingSchemeURI());
+        ref.setCodingSchemeVersion(x.getCodingSchemeVersion());
+        return ref;
+    }
+
     protected List<ConceptReference> processVertexesForMap(
             Map<String, List<String>> map, 
             Direction direction, 
@@ -666,6 +673,7 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                                 Constructors.createAbsoluteCodingSchemeVersionReference(
                                         ref.getCodingSchemeURI(), ref.getCodingSchemeVersion()), ref.getCode()))
             .flatMap(names -> names.stream())
+            .distinct()
             .collect(Collectors.toList());}
         else{ validAssociations = Stream.of(associations.getNameAndValue())
                 .map(nv -> nv.getContent())
