@@ -723,18 +723,15 @@ public class NodeGraphResolutionExtensionTest {
 	
 	@Test
 	public void testOutGoingOnlyEmptyExactMatchCode() {
-		assumeTrue(new GraphDbValidateConnnection(url).connect());
-//		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
-//				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
-//		set.
-//		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
-//				ref, 
-//				"gene_related_to_disease", 
-//				"NeoplasticDisease", 
-//				AlgorithmMatch.EXACT_MATCH, 
-////				ModelMatch.CODE );
-//		assertNotNull(itr);
-//		assertFalse(itr.hasNext());	
+		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
+				ref, 
+				"gene_related_to_disease", 
+				"NeoplasticDisease", 
+				AlgorithmMatch.EXACT_MATCH, 
+				ModelMatch.CODE );
+		assertNotNull(itr);
+		assertFalse(itr.hasNext());	
 	}
 	
 	@Test
