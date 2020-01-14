@@ -39,13 +39,13 @@
 		<result property="associationPredicateId" column="associationPredicateGuid" />
 	</resultMap>
 	
-		<resultMap id="sextupleResult" class="sextuple" groupBy="tripleGuid">
+	<resultMap id="sextupleResult" class="sextuple" groupBy="tripleGuid">
 		<result property="sourceEntityCode" column="sourceEntityCode" />
 		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
-		<result property="sourceEntityDescription" column="description"/>
+		<result property="sourceEntityDescription" column="sourceEntityDescription"/>
 		<result property="targetEntityCode" column="targetEntityCode" />
 		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
-		<result property="targetEntityDescription" column="description"/>
+		<result property="targetEntityDescription" column="targetEntityDescription"/>
 		<result property="associationPredicateId" column="associationPredicateGuid" />
 	</resultMap>
 	
@@ -2517,10 +2517,10 @@
 			SELECT 			
 				eae.sourceEntityCode,
 				eae.sourceEntityCodeNamespace,
-				ent1.description,
+				ent1.description AS sourceEntityDescription,
 				eae.targetEntityCode,
 				eae.targetEntityCodeNamespace,
-				ent2.description,
+				ent2.description AS targetEntityDescription,
 				eae.associationPredicateGuid 
 			FROM 
 				$prefix$entityAssnsToEntity eae 

@@ -77,7 +77,7 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 		}
 		else{
 		LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace(), row.getSourceEntityDescription());
-		LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace(), row.getSourceEntityDescription());
+		LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace(), row.getTargetEntityDescription());
 		ArangoVertexCollection collection = db.graph(associationName)
 				.vertexCollection(getVertexCollectionName(associationName));
 		VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);

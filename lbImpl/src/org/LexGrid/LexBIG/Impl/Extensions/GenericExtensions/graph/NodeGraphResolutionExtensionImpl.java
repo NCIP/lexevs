@@ -40,6 +40,7 @@ import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.SupportedAssociation;
+import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.graph.rest.client.LexEVSSpringRestClientImpl;
 import org.lexevs.logging.LoggerFactory;
 
@@ -261,15 +262,18 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
                         .getVertexesForGraphNode(direction.getDirection(), depth, 
                                 getNormalizedDbNameForTermServiceIdentifiers(reference), associationName, entityCode)
                         .stream()
-                        .map(z -> createResolvedConceptReference(z.getCode(), z.getNamespace(), z.getDescription()))
+                        .map(z -> createResolvedConceptReference(z.getCode(), z.getNamespace(), z.getDescription(), null, null, null))
                         .collect(Collectors.toList());
     }
     
-    private ResolvedConceptReference createResolvedConceptReference( String code, String namespace, String description){
+    private ResolvedConceptReference createResolvedConceptReference( String code, String namespace, String description, String codingSchemeURI, String codingSchemeVersion, String codingSchemeName){
         ResolvedConceptReference ref = new ResolvedConceptReference();
         ref.setCode(code);
         ref.setCodeNamespace(namespace);
         ref.setEntityDescription(Constructors.createEntityDescription(description));
+        ref.setCodingSchemeURI(codingSchemeURI);
+        ref.setCodingSchemeVersion(codingSchemeVersion);
+        ref.setCodingSchemeName(codingSchemeName);
         return ref;
     }
 
@@ -465,17 +469,26 @@ public class NodeGraphResolutionExtensionImpl extends AbstractExtendable impleme
         //We are creating a map from an entity code to a list of vertexes resolved from a graph
         //and eventually combining that group of lists to single list of distinct vertexes
         return Stream.of(list)
-                .map(x -> lexClientService.getVertexesForGraphNode(direction.getDirection(), depth, 
+                .map(x -> getResovledConceptReferencesForVertexList(lexClientService.getVertexesForGraphNode(direction.getDirection(), depth, 
                         getNormalizedDbNameForTermServiceIdentifiers(ref == null? getCSReferenceFromResolvedRefConcept(x): ref),
                         associationName, 
-                        x.getCode()))
+                        x.getCode()), x))
                 .flatMap(y -> y.stream())
-                .map(z -> 
-                        createResolvedConceptReference(z.getCode(), z.getNamespace(), z.getDescription()))
         //Stateful filtering where filter calls distinctByProperty once and predicate.test thereafter
                 .filter(distinctByProperty(ConceptReference::getCode))
                 .collect(Collectors.toList());
         
+    }
+    
+    private List<ResolvedConceptReference> getResovledConceptReferencesForVertexList(List<LexVertex> vertexes, ResolvedConceptReference startVertex){
+        return vertexes.stream().map(x -> createResolvedConceptReference(
+                x.getCode(), 
+                x.getNamespace(), 
+                x.getDescription(), 
+                startVertex.getCodingSchemeURI(), 
+                startVertex.getCodingSchemeVersion(), 
+                startVertex.getCodingSchemeName()))
+                .collect(Collectors.toList());
     }
     
     private AbsoluteCodingSchemeVersionReference getCSReferenceFromResolvedRefConcept(ResolvedConceptReference x) {

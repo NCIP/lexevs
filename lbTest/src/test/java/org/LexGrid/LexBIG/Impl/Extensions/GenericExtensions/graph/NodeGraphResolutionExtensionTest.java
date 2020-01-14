@@ -1159,7 +1159,7 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testGetAssociatedConceptsForAllAssociationsTarget() throws LBException{
+	public void testGetAssociatedConceptsForAllAssociationsTargetContains() throws LBException{
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
 		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
 				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
@@ -1173,11 +1173,35 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(refs);
 		assertTrue(refs.size() > 0);
 		assertEquals(5, refs.size());
+		refs.get(0).getCodingSchemeURI();
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
-		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("MildlySickPatient")));
+		assertNotNull(refs.stream().filter(x -> x.getCode().equals("MildlySickPatient")).findAny().get().getEntityDescription().getContent());
+		assertEquals(refs.stream().filter(x -> x.getCode().equals("MildlySickPatient")).findAny().get().getEntityDescription().getContent(), "MildlySickPatient");
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Patient")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+		assertEquals(refs.stream().filter(x -> x.getCode().equals("SickPatient")).findAny().get().getCodingSchemeURI(), "http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl");
+		assertEquals(refs.stream().filter(x -> x.getCode().equals("SickPatient")).findAny().get().getCodingSchemeVersion(), "0.1.5");
+		assertEquals(refs.stream().filter(x -> x.getCode().equals("SickPatient")).findAny().get().getCodingSchemeName(), "owl2lexevs");
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Cold")));
+	}
+	
+	@Test
+	public void testGetAssociatedConceptsForAllAssociationsTargetExactMatch() throws LBException{
+		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		CodedNodeSet set = getLexBIGService().getCodingSchemeConcepts("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 
+				Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"));
+		set = set.restrictToMatchingProperties(null, new PropertyType[]{PropertyType.PRESENTATION}, null,
+                null,
+                null,
+                "Patient",
+                "exactMatch", 
+                null);
+		List<ResolvedConceptReference> refs = ngr.getAssociatedConcepts(set, Direction.TARGET_OF, -1, null);
+		assertNotNull(refs);
+		assertTrue(refs.size() > 0);
+ 		assertEquals(1, refs.size());
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("Person")));
 	}
 	
 	@Test
@@ -1198,6 +1222,9 @@ public class NodeGraphResolutionExtensionTest {
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("patient_has_prognosis")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("SickPatient")));
 		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientDrivingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HappyPatientWalkingAround")));
+		assertTrue(refs.stream().anyMatch(x -> x.getCode().equals("HealthyPatient")));
 	}
 	
 	@Test
