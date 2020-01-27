@@ -375,8 +375,9 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testInGoingOnlyLuceneProperty4() {
+	public void testInGoingOnlyLuceneProperty4() throws InterruptedException {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		Thread.sleep(1000);
 		AbsoluteCodingSchemeVersionReference ref = 
 				Constructors.createAbsoluteCodingSchemeVersionReference(
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
@@ -402,8 +403,9 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testInGoingOnlyEmptyLuceneProperty() {
+	public void testInGoingOnlyEmptyLuceneProperty() throws InterruptedException {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		Thread.sleep(1000);
 		AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				ref, 
@@ -417,8 +419,9 @@ public class NodeGraphResolutionExtensionTest {
 	}
 	
 	@Test
-	public void testOutGoingOnlyExactMatchCode() {
+	public void testOutGoingOnlyExactMatchCode() throws InterruptedException {
 		assumeTrue(new GraphDbValidateConnnection(url).connect());
+		Thread.sleep(1000);
 		AbsoluteCodingSchemeVersionReference ref = 
 				Constructors.createAbsoluteCodingSchemeVersionReference(
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
