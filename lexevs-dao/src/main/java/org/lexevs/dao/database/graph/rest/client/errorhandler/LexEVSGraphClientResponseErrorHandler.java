@@ -24,7 +24,9 @@ public class LexEVSGraphClientResponseErrorHandler implements ResponseErrorHandl
  
         return (
           httpResponse.getStatusCode().series() == HttpStatus.Series.CLIENT_ERROR 
-          || httpResponse.getStatusCode().series() == HttpStatus.Series.SERVER_ERROR);
+          || httpResponse.getStatusCode().series() == HttpStatus.Series.SERVER_ERROR
+        		  || httpResponse.getStatusCode().series() ==HttpStatus.Series.INFORMATIONAL
+        				  || httpResponse.getStatusCode().series() == HttpStatus.Series.REDIRECTION);
     }
  
 
