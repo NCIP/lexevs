@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class NodeGraphResolutionExtensionTest {
@@ -42,7 +43,7 @@ public class NodeGraphResolutionExtensionTest {
 	public static String url;
 
 
-	@Before
+	@BeforeClass
 	public void setUp() throws Exception {
 		ngr = (NodeGraphResolutionExtensionImpl) LexBIGServiceImpl
 				.defaultInstance()
