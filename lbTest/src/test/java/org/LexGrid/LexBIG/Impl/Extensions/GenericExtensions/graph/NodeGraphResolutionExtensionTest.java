@@ -37,14 +37,14 @@ import org.junit.Test;
 public class NodeGraphResolutionExtensionTest {
 
 	
-	NodeGraphResolutionExtensionImpl ngr;
+	static NodeGraphResolutionExtensionImpl ngr;
 	Properties p;
 	
 	public static String url;
 
 
 	@BeforeClass
-	public void setUp() throws Exception {
+	public static void setUp() throws Exception {
 		ngr = (NodeGraphResolutionExtensionImpl) LexBIGServiceImpl
 				.defaultInstance()
 				.getGenericExtension("NodeGraphResolution");
