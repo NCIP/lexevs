@@ -60,6 +60,36 @@ public class TestUntokenizedQualifierForSourceCode extends LexBIGServiceTestCase
         assertTrue(Stream.of(nodeRefs.getResolvedConceptReference())
         		.anyMatch(x -> entityPropertyQualifierExistsForValue(x , "CTESTCODETOO")));
 	}
+	
+	@Test
+	public void testBadTestCode() throws LBException {
+        CodedNodeSet cns = ServiceHolder.instance().getLexBIGService()
+        		.getCodingSchemeConcepts(OWL2_SNIPPET_INDIVIDUAL_URN, 
+        				Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION));
+        cns.restrictToProperties(null, 
+        		new PropertyType[]{PropertyType.PRESENTATION}, 
+        		null, 
+        		null, 
+        		Constructors.createNameAndValueList("source-code", "BLACKER"));
+        ResolvedConceptReferenceList nodeRefs = cns.resolveToList(null, null, null, -1);
+        assertNotNull(nodeRefs);
+        assertFalse(nodeRefs.getResolvedConceptReferenceCount() > 0);
+	}
+	
+	@Test
+	public void testBadTestCodeBadQualSearch() throws LBException {
+        CodedNodeSet cns = ServiceHolder.instance().getLexBIGService()
+        		.getCodingSchemeConcepts(OWL2_SNIPPET_INDIVIDUAL_URN, 
+        				Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION));
+        cns.restrictToProperties(null, 
+        		new PropertyType[]{PropertyType.PRESENTATION}, 
+        		null, 
+        		null, 
+        		Constructors.createNameAndValueList("source-code", "ctestcode"));
+        ResolvedConceptReferenceList nodeRefs = cns.resolveToList(null, null, null, -1);
+        assertNotNull(nodeRefs);
+        assertFalse(nodeRefs.getResolvedConceptReferenceCount() > 0);
+	}
 
 	@Override
 	protected String getTestID() {

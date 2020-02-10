@@ -370,18 +370,19 @@ public abstract class LuceneLoaderCode {
             StringBuffer temp = new StringBuffer();
             for (int i = 0; i < qualifiers.length; i++) {
             	if(qualifiers[i].qualifierName.equals("source-code")){
-            		generator_.addTextField("hasSource", qualifiers[i].qualifierName, false, true, false);
+            		generator_.addTextField("hasSource", qualifiers[i].qualifierName, true, true, false);
             		if(qualifiers[i].qualifierValue != null){
-            		generator_.addTextField("sourceValue", qualifiers[i].qualifierValue, false, true, false);
+            		generator_.addTextField("sourceValue", qualifiers[i].qualifierValue, true, true, false);
             		}
-            	}
+            	}else{
                 temp.append(qualifiers[i].qualifierName + QUALIFIER_NAME_VALUE_SPLIT_TOKEN
                         + qualifiers[i].qualifierValue);
                 if (i + 1 < qualifiers.length) {
                     temp.append(STRING_TOKENIZER_TOKEN);
                 }
+            	}
             }
-            generator_.addTextField("qualifiers", temp.toString(), false, true, true);
+            if(temp.length() > 0){ generator_.addTextField("qualifiers", temp.toString(), false, true, true);}
         }
 
         return generator_.getDocument();

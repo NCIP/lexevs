@@ -291,7 +291,7 @@ public class RestrictionImplementations {
             // propertyQualifiers
             if (propertyQualifiers != null && propertyQualifiers.getNameAndValueCount() > 0) {
                 BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
-                nestedQuery.setMinimumNumberShouldMatch(1);
+             //   nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < propertyQualifiers.getNameAndValueCount(); i++) {
                     NameAndValue qualNameAndValue = propertyQualifiers.getNameAndValue(i);
@@ -300,25 +300,28 @@ public class RestrictionImplementations {
                     if(name.equals("source-code")){
                         BooleanQuery.Builder deepQuery = new BooleanQuery.Builder();
                         deepQuery.setMinimumNumberShouldMatch(1);
-                        deepQuery.add(new BooleanClause(new TermQuery(new Term("hasSource", name)), Occur.SHOULD));
+
+                        deepQuery.add(new BooleanClause(new TermQuery(new Term("hasSource", name)), Occur.MUST));
                             if(value != null){
-                                deepQuery.add(new BooleanClause(new TermQuery(new Term("sourceValue", value)), Occur.SHOULD));
+                                deepQuery.add(new BooleanClause(new TermQuery(new Term("sourceValue", value)), Occur.MUST));
                             }
                             
                        
-                        nestedQuery.add(new BooleanClause(deepQuery.build(), Occur.MUST));
-                        }
+                       nestedQuery.add(new BooleanClause(deepQuery.build(), Occur.SHOULD));
+                        }else{
                     QueryParser parser = new QueryParser("qualifiers",LuceneLoaderCode.getAnaylzer());
                     Query queryNameAndValue = parser.parse("\"" +name
                                 + LuceneLoaderCode.QUALIFIER_NAME_VALUE_SPLIT_TOKEN
                                 + value + "\"");
                     Query nameOnly = parser.parse(name
                             + "*");
+                       
                     if(StringUtils.isNotBlank(value)){
                         nestedQuery.add(new BooleanClause(queryNameAndValue, Occur.SHOULD));
                     } else {
                         nestedQuery.add(new BooleanClause(nameOnly, Occur.SHOULD));
                     }
+                        }
                 }
                 masterQuery.add(nestedQuery.build(), Occur.MUST);
             }

@@ -2281,8 +2281,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <term-source rdf:datatype="http://www.w3.org/2001/XMLSchema#string">NCI</term-source>
     </owl:Axiom>
         <owl:Axiom>
-        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
-        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/CL_0000000"/>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Clinical_Infection"/>
+        <owl:annotatedTarget rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#Clinical_Infection"/>
         <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
         <P385>CTESTCODETOO</P385>
     </owl:Axiom>
@@ -2326,6 +2326,12 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <obo:IAO_0000111 rdf:datatype="http://www.w3.org/2001/XMLSchema#string">survival assessment</obo:IAO_0000111>
         <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000123"/><!-- metadata incomplete -->
     </owl:Class>
+        <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://purl.obolibrary.org/obo/OBI_0000699"/>
+        <owl:annotatedTarget rdf:resource="http://purl.obolibrary.org/obo/OBI_0000699"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <note>CTESTCODE not source code</note>
+    </owl:Axiom>
     
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C61410">
         <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54443"/>
