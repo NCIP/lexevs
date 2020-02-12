@@ -171,4 +171,7 @@ public interface EntityDao extends LexGridSchemaVersionAwareDao {
 	public EntityDescription getEntityDescription(String codingSchemeUid, String entityCode, String entityCodeNamespace);
 
 	public List<String> getDistinctEntityNamespacesFromCode(String codingSchemeUId, String entityCode);
+
+	public String getEntityDescriptionAsString(String codingSchemeUid,
+			String entityCode, String entityCodeNamespace);
 }

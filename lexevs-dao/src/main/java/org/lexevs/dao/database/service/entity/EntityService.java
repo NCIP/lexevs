@@ -264,4 +264,7 @@ public interface EntityService {
 	 */
 	public EntityDescription getEntityDescription(String codingSchemeURI, String version,
 			String code, String codeNamespace);
+
+	public String getEntityDescriptionAsString(String codingSchemeUri, String codingSchemeVersion, String entityCode,
+			String entityCodeNamespace);
 }

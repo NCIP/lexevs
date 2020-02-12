@@ -7,22 +7,22 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 
-public class GraphNodeContentTrackingIterator implements Iterator<ConceptReference>, Iterable<ConceptReference>, Serializable {
+public class GraphNodeContentTrackingIterator<T> implements Iterator<T>, Iterable<T>, Serializable {
 
 
     /**
      * 
      */
     private static final long serialVersionUID = 2508802737228472504L;
-    private List<ConceptReference> cache = new ArrayList<ConceptReference>();
+    private List<T> cache = new ArrayList<T>();
     private int inCachePosition = 0;
     
-    public GraphNodeContentTrackingIterator(List<ConceptReference> list){
+    public GraphNodeContentTrackingIterator(List<T> list){
         this.cache = list;
     }
     
     @Override
-    public Iterator<ConceptReference> iterator() {
+    public Iterator<T> iterator() {
         return this;
     }
 
@@ -35,7 +35,7 @@ public class GraphNodeContentTrackingIterator implements Iterator<ConceptReferen
     }
 
     @Override
-    public ConceptReference next() {
+    public T next() {
         if (!hasNext()) {
             throw new RuntimeException("Iterator is Empty");
         }

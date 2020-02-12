@@ -90,6 +90,10 @@
 		class="entityDescription">
 		<result property="content" column="description" />
 	</resultMap>
+	
+	<resultMap id="stringResult" class="string">
+		<result property="java.lang.String" column="description" />
+	</resultMap>
 		
 	<select id="getResolvedCodedNodeReferenceByCodeAndNamespace" 
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
@@ -694,6 +698,20 @@
 				entity.entityCode = #param2#
 				AND
 				entity.entityCodeNamespace = #param3# 
+	</select>	
+	
+	<select id="getEntityDescriptionAsString" 
+		remapResults="true"
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+		resultClass="string">
+			SELECT
+				description
+			FROM
+				$prefix$entity entity
+			WHERE
+				entity.entityCode = #param1#
+				AND
+				entity.entityCodeNamespace = #param1# 
 	</select>	
 	
 	<select id="getDistinctNamespaces" 

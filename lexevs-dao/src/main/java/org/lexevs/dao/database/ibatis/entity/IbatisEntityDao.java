@@ -128,6 +128,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	
 	private static String GET_ENTITY_DESCRIPTION_SQL = ENTITY_NAMESPACE + "getEntityDescription";
 	
+	private static String GET_ENTITY_DESCRIPTION_STRING = ENTITY_NAMESPACE + "getEntityDescriptionAsString";
+	
 	private static String GET_DISTINCT_ENTITY_NAMESPACES_SQL = ENTITY_NAMESPACE + "getDistinctNamespaces";
 	
 	/** The ENTITY. */
@@ -836,6 +838,25 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		return (EntityDescription) this.getSqlMapClientTemplate().queryForObject(
 				GET_ENTITY_DESCRIPTION_SQL,
+				bean);
+	}
+	
+	@Override
+	public String getEntityDescriptionAsString(String codingSchemeUid,
+			String entityCode, String entityCodeNamespace) {
+		PrefixedParameterTuple bean = 
+			new PrefixedParameterTuple(
+					codingSchemeUid, 
+					entityCode, 
+					entityCodeNamespace);
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUid);
+		
+		bean.setPrefix(prefix);
+		
+		return  (String) this.getSqlMapClientTemplate().queryForObject(
+				GET_ENTITY_DESCRIPTION_STRING,
 				bean);
 	}
 }

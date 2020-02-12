@@ -17,6 +17,7 @@ public class LoadGraphDBDataTest {
 				.getRels2graph();
 		LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getGraphingDatabaseService()
 				.loadGraphsForTerminologyURIAndVersion("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
+		Thread.sleep(30000);
 		lbs = LexBIGServiceImpl.defaultInstance();
 	}
 	

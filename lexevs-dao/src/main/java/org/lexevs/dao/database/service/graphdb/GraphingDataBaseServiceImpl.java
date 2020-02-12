@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.graph.LexEVSRelsToGraphDao;
 import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
@@ -44,7 +45,7 @@ public class GraphingDataBaseServiceImpl implements GraphingDataBaseService {
 	@Override
 	public void loadGraph(String graphName, String uri, String version) {
 		long start = System.currentTimeMillis();
-		List<Triple> triples = rels2graph.getValidTriplesForAssociationNames(graphName, uri, version);
+		List<Sextuple> triples = rels2graph.getValidSextuplesForAssociationNames(graphName, uri, version);
 		final String normGraphName = GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(graphName);
 		logger.info("Starting load of : " + triples.size() + " edges for graph " + normGraphName);
 		System.out.println("Starting load of : " + triples.size() + " edges for graph " + normGraphName);
