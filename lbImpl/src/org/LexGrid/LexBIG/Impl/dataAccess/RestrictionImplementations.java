@@ -291,7 +291,7 @@ public class RestrictionImplementations {
             // propertyQualifiers
             if (propertyQualifiers != null && propertyQualifiers.getNameAndValueCount() > 0) {
                 BooleanQuery.Builder nestedQuery = new BooleanQuery.Builder();
-             //   nestedQuery.setMinimumNumberShouldMatch(1);
+                nestedQuery.setMinimumNumberShouldMatch(1);
 
                 for (int i = 0; i < propertyQualifiers.getNameAndValueCount(); i++) {
                     NameAndValue qualNameAndValue = propertyQualifiers.getNameAndValue(i);
@@ -299,7 +299,7 @@ public class RestrictionImplementations {
                     String value = qualNameAndValue.getContent();
                     if(name.equals("source-code")){
                         BooleanQuery.Builder deepQuery = new BooleanQuery.Builder();
-                        deepQuery.setMinimumNumberShouldMatch(1);
+                        //deepQuery.setMinimumNumberShouldMatch(1);
 
                         deepQuery.add(new BooleanClause(new TermQuery(new Term("hasSource", name)), Occur.MUST));
                             if(value != null){
