@@ -16,9 +16,9 @@
  #      for view in a standard web browser: this is the default
  #      if no other option is specified.
  #  -v,--verify
- #  	Basic verification that LexEVS is configured properly 
+ #  	Basic verification that LexEVS is configured properly
  #	    and basic systems are functioning.
- # 
+ #
  # Example: TestRunner -h
  #
-java -Xmx1600m -XX:MaxPermSize=256m -cp ./lbTest.jar:../runtime-components/lexbig.jar:../runtime-components/extLib/*:./extlib/ant/ant-1.7.0.jar:./extlib/ant/ant-junit-1.7.0.jar:./extlib/ant/ant-trax-1.7.0.jar:./extlib/ant/ant-launcher-1.7.0.jar:./extlib/junit/junit-4.4.jar bvt.TestRunner $@
+java -Xmx1600m -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n -cp ./lbTest.jar:../runtime-components/lexbig.jar:../runtime-components/extLib/*:./extlib/ant/ant-1.7.0.jar:./extlib/ant/ant-junit-1.7.0.jar:./extlib/ant/ant-trax-1.7.0.jar:./extlib/ant/ant-launcher-1.7.0.jar:./extlib/junit/junit-4.4.jar bvt.TestRunner $@

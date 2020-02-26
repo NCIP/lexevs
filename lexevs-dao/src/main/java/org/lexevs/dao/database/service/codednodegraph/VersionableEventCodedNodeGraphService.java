@@ -34,6 +34,7 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
@@ -961,6 +962,21 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 				codingSchemeUri, 
 				codingSchemeVersion).
 			getValidTriplesOfAssociation(codingSchemeUid,
+							uid);
+	}
+	
+	@Override
+	public List<Sextuple> getValidSextuplesOfAssociation(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String uid) {
+	String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+				codingSchemeUri, 
+				codingSchemeVersion).
+			getValidSexTuplesOfAssociation(codingSchemeUid,
 							uid);
 	}
 	

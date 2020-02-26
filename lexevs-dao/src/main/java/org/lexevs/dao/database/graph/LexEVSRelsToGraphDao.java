@@ -7,6 +7,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.lexevs.dao.database.access.association.model.LexVertex;
 import org.lexevs.dao.database.access.association.model.NodeEdge;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.datasource.ErrorReportingGraphDbDataSourceManager;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -36,7 +37,7 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 				.getAssociationPredicateNamesForCodingScheme(uri, version, null);
 	}
 
-	public List<Triple> getValidTriplesForAssociationNames(String association, String codingSchemeUri, String version) {
+	public List<Sextuple> getValidSextuplesForAssociationNames(String association, String codingSchemeUri, String version) {
 		if(association == null || codingSchemeUri == null || version == null)
 		{
 			throw new RuntimeException("Association, coding scheme uri, and coding scheme version, must not be null to get valid scheme triples");
@@ -47,10 +48,10 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 				.getAssociationPredicateUidsForNames(codingSchemeUri, version, null, associationNames);
 		String uid = uids.get(0);
 		return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService()
-				.getValidTriplesOfAssociation(codingSchemeUri, version, uid);
+				.getValidSextuplesOfAssociation(codingSchemeUri, version, uid);
 	}
 
-	public void processEdgeAndVertexToGraphDb(Triple row, String associationName, ArangoDatabase db) {
+	public void processEdgeAndVertexToGraphDb(Sextuple row, String associationName, ArangoDatabase db) {
 		if(row == null || associationName == null || db == null)
 		{   logger.error("Database instance, association triple, and association name, "
 				+ "must not be null to process triple to the graph data base");
@@ -66,7 +67,7 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 			+ " A node with an edge that points back to itself will not be stored. " +
 					"If the node is not in a collection, "
 					+ "it will be stored for possible use in a legitimate relationship");
-			LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
+			LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace(), row.getSourceEntityDescription());
 			ArangoVertexCollection collection = db.graph(associationName)
 					.vertexCollection(getVertexCollectionName(associationName));
 			VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);
@@ -75,8 +76,8 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 			}
 		}
 		else{
-		LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace());
-		LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace());
+		LexVertex A = new LexVertex(row.getSourceEntityCode(), row.getSourceEntityNamespace(), row.getSourceEntityDescription());
+		LexVertex B = new LexVertex(row.getTargetEntityCode(), row.getTargetEntityNamespace(), row.getTargetEntityDescription());
 		ArangoVertexCollection collection = db.graph(associationName)
 				.vertexCollection(getVertexCollectionName(associationName));
 		VertexEntity Aa = collection.getVertex(A.getCode(), VertexEntity.class);

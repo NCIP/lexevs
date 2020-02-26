@@ -6,4 +6,4 @@
 #
 # Example: LoadGraphDatabase -in "http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#" -v "18.05b"
 #
-java -Xmx1000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadGraphDatabase $@
+java -Xmx6000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadGraphDatabase $@

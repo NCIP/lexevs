@@ -5,6 +5,7 @@
 
 	<typeAlias alias="node" type="org.lexevs.dao.database.access.association.model.Node"/>
 	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
+	<typeAlias alias="sextuple" type="org.lexevs.dao.database.access.association.model.Sextuple"/>
 	<typeAlias alias="graphdbTriple" type="org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple"/>
 	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept"/>
 	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
@@ -35,6 +36,16 @@
 		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
 		<result property="targetEntityCode" column="targetEntityCode" />
 		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+		<result property="associationPredicateId" column="associationPredicateGuid" />
+	</resultMap>
+	
+	<resultMap id="sextupleResult" class="sextuple" groupBy="tripleGuid">
+		<result property="sourceEntityCode" column="sourceEntityCode" />
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
+		<result property="sourceEntityDescription" column="sourceEntityDescription"/>
+		<result property="targetEntityCode" column="targetEntityCode" />
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+		<result property="targetEntityDescription" column="targetEntityDescription"/>
 		<result property="associationPredicateId" column="associationPredicateGuid" />
 	</resultMap>
 	
@@ -2481,6 +2492,35 @@
 				eae.sourceEntityCodeNamespace,
 				eae.targetEntityCode,
 				eae.targetEntityCodeNamespace,
+				eae.associationPredicateGuid 
+			FROM 
+				$prefix$entityAssnsToEntity eae 
+			RIGHT JOIN 
+				$prefix$entity ent1 
+			ON 
+				eae.sourceEntityCode = ent1.entityCode 
+			RIGHT JOIN 
+				$prefix$entity ent2 
+			ON 
+				eae.targetEntityCode = ent2.entityCode 
+			WHERE 
+				eae.associationPredicateGuid = #param1# 
+			AND 
+				(ent1.isAnonymous = '0' OR ent1.isAnonymous is null)
+			AND 
+				(ent2.isAnonymous = '0' OR ent2.isAnonymous is null)
+		</select>
+		
+		<select id="getValidSextuplesForAssociationPredicateGuid" remapResults="true" 
+		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
+		 resultMap="Association.sextupleResult">
+			SELECT 			
+				eae.sourceEntityCode,
+				eae.sourceEntityCodeNamespace,
+				ent1.description AS sourceEntityDescription,
+				eae.targetEntityCode,
+				eae.targetEntityCodeNamespace,
+				ent2.description AS targetEntityDescription,
 				eae.associationPredicateGuid 
 			FROM 
 				$prefix$entityAssnsToEntity eae 

@@ -28,6 +28,7 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Sextuple;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.model.ColumnSortType;
@@ -625,6 +626,8 @@ public interface CodedNodeGraphService {
 	public Integer validateNodeForAssociation(String codingSchemeUri, String codingSchemeVersion, String associationName, String code);
 	
 	public List<String> getValidAssociationsforTargetandSourceOf(String codingSchemeUri, String codingSchemeVersion, String code);
+
+	public List<Sextuple> getValidSextuplesOfAssociation(String codingSchemeUri, String codingSchemeVersion, String uid);
 
 
 }
