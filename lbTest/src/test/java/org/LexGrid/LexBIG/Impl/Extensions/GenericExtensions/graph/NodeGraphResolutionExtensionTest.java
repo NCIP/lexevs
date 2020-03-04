@@ -349,14 +349,13 @@ public class NodeGraphResolutionExtensionTest {
 				Constructors.createAbsoluteCodingSchemeVersionReference(
 						"http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", "0.1.5");
 		List<String> codes = new ArrayList<String>();
-		codes.add("EpithelialCell");
-		codes.add("CL_0000148");
+		codes.add("Infectious_Disorder");
 		GraphNodeContentTrackingIterator<ConceptReference> itr = (GraphNodeContentTrackingIterator<ConceptReference>) 
-				ngr.getConceptReferencesForTextSearchAndAssociationSourceOf(
+				ngr.getConceptReferencesForTextSearchAndAssociationTargetOf(
 				-1, 
 				ref, 
 				"subClassOf", 
-				"obo",
+				"http",
 				AlgorithmMatch.CONTAINS, 
 				ModelMatch.PROPERTY,
 				null,
@@ -364,8 +363,7 @@ public class NodeGraphResolutionExtensionTest {
 		assertNotNull(itr);
 		assertTrue(itr.hasNext());
 		assertNotSame(3, itr.getTotalCacheSize());
-		assertEquals(2, itr.getTotalCacheSize());
-		assertTrue(codes.remove(itr.next().getCode()));
+		assertEquals(1, itr.getTotalCacheSize());
 		assertTrue(codes.remove(itr.next().getCode()));
 		assertFalse(itr.hasNext());
 				
