@@ -223,6 +223,21 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
+	@SuppressWarnings("unchecked")
+	public void testResolveMappingSourceAndTargetsBadCodeQuery() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+				
+		Mapping mapping = mappingExtension.getMapping(MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("fadfadfas"), SearchContext.SOURCE_OR_TARGET_CODES);
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		assertFalse(itr.hasNext());
+	}
+	
+	@Test
 	public void testResolveMappingSourceAndTargetsHasEverything() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
