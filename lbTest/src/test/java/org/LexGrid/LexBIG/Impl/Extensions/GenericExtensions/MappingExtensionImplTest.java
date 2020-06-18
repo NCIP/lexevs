@@ -72,102 +72,6 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		return testID;
 	}
 	
-	//Testing Private supporting methods
-	@Category(RemoveFromDistributedTests.class)
-	@Test
-	public void testGetTargetSchemeReference() throws LBException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
-		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-	
-		CodedNodeSetBackedMapping mapping = (CodedNodeSetBackedMapping)mappingExtension.getMapping(
-				MAPPING_SCHEME_URI, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
-				"AutoToGMPMappings");
-		
-		java.lang.reflect.Method schemeResolveMethod = CodedNodeSetBackedMapping.class.getDeclaredMethod("resolveMappingMetaData");
-		schemeResolveMethod.setAccessible(true);
-		CodingScheme scheme = (CodingScheme)schemeResolveMethod.invoke(mapping);
-		java.lang.reflect.Method method = CodedNodeSetBackedMapping.class.getDeclaredMethod("getTargetSchemeReference", CodingScheme.class);
-		method.setAccessible(true);
-		AbsoluteCodingSchemeVersionReference ref = (AbsoluteCodingSchemeVersionReference)method.invoke(mapping, scheme);
-		assertEquals(ref.getCodingSchemeURN(),GMP_URI);
-		assertEquals(ref.getCodingSchemeVersion(),GMP_VERSION);
-	}
-	
-	@Category(RemoveFromDistributedTests.class)
-	@Test
-	public void testGetSourceSchemeReference() throws LBException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
-		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-	
-		Mapping mapping = mappingExtension.getMapping(
-				MAPPING_SCHEME_URI, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
-				"AutoToGMPMappings");
-		java.lang.reflect.Method schemeResolveMethod = CodedNodeSetBackedMapping.class.getDeclaredMethod("resolveMappingMetaData");
-		schemeResolveMethod.setAccessible(true);
-		CodingScheme scheme = (CodingScheme)schemeResolveMethod.invoke(mapping);
-		java.lang.reflect.Method method = CodedNodeSetBackedMapping.class.getDeclaredMethod("getSourceSchemeReference", CodingScheme.class);
-		method.setAccessible(true);
-		AbsoluteCodingSchemeVersionReference ref = (AbsoluteCodingSchemeVersionReference)method.invoke(mapping, scheme);
-		assertEquals(ref.getCodingSchemeURN(), AUTO_URN);
-		assertEquals(ref.getCodingSchemeVersion(),AUTO_VERSION);
-	}
-	
-	@Test
-	public void testGetSourceMappingIdsAndNamespace() throws LBException{
-		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
-		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-	
-		CodedNodeSetBackedMapping mapping = (CodedNodeSetBackedMapping)mappingExtension.getMapping(
-				MAPPING_SCHEME_URI, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
-				"AutoToGMPMappings");
-		Map<String,String> map = mapping.getSourceIdAndNamespaceMap();
-		assertEquals(map.size(), 6);
-		assertTrue(map.containsKey("A0001"));
-		assertFalse(map.containsKey("E0001"));
-	}
-	
-	@Test
-	public void testGetTargetMappingIdsAndNamespace() throws LBException{
-		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
-		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-	
-		CodedNodeSetBackedMapping mapping = (CodedNodeSetBackedMapping)mappingExtension.getMapping(
-				MAPPING_SCHEME_URI, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
-				"AutoToGMPMappings");
-		Map<String,String> map = mapping.getTargetIdAndNamespaceMap();
-		assertEquals(map.size(), 3);
-		assertTrue(map.containsKey("E0001"));
-		assertFalse(map.containsKey("A0001"));
-	}
-	
-	@Category(RemoveFromDistributedTests.class)
-	@Test
-	public void testResolveMappingMetaData() throws LBException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
-		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-	
-		CodedNodeSetBackedMapping mapping = (CodedNodeSetBackedMapping)mappingExtension.getMapping(
-				MAPPING_SCHEME_URI, 
-				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
-				"AutoToGMPMappings");
-		java.lang.reflect.Method schemeResolveMethod = CodedNodeSetBackedMapping.class.getDeclaredMethod("resolveMappingMetaData");
-		schemeResolveMethod.setAccessible(true);
-		CodingScheme scheme = (CodingScheme)schemeResolveMethod.invoke(mapping);
-		assertEquals(scheme.getCodingSchemeURI(), MAPPING_SCHEME_URI);
-		Relations[] rels = scheme.getRelations();
-		assertTrue(Arrays.stream(rels).anyMatch(x -> x.getContainerName().equals("AutoToGMPMappings")));
-		Relations rel = Arrays.stream(rels).filter(x -> x.getContainerName().equals("AutoToGMPMappings")).findFirst().get();
-		assertNotNull(rel);
-		assertEquals(rel.getSourceCodingScheme(),"Automobiles");
-		assertEquals(rel.getTargetCodingScheme(),"GermanMadeParts");
-	}
-	
-	//End of Private supporting methods test
-	
 	@Test
 	public void testIsMappingCodingScheme() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
@@ -316,6 +220,21 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		}
 		
 		assertEquals(6,count);
+	}
+	
+	@Test
+	@SuppressWarnings("unchecked")
+	public void testResolveMappingSourceAndTargetsBadCodeQuery() throws LBException {
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+				
+		Mapping mapping = mappingExtension.getMapping(MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), 
+				"AutoToGMPMappings");
+		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("fadfadfas"), SearchContext.SOURCE_OR_TARGET_CODES);
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		assertFalse(itr.hasNext());
 	}
 	
 	@Test
