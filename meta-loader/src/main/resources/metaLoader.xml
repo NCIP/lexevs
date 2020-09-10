@@ -60,11 +60,7 @@
 		<split id="loadEntitiesAndRelationships" task-executor="taskExecutor">
 	
 			<flow>
-				<step id="loadEntities" parent="metaLoadEntitiesPartitioned" next="index" />
-	
-				<step id="index">
-					<tasklet ref="indexingTasklet" />
-				</step>
+				<step id="loadEntities" parent="metaLoadEntitiesPartitioned" />
 			</flow>
 	
 			<flow>
@@ -81,7 +77,7 @@
 						</chunk>
 					</tasklet>
 				</step>
-				<step id="processAssociations" next="processMrSatAssocQualifiers">
+				<step id="processAssociations" next="index">
 						<tasklet>
 							<chunk reader="mrdocAssociationGroupReader" processor="metaAssociationProcessor"
 								writer="entityListWriter" commit-interval="1">
@@ -91,6 +87,9 @@
 							</chunk>
 						</tasklet>
 					</step>	
+			 <step id="index" next="processMrSatAssocQualifiers">
+					<tasklet ref="indexingTasklet" />
+			 </step>
 			  <step id="processMrSatAssocQualifiers">
 			  			<tasklet>
 							<chunk reader="metaMrsatRuiSkippingReader" processor="metasMrsatQualifierProcessor"
@@ -103,6 +102,7 @@
 								</skippable-exception-classes>
 							</chunk>
 						</tasklet>
+						
 			  </step>
 						
 			</flow>
