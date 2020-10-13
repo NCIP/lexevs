@@ -18,6 +18,7 @@
  */
 package org.lexevs.dao.database.ibatis.ncihistory;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,12 +29,19 @@ import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.SystemRelease;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
+import org.lexevs.cache.annotation.ClearCache;
+import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.ncihistory.NciHistoryDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
+import org.lexevs.dao.database.inserter.BatchInserter;
+import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.springframework.orm.ibatis.SqlMapClientCallback;
+
+import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistoryDao {
 	
@@ -59,7 +67,7 @@ public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistory
 	
 	private static String GET_ANCESTORS_SQL = NCI_HISTORY_NAMESPACE + "getAncestors";
 	
-	private static String INSERT_NCI_CHANGEEVENT_SQL = NCI_HISTORY_NAMESPACE + "insertNciChangeEvent";
+	public static String INSERT_NCI_CHANGEEVENT_SQL = NCI_HISTORY_NAMESPACE + "insertNciChangeEvent";
 	
 	private static String GET_SYSTEMRELEASE_UID_FOR_DATE_SQL = NCI_HISTORY_NAMESPACE + "getSystemReleaseUidForDate";
 	
@@ -243,12 +251,54 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	}
 	
 	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent) {
+
 		this.getSqlMapClientTemplate().insert(INSERT_NCI_CHANGEEVENT_SQL, 
 				new SequentialMappedParameterBean(
 						this.createUniqueId(),
 						releaseUid,
 						changeEvent));	
 	}
+	
+	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent, Inserter inserter) {
+
+		inserter.insert(INSERT_NCI_CHANGEEVENT_SQL, 
+				new SequentialMappedParameterBean(
+						this.createUniqueId(),
+						releaseUid,
+						changeEvent));	
+	}
+	
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@ClearCache 
+	@Override
+	public void insertNciChangeEventBatch(String codingSchemeUri, List<NCIChangeEvent> changeEvents) {
+				
+				this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+				
+					public Object doInSqlMapClient(SqlMapExecutor executor)
+							throws SQLException {
+						BatchInserter batchInserter = getBatchTemplateInserter(executor);
+						
+						batchInserter.startBatch();
+						
+						for(NCIChangeEvent item : changeEvents){
+							Assert.assertNotNull(item);
+							Assert.assertNotNull(item.getEditDate());
+							String systemReleaseUid = getSystemReleaseUidForDate(codingSchemeUri, item.getEditDate());
+							insertNciChangeEvent(
+									systemReleaseUid,
+									item,
+									batchInserter);
+						}
+						
+						batchInserter.executeBatch();
+						
+						return null;
+					}	
+				});
+	}
+
 
 	@Override
 	public String getSystemReleaseUidForDate(String codingSchemeUri,
@@ -286,7 +336,6 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				new SequentialMappedParameterBean(
 						previousDate, currentDate));	
 	}
-	
 	
 
 }

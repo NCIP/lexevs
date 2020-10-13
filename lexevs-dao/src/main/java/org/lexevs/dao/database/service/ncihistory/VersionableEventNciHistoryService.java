@@ -86,6 +86,15 @@ public class VersionableEventNciHistoryService extends AbstractDatabaseService i
 
 		historyDao.insertNciChangeEvent(systemReleaseUid, changeEvent);	
 	}	
+	
+	@Transactional
+	public void insertNCIChangeEventBatch(String codingSchemeUri,
+		List<NCIChangeEvent> changeEvents) {
+		NciHistoryDao historyDao = this.getDaoManager().getNciHistoryDao(
+				codingSchemeUri);
+		historyDao.insertNciChangeEventBatch(codingSchemeUri,
+				changeEvents);	
+	}
 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.ncihistory.NciHistoryService#getBaseLines(java.lang.String, java.util.Date, java.util.Date)
