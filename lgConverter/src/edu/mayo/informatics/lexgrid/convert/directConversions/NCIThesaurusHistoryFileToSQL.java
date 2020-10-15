@@ -317,7 +317,7 @@ public class NCIThesaurusHistoryFileToSQL {
                     md_.fatalAndThrowException("Failure on line " + lineNo, e);
                 } else {
                     md_.error("Error reading line " + lineNo, e);
-                    // go to next line, continue.
+                    e.printStackTrace();
                     line = reader.readLine();
                 }
             }
