@@ -122,8 +122,8 @@ SINGLE_TABLE_MODE=false
 # registry.xml file.
 
 # Examples for DB_URL'
-DB_URL=jdbc:mysql://localhost/lexevs
-#DB_URL=jdbc:mysql://bmidev4:3307/lexevs_
+DB_URL=jdbc:mysql://localhost/lexevs_medra
+#DB_URL=jdbc:mysql://bmidev4:3307/lexevs_medra
 #DB_URL=jdbc:mysql://bmidev4:3306/medra2
 #DB_URL=jdbc:mysql://bmidev4:3307/lexevs
 #DB_URL=jdbc:postgresql://bmidev/LexGrid
@@ -185,7 +185,7 @@ DB_DRIVER=com.mysql.jdbc.Driver
 # If SINGLE_DB_MODE is set to true, the specified account MUST HAVE permission
 # to create and remove tables, indexes, and foreign keys in the database environment.
 DB_USER=root
-DB_PASSWORD=lexgrid
+DB_PASSWORD=root
 
 ############# Password encryption
 
