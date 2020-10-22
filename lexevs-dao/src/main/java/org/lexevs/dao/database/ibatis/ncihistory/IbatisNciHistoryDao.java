@@ -39,6 +39,7 @@ import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.springframework.jdbc.UncategorizedSQLException;
 import org.springframework.orm.ibatis.SqlMapClientCallback;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
@@ -279,13 +280,29 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 					public Object doInSqlMapClient(SqlMapExecutor executor)
 							throws SQLException {
 						BatchInserter batchInserter = getBatchTemplateInserter(executor);
-						
+						String systemReleaseUid = null;
 						batchInserter.startBatch();
 						
 						for(NCIChangeEvent item : changeEvents){
 							Assert.assertNotNull(item);
 							Assert.assertNotNull(item.getEditDate());
-							String systemReleaseUid = getSystemReleaseUidForDate(codingSchemeUri, item.getEditDate());
+						try{
+							systemReleaseUid = getSystemReleaseUidForDate(codingSchemeUri, item.getEditDate());
+							if(systemReleaseUid == null){
+								throw new RuntimeException("There appears to be no system release occurring after the edit date: "
+										+ item.getEditDate()
+										+ " for entity: " 
+										+ item.getConceptcode());
+							}
+						}catch(UncategorizedSQLException e){
+							System.out.println(
+						"Error on Likely duplicate date for two releases for history event with entity code: "
+						+ item.getConceptcode() 
+						+ " and with change date: " 
+						+ item.getEditDate());
+							e.printStackTrace();
+							throw new SQLException("likely same date for multiple releases error");}
+
 							insertNciChangeEvent(
 									systemReleaseUid,
 									item,

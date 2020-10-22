@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -297,7 +298,7 @@ public class NCIThesaurusHistoryFileToSQL {
                 }
                 events.add(event);
                 count++;
-                if(count == 10){
+                if(count == 1000){
                 LexEvsServiceLocator.getInstance().
                     getDatabaseServiceManager().
                         getNciHistoryService().insertNCIChangeEventBatch(codingSchemeUri, events);
@@ -306,23 +307,19 @@ public class NCIThesaurusHistoryFileToSQL {
                 }
                 lineNo++;
                 line = reader.readLine();
-                if(line == null && events.size() < 10){
+                if(line == null && events.size() < 1000){
                     LexEvsServiceLocator.getInstance().
                     getDatabaseServiceManager().
                         getNciHistoryService().insertNCIChangeEventBatch(codingSchemeUri, events);
                 }
             } catch (Exception e) {
-                if (failOnAllErrors) {
-                    // this call rethrow the exception
-                    md_.fatalAndThrowException("Failure on line " + lineNo, e);
-                } else {
-                    md_.error("Error reading line " + lineNo, e);
                     e.printStackTrace();
-                    line = reader.readLine();
-                }
+                    md_.fatalAndThrowException("Error processing history event. See stack trace for details", e); 
             }
 
         }
+        
+        md_.info("LOAD SUCCESSFUL");
         
     }
 

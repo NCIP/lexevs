@@ -71,7 +71,7 @@
 		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
 		resultMap="Common.uidResult">
 		SELECT 
-			MAX(releaseGuid) AS uidKey
+			releaseGuid AS uidKey
 		FROM
 			${defaultPrefix}nciHistSystemRelease systemRelease
 		WHERE

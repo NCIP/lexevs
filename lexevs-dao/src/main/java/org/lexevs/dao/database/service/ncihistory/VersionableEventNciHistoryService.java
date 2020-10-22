@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.service.ncihistory;
 
 import java.net.URI;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
