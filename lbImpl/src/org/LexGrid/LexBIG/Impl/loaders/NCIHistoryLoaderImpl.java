@@ -196,13 +196,17 @@ public class NCIHistoryLoaderImpl extends AbstractExtendable implements NCIHisto
                 loadStatus.setState(ProcessState.FAILED);
                 messageDirector.fatal("Error loading NCI History", e);
                 loadStatus.setErrorsLogged(true);
-     
+                System.out.println("FAILED");
+                messageDirector.info("FAILED");
+                System.out.println("Removing Resources");
                 messageDirector.info("Removing Resources...");
                 try {
                     LexBIGServiceImpl.defaultInstance().getServiceManager(null).removeHistoryService(NCI_URN);
                 } catch (Exception e1) {
                     messageDirector.warn("Resources cound not be removed.", e1);
                 } 
+
+                throw new RuntimeException("LOAD FAILED", e);
             }
             
             loadStatus.setEndTime(new Date());

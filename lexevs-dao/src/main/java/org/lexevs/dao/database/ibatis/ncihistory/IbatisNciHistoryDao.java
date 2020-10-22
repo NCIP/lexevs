@@ -295,13 +295,14 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 										+ item.getConceptcode());
 							}
 						}catch(UncategorizedSQLException e){
-							System.out.println(
+						String sqlError = 
 						"Error on Likely duplicate date for two releases for history event with entity code: "
 						+ item.getConceptcode() 
 						+ " and with change date: " 
-						+ item.getEditDate());
-							e.printStackTrace();
-							throw new SQLException("likely same date for multiple releases error");}
+						+ item.getEditDate();
+							System.out.println(sqlError);
+							//e.printStackTrace();
+							throw new SQLException(sqlError, e);}
 
 							insertNciChangeEvent(
 									systemReleaseUid,
