@@ -59,6 +59,13 @@ public interface NciHistoryService {
 	public void insertNCIChangeEvent(String codingSchemeUri, NCIChangeEvent changeEvent);
 	
 	/**
+	 * Insert nci change event.
+	 * 
+	 * @param codingSchemeUri the coding scheme uri
+	 * @param changeEvent the change event
+	 */
+	public void insertNCIChangeEventBatch(String codingSchemeUri, List<NCIChangeEvent> changeEvent);
+	/**
 	 * Gets the base lines.
 	 * 
 	 * @param uri the uri

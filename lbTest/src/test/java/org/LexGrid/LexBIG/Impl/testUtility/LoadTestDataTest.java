@@ -65,6 +65,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.springframework.core.annotation.Order;
+import org.springframework.jdbc.UncategorizedSQLException;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MappingRelationsUtil;
 
@@ -199,6 +200,38 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     	lbsm.activateCodingSchemeVersion(metaBatch.getCodingSchemeRef());
     }
 
+    @Test(expected = RuntimeException.class)
+    @Order(5)
+    public void testLoadNCItHistoryMultReleaseFail() throws InterruptedException, LBException {
+ 
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        NCIHistoryLoader hloader = (NCIHistoryLoader) lbsm.getLoader("NCIThesaurusHistoryLoader");
+
+        hloader.load(new File("resources/testData/CumulativeHist_MultiReleaseDate.txt").toURI(), new File(
+                "resources/testData/SystemReleaseHistory.txt").toURI(), false, true, false);
+
+        assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
+        assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
+    }
+    
+    
+    @Test(expected = RuntimeException.class)
+    @Order(5)
+    public void testLoadNCItHistoryNoReleaseFail() throws InterruptedException, LBException {
+ 
+        LexBIGServiceManager lbsm = getLexBIGServiceManager();
+
+        NCIHistoryLoader hloader = (NCIHistoryLoader) lbsm.getLoader("NCIThesaurusHistoryLoader");
+        
+        hloader.load(new File("resources/testData/CumulativeHistNoRelease.txt").toURI(), new File(
+                "resources/testData/SystemReleaseHistory.txt").toURI(), false, true, false);
+
+        assertEquals(ProcessState.COMPLETED,hloader.getStatus().getState());
+        assertFalse(hloader.getStatus().getErrorsLogged().booleanValue());
+    }
+    
+    
     @Test
     @Order(5)
     public void testLoadNCItHistory() throws InterruptedException, LBException {
