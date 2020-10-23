@@ -27,6 +27,7 @@ import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDataDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationTargetDao;
 import org.lexevs.dao.database.ibatis.entity.IbatisEntityDao;
+import org.lexevs.dao.database.ibatis.ncihistory.IbatisNciHistoryDao;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.utility.DaoUtility;
@@ -37,6 +38,7 @@ public class BatchOrderClassifier implements Classifier<String,Integer>{
 	private static int GROUP_ONE = 1;
 	private static int GROUP_TWO = 2;
 	private static int GROUP_THREE = 3;
+	private static int GROUP_FOUR = 4;
 	
 	private Map<Integer,List<String>> orderedGroups = new LinkedHashMap<Integer,List<String>>();
 	
@@ -70,6 +72,12 @@ public class BatchOrderClassifier implements Classifier<String,Integer>{
 				IbatisVersionsDao.INSERT_ENTRY_STATE_SQL,
 				IbatisAssociationDao.INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL,
 				IbatisAssociationDao.INSERT_TRANSITIVE_CLOSURE_SQL
+				
+		));
+		
+		orderedGroups.put(GROUP_FOUR, DaoUtility.createNonTypedList(
+				
+				IbatisNciHistoryDao.INSERT_NCI_CHANGEEVENT_SQL
 				
 		));
 	}
