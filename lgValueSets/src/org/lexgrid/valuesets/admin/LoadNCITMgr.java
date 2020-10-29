@@ -28,8 +28,11 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaData_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.NCIHistoryLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OWL2_Loader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.loaders.AssertedValueSetIndexLoaderImpl;
+import org.LexGrid.LexBIG.Impl.loaders.ProcessRunner;
 import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedValueSetBatchLoader;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
@@ -78,8 +81,27 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *   -rvsd -RemoveAllValueSetDefinitions Remove All Value Set Definitions (no confirmation).
  * 
  * ------------- SourceAssertedValueSetDefinitionLoad Parameters -------------
- *   -savsdl --SourceAssertedValueSetDefinitionLoad
+ *   -savsdl --SourceAssertedValueSetDefinitionLoad Load Asserted Value Set Definitions 
  *   -savsdl_v --SourceAssertedValueSetDefinitionLoad_version
+ *   
+ * ------------- BuildAssertedValueSetIndex Parameters -------------  
+ *   -bavsi --BuildAssertedValueSetIndex Build indexes associated with the source asserted value sets of the specified coding scheme.
+ *   -bavsi_u --buildAssertedValueSetIndex_urn Coding Scheme URN
+ *   -bavsi_v --BuildAssertedValueSetIndex_version Coding Scheme Version
+ *   
+ * ------------- LoadNCIHistory Parameters -------------  
+ *   -lncih --LoadNCIHistory Load NCI History
+ *   -lncih_in --LoadNCIHistory_input &lt;uri&gt; URI or path specifying location of the history file
+ *   -lncih_vf --LoadNCIHistory_versionFile &lt;uri&gt; URI or path specifying location of the file
+ *         containing version identifiers for the history to be loaded
+	// *   -lncih_v --LoadNCIHistory_validate  Perform validation of the candidate
+	// *         resource without loading data.  If specified, the '-r' option
+	// *         is ignored.  Supported levels of validation include:
+	// *         0 = Verify top 10 lines are correctly formatted
+	// *         1 = Verify correct format for the entire file      
+ *   -lncih_r --LoadNCIHistory_replace replace if not specified, the provided history file will
+ *         be added into the current history database; otherwise the
+ *         current database will be replaced by the new content.
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
  *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a
@@ -89,16 +111,27 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a -meta &quot;file:///path/to/metadata.xml&quot; -metao
  * </pre>
  * 
- * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
  */
 @LgAdminFunction
 public class LoadNCITMgr {
 
-    private static final String EXAMPLE_CALL =  "\n LoadOWL2 -in \"file:///path/to/somefile.owl\" -a"
-            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -v 0"
-            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -mf \"file:///path/to/myCodingScheme-manifest.xml\" -a -meta \"file:///path/to/metadata.xml\" -metav 0 -metao";
-    
-    private static final String SAVSDL_CODING_SCHEME = "owl2lexevs";
+    private static final String EXAMPLE_CALL =  
+             "\n LoadOWL -in \"file:///path/to/ThesaurusInf-200929-20.09d.owl-forProduction.owl\""
+            + "-mf \"file:///path/to/Thesaurus_MF_OWL2_20.09d.xml\" "  
+            + "-lp \"file:///path/to/Thesaurus_PF_OWL2.xml"
+            + "-a "
+            + "\n -rvsd"
+            + "\n -savsdl"
+            + "\n -savsdl_v \"20.09d\""
+            + "\n -bavsi"
+            + "\n -bavsi_u \"http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#\""
+            + "\n -bavsi_v \"20.09d\""
+            + "\n -lncih"
+            + "\n -lncih_in  \"file:///path/to/cumulative_history_20.09d.txt\""
+            + "\n -lncih_vf \"file:///path/to/NCISystemReleaseHistory.txt\"";
+           
+            
+    private static final String SAVSDL_CODING_SCHEME = "NCI_Thesaurus";  //"owl2lexevs";
     private static final String SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION = "Concept_In_Subset";
     private static final String SAVSDL_BASE_VALUESET_URI = "http://evs.nci.nih.gov/valueset/";
     private static final String SAVSDL_SOURCE_NAME = "Contributing_Source";
@@ -139,7 +172,7 @@ public class LoadNCITMgr {
                     v2 = Integer.parseInt(cl.getOptionValue("metav"));
                 }
             } catch (ParseException e) {
-                Util.displayCommandOptions("LoadOWL2", options,
+                Util.displayCommandOptions("LoadNCITMgr", options,
                         EXAMPLE_CALL + Util.getURIHelp(), e);
                 return;                
                 
@@ -198,15 +231,46 @@ public class LoadNCITMgr {
             }
             
             boolean removeAllValueSetDefinitions = cl.hasOption("rvsd");
+            
             boolean sourceAssertedValueSetDefinitionLoad = cl.hasOption("savsdl");
             String sourceAssertedValueSetDefinitionLoadVersionStr = cl.getOptionValue("savsdl_v");
             
+            boolean buildAssertedValueSetIndex = cl.hasOption("bavsi");
+            String buildAssertedValueSetIndexURNStr = cl.getOptionValue("bavsi_u");
+            String buildAssertedValueSetIndexVersionStr = cl.getOptionValue("bavsi_v");
             
+            if (buildAssertedValueSetIndexVersionStr != null) {
+            	buildAssertedValueSetIndexVersionStr = buildAssertedValueSetIndexVersionStr.trim();
+            }
+            if (buildAssertedValueSetIndexURNStr != null){
+            	buildAssertedValueSetIndexURNStr = buildAssertedValueSetIndexURNStr.trim();
+            }
+            
+            boolean loadNCIHistory = cl.hasOption("lncih");
+            String loadNCIHistoryInput = cl.getOptionValue("lncih_in");
+            String loadNCIHistoryVersionFile = cl.getOptionValue("lncih_vf");
+            
+            URI historySource = Util.string2FileURI(loadNCIHistoryInput);
+            URI historyVersions = Util.string2FileURI(loadNCIHistoryVersionFile);
+            
+//            int loadNCIHistory_validate  = -1;
+//            
+//            try {
+//                if (cl.hasOption("lncih_v"))
+//                	loadNCIHistory_validate = Integer.parseInt(cl.getOptionValue("v"));
+//            } catch (NumberFormatException e) {
+//                Util.displayCommandOptions("LoadNCIHistory", options,
+//                        "\n Invalid LoadNCIHistory validate option. Valid options are 0 and 1", e);
+//                return;
+//            }
+            
+            boolean loadNCIHistoryReplace = cl.hasOption("lncih_r");
+
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
             OWL2_Loader loader = (OWL2_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl.name);
-
+                       
             // Perform the requested load or validate action ...
             if (vl >= 0) {
                 loader.validate(source, manifest, vl);
@@ -292,6 +356,7 @@ public class LoadNCITMgr {
                         Util.displayLoaderStatus(metadataLoader);
                     }
                 }
+                
             }
             //*************************************************************
             // RemoveAllValueSetDefinitions
@@ -319,7 +384,7 @@ public class LoadNCITMgr {
     		}
             
             //*************************************************************
-            // RemoveAllValueSetDefinitions
+            // SourceAssertedValueSetDefinitionLoad
             //*************************************************************
             if (sourceAssertedValueSetDefinitionLoad) {
             	Util.displayAndLogMessage("");
@@ -329,25 +394,129 @@ public class LoadNCITMgr {
             	Util.displayAndLogMessage("");
             	
             	Util.displayAndLogMessage("Parameters: ");
-            	Util.displayAndLogMessage("version:                            " + sourceAssertedValueSetDefinitionLoadVersionStr);
-            	Util.displayAndLogMessage("codingSchemeName:                   " + SAVSDL_CODING_SCHEME);
-            	Util.displayAndLogMessage("assertedDefaultHierarchyVSRelation: " + SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION);
-            	Util.displayAndLogMessage("baseValueSetURI:                    " + SAVSDL_BASE_VALUESET_URI);
-            	Util.displayAndLogMessage("sourceName:                         " + SAVSDL_SOURCE_NAME);
+            	Util.displayAndLogMessage("\tversion:                            " + sourceAssertedValueSetDefinitionLoadVersionStr);
+            	Util.displayAndLogMessage("\tcodingSchemeName:                   " + SAVSDL_CODING_SCHEME);
+            	Util.displayAndLogMessage("\tassertedDefaultHierarchyVSRelation: " + SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION);
+            	Util.displayAndLogMessage("\tbaseValueSetURI:                    " + SAVSDL_BASE_VALUESET_URI);
+            	Util.displayAndLogMessage("\tsourceName:                         " + SAVSDL_SOURCE_NAME);
             	
             	AssertedValueSetParameters params = new AssertedValueSetParameters.
-            			Builder(sourceAssertedValueSetDefinitionLoadVersionStr).
-            			codingSchemeName(SAVSDL_CODING_SCHEME).
-                		assertedDefaultHierarchyVSRelation(SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION).
-                		baseValueSetURI(SAVSDL_BASE_VALUESET_URI).
-                		sourceName(SAVSDL_SOURCE_NAME).
-                		build();
+        			Builder(sourceAssertedValueSetDefinitionLoadVersionStr).
+        			codingSchemeName(SAVSDL_CODING_SCHEME).
+            		assertedDefaultHierarchyVSRelation(SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION).
+            		baseValueSetURI(SAVSDL_BASE_VALUESET_URI).
+            		sourceName(SAVSDL_SOURCE_NAME).
+            		build();
                 new SourceAssertedValueSetBatchLoader(params,
                 		"NCI", "Semantic_Type").run(params.getSourceName());
                 
                 Util.displayAndLogMessage("");
                 Util.displayAndLogMessage("Value Set Definition Loading from " + SAVSDL_CODING_SCHEME + " Complete");
             }
+            
+            //*************************************************************
+            // BuildAssertedValueSetIndex
+            //*************************************************************
+            if (buildAssertedValueSetIndex) {
+            	CodingSchemeSummary css = null;
+            	
+            	Util.displayAndLogMessage("");
+            	Util.displayAndLogMessage("****************************************");
+            	Util.displayAndLogMessage("* Build Asserted ValueSet Index");
+            	Util.displayAndLogMessage("****************************************");
+            	Util.displayAndLogMessage("");
+            	Util.displayAndLogMessage("\tParameters: ");
+            	Util.displayAndLogMessage("\tbuildAssertedValueSetIndexURN:    " + buildAssertedValueSetIndexURNStr);
+            	Util.displayAndLogMessage("\tbuildAssertedValueSetIndexVersion:" + buildAssertedValueSetIndexVersionStr);
+            	Util.displayAndLogMessage("");
+            	
+            	// Find in list of registered vocabularies ...
+                if (buildAssertedValueSetIndexVersionStr != null && buildAssertedValueSetIndexVersionStr != null) {
+                	
+                	lbs = LexBIGServiceImpl.defaultInstance();
+                    Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+                    		.enumerateCodingSchemeRendering();
+                    while (schemes.hasMoreElements() && css == null) {
+                        CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
+                        if (buildAssertedValueSetIndexURNStr.equalsIgnoreCase(summary.getCodingSchemeURI())
+                                && buildAssertedValueSetIndexVersionStr.equalsIgnoreCase(summary.getRepresentsVersion()))
+                            css = summary;
+                    }
+                    
+                    if (css == null) {
+                    	Util.displayAndLogMessage("No matching coding scheme was found for the given URN or version.");
+                        Util.displayAndLogMessage("");
+                    }
+                    else {
+                    	AbsoluteCodingSchemeVersionReference ref = Constructors.createAbsoluteCodingSchemeVersionReference(css);
+                    	 
+                    	String indexName = "URI: " + ref.getCodingSchemeURN() + " VERSION: " + 
+                    	            ref.getCodingSchemeVersion();
+                    	 
+                    	try {
+                            ProcessRunner avsil_loader = new AssertedValueSetIndexLoaderImpl();
+                            Util.displayAndLogMessage("Re-creation of index extension '" + 
+                                    indexName + "' in progress...");
+                            Util.displayAndLogMessage("");
+                            
+                            Util.displayStatus(avsil_loader.runProcess(ref, null));
+                            
+                            Util.displayAndLogMessage("");
+                            Util.displayAndLogMessage("Re-creation of index extension '" + 
+                                    indexName + "' completed");
+                        } catch (UnsupportedOperationException e) {
+                        	Util.displayAndLogMessage("");
+                            Util.displayAndLogMessage("Build index extension for '" + indexName + "' is not supported.");
+                            Util.displayAndLogMessage("");
+                        }
+                    }
+                }
+                
+                //*************************************************************
+                // LoadNCIHistory
+                //*************************************************************
+                Util.displayAndLogMessage("");
+            	Util.displayAndLogMessage("****************************************");
+            	Util.displayAndLogMessage("* Load NCI History");
+            	Util.displayAndLogMessage("****************************************");
+            	Util.displayAndLogMessage("");
+            	Util.displayAndLogMessage("Parameters: ");
+            	Util.displayAndLogMessage("\tloadNCIHistoryInputFile :  " + loadNCIHistoryInput);
+            	Util.displayAndLogMessage("\tloadNCIHistoryVersionFile: " + loadNCIHistoryVersionFile);
+            	Util.displayAndLogMessage("\tloadNCIHistoryReplace:     " + loadNCIHistoryReplace);
+            	Util.displayAndLogMessage("");
+            	
+                if (loadNCIHistory) {
+                	
+                    //boolean historyReplace = loadNCIHistory_validate >= 0 && loadNCIHistory_replace;
+                   
+//                    if (loadNCIHistory_validate >= 0) {
+//                        Util.displayAndLogMessage("VALIDATING SOURCE URI: " + historySource.toString());
+//                    } else {
+//                        Util.displayAndLogMessage("LOADING FROM URI: " + historySource.toString());
+//                        Util.displayAndLogMessage("LOADING VERSION IDENTIFIERS FROM URI: " + historyVersions.toString());
+//                    }
+
+                    // Find the registered extension handling this type of load ...
+                    lbs = LexBIGServiceImpl.defaultInstance();
+                    lbsm = lbs.getServiceManager(null);
+                    NCIHistoryLoader historyLoader = (NCIHistoryLoader) lbsm
+                            .getLoader(org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl.name);
+
+                    // Perform the history load ...
+//                    if (loadNCIHistory_validate >= 0) {
+//                    	historyLoader.validate(historySource, historyVersions, loadNCIHistory_validate);
+//                        Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
+//                    } else {
+                    	historyLoader.load(historySource, historyVersions, !loadNCIHistoryReplace, false, true);
+                        Util.displayLoaderStatus(historyLoader);
+//                    }
+                }
+                else {
+                	Util.displayAndLogMessage("* Skipping NCI History");
+                }
+            }
+           
         }
     }
 
@@ -432,7 +601,46 @@ public class LoadNCITMgr {
         o.setRequired(false);
         options.addOption(o);
         
+        //BuildAssertedValueSetIndex 
+        o = new Option("bavsi", "BuildAssertedValueSetIndex", false, "Build Asserted ValueSet Index");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        //BuildAssertedValueSetIndex URN
+        o = new Option("bavsi_u", "BuildAssertedValueSetIndex_urn", true, "Build Asserted ValueSet Index URN uniquely identifying the code system.");
+        o.setRequired(false);
+        options.addOption(o);
 
+        //BuildAssertedValueSetIndex Version
+        o = new Option("bavsi_v", "BuildAssertedValueSetIndex_version", true, "Build Asserted ValueSet Index Version identifier.");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        //LoadNCIHistory 
+        o = new Option("lncih", "LoadNCIHistory", false, "Load NCI History");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        //LoadNCIHistory input
+        o = new Option("lncih_in", "loadNCIHistory_input", true, "Load NCI History input file");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        //LoadNCIHistory version file
+        o = new Option("lncih_vf", "LoadNCIHistory_versionFile", true, "Load NCI History version file");
+        o.setRequired(false);
+        options.addOption(o);
+        
+        //LoadNCIHistory validate
+//        o = new Option("lncih_v", "LoadNCIHistory_validate", false, "Load NCI History validate");
+//        o.setRequired(false);
+//        options.addOption(o);
+        
+        //LoadNCIHistory replace
+        o = new Option("lncih_r", "LoadNCIHistory_replace", false, "If specified, the current history database is overwritten.");
+        o.setRequired(false);
+        options.addOption(o);
+        
         return options;
     }
 
