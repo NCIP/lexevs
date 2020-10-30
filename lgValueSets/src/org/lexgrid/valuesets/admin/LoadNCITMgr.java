@@ -58,6 +58,7 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  * Example: org.lexgrid.valuesets.admin.LoadNCITMgr
  *   -in,--input &lt;uri&gt; URI or path specifying location of the source file
  *   -mf,--manifest &lt;uri&gt; URI or path specifying location of the manifest file
+ *   -lp,--loader preferences &lt;uri&gt; URI or path specifying location of the loader preference file
  *   -v, --validate &lt;int&gt; Perform validation of the candidate
  *         resource without loading data.  If specified, the '-a' and '-t'
  *         options are ignored.  Supported levels of validation include:
@@ -78,37 +79,46 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  * 
  * 
  * ------------- RemoveAllValueSetDefinitions Parameters -------------
- *   -rvsd -RemoveAllValueSetDefinitions Remove All Value Set Definitions (no confirmation).
+ *   -rvsd -RemoveAllValueSetDefinitions Remove All Value Set Definitions (no confirmation). 
+ *   		Use this parameter to initiate this option.
  * 
  * ------------- SourceAssertedValueSetDefinitionLoad Parameters -------------
  *   -savsdl --SourceAssertedValueSetDefinitionLoad Load Asserted Value Set Definitions 
+ *   		Use this parameter to initiate this option.
  *   -savsdl_v --SourceAssertedValueSetDefinitionLoad_version
  *   
  * ------------- BuildAssertedValueSetIndex Parameters -------------  
  *   -bavsi --BuildAssertedValueSetIndex Build indexes associated with the source asserted value sets of the specified coding scheme.
+ *  		Use this parameter to initiate this option.
  *   -bavsi_u --buildAssertedValueSetIndex_urn Coding Scheme URN
  *   -bavsi_v --BuildAssertedValueSetIndex_version Coding Scheme Version
  *   
  * ------------- LoadNCIHistory Parameters -------------  
  *   -lncih --LoadNCIHistory Load NCI History
+ *   		Use this parameter to initiate this option.
  *   -lncih_in --LoadNCIHistory_input &lt;uri&gt; URI or path specifying location of the history file
  *   -lncih_vf --LoadNCIHistory_versionFile &lt;uri&gt; URI or path specifying location of the file
- *         containing version identifiers for the history to be loaded
-	// *   -lncih_v --LoadNCIHistory_validate  Perform validation of the candidate
-	// *         resource without loading data.  If specified, the '-r' option
-	// *         is ignored.  Supported levels of validation include:
-	// *         0 = Verify top 10 lines are correctly formatted
-	// *         1 = Verify correct format for the entire file      
+ *         containing version identifiers for the history to be loaded     
  *   -lncih_r --LoadNCIHistory_replace replace if not specified, the provided history file will
  *         be added into the current history database; otherwise the
  *         current database will be replaced by the new content.
  * 
  * Example: java -Xmx512m -cp lgRuntime.jar
- *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a
- * -or-
- *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -v 0
- *  -or-
- *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a -meta &quot;file:///path/to/metadata.xml&quot; -metao
+ *  org.lexgrid.valuesets.admin.LoadNCITMgr 
+ *  -in &quot;file:///path/to/somefile.owl&quot; 
+ *  -mf &quot;file:///path/to/Thesaurus_MF_OWL2_20.09d.xml&quot;
+ *  -lp &quot;file:///path/to/Thesaurus_PF_OWL2.xml&quot;
+ *  -a 
+ *  -v &quot;20.09d&quot; 
+ *  -t &quot;PRODUCTION&quot;
+ *  -rvsd
+ *  -savsdl -savsdl_v &quot;20.09d&quot;
+ *  -bavsi
+ *  -bavsi_u &quot;http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#&quot;
+ *  -bavsi_v &quot;20.09d&quot;
+ *  -lncih
+ *  -lncih_in &quot;file:///path/to/cumulative_history_20.09d.txt&quot;
+ *  -lncih_vf &quot;file:///path/to/NCISystemReleaseHistory.txt&quot;
  * </pre>
  * 
  */
@@ -116,10 +126,11 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
 public class LoadNCITMgr {
 
     private static final String EXAMPLE_CALL =  
-             "\n LoadOWL -in \"file:///path/to/ThesaurusInf-200929-20.09d.owl-forProduction.owl\""
+           "\n LoadNCITMgr -in \"file:///path/to/ThesaurusInf-200929-20.09d.owl-forProduction.owl\""
             + "-mf \"file:///path/to/Thesaurus_MF_OWL2_20.09d.xml\" "  
             + "-lp \"file:///path/to/Thesaurus_PF_OWL2.xml"
-            + "-a "
+            + "-a"
+            + "-t \"PRODUCTION\""
             + "\n -rvsd"
             + "\n -savsdl"
             + "\n -savsdl_v \"20.09d\""
@@ -130,7 +141,6 @@ public class LoadNCITMgr {
             + "\n -lncih_in  \"file:///path/to/cumulative_history_20.09d.txt\""
             + "\n -lncih_vf \"file:///path/to/NCISystemReleaseHistory.txt\"";
            
-            
     private static final String SAVSDL_CODING_SCHEME = "NCI_Thesaurus";  //"owl2lexevs";
     private static final String SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION = "Concept_In_Subset";
     private static final String SAVSDL_BASE_VALUESET_URI = "http://evs.nci.nih.gov/valueset/";
@@ -177,7 +187,7 @@ public class LoadNCITMgr {
                 return;                
                 
             } catch (NumberFormatException nfe) {
-                Util.displayCommandOptions("LoadOWL2", options,
+                Util.displayCommandOptions("LoadNCITMgr", options,
                         EXAMPLE_CALL + Util.getURIHelp(), nfe);
                 return;
             }
@@ -250,19 +260,14 @@ public class LoadNCITMgr {
             String loadNCIHistoryInput = cl.getOptionValue("lncih_in");
             String loadNCIHistoryVersionFile = cl.getOptionValue("lncih_vf");
             
-            URI historySource = Util.string2FileURI(loadNCIHistoryInput);
-            URI historyVersions = Util.string2FileURI(loadNCIHistoryVersionFile);
+            URI historySource = null;
+            URI historyVersions = null;
             
-//            int loadNCIHistory_validate  = -1;
-//            
-//            try {
-//                if (cl.hasOption("lncih_v"))
-//                	loadNCIHistory_validate = Integer.parseInt(cl.getOptionValue("v"));
-//            } catch (NumberFormatException e) {
-//                Util.displayCommandOptions("LoadNCIHistory", options,
-//                        "\n Invalid LoadNCIHistory validate option. Valid options are 0 and 1", e);
-//                return;
-//            }
+            // convert the parameters only if the user selected to load history
+            if (loadNCIHistory) {
+	            historySource = Util.string2FileURI(loadNCIHistoryInput);
+	            historyVersions = Util.string2FileURI(loadNCIHistoryVersionFile);
+            }
             
             boolean loadNCIHistoryReplace = cl.hasOption("lncih_r");
 
@@ -270,7 +275,7 @@ public class LoadNCITMgr {
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
             OWL2_Loader loader = (OWL2_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl.name);
-                       
+                                 
             // Perform the requested load or validate action ...
             if (vl >= 0) {
                 loader.validate(source, manifest, vl);
@@ -361,12 +366,13 @@ public class LoadNCITMgr {
             //*************************************************************
             // RemoveAllValueSetDefinitions
             //*************************************************************
+            Util.displayAndLogMessage("");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("* Removing All Valueset Definitions");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("");
+        	
             if (removeAllValueSetDefinitions){
-            	Util.displayAndLogMessage("");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("* Removing All Valueset Definitions");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("");
             	
     			final LexEVSValueSetDefinitionServices vss = new LexEVSValueSetDefinitionServicesImpl();
     			List<String> uris = vss.listValueSetDefinitionURIs();
@@ -382,23 +388,28 @@ public class LoadNCITMgr {
     			Util.displayAndLogMessage("");
     			Util.displayAndLogMessage("Valueset Definition Removal Complete");
     		}
+    		else {
+            	Util.displayAndLogMessage("* Skipping Remove All ValueSet Definitions");
+            }
             
             //*************************************************************
             // SourceAssertedValueSetDefinitionLoad
             //*************************************************************
+            Util.displayAndLogMessage("");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("* Source Asserted ValueSet Definition Load");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("");
+        	
+        	Util.displayAndLogMessage("Parameters: ");
+        	Util.displayAndLogMessage("\tversion:                            " + sourceAssertedValueSetDefinitionLoadVersionStr);
+        	Util.displayAndLogMessage("\tcodingSchemeName:                   " + SAVSDL_CODING_SCHEME);
+        	Util.displayAndLogMessage("\tassertedDefaultHierarchyVSRelation: " + SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION);
+        	Util.displayAndLogMessage("\tbaseValueSetURI:                    " + SAVSDL_BASE_VALUESET_URI);
+        	Util.displayAndLogMessage("\tsourceName:                         " + SAVSDL_SOURCE_NAME);
+        	Util.displayAndLogMessage("");
+        	
             if (sourceAssertedValueSetDefinitionLoad) {
-            	Util.displayAndLogMessage("");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("* Source Asserted ValueSet Definition Load");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("");
-            	
-            	Util.displayAndLogMessage("Parameters: ");
-            	Util.displayAndLogMessage("\tversion:                            " + sourceAssertedValueSetDefinitionLoadVersionStr);
-            	Util.displayAndLogMessage("\tcodingSchemeName:                   " + SAVSDL_CODING_SCHEME);
-            	Util.displayAndLogMessage("\tassertedDefaultHierarchyVSRelation: " + SAVSDL_ASSERTED_DEFAULT_HIERARCHY_VS_RELATION);
-            	Util.displayAndLogMessage("\tbaseValueSetURI:                    " + SAVSDL_BASE_VALUESET_URI);
-            	Util.displayAndLogMessage("\tsourceName:                         " + SAVSDL_SOURCE_NAME);
             	
             	AssertedValueSetParameters params = new AssertedValueSetParameters.
         			Builder(sourceAssertedValueSetDefinitionLoadVersionStr).
@@ -413,22 +424,25 @@ public class LoadNCITMgr {
                 Util.displayAndLogMessage("");
                 Util.displayAndLogMessage("Value Set Definition Loading from " + SAVSDL_CODING_SCHEME + " Complete");
             }
+            else {
+                Util.displayAndLogMessage("* Skipping Source Asserted ValueSet Definition Load");
+            }
             
             //*************************************************************
             // BuildAssertedValueSetIndex
             //*************************************************************
+            Util.displayAndLogMessage("");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("* Build Asserted ValueSet Index");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("");
+        	Util.displayAndLogMessage("\tParameters: ");
+        	Util.displayAndLogMessage("\tbuildAssertedValueSetIndexURN:    " + buildAssertedValueSetIndexURNStr);
+        	Util.displayAndLogMessage("\tbuildAssertedValueSetIndexVersion:" + buildAssertedValueSetIndexVersionStr);
+        	Util.displayAndLogMessage("");
+        	
             if (buildAssertedValueSetIndex) {
             	CodingSchemeSummary css = null;
-            	
-            	Util.displayAndLogMessage("");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("* Build Asserted ValueSet Index");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("");
-            	Util.displayAndLogMessage("\tParameters: ");
-            	Util.displayAndLogMessage("\tbuildAssertedValueSetIndexURN:    " + buildAssertedValueSetIndexURNStr);
-            	Util.displayAndLogMessage("\tbuildAssertedValueSetIndexVersion:" + buildAssertedValueSetIndexVersionStr);
-            	Util.displayAndLogMessage("");
             	
             	// Find in list of registered vocabularies ...
                 if (buildAssertedValueSetIndexVersionStr != null && buildAssertedValueSetIndexVersionStr != null) {
@@ -471,52 +485,37 @@ public class LoadNCITMgr {
                         }
                     }
                 }
-                
-                //*************************************************************
-                // LoadNCIHistory
-                //*************************************************************
-                Util.displayAndLogMessage("");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("* Load NCI History");
-            	Util.displayAndLogMessage("****************************************");
-            	Util.displayAndLogMessage("");
-            	Util.displayAndLogMessage("Parameters: ");
-            	Util.displayAndLogMessage("\tloadNCIHistoryInputFile :  " + loadNCIHistoryInput);
-            	Util.displayAndLogMessage("\tloadNCIHistoryVersionFile: " + loadNCIHistoryVersionFile);
-            	Util.displayAndLogMessage("\tloadNCIHistoryReplace:     " + loadNCIHistoryReplace);
-            	Util.displayAndLogMessage("");
-            	
-                if (loadNCIHistory) {
-                	
-                    //boolean historyReplace = loadNCIHistory_validate >= 0 && loadNCIHistory_replace;
-                   
-//                    if (loadNCIHistory_validate >= 0) {
-//                        Util.displayAndLogMessage("VALIDATING SOURCE URI: " + historySource.toString());
-//                    } else {
-//                        Util.displayAndLogMessage("LOADING FROM URI: " + historySource.toString());
-//                        Util.displayAndLogMessage("LOADING VERSION IDENTIFIERS FROM URI: " + historyVersions.toString());
-//                    }
-
-                    // Find the registered extension handling this type of load ...
-                    lbs = LexBIGServiceImpl.defaultInstance();
-                    lbsm = lbs.getServiceManager(null);
-                    NCIHistoryLoader historyLoader = (NCIHistoryLoader) lbsm
-                            .getLoader(org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl.name);
-
-                    // Perform the history load ...
-//                    if (loadNCIHistory_validate >= 0) {
-//                    	historyLoader.validate(historySource, historyVersions, loadNCIHistory_validate);
-//                        Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
-//                    } else {
-                    	historyLoader.load(historySource, historyVersions, !loadNCIHistoryReplace, false, true);
-                        Util.displayLoaderStatus(historyLoader);
-//                    }
-                }
-                else {
-                	Util.displayAndLogMessage("* Skipping NCI History");
-                }
             }
-           
+            else {
+            	Util.displayAndLogMessage("* Skipping Build Asserted ValueSet Index");
+            }
+            //*************************************************************
+            // LoadNCIHistory
+            //*************************************************************
+            Util.displayAndLogMessage("");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("* Load NCI History");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("");
+        	Util.displayAndLogMessage("Parameters: ");
+        	Util.displayAndLogMessage("\tloadNCIHistoryInputFile :  " + loadNCIHistoryInput);
+        	Util.displayAndLogMessage("\tloadNCIHistoryVersionFile: " + loadNCIHistoryVersionFile);
+        	Util.displayAndLogMessage("\tloadNCIHistoryReplace:     " + loadNCIHistoryReplace);
+        	Util.displayAndLogMessage("");
+        	
+            if (loadNCIHistory) {
+                // Find the registered extension handling this type of load ...
+                lbs = LexBIGServiceImpl.defaultInstance();
+                lbsm = lbs.getServiceManager(null);
+                NCIHistoryLoader historyLoader = (NCIHistoryLoader) lbsm
+                        .getLoader(org.LexGrid.LexBIG.Impl.loaders.NCIHistoryLoaderImpl.name);
+
+                historyLoader.load(historySource, historyVersions, !loadNCIHistoryReplace, false, true);
+                    Util.displayLoaderStatus(historyLoader);
+            }
+            else {
+            	Util.displayAndLogMessage("* Skipping NCI History");
+            }
         }
     }
 
@@ -630,11 +629,6 @@ public class LoadNCITMgr {
         o = new Option("lncih_vf", "LoadNCIHistory_versionFile", true, "Load NCI History version file");
         o.setRequired(false);
         options.addOption(o);
-        
-        //LoadNCIHistory validate
-//        o = new Option("lncih_v", "LoadNCIHistory_validate", false, "Load NCI History validate");
-//        o.setRequired(false);
-//        options.addOption(o);
         
         //LoadNCIHistory replace
         o = new Option("lncih_r", "LoadNCIHistory_replace", false, "If specified, the current history database is overwritten.");
