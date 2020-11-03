@@ -21,6 +21,7 @@ package org.lexevs.dao.database.service.valuesets;
 import java.net.URI;
 import java.sql.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -192,4 +193,6 @@ public interface ValueSetDefinitionService {
 	public List<AbsoluteCodingSchemeVersionReference> getValueSetDefinitionDefRefForTopNodeSourceCode(Node node) throws LBException;
 
 	public List<String> getVSURIsForContextURI(String createUri);
+
+	public Map<String, ValueSetDefinition> getValueSetDefinitionsByResgistryEntry();
 }

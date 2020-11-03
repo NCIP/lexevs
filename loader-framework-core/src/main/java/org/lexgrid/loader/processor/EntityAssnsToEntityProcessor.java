@@ -97,21 +97,6 @@ public class EntityAssnsToEntityProcessor<I> extends AbstractSupportedAttributeR
 		String targetNamespace = relationResolver.getTargetNamespace(item);
 		
 		if(sourceCode.equals(targetCode) && sourceNamespace.equals(targetNamespace)) {
-//			if(selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.AS_PROPERTY_LINKS) ||
-//					selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.BOTH)){
-//				String sourcePropertyId = sourcePropertyIdResolver.getPropertyId(item);
-//				String targetPropertyId = targetPropertyIdResolver.getPropertyId(item);
-//
-//				if(StringUtils.isBlank(sourcePropertyId) == false && StringUtils.isBlank(targetPropertyId) == false) {
-//					this.insertPropertyLink(
-//							sourceCode, 
-//							sourceNamespace, 
-//							rel, 
-//							sourcePropertyIdResolver.getPropertyId(item), 
-//							targetPropertyIdResolver.getPropertyId(item));
-//
-//				}
-//			}
 
 			if(selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.AS_PROPERTY_LINKS) ||
 					selfReferencingAssociationPolicy.equals(SelfReferencingAssociationPolicy.IGNORE)){

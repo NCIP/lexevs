@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
@@ -49,22 +50,26 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Impl.CodedNodeSetImpl;
 import org.LexGrid.LexBIG.Impl.Extensions.ExtensionRegistryImpl;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToAssociations;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToSourceCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.RestrictToTargetCodes;
 import org.LexGrid.LexBIG.Impl.codedNodeGraphOperations.interfaces.Operation;
 import org.LexGrid.LexBIG.Impl.dataAccess.SQLImplementedMethods;
-import org.LexGrid.LexBIG.Impl.pagedgraph.PagingCodedNodeGraphImpl;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.DefaultGraphQueryBuilder;
 import org.LexGrid.LexBIG.Impl.pagedgraph.query.GraphQueryBuilder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.ActiveOption;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.ObjectToString;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
@@ -83,7 +88,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
-import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
@@ -1157,6 +1161,18 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
                 cng = cng.restrictToAssociations(ConvenienceMethods.createNameAndValueList(sh.getAssociationNames()),
                         null);
                 try {
+                    CodedNodeSet nodeSet = null;
+                    try{
+                    //While this bad practice it deals with code that we will not re-factor from the
+                    //lbModel code level up through a parameter exception that must also be dealt with
+                    //We have done some re-factoring up this code stack to minimize this but still wound
+                    //up having to catch the exception because we have no way of both passing a legitimate
+                    //query and evaluating a null toNodeList value in the node set.
+                    nodeSet = cng.toNodeList(cr, sh.getIsForwardNavigable(), !sh.getIsForwardNavigable(), 0, -1);
+                    }catch(Exception e){
+                        getLogger().warn("No roots found for " + sh.getAssociationNames(0) + " hierarchy");
+                        continue;
+                    }
                     cns = cns.union(cng.toNodeList(cr, sh.getIsForwardNavigable(), !sh.getIsForwardNavigable(), 0, -1));
                 } catch (Exception e) {
                     getLogger().error("Unable to resolve hierarchy root nodes.", e);
@@ -2266,7 +2282,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     private List<ResolvedConceptReference> getTransitiveClosure(final String code, final String associationName, final String uri,
             final String version, boolean ancestors) {
         DatabaseServiceManager databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
-        ClosureIterator iterator = new ClosureIterator(databaseServiceManager, uri, version, code, associationName, ancestors);
+        ClosureIterator iterator = new ClosureIterator(databaseServiceManager, uri, version, associationName, code, ancestors);
         List<ResolvedConceptReference> refs = new ArrayList<ResolvedConceptReference>();
         while(iterator.hasNext()){
             GraphDbTriple triple = iterator.next();
@@ -2294,7 +2310,7 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
     public AssociatedConceptList getallIncomingConceptsForAssociation(String codingScheme, CodingSchemeVersionOrTag csvt,
             String code, String associationName, int maxToReturn) throws LBInvocationException, LBParameterException, LBException{
         NameAndValueList nvList = Constructors.createNameAndValueList(associationName);
-        ResolvedConceptReferenceList matches = lbs_.getNodeGraph(codingScheme, csvt, null).restrictToAssociations(nvList,
+        ResolvedConceptReferenceList matches = getLexBIGService().getNodeGraph(codingScheme, csvt, null).restrictToAssociations(nvList,
                 null).resolveAsList(ConvenienceMethods.createConceptReference(code, codingScheme), false, true, 1, 1,
                 new LocalNameList(), null, null, maxToReturn);
                ResolvedConceptReference ref =  matches.getResolvedConceptReference(0);
@@ -2406,6 +2422,127 @@ public class LexBIGServiceConvenienceMethodsImpl implements LexBIGServiceConveni
 
 
     }
+
+    @Override
+    public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, 
+            List<String> codes, 
+            String association, 
+            String matchText,
+            String alg,
+            SearchDesignationOption searchOption,
+            LocalNameList sources
+            ) throws LBParameterException {
+        if(codes == null || codes.size() <= 0) { 
+            System.out.println("ERROR: Null or Empty list of domain codes cannot be searched" ); 
+            getLogger().error("Null or Empty list of domain codes cannot be searched" );
+            return null;}
+        if(!isValidMatchAlgorithm(alg)) {
+            System.out.println("MatchAlgorithm doesn't exist. Must be defined as one of the following: ");
+            Arrays.asList(LBConstants.MatchAlgorithms.values()).stream().forEach(x ->System.out.println(x.name()));
+            return null;
+        }
+        List<ResolvedConceptReference> refs = codes.stream().map(x -> {
+            List<ResolvedConceptReference> innerRefs = null;
+            try {
+                innerRefs = getDescendentsInTransitiveClosure(codingScheme,
+                    versionOrTag, x, association);
+            } catch (LBParameterException e1) {
+                throw new RuntimeException("Failed to get descendents for top node: ", e1);
+            } return innerRefs;
+        }).flatMap(List::stream).collect(Collectors.toList());
+
+        ConceptReferenceList list = new ConceptReferenceList();
+        refs.stream().map(x -> Constructors.createConceptReference(
+                x.getConceptCode(), codingScheme)).
+                    forEachOrdered(y -> list.addConceptReference(y));
+        CodedNodeSet nodeSet = null;
+        ResolvedConceptReferenceList results = null;
+        try {
+           nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
+           nodeSet = nodeSet.restrictToCodes(list);
+           if(sources != null && sources.getEntryCount() > 0 && !searchOption.equals(SearchDesignationOption.PREFERRED_ONLY)) {
+               nodeSet = nodeSet.restrictToMatchingProperties(null, 
+                       new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, sources, null, null, matchText, 
+                       alg, null);
+           }
+           else {
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
+           }
+            results = nodeSet.resolveToList(null, null, null, -1);
+        } catch (LBInvocationException e) {
+            throw new RuntimeException("Failed to get concepts for coding scheme: " 
+                    + codingScheme + " : "
+                    + versionOrTag.getVersion(), e);
+        } catch (LBException e) {
+            throw new RuntimeException("Failed resolve concepts for code or code list : ", e);
+        }
+        return results;
+    }
+    
+    @Override
+    public ResolvedConceptReferenceList searchAscendentsInTransitiveClosure(String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, List<String> codes, String association, String matchText,
+            String alg, SearchDesignationOption searchOption, LocalNameList sources)
+            throws LBParameterException {
+        if(codes == null || codes.size() <= 0) { 
+            System.out.println("ERROR: Null or Empty list of domain codes cannot be searched" ); 
+            getLogger().error("Null or Empty list of domain codes cannot be searched" );
+            return null;}
+        if(!isValidMatchAlgorithm(alg)) {
+            System.out.println("MatchAlgorithm doesn't exist. Must be defined as one of the following: ");
+            Arrays.asList(LBConstants.MatchAlgorithms.values()).stream().forEach(x ->System.out.println(x.name()));
+            return null;
+        }
+        List<ResolvedConceptReference> refs = codes.stream().map(x -> {
+            List<ResolvedConceptReference> innerRefs = null;
+            try {
+                innerRefs = getAncestorsInTransitiveClosure(codingScheme,
+                    versionOrTag, x, association);
+            } catch (LBParameterException e1) {
+                throw new RuntimeException("Failed to get descendents for top node: ", e1);
+            } return innerRefs;
+        }).flatMap(List::stream).collect(Collectors.toList());
+
+        ConceptReferenceList list = new ConceptReferenceList();
+        refs.stream().map(x -> Constructors.createConceptReference(
+                x.getConceptCode(), codingScheme)).
+                    forEachOrdered(y -> list.addConceptReference(y));
+        CodedNodeSet nodeSet = null;
+        ResolvedConceptReferenceList results = null;
+        try {
+           nodeSet = getLexBIGService().getCodingSchemeConcepts(codingScheme, versionOrTag);
+           nodeSet = nodeSet.restrictToCodes(list);
+           if(sources != null && sources.getEntryCount() > 0 && !searchOption.equals(SearchDesignationOption.PREFERRED_ONLY)) {
+           nodeSet = nodeSet.restrictToMatchingProperties(null, 
+                   new PropertyType[]{PropertyType.PRESENTATION,PropertyType.GENERIC}, sources, null, null, matchText, 
+                   alg, null);
+           }else {
+           nodeSet = nodeSet.restrictToMatchingDesignations(matchText, searchOption, alg, null);
+           }
+            results = nodeSet.resolveToList(null, null, null, -1);
+        } catch (LBInvocationException e) {
+            throw new RuntimeException("Failed to get concepts for coding scheme: " 
+                    + codingScheme + " : "
+                    + versionOrTag.getVersion(), e);
+        } catch (LBException e) {
+            throw new RuntimeException("Failed resolve concepts for code or code list : ", e);
+        }
+        return results;
+    }
+    
+    private Boolean isValidMatchAlgorithm(String matchAlgorithm) {
+        return Arrays.asList(LBConstants.MatchAlgorithms.values()).
+                stream().anyMatch(x -> x.name().equals(matchAlgorithm));
+    }
+
+    @Override
+    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
+        return getLexBIGService().getTerminologyServiceObjectType(uri);
+    }
+    
+
+
     
     
 }

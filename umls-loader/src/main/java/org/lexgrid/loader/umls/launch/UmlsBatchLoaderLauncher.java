@@ -20,8 +20,10 @@ package org.lexgrid.loader.umls.launch;
 
 import java.net.URI;
 
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 
@@ -48,6 +50,8 @@ public class UmlsBatchLoaderLauncher {
  	@Option(name="-version")   
 	 private String version;
 
+ 	private AbsoluteCodingSchemeVersionReference[] codingSchemeRefs;
+ 	
 	 /**
  	 * The main method.
  	 * 
@@ -61,21 +65,22 @@ public class UmlsBatchLoaderLauncher {
 		 parser.parseArgument(args);	
 		 
 		 launcher.load();
-	 }
+ 	}
 	 
 	/**
 	 * Load.
 	 * 
 	 * @throws Exception the exception
 	 */
-	private void load() throws Exception {
+	public void load() throws Exception {
 		UmlsBatchLoader loader = (UmlsBatchLoader)LexBIGServiceImpl.defaultInstance().getServiceManager(null).getLoader("UmlsBatchLoader");
-				
+			
 		if(uri == null && version == null){
 			loader.loadUmls(new URI(rrfDir), sab);
 		} else {
 			loader.resumeUmls(new URI(rrfDir), sab,  uri, version);
 		}	
+		setCodingSchemeRefs(loader.getCodingSchemeReferences());
 	}
 
 
@@ -117,4 +122,23 @@ public class UmlsBatchLoaderLauncher {
 	public void setSab(String sab) {
 		this.sab = sab;
 	}
+		
+	/**
+	 * Sets the AbsoluteCodingSchemeVersionReference.
+	 * 
+	 * @param refs the new AbsoluteCodingSchemeVersionReference
+	 */
+	private void setCodingSchemeRefs(AbsoluteCodingSchemeVersionReference[] refs ) {
+		this.codingSchemeRefs = refs;
+	}
+	
+	/**
+	 * Gets the AbsoluteCodingSchemeVersionReference.
+	 * 
+	 * @return the AbsoluteCodingSchemeVersionReference
+	 */
+	public AbsoluteCodingSchemeVersionReference[] getCodingSchemeRefs() {
+		return codingSchemeRefs;
+	}
+
 }

@@ -18,10 +18,23 @@
  */
 package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.IncludeForDistributedTests;
+import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -182,6 +195,7 @@ public class TestExactMatch extends BaseSearchAlgorithmTest {
         assertTrue("Length: " + rcrl.length, rcrl.length == 0);
     }
     
+ 
     /**
      * Gets the algorithm.
      * 

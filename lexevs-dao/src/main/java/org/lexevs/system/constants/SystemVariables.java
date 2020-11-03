@@ -80,6 +80,7 @@ public class SystemVariables {
     private String autoLoadDBDriver_;
     private String autoLoadDBUsername_;
     private String autoLoadDBPassword_;
+    private String autoLoadStrictArrangoRequirement_;
     private String relativePathStart_;
     
     private String assertedValueSetVersion;
@@ -91,6 +92,9 @@ public class SystemVariables {
 	private String graphdbUser;
     private String graphdbpwd;
     private String graphdbUrl;
+	private int graphdbPort;
+	private int graphdbMaxConnections;
+	private int graphdbConnectTimeOutLength;
 
     private boolean singleTableMode = true;
     private static String SINGLE_TABLE_MODE_PROP = "SINGLE_TABLE_MODE";
@@ -338,10 +342,32 @@ public class SystemVariables {
             autoLoadDBUsername_ = getProperty(props, "DB_USER");
             autoLoadDBPassword_ = getProperty(props, "DB_PASSWORD");
             
-//        	graphdbUser = getProperty(props, "GRAPH_DB_USER");
-//        	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
-//            graphdbUrl = getProperty(props, "GRAPH_DB_PATH");
-
+        	graphdbUser = getProperty(props, "GRAPH_DB_USER");
+        	graphdbpwd = getProperty(props, "GRAPH_DB_PWD");
+        	graphdbUrl = getProperty(props, "GRAPH_DB_URL");
+        	
+        	
+        	try {
+        	    graphdbPort = Integer.parseInt(getProperty(props, "GRAPH_DB_PORT"));
+            } catch (NumberFormatException e) {
+                logger.error("INVALID VALUE in config file for GRAPH_DB_PORT - defaulting to 8529");
+                graphdbPort = 8529;
+            }
+        	
+        	try {
+        	    graphdbMaxConnections = Integer.parseInt(getProperty(props, "GRAPH_DB_MAX_CONNECTIONS"));
+            } catch (NumberFormatException e) {
+                logger.error("INVALID VALUE in config file for GRAPH_DB_MAX_CONNECTIONS - defaulting to 200");
+                graphdbMaxConnections = 200;
+            }
+        	
+        	try {
+        	    graphdbConnectTimeOutLength = Integer.parseInt(getProperty(props, "GRAPH_DB_CONNECTION_TIMEOUT_LENGTH"));
+            } catch (NumberFormatException e) {
+                logger.error("INVALID VALUE in config file for GRAPH_DB_CONNECTION_TIMEOUT_LENGTH - defaulting to 60000 ms");
+                graphdbConnectTimeOutLength = 60000;
+            }
+        	autoLoadStrictArrangoRequirement_ = getProperty(props, "STRICT_ARANGO_REQUIREMENT");
             
             mysql_collation= getNullableProperty(props, "MYSQL_COLLATION", DEFAULT_MYSQL_COLLATION);
 
@@ -617,6 +643,20 @@ public class SystemVariables {
     }
 
     /**
+	 * @return the autoLoadStrictArrangoRequirement_
+	 */
+	public String getAutoLoadStrictArrangoRequirement() {
+		return autoLoadStrictArrangoRequirement_;
+	}
+
+	/**
+	 * @param autoLoadStrictArrangoRequirement_ the autoLoadStrictArrangoRequirement_ to set
+	 */
+	public void setAutoLoadStrictArrangoRequirement_(String autoLoadStrictArrangoRequirement_) {
+		this.autoLoadStrictArrangoRequirement_ = autoLoadStrictArrangoRequirement_;
+	}
+
+	/**
      * @return the logLocation
      */
     public String getLogLocation() {
@@ -822,6 +862,48 @@ public class SystemVariables {
 		this.graphdbUrl = graphdbUrl;
 	}
 	
+	/**
+	 * @return the graphdbPort
+	 */
+	public int getGraphdbPort() {
+		return graphdbPort;
+	}
+
+	/**
+	 * @param graphdbPort the graphdbPort to set
+	 */
+	public void setGraphdbPort(int graphdbPort) {
+		this.graphdbPort = graphdbPort;
+	}
+
+	/**
+	 * @return the graphdbMaxConnections
+	 */
+	public int getGraphdbMaxConnections() {
+		return graphdbMaxConnections;
+	}
+
+	/**
+	 * @param graphdbMaxConnections the graphdbMaxConnections to set
+	 */
+	public void setGraphdbMaxConnections(int graphdbMaxConnections) {
+		this.graphdbMaxConnections = graphdbMaxConnections;
+	}
+
+	/**
+	 * @return the graphdbConnectTimeOutLength
+	 */
+	public int getGraphdbConnectTimeOutLength() {
+		return graphdbConnectTimeOutLength;
+	}
+
+	/**
+	 * @param graphdbConnectTimeOutLength the graphdbConnectTimeOutLength to set
+	 */
+	public void setGraphdbConnectTimeOutLength(int graphdbConnectTimeOutLength) {
+		this.graphdbConnectTimeOutLength = graphdbConnectTimeOutLength;
+	}
+
 	public void setAssertedValueSetVersion(String assertedValueSetVersion) {
 		this.assertedValueSetVersion = assertedValueSetVersion;
 	}
@@ -872,6 +954,8 @@ public class SystemVariables {
     	tempFile = new File(tempFile, "lbIndex");
     	return tempFile.getAbsolutePath();
     }
+
+
     
 
 }

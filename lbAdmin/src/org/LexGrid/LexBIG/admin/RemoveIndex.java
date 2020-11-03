@@ -91,6 +91,7 @@ public class RemoveIndex {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions("RemoveIndex", options,
                         "RemoveIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
                 Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -146,9 +147,9 @@ public class RemoveIndex {
                 confirmed = choice == 'Y' || choice == 'y';
             }
             if (confirmed) {
-                Util.displayTaggedMessage("Requested Index Removal Complete for Coding Scheme URI \"" + css.getCodingSchemeURI() + "\", Version \"" + css.getRepresentsVersion() + "\".");
+                Util.displayAndLogMessage("Requested Index Removal Complete for Coding Scheme URI \"" + css.getCodingSchemeURI() + "\", Version \"" + css.getRepresentsVersion() + "\".");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

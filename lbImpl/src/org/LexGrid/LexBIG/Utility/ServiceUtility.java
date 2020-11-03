@@ -46,12 +46,14 @@ import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.AssociationEntity;
+import org.LexGrid.relations.Relations;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.lexevs.dao.database.utility.GraphingDatabaseUtil;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry;
@@ -300,6 +302,23 @@ public class ServiceUtility {
             throw new LBParameterException(localId + " is not a valid Parameter.");
         }
     }
+    
+    public static boolean IsValidParameter(String codingSchemeNameOrUri, String codingSchemeVersion, String localId,
+            Class<? extends URIMap> supportedAttributeClass) throws LBParameterException{
+        if (StringUtils.isBlank(localId)) {
+            return false;
+        }
+
+        String codingSchemeUri = LexEvsServiceLocator.getInstance().getSystemResourceService()
+                .getUriForUserCodingSchemeName(codingSchemeNameOrUri, codingSchemeVersion);
+
+        CodingSchemeService codingSchemeService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager()
+                .getCodingSchemeService();
+
+        return codingSchemeService.validatedSupportedAttribute(codingSchemeUri, codingSchemeVersion, localId,
+                supportedAttributeClass);
+           
+    }
 
     /**
      * Validate filters.
@@ -463,26 +482,27 @@ public class ServiceUtility {
      * 
      * @throws LBException the LB exception
      */
-    public static Entity getEntity(String codingSchemeUri, String codingSchemeVersion, String entityCode,
+
+    public static ResolvedConceptReference getResolvedConceptReference(String codingSchemeUri, String codingSchemeVersion, String entityCode,
             String entityCodeNamespace) throws LBException {
-        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
-        versionOrTag.setVersion(codingSchemeVersion);
-
-        LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
-
-        CodedNodeSet cns = lbsvc.getNodeSet(codingSchemeUri, versionOrTag, null);
-
-        ResolvedConceptReferencesIterator iterator = cns.resolve(null, null, null, null, true);
-        while (iterator.hasNext()) {
-            ResolvedConceptReference conRef = iterator.next();
-            if (conRef.getCode().equalsIgnoreCase(entityCode)
-                    && conRef.getCodeNamespace().equalsIgnoreCase(entityCodeNamespace))
-                return conRef.getEntity();
-
-        }
-
-        return null;
-
+        //long start = System.nanoTime();
+//        CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+//        versionOrTag.setVersion(codingSchemeVersion);
+//        LexBIGService lbsvc = LexBIGServiceImpl.defaultInstance();
+//        CodedNodeSet cns = lbsvc.getNodeSet(codingSchemeUri, versionOrTag, null);
+//        cns =  cns.restrictToCodes(Constructors.createConceptReferenceList(entityCode));
+//        ResolvedConceptReference ref = cns.resolveToList(null, null, null, 1).getResolvedConceptReference(0);
+       // System.out.println("resolve time: " + (System.nanoTime() - start));
+        ResolvedConceptReference ref = new ResolvedConceptReference();
+        ref.setCode(entityCode);
+        ref.setCodeNamespace(entityCodeNamespace);
+        String descrp = LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getEntityService()
+                .getEntityDescriptionAsString(codingSchemeUri, codingSchemeVersion, entityCode, entityCodeNamespace);
+        ref.setEntityDescription(Constructors.createEntityDescription(descrp));
+        return ref;
     }
 
     /**
@@ -702,5 +722,66 @@ public class ServiceUtility {
             return null;
         } 
     }
-   
+    
+    public static Relations getRelationsForMappingScheme(String schemeUri, 
+            String schemeVersion, String relationsContainerName){
+        Relations relations = 
+                LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
+                        getDaoCallbackService().
+                            executeInDaoLayer(new DaoCallback<Relations>() {
+
+                @Override
+                public Relations execute(DaoManager daoManager) {
+                    String codingSchemeUid = daoManager.getCodingSchemeDao(
+                            schemeUri, schemeVersion).
+                            getCodingSchemeUIdByUriAndVersion(schemeUri, schemeVersion);
+                    
+                    String relationsUid = daoManager.getAssociationDao(
+                            schemeUri, schemeVersion).
+                            getRelationUId(codingSchemeUid, relationsContainerName);
+                    
+                    return daoManager.getAssociationDao(schemeUri, schemeVersion).
+                            getRelationsByUId(
+                            codingSchemeUid, 
+                            relationsUid, 
+                            false);
+                }
+            });
+        
+        return relations;
+    }
+
+    public static boolean isValidNodeForAssociation( AbsoluteCodingSchemeVersionReference ref, String entityCode, String associationName) {
+        return 
+                LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getCodedNodeGraphService()
+                .validateNodeForAssociation(
+                        ref.getCodingSchemeURN(), 
+                        ref.getCodingSchemeVersion(), 
+                        associationName, 
+                        entityCode).intValue() > 0;
+    }
+
+    public static List<String> getValidAssociationsForTargetOrSource( AbsoluteCodingSchemeVersionReference ref, String entityCode) {
+        return 
+                LexEvsServiceLocator
+                .getInstance()
+                .getDatabaseServiceManager()
+                .getCodedNodeGraphService()
+                .getValidAssociationsforTargetandSourceOf(
+                        ref.getCodingSchemeURN(), 
+                        ref.getCodingSchemeVersion(), 
+                        entityCode);
+    }
+    
+    public static String normalizeGraphandGraphDatabaseName(AbsoluteCodingSchemeVersionReference ref) throws LBParameterException{
+        return GraphingDatabaseUtil.normalizeGraphandGraphDatabaseName(LexEvsServiceLocator
+            .getInstance()
+            .getSystemResourceService()
+            .getInternalCodingSchemeNameForUserCodingSchemeName(
+                    ref.getCodingSchemeURN(), ref.getCodingSchemeVersion()));
+    }
 }

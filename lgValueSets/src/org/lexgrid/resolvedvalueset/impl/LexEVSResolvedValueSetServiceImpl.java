@@ -74,6 +74,15 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		}).collect(Collectors.toList()));
 		return assertVSList;
 	}
+	
+	@Override
+	public CodingScheme listResolvedValueSetForDescription(String description) throws LBException {
+		SourceAssertedValueSetService vsSvc = getSourceAssertedValueSetService(this.params);
+		if (vsSvc != null) { 
+			return vsSvc.listResolvedValueSetForDescription(description);
+		}
+		return null;
+	}
 
 	@Override
 	public List<CodingScheme> getMinimalResolvedValueSetSchemes() throws LBException {
@@ -165,8 +174,8 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		SearchExtension search = (SearchExtension) getLexBIGService().getGenericExtension("SearchExtension");
 		SourceAssertedValueSetSearchExtension assertedValueSetSearch = (SourceAssertedValueSetSearchExtension) getLexBIGService()
 				.getGenericExtension("AssertedValueSetSearchExtension");
-		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getMinimalResolvedValueSetSchemes());
-		ResolvedConceptReferencesIterator itr = search.search(matchText, refs, matchType);
+		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getLexBIGService().getMinimalResolvedVSCodingSchemes());
+
 		ResolvedConceptReferencesIterator asVsItr = assertedValueSetSearch.search(matchText, matchType);
 		SourceAssertedValueSetService vsSvc = getSourceAssertedValueSetService(this.params);
 		while (asVsItr.hasNext()) {
@@ -180,10 +189,13 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 				list.addAll(mappedList);
 			}
 		}
+		if(refs != null && refs.size() > 0){
+	    ResolvedConceptReferencesIterator itr = search.search(matchText, refs, matchType);
 		while (itr.hasNext()) {
 			ResolvedConceptReference ref = itr.next();
 			list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(),
 					ref.getCodingSchemeVersion()));
+		}
 		}
 		// Clean list of duplicates and return
 		return list.stream().map(refer -> refer.getCodingSchemeURN()).distinct()
@@ -197,7 +209,7 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 		//Set up search for regular code system based concept references
 		SearchExtension search = (SearchExtension) getLexBIGService().getGenericExtension("SearchExtension");
 		//Get a complete set of references for both kinds of value sets
-		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getMinimalResolvedValueSetSchemes());
+		Set<CodingSchemeReference> refs = getReferenceForSchemes(this.getLexBIGService().getMinimalResolvedVSCodingSchemes());
 		//Searching on all references for code system type search
 		ResolvedConceptReferencesIterator itr = search.search(matchCode, refs, MatchAlgorithm.CODE_EXACT);
 		//Searching source asserted value set index and adding results to list
@@ -208,13 +220,16 @@ public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSet
 					Constructors.createAbsoluteCodingSchemeVersionReference(
 							scheme.getCodingSchemeURI(), scheme.getRepresentsVersion())).
 						collect(Collectors.toList());
-				list.addAll(tempList);}
+				list.addAll(tempList);
+				
+			}
 
 			while(itr.hasNext()){
 				ResolvedConceptReference ref = itr.next();
 				list.add(Constructors.createAbsoluteCodingSchemeVersionReference(ref.getCodingSchemeURI(), 
 						ref.getCodingSchemeVersion()));
 			}
+		
 			//removing duplicates
 			return list.stream().map(
 					refer-> refer.getCodingSchemeURN()).distinct().map(

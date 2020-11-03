@@ -1,0 +1,766 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/batch"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans classpath:springxsds/spring-beans-2.0.xsd
+		http://www.springframework.org/schema/batch classpath:springxsds/spring-batch-2.1.xsd
+		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd
+		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd">
+
+	<beans:import resource="classpath:rrfBaseLoader.xml" />
+	<beans:import resource="classpath:umlsLoaderStaging.xml" />
+
+	<beans:bean class="org.springframework.batch.core.scope.StepScope" />
+
+	<beans:bean id="noopWriter" class="org.lexgrid.loader.writer.NoopWriter" />
+
+	<beans:bean id="mrdocRelationNameProcessor"
+		class="org.lexgrid.loader.rrf.processor.MrdocRelationNameProcessor" />
+
+	<job id="umlsJob" restartable="true">
+		<listeners>
+			<listener ref="cachingSupportedAttribuiteTemplate" />
+			<listener ref="medRtCachingSupportedAttributeTemplate"/>
+			<listener ref="jobSetupListener" />
+			<listener ref="cleanupListener" />
+		</listeners>
+
+
+		<step id="populateStagingTable" next="loadCodingScheme"
+			parent="stagingTablePopulatorStepFactory" />
+
+		<step id="loadCodingScheme" parent="listenerStep">
+			<tasklet>
+				<chunk reader="umlsCodingSchemeReader" processor="umlsCodingSchemeProcessor"
+					writer="codingSchemeWriter" commit-interval="1">
+				</chunk>
+			</tasklet>
+
+			<fail on="FAILED" exit-code="NON-RECOVERABLE" />
+			<next on="*" to="registerCodingScheme" />
+		</step>
+
+		<step id="registerCodingScheme" parent="listenerStep">
+			<tasklet ref="registeringTasklet" />
+			<fail on="FAILED" exit-code="NON-RECOVERABLE" />
+			<next on="*" to="loadHardcodedValues" />
+		</step>
+
+
+		<step id="loadHardcodedValues" next="umlsLoadEntity" parent="listenerStep">
+			<tasklet ref="introspectiveHardcodedValuesTasklet" />
+		</step>
+
+		<step id="umlsLoadEntity" parent="listenerStep" next="doLoad">
+			<tasklet>
+				<chunk reader="mrconsoStagedReader" processor="umlsEntityListProcessor"
+					writer="entityWriter" commit-interval="1000">
+				</chunk>
+			</tasklet>
+		</step>
+
+		<split id="doLoad" task-executor="taskExecutor">
+
+			<flow>
+				<step id="umlsLoadEntityAssnsToEntity" parent="listenerStep" next="processAssociations">
+					<tasklet>
+						<chunk reader="umlsForwardRelationNameMrrelSkippingReader"
+							processor="umlsRootNodeAddingEntityAssocToEntityListProcessor"
+							writer="associationSourceListWriter" commit-interval="1000">
+						</chunk>
+					</tasklet>
+				</step>
+				
+				<step id="processAssociations" next="umlsLoadMrsatAssocQuals" parent="listenerStep">	
+					<tasklet>
+						<chunk reader="mrdocAssociationGroupReader" processor="umlsAssociationProcessor"
+							writer="entityListWriter" commit-interval="1">
+							<streams>
+								<stream ref="mrdocReader" />
+							</streams>
+						</chunk>
+						<listeners>
+							<listener ref="medRtCachingSupportedAttributeTemplate" />
+						</listeners>
+					</tasklet>
+				</step>		
+
+				<step id="umlsLoadMrsatAssocQuals" next="buildTransitivityTable" parent="listenerStep">
+					<tasklet>
+						<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatQualifierProcessor"
+							writer="associationQualifierWriter" commit-interval="10000" skip-limit="100000">
+							<streams>
+								<stream ref="mrsatReader" />
+							</streams>
+ 							<skippable-exception-classes>
+								<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+							</skippable-exception-classes>
+						</chunk>
+					</tasklet>
+				</step>
+
+				
+				<step id="buildTransitivityTable" parent="listenerStep">
+					<tasklet ref="transitivityBuildingTasklet" />
+				</step>
+
+			</flow>
+			<flow>
+				<split id="loadPropertiesAndIndex">
+					<flow>
+						<split id="loadProperties" task-executor="taskExecutor">
+							<flow>
+								<step id="umlsLoadMrstyProperties" parent="listenerStep">
+									<tasklet>
+										<chunk reader="mrstyGroupReader" processor="umlsMrstyListProcessor"
+											writer="entityPropertyListWriter" commit-interval="1000">
+											<streams>
+												<stream ref="mrstyReader" />
+											</streams>
+										</chunk>
+									</tasklet>
+								</step>
+							</flow>
+							<flow>
+								<step id="umlsLoadDefinitionProperties" parent="listenerStep">
+									<tasklet>
+										<chunk reader="umlsMrdefSkippingReader" processor="umlsDefinitionPropertyProcessor"
+											writer="entityPropertyWriter" commit-interval="1000">
+											<streams>
+												<stream ref="mrdefReader" />
+											</streams>
+										</chunk>
+									</tasklet>
+								</step>
+							</flow>
+							<flow>
+								<step id="umlsLoadMrsatProperties" parent="listenerStep">
+									<tasklet>
+										<chunk reader="umlsMrsatSkippingReader" processor="umlsMrsatPropertyProcessor"
+											writer="entityPropertyWriter" commit-interval="1000" skip-limit="100000">
+											<streams>
+												<stream ref="mrsatReader" />
+											</streams>
+											<skippable-exception-classes>
+										 		<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+											</skippable-exception-classes>
+										</chunk>
+									</tasklet>
+								</step>
+							</flow>
+						</split>
+					</flow>
+					<flow>
+						<step id="index" parent="listenerStep">
+							<tasklet ref="indexingTasklet" />
+						</step>
+					</flow>
+				</split>
+			</flow>
+		</split>
+
+	</job>
+	
+
+	<beans:bean id="cleanupListener" parent="abstractCleanupListener"
+	class="org.lexgrid.loader.listener.CleanupListener">
+		<beans:property name="stagingManager" ref="umlsStagingManager"/>
+		<beans:property name="codingSchemeIdSetter" ref="umlsCodingSchemeIdSetter"/>
+	</beans:bean>
+
+	<beans:bean id="umlsAssociationProcessor"
+		parent="associationProcessor">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsCodingSchemeNameSettingProcessor"
+		abstract="true">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsRootNodeAddingEntityAssocToEntityListProcessor"
+		class="org.lexgrid.loader.processor.decorator.RootNodeAddingDecorator">
+		<beans:constructor-arg>
+			 <beans:ref bean="medRtUmlsEntityAssnsToEntityProcessor"/>
+		</beans:constructor-arg>
+		<beans:property name="replaceRelation" value="true"/>
+		<beans:property name="rootNodeResolver">
+			<beans:bean class="org.lexgrid.loader.umls.processor.support.UmlsRootNodeResolver">
+				<beans:property name="sab" value="${sab}"/>
+				<beans:property name="codingSchemeIdSetter"
+					ref="umlsCodingSchemeIdSetter" />
+				<beans:property name="databaseServiceManager" 
+					ref="databaseServiceManager"/>
+				<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao"/>
+				<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+
+	<beans:bean id="medRtUmlsEntityAssnsToEntityProcessor" class="org.lexgrid.loader.processor.MedRtEntityAssnsToEntityProcessor">
+		<beans:property name="supportedAttributeTemplate"
+			ref="medRtCachingSupportedAttributeTemplate" />
+	
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.data.association.MrrelRuiAssociationInstanceIdResolver" />
+		</beans:property>
+	
+		<beans:property name="associationPredicateKeyResolver">
+			<beans:bean
+				class="org.lexgrid.loader.database.key.AssociationPredicateCreatingKeyResolver">
+				<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	
+		<beans:property name="relationResolver">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.MedRTRelationResolver">
+				<beans:property name="codingSchemeIdSetter" ref="medRtUmlsCodingSchemeIdSetter" />
+				<beans:property name="mrconsoStagingDao" ref="mrconsoStagingDao" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="sourcePropertyIdResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+				<beans:property name="aui" value="AUI1" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="targetPropertyIdResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.processor.support.MrrelAuiPropertyIdResolver">
+				<beans:property name="aui" value="AUI2" />
+			</beans:bean>
+		</beans:property>
+	
+		<beans:property name="databaseServiceManager" ref="databaseServiceManager" />
+	
+		<beans:property name="qualifierResolvers">
+			<beans:list>
+				<beans:bean
+					class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />
+			</beans:list>
+		</beans:property>
+		<beans:property name="isoMap">
+			<beans:ref bean="isoMap" />
+		</beans:property>
+	</beans:bean>		
+	
+	<beans:bean id="medRtCachingSupportedAttributeTemplate"
+		parent="loggingBean"
+		class="org.lexgrid.loader.dao.template.MedRtCachingSupportedAttributeTemplate">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="medRtUmlsCodingSchemeIdSetter" />
+		</beans:property>
+		<beans:property name="databaseServiceManager">
+			<beans:ref bean="databaseServiceManager" />
+		</beans:property>
+	</beans:bean>	
+	
+
+	<beans:bean id="entityPropertyPropertyComparator"
+		class="org.lexgrid.loader.umls.data.property.EntityPropertyPropertyComparator">
+		<beans:property name="mrrankUtility">
+			<beans:ref bean="mrrankUtility" />
+		</beans:property>
+		<beans:property name="sab" value="${sab}"/>
+	</beans:bean>
+
+	<beans:bean id="mrconsoStagingReader"
+		class="org.springframework.batch.item.database.JdbcPagingItemReader"
+		scope="step">
+		<beans:property name="queryProvider">
+			<beans:bean
+				class="org.springframework.batch.item.database.support.SqlPagingQueryProviderFactoryBean">
+				<beans:property name="sortKey" value="CODE" />
+				<beans:property name="selectClause"
+					value="CODE,CUI,LAT,TS,LUI,STT,SUI,ISPREF,AUI,SAUI,SCUI,SDUI,SAB,TTY,STR,SRL,SUPPRESS,CVF" />
+				<beans:property name="fromClause"
+					value="${prefix}mrconsoStaging" />
+				<beans:property name="whereClause"
+					value="SAB = '${sab}'" />
+				<beans:property name="dataSource">
+					<beans:ref bean="dataSource" />
+				</beans:property>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="pageSize" value="30000" />
+		<beans:property name="rowMapper">
+			<beans:bean
+				class="org.springframework.jdbc.core.BeanPropertyRowMapper">
+				<beans:property name="mappedClass"
+					value="org.lexgrid.loader.rrf.model.Mrconso" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="dataSource">
+			<beans:ref bean="dataSource" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsCodingSchemeProcessor"
+		class="org.lexgrid.loader.umls.processor.UmlsCodingSchemeProcessor"
+		scope="step">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+		<beans:property name="sab" value="${sab}"/>
+		
+		<beans:property name="prefix" value="${prefix}"/>
+		
+		<beans:property name="supportedAttributeTemplate">
+			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsEntityResolver"
+		class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityResolver">
+		<beans:property name="entityNamespaceResolver">
+			<beans:ref bean="umlsEntityNamespaceResolver" />
+		</beans:property>
+		<beans:property name="entityDescriptionResolver">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.processor.support.DefaultMrconsoEntityDescriptionResolver" />
+		</beans:property>
+		<beans:property name="entityCodeResolver">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityCodeResolver" />
+		</beans:property>
+	</beans:bean>
+
+
+	<beans:bean id="umlsEntityListProcessor"
+		class="org.lexgrid.loader.rrf.processor.MrconsoGroupEntityProcessor">
+		<beans:property name="presentationResolver" ref="umlsPresentationPropertyResolver"/>
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+		<beans:property name="sortingListProcessor">
+			<beans:bean
+				class="org.lexgrid.loader.processor.SortingListProcessor">
+				<beans:property name="propertyComparator">
+					<beans:ref bean="propertyComparator" />
+				</beans:property>
+				<beans:property name="delegate"
+					ref="umlsEntityProcessor" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="filteredPropertyResolvers">
+			<beans:map>
+				<beans:entry>
+					<beans:key>
+						<beans:bean class="org.lexgrid.loader.umls.processor.support.filter.UniqueCuiListFilter"/>	
+					</beans:key>
+					<beans:ref bean="umlsCuiPropertyResolver"/>
+				</beans:entry>
+			</beans:map>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsEntityProcessor"
+		class="org.lexgrid.loader.processor.EntityProcessor">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+		<beans:property name="entityResolver">
+			<beans:ref bean="umlsEntityResolver" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrstyListProcessor"
+		class="org.lexgrid.loader.umls.processor.MrstyListProcessor">
+		<beans:property name="mrconsoStagingDao">
+			<beans:ref bean="mrconsoStagingDao" />
+		</beans:property>
+		<beans:property name="parameterizedlistIdSetter">
+			<beans:bean
+				class="org.lexgrid.loader.data.property.ParameterizedSequentialIdSetter">
+				<beans:property name="prefix" value="MSTY"/>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="sab" value="${sab}"/>	
+		<beans:property name="delegate"
+			ref="umlsMrstyCombiningProcessor" />
+		<beans:property name="databaseServiceManager" 
+			ref="databaseServiceManager"/>
+		<beans:property name="codingSchemeIdSetter" ref="umlsCodingSchemeIdSetter"/>
+	</beans:bean>
+
+	<beans:bean id="umlsDefinitionPropertyProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityPropertyProcessor">
+		<beans:property name="propertyResolver"
+			ref="umlsDefinitionPropertyResolver" />		
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+	</beans:bean>
+
+	<beans:bean id="umlsMrsatPropertyProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityPropertyProcessor">
+		<beans:property name="propertyResolver"
+			ref="umlsMrsatPropertyResolver" />
+		<beans:property name="entityKeyResolver" ref="databaseServiceEntityKeyResolver"/>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrstyCombiningProcessor" class="org.lexgrid.loader.processor.CombiningProcessor">
+		<beans:property name="processors">
+			<beans:list>
+				<beans:ref bean="umlsSemanticTypePropertyProcessor"/>
+				<beans:ref bean="umlsTuiPropertyProcessor"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsSemanticTypePropertyProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityPropertyProcessor">
+		<beans:property name="propertyResolver">
+			<beans:bean class="org.lexgrid.loader.umls.processor.support.MrstySemanticTypePropertyResolver">
+				<beans:property name="entityCodeResolver">
+					<beans:bean class="org.lexgrid.loader.processor.support.NoopEntityCodeResolver"/>
+				</beans:property>
+				<beans:property name="individualIdSetter">
+					<beans:bean class="org.lexgrid.loader.data.property.NoopIndividualIdSetter"/>
+				</beans:property>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="entityKeyResolver">
+			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsTuiPropertyProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.umls.processor.MrstyPropertyProcessor">
+		<beans:property name="propertyResolver">
+			<beans:bean class="org.lexgrid.loader.umls.processor.support.MrstyTuiPropertyResolver">
+				<beans:property name="entityCodeResolver">
+					<beans:bean class="org.lexgrid.loader.processor.support.NoopEntityCodeResolver"/>
+				</beans:property>
+				<beans:property name="individualIdSetter">
+					<beans:bean class="org.lexgrid.loader.data.property.NoopIndividualIdSetter"/>
+				</beans:property>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="entityKeyResolver">
+			<beans:bean class="org.lexgrid.loader.database.key.NoopEntityKeyResolver"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsRelaQualifierProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityAssnToEQualsProcessor">
+		<beans:property name="qualifierResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />	
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrsatQualifierProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityAsscToEntityMrsatQualsProcessor">	
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+					
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrsatRuiAssociationInstanceIdResolver"/>
+		</beans:property>		
+ 
+		<beans:property name="qualifierResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.processor.support.MrsatRuiAssocQualResolver" />	
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsPresentationPropertyResolver"
+		class="org.lexgrid.loader.umls.processor.support.UmlsPropertyResolver">
+		<beans:property name="individualIdSetter">
+			<beans:bean class="org.lexgrid.loader.umls.data.property.MrconsoAuiIndividualIdSetter"/>
+		</beans:property>
+		<beans:property name="entityCodeResolver">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityCodeResolver" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsMrsatPropertyResolver"
+		class="org.lexgrid.loader.umls.processor.support.MrsatPropertyResolver">
+		<beans:property name="individualIdSetter">
+			<beans:bean
+				class="org.lexgrid.loader.umls.data.property.MrsatIndividualIdSetter" />
+		</beans:property>
+		<beans:property name="entityCodeResolver">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.UmlsMrsatEntityCodeResolver" />
+		</beans:property>
+		<beans:property name="mrsatUtility">
+			<beans:ref bean="mrsatUtility" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsCuiPropertyResolver"
+		class="org.lexgrid.loader.umls.processor.support.UmlsCuiPropertyResolver">
+		<beans:property name="individualIdSetter">
+			<beans:bean class="org.lexgrid.loader.data.property.RandomGuidIndividualIdSetter"/>
+		</beans:property>
+		<beans:property name="entityCodeResolver">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityCodeResolver" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsDefinitionPropertyResolver"
+		class="org.lexgrid.loader.rrf.processor.support.DefaultDefinitionPropertyResolver">
+		<beans:property name="individualIdSetter">
+			<beans:bean
+				class="org.lexgrid.loader.umls.data.property.MrdefIndividualIdSetter" />
+		</beans:property>
+		<beans:property name="entityNamespaceResolver">
+			<beans:ref bean="umlsEntityNamespaceResolver" />
+		</beans:property>
+		<beans:property name="entityCodeResolver">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.UmlsMrdefEntityCodeResolver">
+				<beans:property name="mrconsoStagingDao">
+					<beans:ref bean="mrconsoStagingDao" />
+				</beans:property>
+			</beans:bean>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsCodingSchemeReader"
+		class="org.springframework.batch.item.support.ListItemReader"
+		scope="step">
+		<beans:constructor-arg ref="mrsabFactory" />
+	</beans:bean>
+
+
+	<beans:bean id="mrconsoStagedReader"
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader"
+		scope="step">
+		<beans:property name="groupDiscriminator">
+			<beans:bean
+				class="org.lexgrid.loader.umls.processor.support.UmlsMrconsoEntityGroupDiscriminator" />
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrconsoStagingReader" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsPartitionedMrrelGroupReader"
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader"
+		scope="step">
+		<beans:property name="groupDiscriminator">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.UmlsMrrelGroupDiscriminator" />
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="partitionedMrrelReader" />
+		</beans:property>
+		<!-- <beans:property name="maxBufferSize" value="100"/>  -->
+	</beans:bean>
+
+	<beans:bean id="umlsMrrelGroupReader"
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader">
+		<beans:property name="groupDiscriminator">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.UmlsMrrelGroupDiscriminator" />
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="umlsMrrelSkippingReader" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrstyGroupReader"
+		class="org.lexgrid.loader.reader.BufferedGroupItemReader">
+		<beans:property name="groupDiscriminator">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.reader.support.MrstyGroupDiscriminator" />
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrstyReader" />
+		</beans:property>
+		<!-- <beans:property name="maxBufferSize" value="100"/> -->
+	</beans:bean>
+
+	<beans:bean id="umlsMrrelSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader" scope="step">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.MrrelSabSkipPolicy">
+				<beans:property name="sab" value="${sab}" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrrelReader" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsMrdefSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader" scope="step">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.MrdefSabSkipPolicy">
+				<beans:property name="sab" value="${sab}" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrdefReader" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsMrsatSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.MrsatSkipPolicy">
+				<beans:property name="sab" value="${sab}" />
+				<beans:property name="mrsatUtility">
+					<beans:ref bean="mrsatUtility" />
+				</beans:property>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrsatReader" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrsatAssociationQualsSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.MrsatAssocQualSkipPolicy">
+				<beans:property name="sab" value="${sab}" />
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrsatReader" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsSkippingMrhierReader" class="org.lexgrid.loader.reader.SkippingItemReader">
+		<beans:property name="skipPolicy">
+			<beans:bean class="org.lexgrid.loader.umls.reader.support.UmlsMrhierHcdSabSkipPolicy">
+				<beans:property name="sab" value="${sab}"/>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrhierReader"/>
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsCodingSchemeIdSetter"
+		class="org.lexgrid.loader.umls.data.codingscheme.UmlsCodingSchemeIdSetter">
+		<beans:property name="mrsabUtility">
+			<beans:ref bean="mrsabUtility" />
+		</beans:property>
+		<beans:property name="sab" value="${sab}" />
+		<beans:property name="isoMap">
+			<beans:ref bean="isoMap" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="medRtUmlsCodingSchemeIdSetter"
+		class="org.lexgrid.loader.umls.data.codingscheme.MedRTUmlsCodingSchemeIdSetter">
+		<beans:property name="mrsabUtility">
+			<beans:ref bean="mrsabUtility" />
+		</beans:property>
+		<beans:property name="sab" value="${sab}" />
+		<beans:property name="isoMap">
+			<beans:ref bean="isoMap" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="umlsEntityNamespaceResolver"
+		class="org.lexgrid.loader.processor.support.SameAsCodingSchemeNameEntityNamespaceResolver">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="registeringTasklet" parent="abstractLexEvsUtilityTasklet"
+		class="org.lexgrid.loader.lexbigadmin.RegisteringTasklet">
+		<beans:property name="retry" value="${retry}"/>
+		<beans:property name="prefix" value="${prefix}"/>
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	</beans:bean>
+
+	<beans:bean id="indexingTasklet" parent="abstractLexEvsUtilityTasklet"
+		class="org.lexgrid.loader.lexbigadmin.IndexingTasklet">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="transitivityBuildingTasklet" parent="abstractLexEvsUtilityTasklet"
+		class="org.lexgrid.loader.lexbigadmin.TransitivityBuildingTasklet">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="introspectiveHardcodedValuesTasklet" parent="abstractIntrospectiveHardcodedValues"
+		class="org.lexgrid.loader.umls.hardcodedvalues.UmlsIntrospectiveHardcodedValues">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+		<beans:property name="supportedAttributeTemplate">
+			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsDefaultPropertyProcessor" abstract="true">
+		<beans:property name="codingSchemeIdSetter">
+			<beans:ref local="umlsCodingSchemeIdSetter" />
+		</beans:property>
+		<beans:property name="supportedAttributeTemplate">
+			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrrelPartitionedGroupReader" 
+	class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
+	scope="step">
+		<beans:property name="groupDiscriminator">
+			<beans:bean 
+			class="org.lexgrid.loader.umls.reader.support.UmlsMrrelGroupDiscriminator"/>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref local="umlsPartitionedMrrelReader"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsPartitionedMrrelReader" 
+	class="org.lexgrid.loader.reader.SkippingItemReader" 
+	scope="step">
+		<beans:property name="skipPolicy">
+				<beans:bean class="org.lexgrid.loader.rrf.reader.support.MrrelCuiNumberBasedSkipPolicy">
+					<beans:property name="cuiNumber" value="#{stepExecutionContext[rrfPartitionNumber]}"/>
+				</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="umlsForwardRelationNameMrrelSkippingReader"/>
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsForwardRelationNameMrrelSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader" >
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.rrf.reader.support.MrrelRelationBasedSkipPolicy">
+				<beans:property name="forwardNameList">
+					<beans:ref bean="relationForwardNameFactory" />
+				</beans:property>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="umlsMrrelSkippingReader" />
+		</beans:property>
+	</beans:bean>
+
+</beans:beans>

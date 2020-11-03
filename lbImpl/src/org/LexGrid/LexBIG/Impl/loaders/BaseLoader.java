@@ -59,6 +59,7 @@ import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.ClassUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.RootOrTail;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -380,7 +381,7 @@ public abstract class BaseLoader extends AbstractExtendable implements Loader{
             } catch (Exception e) {
                 status_.setState(ProcessState.FAILED);
                 md_.fatal("Failed while running the conversion", e);
-                getLogger().warn("Load failed: " + (e.getCause() != null?e.getCause():e.getMessage()));
+                getLogger().error("Load failed: " + (e.getCause() != null?e.getCause():e.getMessage()) + " " + ExceptionUtils.getFullStackTrace(e));
             } finally {
                 if (status_.getState() == null || 
                         (

@@ -32,7 +32,7 @@ import org.lexgrid.loader.rrf.model.Mrhier;
 public class MrhierHcdPropertyQualifierResolver extends AbstractPropertyQualifierResolver<Mrhier>{
 
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrhier item) {
 		return RrfLoaderConstants.HCD_QUALIFIER;
 	}
 

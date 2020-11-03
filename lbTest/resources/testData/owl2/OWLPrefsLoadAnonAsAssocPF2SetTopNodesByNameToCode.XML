@@ -6,5 +6,5 @@
 <MatchConceptCode>code</MatchConceptCode>
 <MatchConceptStatus>DONTMATCHANYTHING</MatchConceptStatus>
 <MatchRootName>Gene|PersonRole|Person|DiseasesDisordersFindings</MatchRootName>
-<StrictOWLImplementation>true</StrictOWLImplementation>
+<StrictOWLImplementation>false</StrictOWLImplementation>
 </OWLLoaderPreferences>

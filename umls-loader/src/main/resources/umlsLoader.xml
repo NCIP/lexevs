@@ -74,7 +74,7 @@
 					</tasklet>
 				</step>
 				
-				<step id="processAssociations" next="buildTransitivityTable" parent="listenerStep">	
+				<step id="processAssociations" next="umlsLoadMrsatAssocQuals" parent="listenerStep">	
 					<tasklet>
 						<chunk reader="mrdocAssociationGroupReader" processor="umlsAssociationProcessor"
 							writer="entityListWriter" commit-interval="1">
@@ -87,6 +87,21 @@
 						</listeners>
 					</tasklet>
 				</step>		
+
+				<step id="umlsLoadMrsatAssocQuals" next="buildTransitivityTable" parent="listenerStep">
+					<tasklet>
+						<chunk reader="umlsMrsatAssociationQualsSkippingReader" processor="umlsMrsatQualifierProcessor"
+							writer="associationQualifierWriter" commit-interval="10000" skip-limit="100000">
+							<streams>
+								<stream ref="mrsatReader" />
+							</streams>
+ 							<skippable-exception-classes>
+								<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+							</skippable-exception-classes>
+						</chunk>
+					</tasklet>
+				</step>
+
 				
 				<step id="buildTransitivityTable" parent="listenerStep">
 					<tasklet ref="transitivityBuildingTasklet" />
@@ -525,6 +540,19 @@
 			<beans:bean class="org.lexgrid.loader.rrf.processor.support.RelaAssocQualResolver" />	
 		</beans:property>
 	</beans:bean>
+	
+	<beans:bean id="umlsMrsatQualifierProcessor" parent="umlsDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityAsscToEntityMrsatQualsProcessor">	
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+					
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrsatRuiAssociationInstanceIdResolver"/>
+		</beans:property>		
+ 
+		<beans:property name="qualifierResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.processor.support.MrsatRuiAssocQualResolver" />	
+		</beans:property>
+	</beans:bean>
 
 	<beans:bean id="umlsPresentationPropertyResolver"
 		class="org.lexgrid.loader.umls.processor.support.UmlsPropertyResolver">
@@ -672,6 +700,19 @@
 				<beans:property name="mrsatUtility">
 					<beans:ref bean="mrsatUtility" />
 				</beans:property>
+			</beans:bean>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrsatReader" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="umlsMrsatAssociationQualsSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.umls.reader.support.MrsatAssocQualSkipPolicy">
+				<beans:property name="sab" value="${sab}" />
 			</beans:bean>
 		</beans:property>
 		<beans:property name="delegate">

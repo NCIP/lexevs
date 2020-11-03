@@ -263,6 +263,16 @@ SMTP_SERVER=yourserver.edu
 # NOTE: Only applicable if EMAIL_ERRORS is set to 'true'.
 EMAIL_TO=yourAddress@.edu
 
+#graph-db config
+############# Graph Database Configuration
+GRAPH_DB_USER=root
+GRAPH_DB_PWD=pw
+GRAPH_DB_URL=localhost
+GRAPH_DB_PORT=8529
+GRAPH_DB_MAX_CONNECTIONS=200
+GRAPH_DB_CONNECTION_TIMEOUT_LENGTH=60000
+STRICT_ARANGO_REQUIREMENT=false
+
 ##############################################################################
 # All of the following variables are for non-API compliant and unsupported
 # features, and should be commented out unless you know what they do.

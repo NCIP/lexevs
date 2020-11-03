@@ -22,6 +22,6 @@
 		<lgNaming:supportedRepresentationalForm localId="text_plain" uri="urn:oid:2.16.840.1.113883.6.10:text_plain"/>
 	</owldef:mappings>
 	<owldef:associationDefinitions toUpdate="true">
-		<assoc associationName="Has_Salt_Form" entityCode="A5" forwardName="Has_Salt_Form" reverseName="Has_Free_Acid_Or_Base_Form"/>
-    	</owldef:associationDefinitions>
+		<assoc entityCode="A5" forwardName="Has_Salt_Form" reverseName="Has_Free_Acid_Or_Base_Form"/>
+    </owldef:associationDefinitions>
 </CodingSchemeManifest>

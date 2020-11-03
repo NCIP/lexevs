@@ -34,7 +34,7 @@ public class SourceAuiAssocQualResolver extends AbstractAssociationQualifierReso
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierName()
 	 */
-	public String getQualifierName() {
+	public String getQualifierName(Mrrel item) {
 		return MetaLoaderConstants.SOURCE_AUI_QUALIFIER;
 	}
 

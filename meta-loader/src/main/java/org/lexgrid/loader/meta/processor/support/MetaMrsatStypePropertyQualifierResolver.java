@@ -30,7 +30,7 @@ import org.lexgrid.loader.rrf.model.Mrsat;
 public class MetaMrsatStypePropertyQualifierResolver extends
 		AbstractPropertyQualifierResolver<Mrsat> {
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrsat item) {
 		return MetaLoaderConstants.STYPE_QUALIFIER;
 	}
 

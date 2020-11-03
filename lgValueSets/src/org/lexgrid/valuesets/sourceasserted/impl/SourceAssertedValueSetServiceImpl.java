@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -69,14 +70,14 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException {
 		List<String> list = getSourceAssertedValueSetTopNodesForRootCode(params.getRootConcept());
 		return list.stream().map(code ->
-			{CodingScheme scheme = null;
+			{List<CodingScheme> schemes = null;
 				try {
-					scheme = getSourceAssertedValueSetforTopNodeEntityCode(code).get(0);
+					schemes = getSourceAssertedValueSetforTopNodeEntityCode(code);
 				} catch (LBException e) {
 					throw new RuntimeException("Mapping value set root code: " + code + " failed");
 				}
-				return scheme;
-			}).collect(Collectors.toList());
+				return schemes;
+			}).collect(ArrayList::new, List::addAll, List::addAll);
 	
 	}
 
@@ -103,8 +104,23 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 
 	@Override
 	public CodingScheme getSourceAssertedValueSetForValueSetURI(URI uri) throws LBException {;
-		return getSourceAssertedValueSetforTopNodeEntityCode(
-				AssertedValueSetServices.getConceptCodeForURI(uri)).get(0);
+		
+		List<CodingScheme> codingSchemes = getSourceAssertedValueSetforTopNodeEntityCode(
+				AssertedValueSetServices.getConceptCodeForURI(uri));
+		if (codingSchemes == null){
+			return null;
+		}
+		CodingScheme codingSchemeMatch = null;
+		
+		for (Iterator iterator = codingSchemes.iterator(); iterator.hasNext();) {
+			CodingScheme codingScheme = (CodingScheme) iterator.next();
+			if (codingScheme.getCodingSchemeURI().equals(uri.toString())) {
+				codingSchemeMatch = codingScheme;
+				break;
+			}
+		}
+		
+		return codingSchemeMatch;
 	}
 
 	@Override
@@ -170,6 +186,11 @@ public class SourceAssertedValueSetServiceImpl implements SourceAssertedValueSet
 	public List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode)
 			throws LBException {
 		return getAssertedValueSetService().getSourceAssertedValueSetforTopNodeEntityCode(matchCode);
+	}
+	
+	@Override
+	public CodingScheme listResolvedValueSetForDescription(String description) throws LBException {
+		return getAssertedValueSetService().getSourceAssertedValueSetforDescription(description);
 	}
 	
 	@Override

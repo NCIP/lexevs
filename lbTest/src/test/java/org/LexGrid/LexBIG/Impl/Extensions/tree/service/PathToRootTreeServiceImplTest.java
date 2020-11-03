@@ -1,14 +1,12 @@
 package org.LexGrid.LexBIG.Impl.Extensions.tree.service;
 
-import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Impl.Extensions.tree.model.LexEvsTreeNode;
-import org.LexGrid.LexBIG.Impl.Extensions.tree.test.LexEvsTreeTestBase;
 import org.LexGrid.LexBIG.Impl.Extensions.tree.test.LexEvsTreeTestFramework;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -60,5 +58,19 @@ public class PathToRootTreeServiceImplTest extends LexEvsTreeTestFramework{
 		assertTrue(children.contains("Ford"));
 		assertTrue(children.contains("GM"));
 		assertTrue(children.contains("A"));
+	}
+	
+	@Test
+	public void testSubConceptsMultiHierarchy(){
+		LexEvsTreeNode fiveNode = 
+			pathToRootTreeServiceImpl.
+			getSubConcepts(
+					OWL2_SNIPPET_INDIVIDUAL_URN, 
+					Constructors.createCodingSchemeVersionOrTagFromVersion(
+							OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION), "BFO_0000001", "obo", null);
+		
+		assertTrue(fiveNode.getCode().equals("BFO_0000001"));
+		assertTrue(fiveNode.getExpandableStatus().name().equals("IS_EXPANDABLE"));
+
 	}
 }

@@ -111,8 +111,8 @@ public class LoadResolvedValueSetDefinition {
             LexEVSValueSetDefinitionServices valueSetService =  LexEVSValueSetDefinitionServicesImpl.defaultInstance();
             List<String> valuesetUris = valueSetService.listValueSetDefinitionURIs();
             if (!valuesetUris.contains(urn)) {
-            	Util.displayMessage("No valueSet definition found for the given  URN");
-                Util.displayMessage("");
+            	Util.displayAndLogMessage("No valueSet definition found for the given  URN");
+                Util.displayAndLogMessage("");
                 return;
             }
            
@@ -158,7 +158,7 @@ public class LoadResolvedValueSetDefinition {
             for (int i = 0; i < refs.length; i++) {
                 AbsoluteCodingSchemeVersionReference ref = refs[i];
                 lbsm.activateCodingSchemeVersion(ref);
-                Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                         + ref.getCodingSchemeVersion());
             }
         }
@@ -167,7 +167,7 @@ public class LoadResolvedValueSetDefinition {
             for (int i = 0; i < refs.length; i++) {
                 AbsoluteCodingSchemeVersionReference ref = refs[i];
                 lbsm.setVersionTag(ref, vsTag);
-                Util.displayTaggedMessage("Scheme tagged>> " + ref.getCodingSchemeURN() + " Version>> "
+                Util.displayAndLogMessage("Scheme tagged>> " + ref.getCodingSchemeURN() + " Version>> "
                         + ref.getCodingSchemeVersion() + "tag>> " + vsTag);
             }
         }

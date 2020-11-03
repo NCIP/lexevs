@@ -25,9 +25,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.types.ChangeType;
@@ -83,7 +86,9 @@ public class NCIThesaurusHistoryFileToSQL {
 
         loadSystemReleaseFile(versionsFilePath, failOnAllErrors);
 
-        loadFile(filePath, failOnAllErrors);
+        //loadFile(filePath, failOnAllErrors);
+        
+        loadFileBatch(filePath, failOnAllErrors);
     }
 
     /**
@@ -240,6 +245,82 @@ public class NCIThesaurusHistoryFileToSQL {
             }
 
         }
+    }
+    
+    private void loadFileBatch(URI filePath, boolean failOnAllErrors) throws Exception {
+        BufferedReader reader = getReader(filePath);
+
+        int lineNo = 0;
+        int count = 0;
+        List<NCIChangeEvent> events = new ArrayList<NCIChangeEvent>();
+        String line = reader.readLine();
+        while (line != null) {
+            
+
+            // format of line is
+            // conceptcode|conceptname|editaction|editdate|referencecode|referencename
+            if (line.startsWith("#") || line.length() == 0) {
+                line = reader.readLine();
+                continue;
+            }
+            try {
+                NCIChangeEvent event = new NCIChangeEvent();
+                
+                String[] vals = new String[6];
+                int startPos = 0;
+                int endPos = 0;
+                for (int i = 0; i < 6; i++) {
+                    endPos = line.indexOf(token_, startPos);
+                    if (endPos == -1) {
+                        endPos = line.length();
+                    }
+                    vals[i] = line.substring(startPos, endPos);
+                    startPos = endPos + 1;
+
+                }
+
+                event.setConceptcode(vals[0]);
+                event.setConceptName(useValueOrSpace(vals[1]));
+                event.setEditaction(ChangeType.fromValue(vals[2].toLowerCase()));
+
+                try {
+                    event.setEditDate(new Timestamp(dateFormat_.parse(vals[3]).getTime()));
+                } catch (ParseException e) {
+                    md_.fatalAndThrowException("Invalid date on line " + lineNo, e);
+                }
+
+                if (! vals[4].equals("(null)")) {
+                    event.setReferencecode(vals[4]);
+                }
+
+                if (! vals[5].equals("(null)")) {
+                    event.setReferencename(useValueOrSpace(vals[5]));
+                }
+                events.add(event);
+                count++;
+                if(count == 1000){
+                LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
+                        getNciHistoryService().insertNCIChangeEventBatch(codingSchemeUri, events);
+                count = 0;
+                events.clear();
+                }
+                lineNo++;
+                line = reader.readLine();
+                if(line == null && events.size() < 1000){
+                    LexEvsServiceLocator.getInstance().
+                    getDatabaseServiceManager().
+                        getNciHistoryService().insertNCIChangeEventBatch(codingSchemeUri, events);
+                }
+            } catch (Exception e) {
+                    e.printStackTrace();
+                    md_.fatalAndThrowException("Error processing history event. See stack trace for details", e); 
+            }
+
+        }
+        
+        md_.info("LOAD SUCCESSFUL");
+        
     }
 
     private void loadSystemReleaseFile(URI filePath, boolean failOnAllErrors) throws Exception {

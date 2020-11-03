@@ -78,6 +78,8 @@ public class JdbcMrconsoStagingDao extends JdbcDaoSupport implements MrconsoStag
 	
 	protected String getCodesFromCui = "select CODE from " + PREFIX_PLACEHOLDER + TABLENAME_PLACEHOLDER + " where CUI = ?";
 	
+	protected String getNameSpaceFromAui = "select SAB from " + PREFIX_PLACEHOLDER + TABLENAME_PLACEHOLDER + " where AUI = ?";
+	
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.rrf.staging.MrconsoStagingDao#getCodeAndSab(java.lang.String, java.lang.String)
 	 */

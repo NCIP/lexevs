@@ -30,6 +30,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.Statistics;
+import net.sf.ehcache.config.ConfigurationFactory;
 
 import org.lexevs.logging.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
@@ -128,7 +129,7 @@ public class CacheRegistry implements InitializingBean, DisposableBean {
 						this.caches.put(cacheName,cacheWrapper);
 						return cacheWrapper;
 					} else {
-						LoggerFactory.getLogger().warn("Using default cache for Cache Name: " + cacheName);
+						LoggerFactory.getLogger().debug("Using default cache for Cache Name: " + cacheName);
 						this.cacheManager.addCache(cacheName);
 
 						CacheWrapper<String,Object> cacheWrapper = 

@@ -268,10 +268,14 @@ public class CodedNodeSetBackedMapping implements Mapping {
                         restrictingIterator.getTripleUidIterator().getTargetResolvedIteratorConceptReferences(),
                         restrictingIterator.getTripleUidIterator().getSourceOrTargetResolvedIteratorConceptReferences());
             } else {
-                count = this.estimateMappingNumber(
-                        restrictingIterator.getTripleUidIterator().getSourceCodesResolvedConceptReferencesIterator(),
-                        restrictingIterator.getTripleUidIterator().getTargetCodesResolvedConceptReferencesIterator(),
-                        restrictingIterator.getTripleUidIterator().getSourceOrTargetCodesResolvedConceptReferencesIterator());     
+                count = service.getMappingTriplesCountForCodes(
+                        mappingUri, 
+                        mappingVersion, 
+                        relationsContainerName, 
+                        restrictingIterator.getTripleUidIterator().getSourceResolvedIteratorConceptReferences(), 
+                        restrictingIterator.getTripleUidIterator().getTargetResolvedIteratorConceptReferences(),
+                        restrictingIterator.getTripleUidIterator().getSourceOrTargetResolvedIteratorConceptReferences()
+                        ); 
             }
             
             iterator = restrictingIterator;

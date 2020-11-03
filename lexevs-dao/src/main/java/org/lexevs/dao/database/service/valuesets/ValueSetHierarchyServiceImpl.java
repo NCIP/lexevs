@@ -5,11 +5,11 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -48,9 +48,11 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 
 	public ValueSetHierarchyServiceImpl init(String scheme, String version, String association, String sourceDesignation, String publishName,
 			String root_code) {
+		//Initialize this value first to insure fail-fast behavior
+		//We don't want any bad values persisted to the singleton
+		schemeUID = this.getCodingSchemeUId(scheme, version);
 		this.scheme = scheme;
 		this.version = version;
-		schemeUID = this.getCodingSchemeUId(scheme, version);
 		this.association = association;
 		this.associationPredicateGuid = this.getPredicateUid();
 		this.sourceDesignation = sourceDesignation;
@@ -61,12 +63,18 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		vsExternalURIs = getExternallyDefinedValueSetsForAssertedSource(root_code);
 		return this;
 	}
-
-
+	
 	public ValueSetHierarchyServiceImpl init() {
-		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
-		schemeUID = this.getSchemeUid(scheme, version);
+		//Reinit to default values before hitting the fail fast method
+		this.scheme = SCHEME;
+		this.version = null;
+		schemeUID = getSchemeUid(scheme, version);
+		this.association = HIERARCHY;
 		this.associationPredicateGuid = this.getPredicateUid();
+		this.sourceDesignation = SOURCE;
+		this.publishName = PUBLISH_DESIGNATION;
+		this.root_code = ROOT_CODE;
+		vsDao = getDaoManager().getCurrentValueSetHiearchyDao();
 		vsDef = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getValueSetDefinitionService();
 		vsExternalURIs = getExternallyDefinedValueSetsForAssertedSource(root_code);
 		System.out.println("scheme: " + scheme);
@@ -199,8 +207,13 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		Map<String, List<VSHierarchyNode>> duplicateGrouping = groupByDescription(nodes);
 		List<LexEVSTreeItem> subTrees = new ArrayList<LexEVSTreeItem>();
 		Set<String> keys = duplicateGrouping.keySet();
-		TreeSet<String> sortedKeys =  keys.stream().collect(
-				Collectors.toCollection(TreeSet::new));
+		List<String> sortedKeys =  keys.stream().sorted(new Comparator<String>(){
+
+			@Override
+			public int compare(String o1, String o2) {
+				return o1.toLowerCase().compareTo(o2.toLowerCase());
+			}}).collect(
+				Collectors.toList());
 		for(String s : sortedKeys){
 			if(duplicateGrouping.get(s).size() > 1){
 				duplicateGrouping.get(s).stream().forEach(x -> subTrees.add(new LexEVSTreeItem(
@@ -268,35 +281,31 @@ public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implem
 		 List<VSHierarchyNode> finalNodes = new ArrayList<VSHierarchyNode>();
 		Set<String> keys = groupedNodes.keySet();
 		//effectively sorts on the description of each node
-		TreeSet<String> sortedKeys =  keys.stream().collect(
-				Collectors.toCollection(TreeSet::new));
+		List<String> sortedKeys = keys.stream().collect(Collectors.toList());
 		for(String s : sortedKeys){
-//			if(groupedNodes.get(s).size() > 1){
-//				groupedNodes.get(s).stream().forEach(x -> x.setDescription(x.getDescription() +
-//						AssertedValueSetServices.createSuffixForSourceDefinedResolvedValueSet(x.getSource())));
-//			}
 			finalNodes.addAll(groupedNodes.get(s));
 		}
-		return finalNodes;
+
+	return sortedKeys.stream().map(x -> groupedNodes.get(x)).flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	protected List<VSHierarchyNode> collectReducedNodes(String source, List<VSHierarchyNode> nodes) {
-		// Get all nodes with declared sources and filter them to the source of the top node
-		List<VSHierarchyNode> temps = nodes.stream().filter(x -> x.getSource() != null && 
-				x.getSource().equals(source == null? x.getSource(): source)).collect(Collectors.toList());
-		// Filter these from the remainder when there is a duplicate with a null
-		// source
-		List<VSHierarchyNode> complete = new ArrayList<VSHierarchyNode>();
-		for (VSHierarchyNode n : nodes) {
-			if (n.getSource() == null) {
-				if (!temps.stream().anyMatch(x -> x.getEntityCode().equals(n.getEntityCode()))) {
-					complete.add(n);
-				}
-			}
-		}
-		// add those with a source back in
-		complete.addAll(temps);
-		return complete;
+		//Group nodes by code into a Map structure
+		Map<String, List<VSHierarchyNode>> groupedNodes = nodes.stream().
+				collect(Collectors.groupingBy(
+						VSHierarchyNode::getEntityCode, Collectors.toList()));
+		//Filter and remove duplicate nodes in the lists where there is no source 
+		//and keep non-sourced nodes when there is not a duplicate with a declared source.
+		//We assume a list size of 1 for non-sourced (NCI originated) value sets.
+		//This means we would always not add a possible NCI sourced list back into the list if
+		//there is another source present.
+		//Flatten these resulting lists to a List of nodes and return.
+		return groupedNodes.values().stream().map(
+				x -> x.stream().filter(
+						n -> n.getSource() != null ||
+						(x.size() == 1 && n.getSource() == null)).
+							collect(Collectors.toList())).
+								flatMap(List::stream).collect(Collectors.toList());
 	}
 
 	protected List<VSHierarchyNode> getUnfilteredNodes(String code) {

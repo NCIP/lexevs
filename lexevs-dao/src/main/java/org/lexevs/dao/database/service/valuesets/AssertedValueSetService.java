@@ -12,8 +12,8 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 public interface  AssertedValueSetService extends Serializable {
 	
 	List<CodingScheme> getSourceAssertedValueSetforTopNodeEntityCode(String matchCode) throws LBException;
-
-	//public List<String> getAllValueSetTopNodeCodes(String rootCode);
+	
+	CodingScheme getSourceAssertedValueSetforDescription(String description) throws LBException;
 	
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String rootCode);
 	

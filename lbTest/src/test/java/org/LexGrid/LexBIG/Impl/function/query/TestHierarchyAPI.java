@@ -500,6 +500,19 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
 
     }
     
+    public void testHierarchyRootGetForMultipleHierarchies() throws LBException {
+
+        LexBIGService svc = ServiceHolder.instance().getLexBIGService();
+        LexBIGServiceConvenienceMethods lbscm = (LexBIGServiceConvenienceMethods) svc
+                    .getGenericExtension("LexBIGServiceConvenienceMethods");
+        
+            ResolvedConceptReferenceList list = lbscm.getHierarchyRoots("owl2lexevs", Constructors.createCodingSchemeVersionOrTagFromVersion("0.1.5"),
+                    null);
+            assertNotNull(list);
+            assertTrue(list.getResolvedConceptReferenceCount() > 0);
+
+}
+    
     
     int findMatchingConcept(String code, ConceptReferenceList crl) {
         Iterator<? extends ConceptReference> i= crl.iterateConceptReference();

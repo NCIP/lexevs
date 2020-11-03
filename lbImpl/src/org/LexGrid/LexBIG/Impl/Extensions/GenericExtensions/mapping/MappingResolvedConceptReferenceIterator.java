@@ -30,7 +30,8 @@ import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOption;
 import org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.mapping.CodedNodeSetBackedMapping.RelationshipRestriction;
 import org.LexGrid.LexBIG.Impl.helpers.IteratorBackedResolvedConceptReferencesIterator;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
-
+import org.LexGrid.annotations.LgClientSideSafe;
+@LgClientSideSafe
 public class MappingResolvedConceptReferenceIterator extends IteratorBackedResolvedConceptReferencesIterator{
 
     /**
@@ -38,7 +39,6 @@ public class MappingResolvedConceptReferenceIterator extends IteratorBackedResol
      */
     private static final long serialVersionUID = -698270712034240196L;
     private boolean areAllCodedNodeSetsNull;
-    Iterator<ResolvedConceptReference> iterator;
     String mappingUri;
     String mappingVersion;
     String relationsContainerName;

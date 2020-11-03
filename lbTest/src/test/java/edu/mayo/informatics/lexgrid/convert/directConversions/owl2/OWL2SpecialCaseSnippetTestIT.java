@@ -17,6 +17,7 @@ import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
+import org.LexGrid.LexBIG.Extensions.Generic.LexBIGServiceConvenienceMethods;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
@@ -84,7 +85,42 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 		assertTrue(hasEditorTerm);
 	}
 
-
+	@Test
+	public void testPreferredPresentationPropNotNull() 
+			throws LBException{
+	
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodedNodeSet newSet = lbs.getNodeSet(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag , null);
+		
+		newSet= newSet.restrictToCodes(Constructors.createConceptReferenceList("C117743"));
+		ResolvedConceptReferenceList list = newSet.resolveToList(null, null, null, -1);
+		Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
+		assertTrue(itr.hasNext());
+		
+		ResolvedConceptReference ref = itr.next();
+		org.LexGrid.concepts.Entity e = ref.getEntity();
+		
+		Presentation[] presentations = e.getPresentation();
+		for( int i = 0; i < presentations.length; i++) {
+			Presentation p = presentations[i];
+			
+			// isPreferred should not be null
+			assertNotNull(p.getIsPreferred());
+			
+			if(p.getIsPreferred() ) {
+				System.out.print(p.getValue().getContent() + "\t");
+				Property[] props = e.getAllProperties();
+				for( Property prop : props ) {
+					if( prop.getPropertyName().equals("Semantic_Type") ) {
+						System.out.print(prop.getValue().getContent() + "\t");
+					}
+				}
+			}
+		}
+		
+	}
+	
 	@Test
 	public void testRestrictOnSubClassOfToProperty() 
 			throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
@@ -290,7 +326,7 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			true, false, 10, 10, null, null, null, null, -1);
 
 	Iterator<? extends ResolvedConceptReference> itr = list.iterateResolvedConceptReference();
-	assertTrue(validateQualifier("CL_0000001", "obo:CL_0000001", itr));
+	assertTrue(validateQualifier( "CL_0000001","CL_0000001", itr));
 	
 	}
 	
@@ -377,6 +413,32 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 	}
 	
 	@Test
+	public void testIsCodeRetired() throws Exception {
+		// This test validates that C99996 is retired. This should be true because:
+		// The preference file has the following line:   
+		// <MatchConceptStatus>P310</MatchConceptStatus> 
+		// This is validating that a code can be set for the MatchConceptStatus, instead 
+		// of using the name, Concept_Status.
+		
+		LexBIGServiceConvenienceMethods lbscm = null;
+		
+		try {
+			lbscm = (LexBIGServiceConvenienceMethods)lbs.getGenericExtension("LexBIGServiceConvenienceMethods");
+			lbscm.setLexBIGService(lbs);
+		} catch (LBException e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion(LexBIGServiceTestCase.OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
+		
+		boolean isRetired = lbscm.isCodeRetired("C99996", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+		assertEquals(false, isRetired);
+	}
+
+	
+	@Test
 	public void testLoadofOBODefinedQualifiers() throws LBInvocationException, LBParameterException{
 
 		String[] stringList = {"BFO_0000182"};
@@ -453,6 +515,20 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 			}
 		}
 		assertTrue(exists);
+	}
+	
+	@Test
+	public void testLoadTransitivePropertiesAndInversesAsTHierarchies() throws LBException {
+
+		CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+		versionOrTag.setVersion("0.1.5");
+		CodingScheme scheme = lbs.resolveCodingScheme(LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+		List<SupportedHierarchy> hrchy = scheme.getMappings().getSupportedHierarchyAsReference();
+
+		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("precedes")));
+		assertTrue(hrchy.stream().anyMatch(x -> x.getLocalId().equals("preceded by")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("precedes")).anyMatch(y -> y.getRootCode().equals("@")));
+		assertTrue(hrchy.stream().filter(x -> x.getLocalId().equals("preceded by")).anyMatch(y -> y.getRootCode().equals("@@")));
 	}
 	
 	@Test
@@ -676,6 +752,50 @@ public class OWL2SpecialCaseSnippetTestIT extends DataLoadTestBaseSpecialCases {
 					assertNotNull(pres);
 					assertTrue(pres.getSourceAsReference().
 							stream().anyMatch(x -> x.getContent().equals("NCI")));
+				}
+			}
+
+		}
+		
+		@Test
+		public void testValidateNumericalEntityLoadDesignation() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToMatchingDesignations("NumericalId", null, "exactMatch", null);
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			while(itr.hasNext()){
+				boolean found = false;
+				ResolvedConceptReference ref = itr.next();
+				if(ref.getConceptCode().equals("112233")){
+					Presentation pres = ref.getEntity().getPresentationAsReference().stream().filter(x -> x.getValue().
+							getContent().equals("NumericalID")).findFirst().get();
+					assertNotNull(pres);
+				}
+			}
+
+		}
+		
+		@Test
+		public void testValidateNumericalEntityLoadCode() throws LBException{
+			CodingSchemeVersionOrTag versionOrTag = new CodingSchemeVersionOrTag();
+			versionOrTag.setVersion("0.1.5");
+			CodedNodeSet set = lbs.getCodingSchemeConcepts(
+					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN, versionOrTag);
+			set.restrictToCodes(Constructors.createConceptReferenceList("112233"));
+			ResolvedConceptReferencesIterator itr = set.resolve(null, null, null, null);
+			assertNotNull(itr);
+			assertTrue(itr.hasNext());
+			while(itr.hasNext()){
+				boolean found = false;
+				ResolvedConceptReference ref = itr.next();
+				if(ref.getConceptCode().equals("112233")){
+					Presentation pres = ref.getEntity().getPresentationAsReference().stream().filter(x -> x.getValue().
+							getContent().equals("NumericalID")).findFirst().get();
+					assertNotNull(pres);
 				}
 			}
 
