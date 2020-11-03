@@ -32,6 +32,7 @@ import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.PropertyType;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
+import org.LexGrid.custom.relations.TerminologyMapBean;
 
 /**
  * A grouping of Mapping Coding Scheme related functionality.
@@ -241,6 +242,9 @@ public interface MappingExtension extends GenericExtension {
 			CodingSchemeVersionOrTag codingSchemeVersionOrTag, 
 			String relationsContainerName) throws LBException;
 	
+	
+	public List<TerminologyMapBean> resolveBulkMapping(String mappingName, String mappingVersion);
+	
 	/**
 	 * A mapping, which may be restricted and resolved.
 	 */
@@ -373,5 +377,7 @@ public interface MappingExtension extends GenericExtension {
 		 * @throws LBException the LB exception
 		 */
 		public ResolvedConceptReferencesIterator resolveMapping(List<MappingSortOption> sortOptionList) throws LBException;
+		
+
 	}
 }

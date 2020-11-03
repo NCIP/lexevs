@@ -82,7 +82,7 @@ public class DataUtils {
 	
 	public static <T> PropertyQualifier createPropertyQualifier(PropertyQualifierResolver<T> resolver, T item) {
 		PropertyQualifier qual = new PropertyQualifier();
-		qual.setPropertyQualifierName(resolver.getQualifierName());
+		qual.setPropertyQualifierName(resolver.getQualifierName(item));
 		qual.setPropertyQualifierType(resolver.getPropertyQualifierType(item));
 		qual.setValue(resolver.getQualifierValue(item));
 		
@@ -100,7 +100,7 @@ public class DataUtils {
 	
 	public static <T> AssociationQualification createAssociationQualifier(QualifierResolver<T> resolver, T item) {
 		AssociationQualification qual = new AssociationQualification();
-		qual.setAssociationQualifier(resolver.getQualifierName());
+		qual.setAssociationQualifier(resolver.getQualifierName(item));
 		qual.setQualifierText(resolver.getQualifierValue(item));
 		
 		return qual;

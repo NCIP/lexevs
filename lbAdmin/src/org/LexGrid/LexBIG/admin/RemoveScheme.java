@@ -85,6 +85,7 @@ public class RemoveScheme {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions("RemoveScheme", options,
                         "RemoveScheme -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
                 Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -133,7 +134,7 @@ public class RemoveScheme {
 
             // Continue and confirm the action (if not bypassed by force option)
             // ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
             AbsoluteCodingSchemeVersionReference acsvr = Constructors.createAbsoluteCodingSchemeVersionReference(css);
             boolean confirmed = true;
@@ -154,9 +155,9 @@ public class RemoveScheme {
 
             if (confirmed) {
                 lbsm.removeCodingSchemeVersion(acsvr);
-                Util.displayTaggedMessage("Request complete");
+                Util.displayAndLogMessage("Request complete");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

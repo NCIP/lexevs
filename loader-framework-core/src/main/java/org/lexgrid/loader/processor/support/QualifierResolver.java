@@ -41,5 +41,5 @@ public interface QualifierResolver<T> {
 	 * 
 	 * @return the qualifier name
 	 */
-	public String getQualifierName();	
+	public String getQualifierName(T item);	
 }

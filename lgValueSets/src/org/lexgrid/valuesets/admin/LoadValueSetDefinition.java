@@ -57,7 +57,7 @@ public class LoadValueSetDefinition {
         try {
             new LoadValueSetDefinition().run(args);
         } catch (LBResourceUnavailableException e) {
-        	Util.displayTaggedMessage(e.getMessage());
+        	Util.displayAndLogError("Resource Unavailable: " + e.getMessage(), e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -96,9 +96,9 @@ public class LoadValueSetDefinition {
             // Interpret provided values ...
             URI source = Util.string2FileURI(cl.getOptionValue("in"));
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATION SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATION SOURCE URI: " + source.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
             }
 
             LexEVSValueSetDefinitionServices vds = LexEVSValueSetDefinitionServicesImpl.defaultInstance();
@@ -106,11 +106,11 @@ public class LoadValueSetDefinition {
             // Perform the requested load or validate action ...
             if (vl >= 0) {
                 vds.validate(source, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
             	vds.loadValueSetDefinition(source.toString(), false);
             }
-            Util.displayMessage("Request to Load ValueSet Defintion Completed!");
+            Util.displayAndLogMessage("Request to Load ValueSet Defintion Completed!");
         }
     }
 

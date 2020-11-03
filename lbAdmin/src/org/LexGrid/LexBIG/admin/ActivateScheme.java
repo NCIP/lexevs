@@ -87,6 +87,7 @@ public class ActivateScheme {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions("ActivateScheme", options,
                         "ActivateScheme -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
                 Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -127,7 +128,7 @@ public class ActivateScheme {
 
             // Continue and confirm the action (if not bypassed by force option)
             // ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             boolean confirmed = true;
             if (!force) {
                 Util.displayMessage("ACTIVATE NOW? ('Y' to confirm, any other key to cancel)");
@@ -137,9 +138,9 @@ public class ActivateScheme {
             if (confirmed) {
                 LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(new Object());
                 lbsm.activateCodingSchemeVersion(Constructors.createAbsoluteCodingSchemeVersionReference(css));
-                Util.displayTaggedMessage("Request complete");
+                Util.displayAndLogMessage("Request complete");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

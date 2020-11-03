@@ -160,12 +160,14 @@ private static final long serialVersionUID = 1L;
                 if(resourceService.containsNonCodingSchemeResource(NCIM_URN)) {
                     if(overwrite) {
                         removePreviousHistory();
+                        messageDirector.info("Overwriting previous history");
                     }
                 } else {
                     resourceService.addNciHistoryResourceToSystem(NCIM_URN);
+                    messageDirector.info("Adding to any current histories in system");
                 }
             } catch (LBParameterException e) {
-               throw new RuntimeException(e);
+               throw new RuntimeException("UMLS/Meta History load failed", e);
             }
             
             try {

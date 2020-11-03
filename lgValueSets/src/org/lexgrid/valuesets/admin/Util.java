@@ -77,6 +77,19 @@ public class Util {
     public static void displayAndLogError(Throwable cause) {
         displayAndLogError(cause.getMessage(), cause);
     }
+    
+    /**
+     * Outputs messages to the information log and administration console, with
+     * additional tagging to assist service-ability.
+     * 
+     * @param message
+     *            Non-exception or generated message. Information
+     *            useful to the user
+     */
+    public static void displayAndLogMessage(String message) {
+        displayTaggedMessage(message);
+        _logger.info(message);
+    }
 
     /**
      * Outputs a standard message to administration console indicating supported

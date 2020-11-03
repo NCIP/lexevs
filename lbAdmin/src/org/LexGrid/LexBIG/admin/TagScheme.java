@@ -84,6 +84,7 @@ public class TagScheme {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions("TagScheme", options,
                         "TagScheme -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\" -t \"TEST\"", e);
                 Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -114,8 +115,8 @@ public class TagScheme {
             // Found it? If not, prompt...
             if (css == null) {
                 if (urn != null || ver != null) {
-                    Util.displayMessage("No matching coding scheme was found for the given URN or version.");
-                    Util.displayMessage("");
+                    Util.displayAndLogMessage("No matching coding scheme was found for the given URN or version.");
+                    Util.displayAndLogMessage("");
                 }
                 css = Util.promptForCodeSystem();
                 if (css == null)
@@ -123,10 +124,10 @@ public class TagScheme {
             }
 
             // Continue and perform the action ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(new Object());
             lbsm.setVersionTag(Constructors.createAbsoluteCodingSchemeVersionReference(css), tag);
-            Util.displayTaggedMessage("Request complete");
+            Util.displayAndLogMessage("Request complete");
         }
     }
 

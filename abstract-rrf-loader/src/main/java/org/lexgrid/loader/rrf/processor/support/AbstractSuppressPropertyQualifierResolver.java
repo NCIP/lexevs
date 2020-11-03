@@ -30,7 +30,7 @@ public abstract class AbstractSuppressPropertyQualifierResolver<T> extends Abstr
 	
 	private String YES = "Y";
 
-	public String getQualifierName() {
+	public String getQualifierName(T item) {
 		return RrfLoaderConstants.SUPPRESS_QUALIFIER;
 	}
 

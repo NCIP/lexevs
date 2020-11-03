@@ -165,7 +165,7 @@ private ConnectionPropertiesFactory connectionPropertiesFactory = new DefaultLex
 	protected ExtensionDescription buildExtensionDescription() {
 		ExtensionDescription meta = new ExtensionDescription();
 		meta.setExtensionBaseClass(MetaBatchLoader.class.getName());
-		meta.setExtensionClass("org.lexgrid.loader.meta.MetaBatchLoaderImpl");
+		meta.setExtensionClass("org.lexgrid.loader.umls.UmlsBatchLoaderImpl");
 		meta.setDescription(MetaBatchLoader.DESCRIPTION);
 		meta.setName(MetaBatchLoader.NAME);
 		meta.setVersion(MetaBatchLoader.VERSION);

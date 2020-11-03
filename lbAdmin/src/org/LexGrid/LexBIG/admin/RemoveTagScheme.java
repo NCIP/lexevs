@@ -83,6 +83,7 @@ public class RemoveTagScheme {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions("RemoveTagScheme", options,
                         "RemoveTagScheme -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
                 Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -121,11 +122,11 @@ public class RemoveTagScheme {
             }
 
             // Continue and perform the action ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(new Object());
             // Pass in a null tag to have it removed.
             lbsm.setVersionTag(Constructors.createAbsoluteCodingSchemeVersionReference(css), null);
-            Util.displayTaggedMessage("Request complete");
+            Util.displayAndLogMessage("Request complete");
         }
     }
 

@@ -20,9 +20,13 @@ package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Spliterator;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -38,6 +42,7 @@ import org.LexGrid.commonTypes.Text;
 import org.LexGrid.relations.Relations;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.MrmapToSQL;
+import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MappingRelationsUtil;
 import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrSat;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
@@ -111,40 +116,45 @@ public class MrmapRRFLoader extends BaseLoader implements MrMap_Loader{
     @Override
     protected URNVersionPair[] doLoad() throws Exception {
 
-      MrmapToSQL map = new MrmapToSQL();
-    if(getCodingSchemeManifest() != null){
-        messages.warn("Pre-load of manifests is not supported in the MrMap Loader.  " +
-        		"Manifest files can be post loaded instead");
-    }
-    if(getLoaderPreferences() != null){
-        messages.warn("Loader Preferences are not supported in the MrMap Loader");
-    }
-    
-     CodingScheme[] schemes = map.load(getMessageDirector(), 
-              this.getResourceUri(), 
-              this.getOptions().getURIOption(MRSAT_URI).getOptionValue(),
-              null, null, null, null, null, null, null, null,
-              this.getResourceUri().toString(), rel,
-              this.getCodingSchemeManifest());
-     setDoApplyPostLoadManifest(false);
-     return this.constructVersionPairsFromCodingSchemes((Object[])schemes);
+        MrmapToSQL map = new MrmapToSQL();
+        if (getCodingSchemeManifest() != null) {
+            messages.warn("Pre-load of manifests is not supported in the MrMap Loader.  "
+                    + "Manifest files can be post loaded instead");
+        }
+        if (getLoaderPreferences() != null) {
+            messages.warn("Loader Preferences are not supported in the MrMap Loader");
+        }
+
+        URI sourceSat = this.getOptions().getURIOption(MRSAT_URI).getOptionValue();
+        if (rel == null || !rel.getValue().isIsMapping()) {
+            Map<String, Relations> rels = new MappingRelationsUtil().processMrSatBean(sourceSat.getPath(),
+                    getResourceUri().getPath());
+            if (rels.entrySet() == null || rels.isEmpty()) {
+                throw new RuntimeException("This mapping does not define any mapping relations");
+            }
+            CodingScheme[] schemes = null;
+            Iterator<Entry<String, Relations>> itr = rels.entrySet().iterator();
+            List<CodingScheme> listScheme  = new ArrayList<CodingScheme>();
+            while (itr.hasNext()) {
+                // schemes are reset to the next load.  This needs to be additive
+                schemes = map.load(getMessageDirector(), this.getResourceUri(),
+                        this.getOptions().getURIOption(MRSAT_URI).getOptionValue(), 
+                        null, null, null, null, null, null,
+                        null, null, this.getResourceUri().toString(), 
+                        itr.next(), this.getCodingSchemeManifest());
+                setDoApplyPostLoadManifest(false);
+                listScheme.addAll(Arrays.asList(schemes));
+            }
+            
+            return this.constructVersionPairsFromCodingSchemes(listScheme.toArray());
+        }
+        CodingScheme[] schemes = map.load(getMessageDirector(), this.getResourceUri(),
+                this.getOptions().getURIOption(MRSAT_URI).getOptionValue(), null, null, null, null, null, null, null,
+                null, this.getResourceUri().toString(), rel, this.getCodingSchemeManifest());
+        setDoApplyPostLoadManifest(false);
+        return this.constructVersionPairsFromCodingSchemes((Object[]) schemes);
     }
 
-    
-//    protected HashMap<String, Relations> processRelationsContainers(String mapPath) throws IOException{
-//        HashMap<String, Relations> relations = new HashMap<String, Relations>();
-//        RRFLineReader mapReader = new RRFLineReader(mapPath);
-//        String[] mrMapRow;
-//            while((mrMapRow = mapReader.readRRFLine()) != null){
-//                if(!relations.containsKey(mrMapRow[0])){
-//                    Relations rel = new Relations();
-//                    rel.setContainerName(mrMapRow[0]);
-//                    relations.put(mrMapRow[0], rel);
-//                }
-//            }
-//        
-//        return relations;
-//    }
     
     protected MrSat processMrSatRow(String [] mapRow, int lineCount) throws SecurityException, NoSuchFieldException, IllegalArgumentException, IllegalAccessException{
         MrSat mrSat = new MrSat();

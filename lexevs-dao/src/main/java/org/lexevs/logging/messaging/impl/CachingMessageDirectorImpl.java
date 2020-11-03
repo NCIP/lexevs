@@ -102,7 +102,7 @@ public class CachingMessageDirectorImpl implements CachingMessageDirectorIF {
      */
     public String fatal(String message, Throwable cause) {
 
-        addMsg(LogLevel.FATAL, message, cause.getMessage());
+        addMsg(LogLevel.FATAL, message, cause == null? "No Error Message Provided" : cause.getMessage());
 
         return baseMessageDirector_.fatal(message, cause);
     }

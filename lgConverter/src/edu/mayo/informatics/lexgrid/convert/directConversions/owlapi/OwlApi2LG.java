@@ -149,9 +149,12 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
+import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLAnnotationPropertyRangeAxiomImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDataOneOfImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLDatatypeImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLLiteralImplNoCompression;
 import uk.ac.manchester.cs.owl.owlapi.mansyntaxrenderer.ManchesterOWLSyntaxPrefixNameShortFormProvider;
 
 /**
@@ -218,6 +221,8 @@ public class OwlApi2LG {
 
     private DatabaseServiceManager databaseServiceManager;
 
+    private Map<String, OWLObjectPropertyExpression> inversePropCache;
+
     final static OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     final static OWLDataFactory factory = manager.getOWLDataFactory();
      
@@ -283,8 +288,7 @@ public class OwlApi2LG {
                     databaseServiceManager.getAuthoringService().loadRevision(lgScheme_, null, null);
                 }
             } catch (Exception e) {
-                // Exception logged by SQLReadWrite
-                return null;
+                throw new RuntimeException("Owl2 formatted scheme failed to load: ", e);
             }
 
             initAssociationEntities();
@@ -1348,6 +1352,12 @@ public class OwlApi2LG {
                 // Remember that a preferred definition was assigned ...
                 assignedPreferredDefn = true;
             }
+            else if (prop instanceof Presentation){
+                // default the presentation property isPreferred value to false, if it wasn't set.
+                if (((Presentation) prop).getIsPreferred() == null) {
+                    ((Presentation) prop).setIsPreferred(Boolean.FALSE);
+                }
+            }
         }
 
         // Updated on 05/28/2008: It was decided that we also need to
@@ -2218,8 +2228,12 @@ public class OwlApi2LG {
      * ontology.
      */
     protected void initSupportedObjectProperties() {
+        inversePropCache = new HashMap<String, OWLObjectPropertyExpression>();
         for (OWLObjectProperty prop : ontology.getObjectPropertiesInSignature()) {
             addAssociation(prop);
+        }
+            for (OWLObjectPropertyExpression propExp : inversePropCache.values()) {
+                addInverseHierarchyAssociation(propExp);
         }
     }
 
@@ -2321,7 +2335,14 @@ public class OwlApi2LG {
             assocWrap.setIsTransitive(isTransitive);
             List<String> list = new ArrayList<String>();
             list.add(label);
-            if(isTransitive){
+            if (isTransitive) {
+                if (prefManager.isDoManageInverseAndTransitiveDesignation()) {
+                    if (isThisObjectPropertyAManagedInverse(objectProp)) {
+                        processObjectPropertyInverses(objectProp);
+                    }
+                } else {
+                    processObjectPropertyInverses(objectProp);
+                }
                 lgSupportedMappings_.registerSupportedHierarchy(label, 
                         owlProp.getIRI().toString(), label, "@@", list, false, true);
             }
@@ -2345,6 +2366,28 @@ public class OwlApi2LG {
 
     }
     
+    private boolean isThisObjectPropertyAManagedInverse(OWLObjectProperty objectProp) {
+        return Arrays.asList(prefManager.getTransitiveInverseAssociationNames().getName()).
+        stream().anyMatch(x -> x.equals(resolveLabel(objectProp)));
+    }
+
+    private void processObjectPropertyInverses(OWLObjectProperty objectProp) {
+        
+        Set<OWLObjectPropertyExpression> propExps = 
+                objectProp.getInverses(ontology) != null? 
+                        objectProp.getInverses(ontology): null;
+        Iterator<OWLObjectPropertyExpression> itr = propExps.iterator();
+        while(itr.hasNext()) {
+        OWLObjectPropertyExpression propExp  = itr.next();
+        if(inversePropCache.get(
+                propExp.getNamedProperty().getIRI().toString()) == null && 
+                 inversePropCache.get(objectProp.getNamedProperty().getIRI().toString()) == null){
+            inversePropCache.put(propExp.getNamedProperty().getIRI().toString(), propExp);
+        }
+        }
+        
+    }
+
     protected AssociationWrapper addAssociation(OWLAnnotation owlProp) {
         AssociationWrapper assocWrap = new AssociationWrapper();
         String propertyName = getLocalName(owlProp.getProperty());
@@ -2379,6 +2422,32 @@ public class OwlApi2LG {
                 nameSpace, true);
         return assocWrap;
 
+    }
+    
+    protected AssociationWrapper addInverseHierarchyAssociation(OWLObjectPropertyExpression propExp) {
+
+        AssociationWrapper assocWrap = new AssociationWrapper();
+        String propertyName = getLocalName(propExp.getNamedProperty());
+        assocWrap.setEntityCode(propertyName);
+        String label = resolveLabel(propExp.getNamedProperty());
+        assocWrap.setAssociationName(label);
+        assocWrap.setForwardName(getAssociationLabel(label, true));
+        String nameSpace = getNameSpace(propExp.getNamedProperty());
+        assocWrap.setEntityCodeNamespace(nameSpace);
+        assocWrap = assocManager.addAssociation(lgRelationsContainer_Assoc, assocWrap);
+        boolean isTransitive = propExp.isTransitive(ontology);
+        resolveAssociationProperty(assocWrap.getAssociationEntity(), propExp.getNamedProperty());
+        assocWrap.setIsTransitive(isTransitive);
+        assocWrap.setInverseTransitive(true);
+        List<String> list = new ArrayList<String>();
+        list.add(label);
+        lgSupportedMappings_.registerSupportedHierarchy(label, 
+                propExp.getNamedProperty().getIRI().toString(), label, "@", list, true, true);
+
+        lgSupportedMappings_.registerSupportedAssociation(label, propExp.getNamedProperty().getIRI().toString(), label, propertyName,
+                nameSpace, true);
+        return assocWrap;
+        
     }
 
     /**

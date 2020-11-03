@@ -465,21 +465,23 @@ You may obtain a copy of the License at
   		</antcall>
 	</target>
 	
-	<target name="abstract-rrf-loader"   description="packages Abstract RRF Loader classes">
+
+	<target name="abstract-rrf-loader" depends="loader-framework-core"  description="packages Abstract RRF Loader classes">
 		<antcall target="common-project-build">
    			<param name="project" value="abstract-rrf-loader"/>
 			<param name="module" value="abstract-rrf-loader"/>
   		</antcall>
 	</target>
 	
-	<target name="meta-loader"   description="packages Meta Loader classes">
+
+	<target name="meta-loader" depends="abstract-rrf-loader, lbInterfaces,lbImpl" description="packages Meta Loader classes">
 		<antcall target="common-project-build">
    			<param name="project" value="meta-loader"/>
 			<param name="module" value="meta-loader"/>
   		</antcall>
 	</target>
 	
-	<target name="umls-loader"   description="packages Umls Loader classes">
+	<target name="umls-loader" depends="abstract-rrf-loader, lbInterfaces,lbImpl" description="packages Umls Loader classes">
 		<antcall target="common-project-build">
    			<param name="project" value="umls-loader"/>
 			<param name="module" value="umls-loader"/>
@@ -521,7 +523,7 @@ You may obtain a copy of the License at
   		</antcall>
 	</target>
 	
-	<target name="lbAdmin" description="packages LexBIG administrative tools and classes">
+	<target name="lbAdmin" depends="lbImpl, meta-loader, umls-loader" description="packages LexBIG administrative tools and classes">
 		<antcall target="common-project-build">
    			<param name="project" value="lbAdmin"/>
 			<param name="module" value="lexbig-admin"/>

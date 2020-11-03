@@ -66,7 +66,7 @@ public class LoadOWL {
         try {
             new LoadOWL().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogError("Resource Unavailable: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -128,10 +128,10 @@ public class LoadOWL {
 
             boolean activate = vl < 0 && cl.hasOption("a");
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATING SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATING SOURCE URI: " + source.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
-                Util.displayTaggedMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
             }
 
             // Find the registered extension handling this type of load ...
@@ -142,7 +142,7 @@ public class LoadOWL {
             // Perform the requested load or validate action ...
             if (vl >= 0) {
                 loader.validate(source, manifest, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
                 if (loaderPrefs != null)
                     loader.setLoaderPreferences(loaderPrefs);
@@ -158,7 +158,7 @@ public class LoadOWL {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.setVersionTag(ref, tag);
-                    Util.displayTaggedMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }
@@ -169,7 +169,7 @@ public class LoadOWL {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.activateCodingSchemeVersion(ref);
-                    Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }

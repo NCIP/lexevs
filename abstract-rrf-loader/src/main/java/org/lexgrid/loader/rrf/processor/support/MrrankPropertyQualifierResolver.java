@@ -29,7 +29,7 @@ public class MrrankPropertyQualifierResolver extends AbstractPropertyQualifierRe
 
 	private MrrankUtility mrRankUtility;
 
-	public String getQualifierName() {
+	public String getQualifierName(Mrconso item) {
 		return RrfLoaderConstants.MRRANK_PROPERTY_QUALIFIER_NAME;
 	}
 

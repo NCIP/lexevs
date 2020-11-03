@@ -44,6 +44,7 @@ public static void main(String[] args) throws IOException {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
+            Util.displayAndLogError("Issue with command line args: " + e.getMessage() , e);
             Util.displayCommandOptions("PasswordEncryptor", options, "PasswordEncryptor -p \"-- password --\"", e);
             return;
         }

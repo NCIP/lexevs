@@ -18,23 +18,36 @@
  */
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import net.sourceforge.groboutils.junit.v1.MultiThreadedTestRunner;
 import net.sourceforge.groboutils.junit.v1.TestRunnable;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
+import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
+import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.LexBIG.DataModel.enums.PropertyType;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeGraph;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
+import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.SupportedProperty;
@@ -298,6 +311,282 @@ public class LexBIGServiceConvenienceMethodsImplTest extends LexBIGServiceTestCa
     	assertTrue(refs.getAssociatedConcept(0).getCodeNamespace().equals("Automobiles"));
     	assertTrue(refs.getAssociatedConcept(0).getEntityDescription().getContent().equals("First Code in cycle"));
     	
+    }
+    
+    @Test
+    public void searchAllDecendentsInTransitiveClosureBaseline() throws LBException {
+    	
+     CodingSchemeVersionOrTag vOt = Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
+
+     	   CodedNodeSet nodeSet = null;
+           nodeSet = lbscm.getLexBIGService().getCodingSchemeConcepts(OWL2_SNIPPET_INDIVIDUAL_URN, vOt);
+           nodeSet = nodeSet.restrictToMatchingDesignations("patient", 
+                   SearchDesignationOption.PREFERRED_ONLY, "LuceneQuery" , null);
+           ResolvedConceptReferenceList refs = nodeSet.resolveToList(null, null, null, -1);
+       	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+       	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+       	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+    }
+    
+    @Test
+    public void searchAllAscendentsInTransitiveClosureBaseline() throws LBException {
+    	//See if this works in a regular node graph resolution
+        CodingSchemeVersionOrTag vOt = Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
+
+        	   CodedNodeGraph nodeGraph = null;
+              nodeGraph= lbscm.getLexBIGService().getNodeGraph(OWL2_SNIPPET_INDIVIDUAL_URN, vOt, null);
+            //insure it's in the hierarchy classification
+            nodeGraph = nodeGraph.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+			ResolvedConceptReferenceList refs = nodeGraph.resolveAsList(Constructors.createConceptReference("Patient", "owl2lexevs"), true, false, 20, 20, null, null, null, -1);
+			ResolvedConceptReference ref = refs.getResolvedConceptReference(0);
+			Association ass = ref.getSourceOf().getAssociation(0);
+			//has one ancestor
+			assertTrue(ass.getAssociatedConcepts().getAssociatedConceptCount() == 1);
+          	assertTrue(Arrays.asList(ass.getAssociatedConcepts().getAssociatedConcept()).stream().anyMatch(y -> y.getCode().equals("Person")));
+          	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+       }
+    
+    @Test
+    public void searchAllAscendentsInTransitiveClosureBaselineNodeSetQuery() throws LBException {
+    	//See if this works in a regular node graph resolution
+        CodingSchemeVersionOrTag vOt = Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION);
+
+        	   CodedNodeGraph nodeGraph = null;
+              nodeGraph= lbscm.getLexBIGService().getNodeGraph(OWL2_SNIPPET_INDIVIDUAL_URN, vOt, null);
+            //insure it's in the hierarchy classification
+            nodeGraph = nodeGraph.restrictToAssociations(Constructors.createNameAndValueList("subClassOf"), null);
+			ResolvedConceptReferenceList refs = nodeGraph.resolveAsList(Constructors.createConceptReference("VerySickCancerPatient", "owl2lexevs"), true, false, 20, 20, null, null, null, -1);
+			ResolvedConceptReference ref = refs.getResolvedConceptReference(0);
+			Association ass = ref.getSourceOf().getAssociation(0);
+			CodedNodeSet set = lbscm.getLexBIGService().getCodingSchemeConcepts(OWL2_SNIPPET_INDIVIDUAL_URN, vOt);
+			ConceptReferenceList list = new ConceptReferenceList();
+			list.setConceptReference((ConceptReference[])ass.getAssociatedConcepts().getAssociatedConcept());
+			//has one ancestor
+			set = set.restrictToCodes(list);
+			set = set.restrictToMatchingProperties(null, 					
+					new CodedNodeSet.PropertyType[] 
+							{
+									CodedNodeSet.PropertyType.PRESENTATION, 
+									CodedNodeSet.PropertyType.GENERIC
+									}, 
+							Constructors.createLocalNameList("NCI"),
+							null, null, "Patient", "LuceneQuery", null);
+//			set = set.restrictToMatchingDesignations("Patient", SearchDesignationOption.ALL, "LuceneQuery", null);
+			ResolvedConceptReferenceList results = set.resolveToList(null, null, null, -1);
+			assertTrue(results.getResolvedConceptReferenceCount() > 0);
+          	assertFalse(Arrays.asList(ass.getAssociatedConcepts().getAssociatedConcept()).stream().anyMatch(y -> y.getCode().equals("Person")));
+          	assertTrue(Arrays.asList(results.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickPatient")));
+       }
+    
+    @Test
+    @Category(RemoveFromDistributedTests.class)
+    public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatient( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION), 
+    			codes, 
+    			"subClassOf", 
+    			"Patient", 
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("MidlySickCancerPatient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("Person")));    	
+    }
+    
+    @Test
+    @Category(RemoveFromDistributedTests.class)
+    public void searchAllAscendentsInTransitiveClosureDomainMildlySickPersonRootText( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchAscendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION), 
+    			codes, 
+    			"subClassOf", 
+    			"person", 
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("Person")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("Patient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("Person")));    	
+    }
+    
+    @Test
+    @Category(RemoveFromDistributedTests.class)
+    public void searchAllAscendentsInTransitiveClosureDomainMildlySickPatientText( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchAscendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION), 
+    			codes, 
+    			"subClassOf", 
+    			"patient", 
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("Person")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("Patient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("Patient")));    	
+    }
+    
+    @Test
+    public void searchAllDecendentsInTransitiveClosureDomainVerySickPatient( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("VerySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"patient",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertTrue(list.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
+    }
+    
+    @Test
+    public void searchAllDecendentsInTransitiveClosureDomainVerySickPatientSourceSpecific( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("VerySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"patient",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.ALL, 
+    			Constructors.createLocalNameList("NCI"));
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertTrue(list.stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
+    }
+    
+    @Test
+    public void searchAllAscendentsInTransitiveClosureDomainVerySickCancerPatientSourceSpecific( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("VerySickCancerPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchAscendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"patient",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.ALL, 
+    			Constructors.createLocalNameList("NCI"));
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("VerySickPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("SickPatient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs"))); }
+    
+    @Test
+    @Category(RemoveFromDistributedTests.class)
+    public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatientSourceSpecificPreferred( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"sick",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertFalse(list.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+    	assertFalse(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("slightly sick cancer patient"))); 
+    }
+    
+    @Test
+    public void searchAllDecendentsInTransitiveClosureDomainMildlySickPatientContainsPreferred( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION),
+    			codes, 
+    			"subClassOf", 
+    			"Patient",
+    			LBConstants.MatchAlgorithms.contains.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	List<ResolvedConceptReference> list = Arrays.asList(refs.getResolvedConceptReference());
+    	assertTrue(list.size() > 0);
+    	assertTrue(list.stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("slightly sick cancer patient"))); 
+    }
+    
+    @Test
+    public void searchAllDecendentsInTransitiveClosureScaledCodeList( ) throws LBParameterException{
+    	long start = System.currentTimeMillis();
+    	List<String> codes = new ArrayList<String>();
+    	codes.add("MildlySickPatient");
+    	codes.add("VerySickPatient");
+    	ResolvedConceptReferenceList refs = lbscm.searchDescendentsInTransitiveClosure(
+    			OWL2_SNIPPET_INDIVIDUAL_URN, 
+    			Constructors.createCodingSchemeVersionOrTagFromVersion(OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION), 
+    			codes, 
+    			"subClassOf", 
+    			"patient",
+    			LBConstants.MatchAlgorithms.LuceneQuery.name(),
+    			SearchDesignationOption.PREFERRED_ONLY, 
+    			null);
+    	System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).size() > 0);
+       	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(y -> y.getCode().equals("MildlySickCancerPatient")));
+       	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("PatientWithCold")));
+       	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCode().equals("VerySickCancerPatient")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getCodeNamespace().equals("owl2lexevs")));
+    	assertTrue(Arrays.asList(refs.getResolvedConceptReference()).stream().anyMatch(x -> x.getEntityDescription().getContent().equals("very sick cancer patient")));    	
     }
     
     protected void runCacheThreadSaveTest(Map cache) throws Throwable {

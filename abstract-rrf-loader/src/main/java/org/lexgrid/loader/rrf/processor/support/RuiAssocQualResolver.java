@@ -34,7 +34,7 @@ public class RuiAssocQualResolver extends AbstractAssociationQualifierResolver<M
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierName()
 	 */
-	public String getQualifierName() {
+	public String getQualifierName(Mrrel item) {
 		return RrfLoaderConstants.RUI_QUALIFIER;
 	}
 

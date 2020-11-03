@@ -42,6 +42,7 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Load.MedRtUmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
@@ -96,7 +97,6 @@ import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedVStoCodingSchemLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
@@ -607,7 +607,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SemNetLoaderImpl().register();
         new MedDRALoaderImpl().register();
         new MIFVocabularyLoaderImpl().register();
-        new SourceAssertedVStoCodingSchemLoaderImpl().register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
@@ -662,7 +661,32 @@ public class LexBIGServiceImpl implements LexBIGService {
             getLogger().warn(umls.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
 
-        
+        //Umls Batch Loader Extension
+        ExtensionDescription medrt = new ExtensionDescription();
+        medrt.setExtensionBaseClass(MedRtUmlsBatchLoader.class.getName());
+        medrt.setExtensionClass("org.lexgrid.loader.umls.MedRtUmlsBatchLoaderImpl");
+        medrt.setDescription(MedRtUmlsBatchLoader.DESCRIPTION);
+        medrt.setName(MedRtUmlsBatchLoader.NAME);
+        medrt.setVersion(MedRtUmlsBatchLoader.VERSION);
+        try {
+            ExtensionRegistryImpl.instance().registerLoadExtension(medrt);
+            
+            LexEvsServiceLocator.getInstance().getSystemResourceService().addSystemEventListeners(new SystemEventListener() {
+                //register a listener to clean up all the batch stuff on delete
+                public void onRemoveCodingSchemeResourceFromSystemEvent(String uri,
+                        String version) {
+                    try {
+                        MedRtUmlsBatchLoader medrtLoader = (MedRtUmlsBatchLoader) getServiceManager(null).getLoader(MedRtUmlsBatchLoader.NAME);
+                        medrtLoader.removeLoad(uri, version);
+                    } catch (Exception e) {
+                        getLogger().info(e.getMessage());
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            getLogger().warn(medrt.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
+        }
 
         //RVSDefinition Loader Extension
         ExtensionDescription rvsl = new ExtensionDescription();

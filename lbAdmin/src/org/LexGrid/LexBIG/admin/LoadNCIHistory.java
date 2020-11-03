@@ -65,7 +65,7 @@ public class LoadNCIHistory {
         try {
             new LoadNCIHistory().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogError("Resource Unavailable: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -103,10 +103,10 @@ public class LoadNCIHistory {
             URI versions = Util.string2FileURI(cl.getOptionValue("vf"));
             boolean replace = vl >= 0 && cl.hasOption("r");
             if (vl >= 0) {
-                Util.displayTaggedMessage("VALIDATING SOURCE URI: " + source.toString());
+                Util.displayAndLogMessage("VALIDATING SOURCE URI: " + source.toString());
             } else {
-                Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
-                Util.displayTaggedMessage("LOADING VERSION IDENTIFIERS FROM URI: " + versions.toString());
+                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
+                Util.displayAndLogMessage("LOADING VERSION IDENTIFIERS FROM URI: " + versions.toString());
             }
 
             // Find the registered extension handling this type of load ...
@@ -118,7 +118,7 @@ public class LoadNCIHistory {
             // Perform the load ...
             if (vl >= 0) {
                 loader.validate(source, versions, vl);
-                Util.displayTaggedMessage("VALIDATION SUCCESSFUL");
+                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
             } else {
                 loader.load(source, versions, !replace, false, true);
                 Util.displayLoaderStatus(loader);

@@ -34,7 +34,7 @@ public class RelaAssocQualResolver extends AbstractAssociationQualifierResolver<
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.AbstractNullValueSkippingOptionalQualifierResolver#getQualifierName()
 	 */
-	public String getQualifierName() {
+	public String getQualifierName(Mrrel item) {
 		return RrfLoaderConstants.RELA_QUALIFIER;
 	}
 

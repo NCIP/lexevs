@@ -40,9 +40,10 @@ public class SourceAssertedValueSetDefinitionLauncher {
         try {
             new SourceAssertedValueSetDefinitionLauncher().run(args);
         } catch (LBParameterException e) {
-            e.printStackTrace();
+            Util.displayAndLogError(
+                    "Loading Asserted Value Set defintions has failed. Check parameters", e);
         } catch (CmdLineException e) {
-            e.printStackTrace();
+            Util.displayAndLogError("Command Line Configuration is incorrect", e);
         }
 
     }
@@ -58,6 +59,7 @@ public class SourceAssertedValueSetDefinitionLauncher {
                 build();
         new SourceAssertedValueSetBatchLoader(params,
                 owner, conceptDomainName).run(params.getSourceName());
+        Util.displayAndLogMessage("Value Set Definition Loading from " + codingScheme + " Complete");
     }
 
 }
