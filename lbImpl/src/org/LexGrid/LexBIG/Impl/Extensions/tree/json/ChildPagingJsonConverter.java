@@ -70,6 +70,20 @@ public class ChildPagingJsonConverter implements JsonConverter {
 	/** The MOR e_ childre n_ indicator. */
 	private static String MORE_CHILDREN_INDICATOR = "...";
 	
+	   public ChildPagingJsonConverter(){
+	        super();
+	    }
+	    
+	    public ChildPagingJsonConverter(int maxChildren){
+	            super();
+	            if(maxChildren < 0){
+	                MAX_CHILDREN = Integer.MAX_VALUE;
+	            }
+	            else{
+	                MAX_CHILDREN = maxChildren;
+	            }
+	        }
+	
 	/* (non-Javadoc)
 	 * @see org.lexevs.tree.json.JsonConverters#buildJsonPathFromRootTree(org.lexevs.tree.model.LexEvsTreeNode)
 	 */

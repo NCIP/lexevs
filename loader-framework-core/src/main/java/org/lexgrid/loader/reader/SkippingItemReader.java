@@ -46,6 +46,7 @@ public class SkippingItemReader<I> implements ItemReader<I>{
 	 */
 	public I read() throws Exception, UnexpectedInputException,
 			ParseException {
+		
 		for(I readItem = delegate.read(); readItem != null; readItem = delegate.read()){
 			if(!skipPolicy.toSkip(readItem)){
 				return readItem;

@@ -36,6 +36,7 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.dto.ResolvedValueSetDefinition;
+import java.util.Map;
 
 /**
  * Value Set Definition Services.
@@ -542,4 +543,6 @@ public interface LexEVSValueSetDefinitionServices extends Serializable {
 	 * @return list of URIs
 	 */
 	public List<String> getValueSetDefinitionURIsWithConceptDomainAndUsageContext(String conceptDomain, List<String> usageContexts, String codingSchemeURI);
+
+	public Map<String, ValueSetDefinition> getURIToValueSetDefinitionsMap();
 }

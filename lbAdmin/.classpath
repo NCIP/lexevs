@@ -2,6 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/meta-loader"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/umls-loader"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbImpl"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lbModel"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/lgModel"/>

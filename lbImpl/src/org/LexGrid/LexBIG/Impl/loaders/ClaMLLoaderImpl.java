@@ -25,6 +25,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.ClaML_Loader;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.LexBIG.Utility.logging.CachingMessageDirectorIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.claml.ClaML2LGMain;
@@ -76,6 +77,9 @@ public class ClaMLLoaderImpl extends BaseLoader implements ClaML_Loader{
         try {
             this.load(new URI(resource));
         } catch (URISyntaxException e) {
+            CachingMessageDirectorIF md = getMessageDirector();
+            md = md == null? createCachingMessageDirectorIF(): md;
+            md.error(e.getMessage());
            throw new LBException(e.getMessage());
         }   
     }

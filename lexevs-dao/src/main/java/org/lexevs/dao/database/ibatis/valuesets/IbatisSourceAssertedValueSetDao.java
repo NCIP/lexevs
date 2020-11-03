@@ -21,6 +21,7 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	public static final String VS_PROPERTY = "VSProperty.";
 	private static final String GET_VS_ENTITIES_FROM_CODE = ASSOCIATION_NAMESPACE + "getValueSetEntitiesFromCode";
 	private static final String GET_VS_ENTITY_FROM_CODE = ASSOCIATION_NAMESPACE + "getVSTopNodeEntityByCode";
+	private static final String GET_VS_ENTITY_FROM_DESCRIPITON = ASSOCIATION_NAMESPACE + "getVSTopNodeEntityByDescription";
 	private static final String GET_VS_FROM_MEMBER_CODE = ASSOCIATION_NAMESPACE + "getValueSetTopNodesFromMemberCode";
 	private static final String GET_VS_ENTITY_UIDS = ASSOCIATION_NAMESPACE + "getVSEntityUids";
 	private static final String GET_VS_ENTITY_UIDS_FOR_TOPNODE_CODE = ASSOCIATION_NAMESPACE + "getVSEntityUidsForTopNodeCode";
@@ -52,6 +53,16 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 		return this.getSqlMapClientTemplate().queryForList(
 				GET_VS_ENTITY_FROM_CODE, 
 				new PrefixedParameterTuple(prefix, codingSchemeUID,  matchCode));
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Entity> getSourceAssertedValueSetTopNodeDescription(String description, String codingSchemeUID) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUID);
+		return this.getSqlMapClientTemplate().queryForList(
+				GET_VS_ENTITY_FROM_DESCRIPITON, 
+				new PrefixedParameterTuple(prefix, codingSchemeUID,  description));
 	}
 	
 	@SuppressWarnings("unchecked")

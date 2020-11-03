@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.custom.relations.TerminologyMapBean;
+import org.LexGrid.relations.Relations;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.model.Node;
@@ -42,6 +44,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
+import org.lexevs.dao.database.ibatis.parameter.SourceAndTargetMappingPrefixedParameter;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
@@ -78,6 +81,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerAndCodesCount";
+	private static String GET_MAP_AND_TERMS_FOR_MAPPING_CONTAINER_AND_REFERENCES  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getFullMapOfTerminologyWithEntityNames";
 	
 	private static String GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeMappingParticipationCount";
 	
@@ -899,7 +903,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				mappingCodingSchemeUid,
 				relationsContainerName,
 				sourceConceptReferences,
-				sourceConceptReferences,
+				targetConceptReferences,
 				sourceOrTargetConceptReferences);
 
 		bean.setPrefix(mappingSchemePrefix);
@@ -907,6 +911,39 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		return 
 			(Integer) 
 				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL, bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@CacheMethod
+	@Override
+	public List<TerminologyMapBean> getMapAndTermsForMappingAndReferences(
+			String mappingCodingSchemUid,
+			String sourceCodingSchemeUid,
+			String targetCodingSchemeUid,
+			Relations rel,
+			String qualifierName
+			){
+		String mappingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(mappingCodingSchemUid);
+
+		String sourceSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(sourceCodingSchemeUid);
+		
+		String targetSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(targetCodingSchemeUid);
+		
+		SourceAndTargetMappingPrefixedParameter bean = new SourceAndTargetMappingPrefixedParameter(
+				mappingSchemePrefix, 
+				sourceSchemePrefix, 
+				targetSchemePrefix, 
+				qualifierName);
+
+				return (List<TerminologyMapBean>) 
+						this.getSqlMapClientTemplate().
+						queryForList(
+								GET_MAP_AND_TERMS_FOR_MAPPING_CONTAINER_AND_REFERENCES,
+								bean);
+		
 	}
 
 	@CacheMethod

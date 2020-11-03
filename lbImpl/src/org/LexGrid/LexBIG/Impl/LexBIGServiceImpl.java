@@ -18,6 +18,8 @@
  */
 package org.LexGrid.LexBIG.Impl;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +44,8 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Generic.GenericExtension;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
+import org.LexGrid.LexBIG.Extensions.Load.MedRtUmlsBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.ResolvedValueSetDefinitionLoader;
@@ -96,7 +100,6 @@ import org.LexGrid.LexBIG.Impl.loaders.OBOLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.SemNetLoaderImpl;
-import org.LexGrid.LexBIG.Impl.loaders.SourceAssertedVStoCodingSchemLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.TextLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.UMLSHistoryLoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.postprocessor.ApproxNumOfConceptsPostProcessor;
@@ -116,9 +119,11 @@ import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
+import org.LexGrid.util.assertedvaluesets.AssertedValueSetServices;
 import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
+import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.logging.LoggerFactory;
@@ -607,7 +612,6 @@ public class LexBIGServiceImpl implements LexBIGService {
         new SemNetLoaderImpl().register();
         new MedDRALoaderImpl().register();
         new MIFVocabularyLoaderImpl().register();
-        new SourceAssertedVStoCodingSchemLoaderImpl().register();
         
         //Meta Batch Loader Extension
         ExtensionDescription meta = new ExtensionDescription();
@@ -662,7 +666,32 @@ public class LexBIGServiceImpl implements LexBIGService {
             getLogger().warn(umls.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
         }
 
-        
+        //Umls Batch Loader Extension
+        ExtensionDescription medrt = new ExtensionDescription();
+        medrt.setExtensionBaseClass(MedRtUmlsBatchLoader.class.getName());
+        medrt.setExtensionClass("org.lexgrid.loader.umls.MedRtUmlsBatchLoaderImpl");
+        medrt.setDescription(MedRtUmlsBatchLoader.DESCRIPTION);
+        medrt.setName(MedRtUmlsBatchLoader.NAME);
+        medrt.setVersion(MedRtUmlsBatchLoader.VERSION);
+        try {
+            ExtensionRegistryImpl.instance().registerLoadExtension(medrt);
+            
+            LexEvsServiceLocator.getInstance().getSystemResourceService().addSystemEventListeners(new SystemEventListener() {
+                //register a listener to clean up all the batch stuff on delete
+                public void onRemoveCodingSchemeResourceFromSystemEvent(String uri,
+                        String version) {
+                    try {
+                        MedRtUmlsBatchLoader medrtLoader = (MedRtUmlsBatchLoader) getServiceManager(null).getLoader(MedRtUmlsBatchLoader.NAME);
+                        medrtLoader.removeLoad(uri, version);
+                    } catch (Exception e) {
+                        getLogger().info(e.getMessage());
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            getLogger().warn(medrt.getName() + " is not on the classpath or could not be loaded as an Extension.",e);
+        }
 
         //RVSDefinition Loader Extension
         ExtensionDescription rvsl = new ExtensionDescription();
@@ -760,7 +789,65 @@ public class LexBIGServiceImpl implements LexBIGService {
            }).collect(Collectors.toList());
     }
     
+    @Override
+    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri) {
+        String ontoform = null;
+        AssertedValueSetService vsSvc = LexEvsServiceLocator.getInstance().
+                getDatabaseServiceManager().getAssertedValueSetService();
+        vsSvc.init(this.params);
+        if(uri == null){System.out.println("URI cannot be null"); return null;}
+        List<RegistryEntry> regs = LexEvsServiceLocator.getInstance().getRegistry().
+        getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+        if(regs.stream().anyMatch(x -> x.getResourceUri().equals(uri))){
+            ontoform = regs.
+                    stream().
+                    filter(x -> x.getResourceUri().equals(uri)).
+                    findFirst().
+                    get().getDbName();
+            //allowing a generic coding scheme format to be designated insures that this will go to default
+            return getDesignationFromType(OntologyFormat.valueOf(ontoform == null? OntologyFormat.TEXT.name(): ontoform));
+        }
+        try {
+            if(vsSvc.getEntityforTopNodeEntityCode(
+                    AssertedValueSetServices.getConceptCodeForURI(
+                            new URI(uri))) != null){return new TerminologyServiceDesignation(
+            TerminologyServiceDesignation.ASSERTED_VALUE_SET_SCHEME);}
+        } catch (LBException | URISyntaxException e) {
+            throw new RuntimeException("Problems Getting a terminology Service designation for an Asserted Value Set Terminology", e);
+        }
+        return new TerminologyServiceDesignation(
+                TerminologyServiceDesignation.UNIDENTIFIABLE);
+    }
+    
+    private TerminologyServiceDesignation getDesignationFromType(OntologyFormat ontoform){
+        switch(ontoform){
+        case  LEXGRID_MAPPING:
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
+        case  MRMAP: 
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.MAPPING_CODING_SCHEME);
+        case RESOLVEDVALUESET:
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.RESOLVED_VALUESET_CODING_SCHEME);
+        default:
+            return new TerminologyServiceDesignation(
+                    TerminologyServiceDesignation.REGULAR_CODING_SCHEME);
+        }
+
+    }
+    
     public void setAssertedValueSetConfiguration(AssertedValueSetParameters params) {
         this.params = params;
+    }
+
+    @Override
+    public String getLexEVSBuildVersion() {
+        return LexEVSVersion.getLexEVSBuildVersion();
+    }
+    
+    @Override
+    public String getLexEVSBuildTimestamp() {
+        return LexEVSVersion.getLexEVSBuildTimestamp();
     }
 }

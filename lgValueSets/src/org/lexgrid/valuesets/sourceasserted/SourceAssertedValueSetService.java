@@ -26,6 +26,15 @@ public interface SourceAssertedValueSetService extends Serializable{
    	 * @throws LBException
 	 */
 	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException;
+	/**
+   	 * Returns a fully resolved coding scheme representation of a value set.  Includes
+   	 * entities for the value set.  
+   	 * 
+   	 * @String description - Description to match exactly.
+   	 * @return CodingScheme - fully resolved coding scheme representation of value set 
+   	 * @throws LBException
+	 */
+	public CodingScheme listResolvedValueSetForDescription(String description) throws LBException;
    	/**
    	 * Returns a minimal (i.e. no entities included) coding scheme object list
    	 * 

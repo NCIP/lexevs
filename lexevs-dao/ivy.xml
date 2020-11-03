@@ -51,7 +51,7 @@
 		<dependency org="org.jboss.logging" name="jboss-logging" rev="3.1.2.GA" conf="default" />
 		<dependency org="org.hibernate.javax.persistence" name="hibernate-jpa-2.0-api" rev="1.0.1.Final" conf="default" />
 		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" conf="default" />
-		<dependency org="log4j" name="log4j" rev="1.2.14" conf="default" />
+		<dependency org="log4j" name="log4j" rev="1.2.16" conf="default" />
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false" conf="default->*"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.5.6" conf="default" />
 		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.6" conf="default" />
@@ -65,7 +65,7 @@
 		<dependency org="org.apache.ibatis" name="ibatis-sqlmap" rev="2.3.4.726" conf="default"/>
    		<dependency org="antlr" name="antlr" rev="2.7.7" conf="default"/>
    		<dependency org="org.dbunit" name="dbunit" rev="2.4.7" conf="default"/>
-   		<dependency org="commons-io" name="commons-io" rev="1.4" conf="default" />
+   		<dependency org="commons-io" name="commons-io" rev="2.6" conf="default" />
    	    <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" conf="default" />
    	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default"/>	
    	    <dependency org="javax.persistence" name="persistence-api" rev="1.0" conf="default->*"/>  

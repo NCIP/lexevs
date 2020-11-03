@@ -19,6 +19,7 @@
 package org.lexevs.dao.database.access.valuesets;
 
 import java.util.List;
+import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -172,4 +173,6 @@ public interface ValueSetDefinitionDao extends LexGridSchemaVersionAwareDao {
 			String entityCode);
 
 	public List<String> getValueSetURIsForContext(String uri);
+
+	public Map<String, ValueSetDefinition> getValueSetURIMapToDefinitions();
 }

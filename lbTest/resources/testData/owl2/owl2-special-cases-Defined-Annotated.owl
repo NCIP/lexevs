@@ -440,6 +440,7 @@
         <rdfs:label>term-source</rdfs:label>
     </owl:AnnotationProperty>
     
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -549,6 +550,63 @@
         <rdfs:domain rdf:resource="#C12219"/>
     </owl:ObjectProperty>
 
+    <!-- http://purl.obolibrary.org/obo/BFO_0000062 -->
+
+    <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000062">
+        <owl:inverseOf rdf:resource="http://purl.obolibrary.org/obo/BFO_0000063"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <rdfs:range rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <obo:IAO_0000111 xml:lang="en">preceded by</obo:IAO_0000111>
+        <obo:IAO_0000116 xml:lang="en">An example is: translation preceded_by transcription; aging preceded_by development (not however death preceded_by aging). Where derives_from links classes of continuants, preceded_by links classes of processes. Clearly, however, these two relations are not independent of each other. Thus if cells of type C1 derive_from cells of type C, then any cell division involving an instance of C1 in a given lineage is preceded_by cellular processes involving an instance of C.    The assertion P preceded_by P1 tells us something about Ps in general: that is, it tells us something about what happened earlier, given what we know about what happened later. Thus it does not provide information pointing in the opposite direction, concerning instances of P1 in general; that is, that each is such as to be succeeded by some instance of P. Note that an assertion to the effect that P preceded_by P1 is rather weak; it tells us little about the relations between the underlying instances in virtue of which the preceded_by relation obtains. Typically we will be interested in stronger relations, for example in the relation immediately_preceded_by, or in relations which combine preceded_by with a condition to the effect that the corresponding instances of P and P1 share participants, or that their participants are connected by relations of derivation, or (as a first step along the road to a treatment of causality) that the one process in some way affects (for example, initiates or regulates) the other.</obo:IAO_0000116>
+        <obo:IAO_0000118 xml:lang="en">is preceded by</obo:IAO_0000118>
+        <obo:IAO_0000118 xml:lang="en">preceded_by</obo:IAO_0000118>
+        <dc:source>http://www.obofoundry.org/ro/#OBO_REL:preceded_by</dc:source>
+        <rdfs:label xml:lang="en">preceded by</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BFO_0000063 -->
+
+    <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BFO_0000063">
+        <rdfs:subPropertyOf rdf:resource="http://purl.obolibrary.org/obo/RO_0002222"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <rdfs:range rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <obo:IAO_0000111 xml:lang="en">precedes</obo:IAO_0000111>
+        <rdfs:label xml:lang="en">precedes</rdfs:label>
+    </owl:ObjectProperty>
+    
+    <!-- http://purl.obolibrary.org/obo/BSO_0000062 -->
+
+    <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BSO_0000062">
+        <owl:inverseOf rdf:resource="http://purl.obolibrary.org/obo/BSO_0000063"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <rdfs:range rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <obo:IAO_0000111 xml:lang="en">preceded by</obo:IAO_0000111>
+        <obo:IAO_0000116 xml:lang="en">An example is: willing to help </obo:IAO_0000116>
+        <obo:IAO_0000118 xml:lang="en">is willing to</obo:IAO_0000118>
+        <obo:IAO_0000118 xml:lang="en">willing</obo:IAO_0000118>
+        <dc:source>http://www.obofoundry.org/ro/#OBO_REL:preceded_by</dc:source>
+        <rdfs:label xml:lang="en">willing</rdfs:label>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://purl.obolibrary.org/obo/BSO_0000063 -->
+
+    <owl:ObjectProperty rdf:about="http://purl.obolibrary.org/obo/BSO_0000063">
+        <owl:inverseOf rdf:resource="http://purl.obolibrary.org/obo/BSO_0000062"/>
+        <rdfs:subPropertyOf rdf:resource="http://purl.obolibrary.org/obo/RO_0002222"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <rdfs:range rdf:resource="http://purl.obolibrary.org/obo/BFO_0000003"/>
+        <obo:IAO_0000111 xml:lang="en">unwilling</obo:IAO_0000111>
+        <rdfs:label xml:lang="en">unwilling</rdfs:label>
+    </owl:ObjectProperty>
+    
 
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -623,6 +681,32 @@
         </rdfs:range>
     </owl:DatatypeProperty>
     
+        <!-- http://purl.obolibrary.org/obo/OBI_0001937 -->
+
+    <owl:DatatypeProperty rdf:about="http://purl.obolibrary.org/obo/OBI_0001937">
+        <rdfs:subPropertyOf rdf:resource="http://purl.obolibrary.org/obo/OBI_0002135"/>
+        <rdfs:domain rdf:resource="http://purl.obolibrary.org/obo/OBI_0001933"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2002/07/owl#real"/>
+        <obo:IAO_0000111>has specified numeric value</obo:IAO_0000111>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000120"/>
+        <obo:IAO_0000115>A relation between a value specification and a number that quantifies it.</obo:IAO_0000115>
+        <obo:IAO_0000116>A range of &apos;real&apos; might be better than &apos;float&apos;. For now we follow &apos;has measurement value&apos; until we can consider technical issues with SPARQL queries and reasoning.</obo:IAO_0000116>
+        <obo:IAO_0000117>PERSON: James A. Overton</obo:IAO_0000117>
+        <obo:IAO_0000119>OBI</obo:IAO_0000119>
+        <rdfs:label>has specified numeric value</rdfs:label>
+    </owl:DatatypeProperty>
+    
+        <!-- http://purl.obolibrary.org/obo/IAO_0000004 -->
+
+    <owl:DatatypeProperty rdf:about="http://purl.obolibrary.org/obo/IAO_0000004">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://purl.obolibrary.org/obo/IAO_0000032"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#double"/>
+        <rdfs:label xml:lang="en">has measurement value</rdfs:label>
+    </owl:DatatypeProperty>
+    
+    
 
 
     <!-- 
@@ -633,6 +717,11 @@
     ///////////////////////////////////////////////////////////////////////////////////////
      -->
 
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#112233 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#112233">
+        <rdfs:label>NumericalID</rdfs:label>
+    </owl:Class>
     
 
 
@@ -1164,6 +1253,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#MildlySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;MildlySickCancerPatient">
+        <P108>slightly sick cancer patient</P108>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1281,13 +1371,22 @@
 
     <owl:Class rdf:about="&owl2lexevs;PatientWithCold">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;MildlySickPatient"/>
+        <P108>Patient With Cold</P108>
+        <P90>slightly sick patient</P90>
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="&owl2lexevs;patient_has_finding"/>
                 <owl:someValuesFrom rdf:resource="&owl2lexevs;Cold"/>
             </owl:Restriction>
         </rdfs:subClassOf>
-    </owl:Class>
+    </owl:Class>   
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">CDISC</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">slightly sick patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;PatientWithCold"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     
 
 
@@ -1607,6 +1706,7 @@
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#VerySickCancerPatient -->
 
     <owl:Class rdf:about="&owl2lexevs;VerySickCancerPatient">
+    		<P108>very sick cancer patient</P108>
         <owl:equivalentClass>
             <owl:Class>
                 <owl:intersectionOf rdf:parseType="Collection">
@@ -1627,6 +1727,13 @@
             </owl:Class>
         </owl:equivalentClass>
     </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">very sick cancer patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     <owl:Axiom>
         <note rdf:datatype="&xsd;string">test of annotation on union of object restriction subclass</note>
         <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickCancerPatient"/>
@@ -1659,6 +1766,13 @@
     <owl:Class rdf:about="&owl2lexevs;VerySickPatient">
         <rdfs:subClassOf rdf:resource="&owl2lexevs;SickPatient"/>
     </owl:Class>
+    <owl:Axiom>
+        <source rdf:datatype="&xsd;string">NCI</source>
+        <term_type rdf:datatype="&xsd;string">PT</term_type>
+        <owl:annotatedTarget rdf:datatype="&xsd;string">very sick patient</owl:annotatedTarget>
+        <owl:annotatedSource rdf:resource="&owl2lexevs;VerySickPatient"/>
+        <owl:annotatedProperty rdf:resource="&owl2lexevs;term"/>
+    </owl:Axiom>
     
 
 
@@ -2319,6 +2433,59 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P378>NCI</P378>
     </owl:Axiom>
     
+        <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C54453"/>
+        <NHC0>C48333</NHC0>
+        <P106>Qualitative Concept</P106>
+        <P108>BLUE</P108>
+        <P207>C1260957</P207>
+        <P317>SPL Color (C-DRG-00927)</P317>
+        <P322>FDA</P322>
+        <P366>BLUE</P366>
+        <P372>Yes</P372>
+        <P90>BLUE</P90>
+        <P90>BLUE</P90>
+        <P97>The hue of that portion of the visible spectrum lying between green and indigo.</P97>
+        <rdfs:label>BLUE</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>BLUE</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>FDA</P384>
+        <P386>SPL</P386>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P90"/>
+        <owl:annotatedTarget>BLUE</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#P97"/>
+        <owl:annotatedTarget>The hue of that portion of the visible spectrum lying between green and indigo.</owl:annotatedTarget>
+        <P378>NCI</P378>
+        <P381>American Heritage Dictionary - Bartelby.com</P381>
+    </owl:Axiom>
+    
+        <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C98989">
+        <A8 rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48333"/>
+        <rdfs:label>Bluer than blue</rdfs:label>
+        <P106>Qualitative Concept</P106>
+        <P108>Bluer</P108>
+        <P372>Yes</P372>
+        <P322>FDA</P322>
+        <P90>BLACKER</P90>
+        <P90>Bluer</P90>
+        <P90>color characterized as dark</P90>
+        <P97>Of even darker color</P97>
+    </owl:Class>
+    
         <!-- Black -->
 
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C48323">
@@ -2366,7 +2533,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>BLACKER</P90>
         <P90>Blacker</P90>
-        <P97>Of even darker color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Of even darker color</P97>
     </owl:Class>
     
     <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99989">
@@ -2378,7 +2546,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>BLA</P90>
         <P90>Bla</P90>
-        <P97>Of even bla color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Of even bla color</P97>
     </owl:Class>
     
    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99988">
@@ -2390,7 +2559,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>ACK</P90>
         <P90>ack</P90>
-        <P97>Of even acker color;</P97>
+         <P90>color characterized as dark</P90>
+        <P97>Of even acker color</P97>
     </owl:Class>
     
      <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#C99998">
@@ -2402,7 +2572,8 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P322>FDA</P322>
         <P90>UberBLACKER</P90>
         <P90>BlackUber</P90>
-        <P97>Uber dark color;</P97>
+        <P90>color characterized as dark</P90>
+        <P97>Uber dark color</P97>
     </owl:Class>
     
        <!-- White -->
@@ -2489,6 +2660,68 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P97>The Blindingly achromatic color of maximum lightness; </P97>
     </owl:Class>
     
+      <!-- http://purl.obolibrary.org/obo/IAO_0000032 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/IAO_0000032">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/IAO_0000109"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0001938"/>
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/OBI_0001931"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000039"/>
+                <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000004"/>
+                <owl:minCardinality rdf:datatype="http://www.w3.org/2001/XMLSchema#nonNegativeInteger">1</owl:minCardinality>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000112 xml:lang="en">10 feet. 3 ml.</obo:IAO_0000112>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000120"/>
+        <obo:IAO_0000115 xml:lang="en">a scalar measurement datum is a measurement datum that is composed of two parts, numerals and a unit label.</obo:IAO_0000115>
+        <obo:IAO_0000116 xml:lang="en">2009-03-16: we decided to keep datum singular in scalar measurement datum, as in
+this case we explicitly refer to the singular form</obo:IAO_0000116>
+        <obo:IAO_0000116 xml:lang="en">Would write this as: has_part some &apos;measurement unit label&apos; and has_part some numeral and has_part exactly 2, except for the fact that this won&apos;t let us take advantage of OWL reasoning over the numbers. Instead use has measurment value property to represent the same. Use has measurement unit label (subproperty of has_part) so we can easily say that there is only one of them.</obo:IAO_0000116>
+        <obo:IAO_0000117 xml:lang="en">PERSON: Alan Ruttenberg</obo:IAO_0000117>
+        <obo:IAO_0000117 xml:lang="en">PERSON: Melanie Courtot</obo:IAO_0000117>
+        <rdfs:label xml:lang="en">scalar measurement datum</rdfs:label>
+    </owl:Class>
+    
+        <!-- http://purl.obolibrary.org/obo/OBI_0001873 -->
+
+    <owl:Class rdf:about="http://purl.obolibrary.org/obo/OBI_0001873">
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/IAO_0000027"/>
+        <rdfs:subClassOf rdf:resource="http://purl.obolibrary.org/obo/OBI_0001933"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/IAO_0000136"/>
+                <owl:someValuesFrom rdf:resource="http://purl.obolibrary.org/obo/BFO_0000015"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://purl.obolibrary.org/obo/OBI_0001937"/>
+                <owl:someValuesFrom rdf:resource="http://www.w3.org/2001/XMLSchema#integer"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <obo:IAO_0000111 xml:lang="en">number of errors</obo:IAO_0000111>
+        <obo:IAO_0000112 xml:lang="en">Gigascience. 2012 Dec 27;1(1):18. doi: 10.1186/2047-217X-1-18.
+PMID: 23587118. see table2</obo:IAO_0000112>
+        <obo:IAO_0000114 rdf:resource="http://purl.obolibrary.org/obo/IAO_0000122"/>
+        <obo:IAO_0000115 xml:lang="en">a data item that is the number of times that a given process failed, as an integer</obo:IAO_0000115>
+        <obo:IAO_0000117>Alejandra Gonzalez-Beltran</obo:IAO_0000117>
+        <obo:IAO_0000117>Philippe Rocca-Serra</obo:IAO_0000117>
+        <obo:IAO_0000119 xml:lang="en">PRS, AGB</obo:IAO_0000119>
+        <rdfs:label xml:lang="en">number of errors</rdfs:label>
+    </owl:Class>
+    
+    
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
@@ -2527,8 +2760,6 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <owl:annotatedTarget rdf:resource="&owl2lexevs;PrognosisGood"/>
     </owl:Axiom>
     
-    
-
 
     <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl#HappyPatientWalkingAround -->
 

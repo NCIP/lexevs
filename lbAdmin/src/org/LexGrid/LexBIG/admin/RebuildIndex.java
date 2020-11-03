@@ -85,6 +85,7 @@ public class RebuildIndex {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
+            Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
             Util.displayCommandOptions("RebuildIndex", options,
                     "RebuildIndex -u \"urn:oid:2.16.840.1.113883.3.26.1.1\" -v \"05.09e\"", e);
             Util.displayMessage(Util.getPromptForSchemeHelp());
@@ -151,6 +152,7 @@ public class RebuildIndex {
                 char choice = Util.getConsoleCharacter();
                 confirmed = choice == 'Y' || choice == 'y';
             } catch (IOException e) {
+                Util.displayAndLogError("IO Exception rebuilding Index: " + e.getMessage() , e);
             }
         }
 
@@ -158,14 +160,14 @@ public class RebuildIndex {
         if (confirmed) {
             try {
                 ProcessRunner loader = new IndexLoaderImpl();
-                Util.displayTaggedMessage("Recreation of index extension '" + 
+                Util.displayAndLogMessage("Recreation of index extension '" + 
                         indexName + "' in progress...");
                 Util.displayStatus(loader.runProcess(ref, null));
             } catch (UnsupportedOperationException e) {
-                Util.displayTaggedMessage("Rebuild of specified index extension '" + indexName + "' is not supported.");
+                Util.displayAndLogMessage("Rebuild of specified index extension '" + indexName + "' is not supported.");
             }
         } else {
-            Util.displayTaggedMessage("Rebuild of index '" + indexName + "' cancelled by user.");
+            Util.displayAndLogMessage("Rebuild of index '" + indexName + "' cancelled by user.");
         }
     }
 

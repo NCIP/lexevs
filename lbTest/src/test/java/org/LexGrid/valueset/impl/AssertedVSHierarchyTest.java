@@ -27,7 +27,12 @@ public class AssertedVSHierarchyTest extends TestCase {
 	@BeforeClass
 	public void setUp(){
 		service = SourceAssertedValueSetHierarchyServicesImpl.defaultInstance();
-		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  "0.1.5", "Concept_In_Subset", "Contributing_Source","Publish_Value_Set", "C54453");
+		service.preprocessSourceHierarchyData("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl",  
+				"0.1.5", 
+				"Concept_In_Subset", 
+				"Contributing_Source",
+				"Publish_Value_Set", 
+				"C54453");
  		//Comment this in instead for direct to NCIt testing
 //		service.preprocessSourceHierarchyData();
 	}
@@ -72,6 +77,24 @@ public class AssertedVSHierarchyTest extends TestCase {
 	}
 	
 	@Test
+	public void testbadUrlCreation() throws LBException {
+		Map<String, LexEVSTreeItem> items = service.getSourceValueSetTree();
+		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
+		assertTrue(item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
+				.anyMatch(x -> x.get_text().equals("Black_TEST")));
+		LexEVSTreeItem brokenSourceTest = item._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
+				.filter(x -> x.get_text().equals("Black_TEST")).findFirst().get();
+		assertFalse(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
+				.anyMatch(y -> y.get_code().equals("http://evs.nci.nih.gov/valueset/C99999")));
+		assertFalse(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
+				.anyMatch(z -> z.get_code().equals("http://evs.nci.nih.gov/valueset/C99998")));
+		assertTrue(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
+				.anyMatch(y -> y.get_code().equals("http://evs.nci.nih.gov/valueset/FDA/C99999")));
+		assertTrue(brokenSourceTest._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).stream()
+				.anyMatch(z -> z.get_code().equals("http://evs.nci.nih.gov/valueset/FDA/C99998")));
+	}
+	
+	@Test
 	public void testBuildFullServiceTree() throws LBException{
 		Map<String, LexEVSTreeItem> items  = service.getFullServiceValueSetTree();
 		LexEVSTreeItem item = items.get(ValueSetHierarchyServiceImpl.ROOT);
@@ -91,6 +114,7 @@ public class AssertedVSHierarchyTest extends TestCase {
 				"All Domestic Autos But GM  and as many characters as it takes to exceed 50 chars but not 250 chars and that should about do it",
 				"Black_FDA",
 				"Black_TEST",
+				"BLUE",
 				"One Child Value Set",
 				"White"};
 		Iterator<LexEVSTreeItem> compItr = roots.iterator();
@@ -184,13 +208,13 @@ public class AssertedVSHierarchyTest extends TestCase {
 				_assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
 		assertEquals(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "UberBlack");
 		assertFalse(roots.get(0)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
-		assertEquals(roots.get(2).get_text(), "White");
-		assertTrue(roots.get(2).is_expandable());
-		assertTrue(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
-		assertEquals(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).get_text(), "ArchWhite");
-		assertFalse(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).is_expandable());
-		assertEquals(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "BlindingWhite");
-		assertFalse(roots.get(2)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
+		assertEquals(roots.get(3).get_text(), "White");
+		assertTrue(roots.get(3).is_expandable());
+		assertTrue(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).size() > 0);
+		assertEquals(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).get_text(), "ArchWhite");
+		assertFalse(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(0).is_expandable());
+		assertEquals(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).get_text(), "BlindingWhite");
+		assertFalse(roots.get(3)._assocToChildMap.get(ValueSetHierarchyServiceImpl.INVERSE_IS_A).get(1).is_expandable());
 	}
 	
 	private void printTree(List<LexEVSTreeItem> items, int counter){

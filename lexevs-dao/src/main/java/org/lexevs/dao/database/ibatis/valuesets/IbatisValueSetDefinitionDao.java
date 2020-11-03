@@ -20,7 +20,10 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -62,8 +65,10 @@ import org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMa
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean;
 import org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean;
+import org.lexevs.dao.database.ibatis.valuesets.helper.ValueSetDefinitionMapHelper;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.registry.service.Registry.ResourceType;
@@ -169,6 +174,8 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public static String GET_VALUESET_DEF_PROPERTY_LIST_BY_VALUESET_DEFINITION_URI_SQL = VALUESETDEFINITION_NAMESPACE + "getValueSetDefPropertyListByValSetDefURI";
 	
 	private static final String GET_VS_URI_BY_CONTEXT = VALUESETDEFINITION_NAMESPACE +  "getValueSetURIsByContext";
+	
+	private static final String GET_MAP_OF_ALL_VSD_WITH_URI_KEY = VALUESETDEFINITION_NAMESPACE +  "getValueSetDefinitionMetadataHashMapByRegistryDesignation";
 	
 	/** The versions dao. */
 	private VersionsDao versionsDao;
@@ -1172,4 +1179,29 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 				GET_VS_URI_BY_CONTEXT,
 			new PrefixedParameter(getPrefix(), contextURI));
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public Map<String, ValueSetDefinition> getValueSetURIMapToDefinitions() {
+		long start = System.currentTimeMillis();
+		
+		List<ValueSetDefinitionMapHelper> guidMapHelper = 
+				(List<ValueSetDefinitionMapHelper>)this 
+				.getSqlMapClientTemplate().queryForList(
+						GET_MAP_OF_ALL_VSD_WITH_URI_KEY,
+						new PrefixedParameter(getPrefix(), "VALUESET_DEFINITION"));
+		
+		guidMapHelper.parallelStream().forEach(
+				x -> x.valueSetDefinition.setMappings(getMappings(x.valueSetDefinitionGuid)));
+		
+		Map<String, ValueSetDefinition> uriMap = 
+				(Map<String, ValueSetDefinition>)guidMapHelper.
+				stream().
+				collect(
+						Collectors.toMap(k -> k.getValueSetDefinition().getValueSetDefinitionURI(), 
+								k -> k.getValueSetDefinition()));
+		System.out.println("Execution time: " + (System.currentTimeMillis() - start));
+		return  uriMap;
+	}
+	
 }

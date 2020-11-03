@@ -92,6 +92,7 @@ public class SupplementScheme {
         try {
             cl = new BasicParser().parse(options, args);
         } catch (ParseException e) {
+            Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
             Util.displayCommandOptions("SupplementScheme", options,
                     "SupplementScheme -u -parentUri \"urn:oid:2.16.840.1.113883.3.26.1.1\" -parentVersion \"05.09e\" "+
                         "-supplementUri \"http://supplement.ontology.org\" -supplementVersion \"1.0.1\" ",
@@ -147,16 +148,16 @@ public class SupplementScheme {
                     getServiceManager(null).
                         registerCodingSchemeAsSupplement(parent, supplement);
                 
-                Util.displayMessage("Coding Scheme Registered as a Supplement.");
+                Util.displayAndLogMessage("Coding Scheme Registered as a Supplement.");
             } else {
                 LexBIGServiceImpl.defaultInstance().
                 getServiceManager(null).
                     unRegisterCodingSchemeAsSupplement(parent, supplement);
                 
-                Util.displayMessage("Coding Scheme Unregistered as a Supplement.");
+                Util.displayAndLogMessage("Coding Scheme Unregistered as a Supplement.");
             }
         } catch (CodingSchemeParameterException e) {
-            Util.displayMessage("REQUEST FAILED !!! " + e.getMessage());
+            Util.displayAndLogError("REQUEST FAILED !!! " , e);
             return;
         }
     }
@@ -172,17 +173,17 @@ public class SupplementScheme {
                     &&
                     StringUtils.isNotBlank(entry.getSupplementsVersion())){
                 found = true;
-                Util.displayMessage("================================================");
-                Util.displayMessage("PARENT:     [URI]-" + entry.getSupplementsUri());
-                Util.displayMessage("            [VERSION]-" + entry.getSupplementsVersion());
-                Util.displayMessage("SUPPLEMENT: [URI]-" + entry.getResourceUri());
-                Util.displayMessage("            [VERSION]-" + entry.getResourceVersion());
-                Util.displayMessage("================================================");
+                Util.displayAndLogMessage("================================================");
+                Util.displayAndLogMessage("PARENT:     [URI]-" + entry.getSupplementsUri());
+                Util.displayAndLogMessage("            [VERSION]-" + entry.getSupplementsVersion());
+                Util.displayAndLogMessage("SUPPLEMENT: [URI]-" + entry.getResourceUri());
+                Util.displayAndLogMessage("            [VERSION]-" + entry.getResourceVersion());
+                Util.displayAndLogMessage("================================================");
             }
         }
 
         if(! found){
-            Util.displayMessage("No Registered Supplements.");
+            Util.displayAndLogMessage("No Registered Supplements.");
         }
     }
 
@@ -207,8 +208,8 @@ public class SupplementScheme {
         // Found it? If not, prompt...
         if (css == null) {
             if (uri != null || version != null) {
-                Util.displayMessage("No matching coding scheme was found for the given URN or version.");
-                Util.displayMessage("");
+                Util.displayAndLogMessage("No matching coding scheme was found for the given URN or version.");
+                Util.displayAndLogMessage("");
             }
             css = Util.promptForCodeSystem();
             if (css == null)

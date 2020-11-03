@@ -6,6 +6,7 @@ import java.util.List;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
 import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entities;
 import org.LexGrid.concepts.Entity;
@@ -16,6 +17,7 @@ import org.lexevs.dao.database.service.valuesets.AssertedValueSetService;
 import org.lexevs.dao.index.access.IndexDaoManager;
 import org.lexevs.dao.index.access.search.SearchDao;
 import org.lexevs.dao.indexer.utility.Utility;
+import org.lexevs.logging.LoggerFactory;
 
 public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 
@@ -55,7 +57,7 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 	@Override
 	public String index(AbsoluteCodingSchemeVersionReference reference, EntityIndexerProgressCallback callback,
 			boolean onlyRegister, IndexOption option) {
-
+		LgLoggerIF logger = LoggerFactory.getLogger();
 		valueSetService.init(new AssertedValueSetParameters.Builder(reference.getCodingSchemeVersion())
 				.codingSchemeURI(reference.getCodingSchemeURN()).build());
 
@@ -69,7 +71,7 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 			throw new RuntimeException("Problems getting coding scheme name. uri = " + reference.getCodingSchemeURN()
 					+ " version = " + reference.getCodingSchemeVersion(), e);
 		}
-
+		logger.info("Processing entities");
 		System.out.println("Processing entities");
 		List<String> topNodes = valueSetService.getAllValidValueSetTopNodeCodes();
 		List<CodingScheme> valueSets = null;
@@ -82,16 +84,17 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 					+ "  " + e);
 		}
 		
-		for(CodingScheme cs : valueSets) {
-			Entities entities = cs.getEntities();
-
-		System.out.println("Indexing " + entities.getEntityCount() + " entities");
-		for (Entity entity : entities.getEntityAsReference()) {
-			entity = addPropertiesToEntity(entity);
-			documents.addAll(entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(),
-					reference.getCodingSchemeVersion(), cs.getCodingSchemeURI(), cs.getCodingSchemeName(), entity));
-		}
-		}
+			for (CodingScheme cs : valueSets) {
+				Entities entities = cs.getEntities();
+				logger.info("Indexing " + entities.getEntityCount() + " entities");
+				System.out.println("Indexing " + entities.getEntityCount() + " entities");
+				for (Entity entity : entities.getEntityAsReference()) {
+					entity = addPropertiesToEntity(entity);
+					documents.addAll(entityIndexer.indexEntity(indexName, reference.getCodingSchemeURN(),
+							reference.getCodingSchemeVersion(), cs.getCodingSchemeURI(), cs.getCodingSchemeName(),
+							entity));
+				}
+			}
 		}
 
 		entityIndexService.addDocuments(indexName, reference.getCodingSchemeVersion(), documents,

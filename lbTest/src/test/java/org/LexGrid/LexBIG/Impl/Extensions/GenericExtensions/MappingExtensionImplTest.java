@@ -85,7 +85,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithCodeDifferentNamespaceInSource() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -108,7 +108,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithCodeDifferentNamespaceInTarget() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -369,7 +369,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 
 	@Test
-	@Category(RemoveFromDistributedTests.class)
+//	@Category(RemoveFromDistributedTests.class)
 	public void testBothResolveMappingStrategies() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -402,7 +402,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithRestriction() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -421,32 +421,59 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		assertFalse(itr.hasNext());	
 	}
 	
-//	@Ignore
-//	@Test
+
+	@Test
 //	 @Category(RemoveFromDistributedTests.class)
-//	public void testGetResourceSummariesTargetRestrictionCorrectNumRemaining() throws Exception {
-//		
-//		LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
-//		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
-//	
-//		Mapping mapping = mappingExtension.getMapping(
-//				MAPPING_SCHEME_URI, 
-//				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
-//		
-//		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
-//		
-//		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
-//		
-//		int count = 0;
-//		int numberRemaining = itr.numberRemaining();
-//		
-//		while(itr.hasNext()){
-//			itr.next();
-//			count++;
-//		}
-//		
-//		assertEquals(count, numberRemaining);
-//	}
+	public void testGetResourceSummariesTargetRestrictionCorrectNumRemaining() throws Exception {
+		
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
+		
+		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
+		MappingSortOption mapOp = new MappingSortOption(MappingSortOptionName.SOURCE_CODE, Direction.ASC);
+		List<MappingSortOption> list = new ArrayList<MappingSortOption>();
+		list.add(mapOp);
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping(list);
+		
+		int count = 0;
+		int numberRemaining = itr.numberRemaining();
+		while(itr.hasNext()){
+			ResolvedConceptReference ref = itr.next();
+			System.out.println(ref.getCode());
+			count++;
+		}
+		
+		assertEquals(count, numberRemaining);
+	}
+	
+	@Test
+//	 @Category(RemoveFromDistributedTests.class)
+	public void testGetResourceSummariesTargetRestrictionCorrectNumRemainingNoSort() throws Exception {
+		
+		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
+	
+		Mapping mapping = mappingExtension.getMapping(
+				MAPPING_SCHEME_URI, 
+				Constructors.createCodingSchemeVersionOrTagFromVersion(MAPPING_SCHEME_VERSION), null);
+		
+		mapping = mapping.restrictToCodes(Constructors.createConceptReferenceList("E0001", "GermanMadePartsNamespace", null), SearchContext.TARGET_CODES);
+		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
+		
+		int count = 0;
+		itr.hasNext();
+		int numberRemaining = itr.numberRemaining();
+		while(itr.hasNext()){
+			ResolvedConceptReference ref = itr.next();
+			System.out.println(ref.getCode());
+			count++;
+		}
+		assertEquals(count, numberRemaining);
+	}
 	
 	@Test
 	public void testResolveMappingWithRestrictionCount() throws LBException {
@@ -466,7 +493,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithRestrictionEither() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -487,7 +514,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithRestrictionEitherFromBothFromSourceAndTarget() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -534,7 +561,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithRestrictionSource() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -574,7 +601,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	
 
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithRestrictionTarget() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -612,11 +639,11 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 		
 		ResolvedConceptReferencesIterator itr = mapping.resolveMapping();
 
-		assertEquals(1, itr.numberRemaining());
+		assertEquals(3, itr.numberRemaining());
 	}
 	
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithRestrictionSourceAndTarget() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -657,7 +684,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testResolveMappingWithRestrictionSourceAndTargetAndEither() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -825,7 +852,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	
 
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testRestrictToRelationshipWithSorting() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -852,7 +879,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testRestrictToRelationshipNoSorting() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");
@@ -874,7 +901,7 @@ public class MappingExtensionImplTest extends LexBIGServiceTestCase {
 	}
 	
 	@Test
-	 @Category(RemoveFromDistributedTests.class)
+//	 @Category(RemoveFromDistributedTests.class)
 	public void testRestrictToRelationshipNoSortingTwoAssociations() throws LBException {
 		LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
 		MappingExtension mappingExtension = (MappingExtension) lbs.getGenericExtension("MappingExtension");

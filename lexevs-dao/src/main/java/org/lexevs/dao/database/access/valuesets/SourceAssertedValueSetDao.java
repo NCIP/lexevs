@@ -30,6 +30,16 @@ public interface SourceAssertedValueSetDao extends LexGridSchemaVersionAwareDao 
 	 * @return List<Entity> - entity representation of a value set top node
 	 */
 	List<Entity> getSourceAssertedValueSetTopNodeForEntityCode(String matchCode, String codingSchemeUID);
+	
+	/**
+	 * A list of value set top nodes represented as Entity objects which are related to this the concept
+	 * defined by the exact match of the description.  
+	 * 
+	 * @param description - description to match exactly to retrieve top node entity
+	 * @param codingSchemeUID - database specific coding scheme identifier must be pulled from db 
+	 * @return List<Entity> - entity representation of a value set top node
+	 */
+	List<Entity> getSourceAssertedValueSetTopNodeDescription(String description, String codingSchemeUID);
 
 	/**
 	 * Returns all value set unique identifiers defined in the database 

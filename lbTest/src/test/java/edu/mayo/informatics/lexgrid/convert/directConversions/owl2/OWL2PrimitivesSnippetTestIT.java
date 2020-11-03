@@ -662,7 +662,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	assertNotNull(rcri);
 	assertTrue(rcri.hasNext());
 	cngp = cngp.restrictToAssociations(Constructors.createNameAndValueList("has_physical_location"), 
-			Constructors.createNameAndValueList("DataHasValue", "12345"));
+			Constructors.createNameAndValueList("integer", "12345"));
 	ResolvedConceptReferenceList list = cngp.resolveAsList(
 			Constructors.createConceptReference("OncogeneTim", 
 					LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
@@ -928,7 +928,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	
 	@Test
 	public void testUnionObjectAndDataType2ndOr() throws LBException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("PlainLiteral"));
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("string"));
 		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
@@ -937,7 +937,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 				Constructors.createConceptReference("actin", LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("PlainLiteral", "all organisms", itr1));
+		assertTrue(validateQualifier("string", "all organisms", itr1));
 	}
 	
 	@Test
@@ -953,7 +953,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 	
 	@Test
 	public void testIntersectionObjectAndDatatype2ndAnd() throws LBException{
-		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("PlainLiteral"));
+		cnsp = cnsp.restrictToCodes(Constructors.createConceptReferenceList("string"));
 		ResolvedConceptReferencesIterator rcri = cns.resolve(null, null, null);
 		assertNotNull(rcri);
 		assertTrue(rcri.hasNext());
@@ -964,7 +964,7 @@ public class OWL2PrimitivesSnippetTestIT extends DataLoadTestBaseSnippet2 {
 						LexBIGServiceTestCase.OWL2_SNIPPET_INDIVIDUAL_URN), 
 				true, true, 1, 1, null, null, null, null, -1);
 		Iterator<? extends ResolvedConceptReference> itr1 = list1.iterateResolvedConceptReference();
-		assertTrue(validateQualifier("PlainLiteral", "homo sapiens", itr1));
+		assertTrue(validateQualifier("string", "homo sapiens", itr1));
 	}
 	
 

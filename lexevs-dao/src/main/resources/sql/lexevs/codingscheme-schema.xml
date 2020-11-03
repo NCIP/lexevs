@@ -149,7 +149,7 @@
       <column name="entityAssnQualsGuid" primaryKey="true" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="referenceGuid" primaryKey="false" required="true" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <column name="qualifierName" primaryKey="false" required="true" type="VARCHAR" size="50" autoIncrement="false"/>
-      <column name="qualifierValue" primaryKey="false" required="false" type="VARCHAR" size="250" autoIncrement="false"/>
+      <column name="qualifierValue" primaryKey="false" required="false" type="VARCHAR" size="912" autoIncrement="false"/>
       <column name="entryStateGuid" primaryKey="false" required="false" type="@VARIABLE_KEY_TYPE@" size="@VARIABLE_KEY_SIZE@" autoIncrement="false"/>
       <unique name="@PREFIX@UQ_eAssnQ">
         <unique-column name="referenceGuid"/>

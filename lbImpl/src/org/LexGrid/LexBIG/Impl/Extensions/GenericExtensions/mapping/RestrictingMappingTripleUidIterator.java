@@ -70,7 +70,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
     /** The refs. */
     private MappingAbsoluteCodingSchemeVersionReferences refs;
     
-    private static int PAGE_SIZE = 50;
+    public static int PAGE_SIZE = 50;
     
     private List<ConceptReference> inOrderConceptReferences = new ArrayList<ConceptReference>();
     
@@ -129,7 +129,6 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
             this.sourceOrTargetCodesResolvedConceptReferencesIterator = sourceOrTargetCodesCodedNodeSet.resolve(null, null, null, null, false);
         }
 
-        if(isSortingEnabled()){
             this.sourceResolvedIteratorConceptReferences = 
                 this.buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, PAGE_SIZE);
 
@@ -138,7 +137,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
 
             this.sourceOrTargetResolvedIteratorConceptReferences = 
                 this.buildResolvedConceptReferenceList(sourceOrTargetCodesResolvedConceptReferencesIterator, PAGE_SIZE);
-        }
+
     } 
 
     /* (non-Javadoc)
@@ -162,17 +161,6 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
         targetConceptReferences = getConceptReferencesForPage(pageSize, SourceOrTarget.TARGET);
         sourceOrTargetConceptReferences = getConceptReferencesForPage(pageSize, SourceOrTarget.SOURCE_OR_TARGET);
 
-        if(!isSortingEnabled()){
-
-            return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService().
-                getTripleUidsForMappingRelationsContainerForCodes(
-                        uri, 
-                        version, 
-                        relationsContainerName, 
-                        sourceConceptReferences,
-                        targetConceptReferences,
-                        sourceOrTargetConceptReferences);
-        } else {
 
             return LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getCodedNodeGraphService().
                 getTripleUidsForMappingRelationsContainerForCodes(
@@ -187,7 +175,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                         DaoUtility.mapMappingSortOptionListToSort(sortOptionList).getSorts(),
                         currentPosition,
                         pageSize);
-        }
+
     }
     
     private boolean hasMoreToPage() throws LBResourceUnavailableException{
@@ -199,14 +187,14 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                 return false;
             }
         } else {
-            return ((this.sourceCodesResolvedConceptReferencesIterator != null && 
-                    this.sourceCodesResolvedConceptReferencesIterator.hasNext())
+            return ((this.sourceResolvedIteratorConceptReferences != null && 
+                    this.sourceResolvedIteratorConceptReferences.size() > 0)
                     ||
-                   (this.targetCodesResolvedConceptReferencesIterator != null && 
-                    this.targetCodesResolvedConceptReferencesIterator.hasNext())
+                   (this.targetResolvedIteratorConceptReferences != null && 
+                    this.targetResolvedIteratorConceptReferences.size() > 0)
                     ||
-                   (this.sourceOrTargetCodesResolvedConceptReferencesIterator != null && 
-                    this.sourceOrTargetCodesResolvedConceptReferencesIterator.hasNext()));
+                   (this.sourceOrTargetResolvedIteratorConceptReferences != null && 
+                    this.sourceOrTargetResolvedIteratorConceptReferences.size() > 0));
         }
     }
     
@@ -220,7 +208,7 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
      * @return the concept references for page
      */
     private List<ConceptReference> getConceptReferencesForPage(int pageSize, SourceOrTarget sourceOrTarget){
-        if(isSortingEnabled()){
+
             switch (sourceOrTarget){
                 case SOURCE: {
                     return this.sourceResolvedIteratorConceptReferences;
@@ -235,29 +223,10 @@ public class RestrictingMappingTripleUidIterator extends AbstractRefereshingPage
                     throw new RuntimeException(sourceOrTarget + " not recognized.");
                 }
             }
-        } else {
-            try {
-                switch (sourceOrTarget){
-                    case SOURCE: {
-                        return this.buildResolvedConceptReferenceList(sourceCodesResolvedConceptReferencesIterator, pageSize);
-                    }
-                    case TARGET: {
-                        return this.buildResolvedConceptReferenceList(targetCodesResolvedConceptReferencesIterator, pageSize);
-                    }
-                    case SOURCE_OR_TARGET: {
-                        return this.buildResolvedConceptReferenceList(sourceOrTargetCodesResolvedConceptReferencesIterator, pageSize);
-                    }
-                    default: {
-                        throw new RuntimeException(sourceOrTarget + " not recognized.");
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            } 
-        }
+
     }
     
-    private List<ConceptReference> buildResolvedConceptReferenceList(ResolvedConceptReferencesIterator iterator, int pageSize) throws LBResourceUnavailableException, LBInvocationException{
+    public List<ConceptReference> buildResolvedConceptReferenceList(ResolvedConceptReferencesIterator iterator, int pageSize) throws LBResourceUnavailableException, LBInvocationException{
         
         if(iterator == null){
             return null;

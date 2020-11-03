@@ -13,8 +13,8 @@
 		<dependency org="junit" name="junit" rev="4.10" conf="default"/> 
 		<dependency org="org.apache.lucene" name="lucene-test-framework" rev="5.3.1"  conf="default"/>
 		<dependency org="org.apache.lucene" name="lucene-codecs" rev="5.3.1" conf="default"/>
+		<dependency org="com.google.code.gson" name="gson" rev="2.8.5" conf="default"/>
 		<dependency org="com.carrotsearch.randomizedtesting" name="randomizedtesting-runner" rev="2.1.13" conf="default"/>
-		<dependency org="groboutils" name="groboutils-core" rev="5" conf="default,test->*"/> 
 		<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-converter" rev="${vBuild}" conf="default,test"/>
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}"  conf="default"/>

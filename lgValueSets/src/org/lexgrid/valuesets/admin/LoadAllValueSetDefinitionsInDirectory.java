@@ -60,9 +60,11 @@ public class LoadAllValueSetDefinitionsInDirectory {
             try {
                 cl = new BasicParser().parse(options, args);
                 if(cl.getOptionValue("in")==null){
+                	Util.displayAndLogMessage("file path not defined");
                 	throw new RuntimeException();
                 }
             } catch (Exception e) {
+            	Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions(
                                 "LoadAllValueSetDefinitionsInDirectory",
                                 options,
@@ -81,17 +83,17 @@ public class LoadAllValueSetDefinitionsInDirectory {
                 try {
 					vds.loadValueSetDefinition(source.toString(), false);
 				} catch (LBException e) {
-					// TODO Auto-generated catch block
+					Util.displayAndLogError("Value set " +  source.getName() + " load failed", e);
 					e.printStackTrace();
 				}
-                Util.displayMessage("Value Set from file: " + source.toString() + " loaded");
+                Util.displayAndLogMessage("Value Set from file: " + source.toString() + " loaded");
               }
             } else {
-              Util.displayMessage("No files or invalid directory");
+              Util.displayAndLogMessage("No files or invalid directory");
             }
 
             }
-            Util.displayMessage("Request to Load ValueSet Defintions Completed!");
+            Util.displayAndLogMessage("Request to Load ValueSet Defintions Completed!");
       
     }
 
