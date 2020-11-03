@@ -24,6 +24,7 @@ import org.LexGrid.LexBIG.DataModel.Collections.AssociatedConceptList;
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.CodingSchemeRenderingList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
+import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
 import org.LexGrid.LexBIG.DataModel.Collections.NameAndValueList;
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.Association;
@@ -34,8 +35,10 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.LexGrid.LexBIG.Extensions.Generic.TerminologyServiceDesignation;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.annotations.LgClientSideSafe;
 import org.LexGrid.naming.SupportedHierarchy;
 import org.LexGrid.naming.SupportedProperty;
@@ -45,6 +48,8 @@ import org.LexGrid.naming.SupportedProperty;
  * API.
  */
 public interface LexBIGServiceConvenienceMethods extends GenericExtension {
+	
+
 	public enum HierarchyPathResolveOption {
 		ALL, ONE, ONE_PER_HIERARCHY, ONE_PER_ROOT
 	};
@@ -1050,4 +1055,44 @@ public interface LexBIGServiceConvenienceMethods extends GenericExtension {
      */
     public List<ResolvedConceptReference> getDescendentsInTransitiveClosure( String codingScheme,
             CodingSchemeVersionOrTag versionOrTag, final String code, final String association) throws LBParameterException;
+    
+    /**
+     * 
+     * @param codingScheme the coding scheme focus of the search
+     * @param versionOrTag coding scheme version
+     * @param codes that are top nodes of a domain
+     * @param association the relationship name that determines the domain
+     * @param matchText text to match domain members
+     * @return ResolvedConceptReferenceList of search results from discrete domain
+     * @throws LBParameterException
+     */
+    public ResolvedConceptReferenceList searchDescendentsInTransitiveClosure( String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, final List<String> codes, final String association, final String matchText, String matchAlgorithm,
+            SearchDesignationOption searchOption,
+            LocalNameList sources) throws LBParameterException;
+    
+    /**
+     * 
+     * @param codingScheme the coding scheme focus of the search
+     * @param versionOrTag coding scheme version
+     * @param codes that are top nodes of a domain
+     * @param association the relationship name that determines the domain
+     * @param matchText text to match domain members
+     * @return ResolvedConceptReferenceList of search results from discrete domain
+     * @throws LBParameterException
+     */
+    public ResolvedConceptReferenceList searchAscendentsInTransitiveClosure( String codingScheme,
+            CodingSchemeVersionOrTag versionOrTag, final List<String> codes, final String association, final String matchText, String matchAlgorithm,
+            SearchDesignationOption searchOption,
+            LocalNameList sources) throws LBParameterException;
+    
+    
+    /**
+     * @param uri of the Terminology Object
+     * @return String that must conform to a TerminologyServiceObject
+     * enum value.  We don't enforce this on the return to to distributed
+     * API complexities.
+     */
+    public TerminologyServiceDesignation getTerminologyServiceObjectType(String uri);
+    
 }

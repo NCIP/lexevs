@@ -25,9 +25,13 @@ import java.util.Map;
 
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
+import org.LexGrid.custom.relations.TerminologyMapBean;
+import org.LexGrid.relations.Relations;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Sextuple;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
@@ -42,6 +46,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
+import org.lexevs.dao.database.ibatis.parameter.SourceAndTargetMappingPrefixedParameter;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
@@ -53,6 +58,7 @@ import org.springframework.util.CollectionUtils;
 
 @Cacheable(cacheName = "IbatisCodedNodeGraphDaoCache")
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
+
 
 
 /** The supported datebase version. */
@@ -76,13 +82,19 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_WITH_SORT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodesWithSort";
 	private static String GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_NO_SORT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTripleUidsForMappingContainerAndCodesNoSort";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainer";
+	private static String GET_MINIMAL_TRIPLES_FOR_MAPPING_CONTAINER_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getMinimalTriplesForMappingContainer";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerCount";
 	private static String GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTriplesForMappingContainerAndCodesCount";
+	private static String GET_MAP_AND_TERMS_FOR_MAPPING_CONTAINER_AND_REFERENCES  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getFullMapOfTerminologyWithEntityNames";
 	
 	private static String GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getCodeMappingParticipationCount";
 	
 	private static String GET_TRANSITIVE_TABLE_COUNT_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getTransitiveTableCount";
 	private static String DELETE_FROM_TRANSITIVE_TABLE_BY_CODINGSCHEME_UID_SQL  = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "deleteFromTransitiveTableByCodingSchemeUid";
+	private static final String GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL =  IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidTriplesForAssociationPredicateGuid";
+	private static final String GET_VALID_SEXTUPLES_FOR_ASSOCIATION_UID_SQL =  IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidSextuplesForAssociationPredicateGuid";
+	private static final String VALIDATE_NODE_FOR_ASSOCIATION = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "validateNodeInAssociation";
+	private static final String GET_VALID_PREDICATES_FOR_TARGET_AND_SOURCEOF = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getValidAssociationPredicatesForTargetOrSourceOf";
 	
 	@Override
 	public int getTransitiveTableCount(String codingSchemeUid){
@@ -899,7 +911,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				mappingCodingSchemeUid,
 				relationsContainerName,
 				sourceConceptReferences,
-				sourceConceptReferences,
+				targetConceptReferences,
 				sourceOrTargetConceptReferences);
 
 		bean.setPrefix(mappingSchemePrefix);
@@ -907,6 +919,57 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		return 
 			(Integer) 
 				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL, bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@CacheMethod
+	@Override
+	public List<TerminologyMapBean> getMapAndTermsForMappingAndReferences(
+			String mappingCodingSchemUid,
+			String sourceCodingSchemeUid,
+			String targetCodingSchemeUid,
+			Relations rel,
+			String qualifierName
+			){
+		String mappingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(mappingCodingSchemUid);
+
+		String sourceSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(sourceCodingSchemeUid);
+		
+		String targetSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(targetCodingSchemeUid);
+		
+		SourceAndTargetMappingPrefixedParameter bean = new SourceAndTargetMappingPrefixedParameter(
+				mappingSchemePrefix, 
+				sourceSchemePrefix, 
+				targetSchemePrefix, 
+				qualifierName);
+
+				return (List<TerminologyMapBean>) 
+						this.getSqlMapClientTemplate().
+						queryForList(
+								GET_MAP_AND_TERMS_FOR_MAPPING_CONTAINER_AND_REFERENCES,
+								bean);
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	@CacheMethod
+	@Override
+	public List<Triple> getTriplesForMappingRelationsContainer(String mappingCodingSchemeUid,
+			String relationsContainerName) {
+		String mappingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(mappingCodingSchemeUid);
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(mappingSchemePrefix);
+//		bean.setParam1(mappingCodingSchemeUid);
+		bean.setParam1(relationsContainerName);
+		return (List<Triple>) 
+				this.getSqlMapClientTemplate().
+				queryForList(
+						GET_MINIMAL_TRIPLES_FOR_MAPPING_CONTAINER_SQL,
+						bean);
 	}
 
 	@CacheMethod
@@ -928,6 +991,61 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		return 
 			(Integer) 
 				this.getSqlMapClientTemplate().queryForObject(GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL, bean) > 0;
+	}
+	
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Triple> getValidTriplesOfAssociation(String codingSchemeUid, String assocUid) {
+		String codingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(codingSchemeUid);
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(codingSchemePrefix);
+		bean.setParam1(assocUid);
+		return (List<Triple>) 
+				this.getSqlMapClientTemplate().
+				queryForList(
+						GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL,
+						bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<Sextuple> getValidSexTuplesOfAssociation(String codingSchemeUid, String assocUid) {
+		String codingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(codingSchemeUid);
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(codingSchemePrefix);
+		bean.setParam1(assocUid);
+		return (List<Sextuple>) 
+				this.getSqlMapClientTemplate().
+				queryForList(
+						GET_VALID_SEXTUPLES_FOR_ASSOCIATION_UID_SQL,
+						bean);
+	}
+	
+	@Override
+	public Integer validateNodeInAssociation(String codingSchemeUid, String assocUid, String entityCode) {
+		String codingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(codingSchemeUid);
+		PrefixedParameterTuple bean = new PrefixedParameterTuple();
+		bean.setPrefix(codingSchemePrefix);
+		bean.setParam1(assocUid);
+		bean.setParam2(entityCode);
+		return  
+			(Integer) this.getSqlMapClientTemplate().queryForObject(VALIDATE_NODE_FOR_ASSOCIATION, bean);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<String> getValidPredicatesForTargetandSourceOf(String codingSchemeUid, String entityCode) {
+		String codingSchemePrefix = this.getPrefixResolver().
+				resolvePrefixForCodingScheme(codingSchemeUid);
+		PrefixedParameter bean = new PrefixedParameter();
+		bean.setPrefix(codingSchemePrefix);
+		bean.setParam1(entityCode);
+		return  
+			(List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALID_PREDICATES_FOR_TARGET_AND_SOURCEOF, bean);
 	}
 
 	private List<? extends ResolvedConceptReference> sortList(List<TripleUidReferencingResolvedConceptReference> list, List<String> tripleUids){
@@ -1077,4 +1195,6 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			this.sortList = sortList;
 		}
 	}
+
+
 }

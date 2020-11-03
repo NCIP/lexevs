@@ -25,7 +25,9 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.LexGrid_Loader;
+import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Extensions.Load.options.OptionHolder;
+import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.lexevs.dao.database.service.exception.CodingSchemeAlreadyLoadedException;
@@ -39,10 +41,11 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
 
     private static final long serialVersionUID = 5405545553067402760L;
     public final static String name = "LexGrid_Loader";
-    private final static String description = "This loader loads LexGrid XML files into the LexGrid database.";
+    public final static String description = "This loader loads LexGrid XML files into the LexGrid database.";
     
     public final static String VALIDATE = "Validate";
     private static boolean validate = true;
+    private OntologyFormat ontologyFormat = OntologyFormat.LEXGRID_XML;
     
     public LexGridMultiLoaderImpl() {
        super();
@@ -100,6 +103,17 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
             this.getOptions().getStringArrayOption(LOADER_POST_PROCESSOR_OPTION).setOptionValue(null);
         }
         
+        if (loadedObject[0] instanceof CodingScheme) {
+            if (((CodingScheme) loadedObject[0]).
+                    getRelationsAsReference().
+                    stream().
+                    anyMatch(x -> x.getIsMapping() != null && x.getIsMapping())) {
+                ontologyFormat = OntologyFormat.LEXGRID_MAPPING;
+            } else {
+                ontologyFormat = OntologyFormat.LEXGRID_XML;
+            }
+        }
+        
         if(loadedCodingSchemes[0].getUrn().equals(LexGridXMLProcessor.NO_SCHEME_URL)
                 &&  loadedCodingSchemes[0].getVersion().equals(LexGridXMLProcessor.NO_SCHEME_VERSION)) {
             return null;
@@ -135,6 +149,10 @@ public class LexGridMultiLoaderImpl extends BaseLoader implements LexGrid_Loader
      */
     public String getSchemaVersion() {
         throw new UnsupportedOperationException();
+    }
+    
+    public OntologyFormat getOntologyFormat(){
+        return ontologyFormat;
     }
 
     /* (non-Javadoc)

@@ -93,20 +93,20 @@ public class CleanUpMetadataLauncher {
 		            
 		            if (confirmed) {
 		                lbs.getServiceManager(null).removeCodingSchemeVersionMetaData(ref);
-		                Util.displayTaggedMessage("Metadata removed for codingscheme= " + ref.getCodingSchemeURN()+ " and version= "+ ref.getCodingSchemeVersion());
+		                Util.displayAndLogMessage("Metadata removed for codingscheme= " + ref.getCodingSchemeURN()+ " and version= "+ ref.getCodingSchemeVersion());
 		            } else {
-		                Util.displayTaggedMessage("Skipping removal of metadata");
+		                Util.displayAndLogMessage("Skipping removal of metadata");
 
 		            }
 			        
 			    } else {
 			        lbs.getServiceManager(null).removeCodingSchemeVersionMetaData(ref);
-                    Util.displayTaggedMessage("Metadata removed for codingscheme= " + ref.getCodingSchemeURN()+ " and version= "+ ref.getCodingSchemeVersion());
+                    Util.displayAndLogMessage("Metadata removed for codingscheme= " + ref.getCodingSchemeURN()+ " and version= "+ ref.getCodingSchemeVersion());
 
 			    }
 			}
 			
-			Util.displayTaggedMessage("CleanUpMetadata routine ended without error!");
+			Util.displayAndLogMessage("CleanUpMetadata routine ended without error!");
 			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -135,6 +135,7 @@ public class CleanUpMetadataLauncher {
 		} catch(CmdLineException e) {
 			System.err.println(e.getMessage());
             printUsage(parser, System.err);
+            Util.displayAndLogError("Metadata cleanup failed: ", e);
             return;
         }
 	}

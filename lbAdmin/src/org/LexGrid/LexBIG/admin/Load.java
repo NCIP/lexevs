@@ -43,7 +43,7 @@ public class Load {
         try {
             new Load().run(args);
         } catch (LBResourceUnavailableException e) {
-            Util.displayTaggedMessage(e.getMessage());
+            Util.displayAndLogError("Resource Unavailable: " + e.getMessage() , e);
         } catch (Exception e) {
             Util.displayAndLogError("REQUEST FAILED !!!", e);
         }
@@ -90,7 +90,7 @@ public class Load {
 
             URI source = Util.string2FileURI(cl.getOptionValue("in"));
  
-            Util.displayTaggedMessage("LOADING FROM URI: " + source.toString());
+            Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
 
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
@@ -109,7 +109,7 @@ public class Load {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.setVersionTag(ref, tag);
-                    Util.displayTaggedMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }
@@ -120,7 +120,7 @@ public class Load {
                 for (int i = 0; i < refs.length; i++) {
                     AbsoluteCodingSchemeVersionReference ref = refs[i];
                     lbsm.activateCodingSchemeVersion(ref);
-                    Util.displayTaggedMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
                             + ref.getCodingSchemeVersion());
                 }
             }

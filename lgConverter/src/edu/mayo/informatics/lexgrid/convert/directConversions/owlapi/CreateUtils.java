@@ -53,9 +53,9 @@ public class CreateUtils {
  
 
     public static AssociationQualification createAssociationQualification(String name, String uri, String descriptiveText, SupportedMappings lgSupportedMappings_) {
-        if(descriptiveText.length() > 250)
+        if(descriptiveText.length() > 912)
         {
-            descriptiveText = descriptiveText.substring(0, 238);
+            descriptiveText = descriptiveText.substring(0, 900);
             String truncated = "(TRUNCATED)";
             descriptiveText = descriptiveText + truncated;
             System.out.println("descriptive Text too long for "

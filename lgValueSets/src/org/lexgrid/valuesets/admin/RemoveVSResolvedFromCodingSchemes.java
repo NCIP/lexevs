@@ -151,14 +151,14 @@ public class RemoveVSResolvedFromCodingSchemes {
 		}
 		
 		if (!foundToRemove)
-			Util.displayTaggedMessage("Could not find Resolved valueset(s) coding scheme to remove.");
+			Util.displayAndLogMessage("Could not find Resolved valueset(s) coding scheme to remove.");
 	}
 	
 	void doRemove(AbsoluteCodingSchemeVersionReference acsvr, boolean force)
 			throws Exception {
 		// Continue and confirm the action (if not bypassed by force option)
 		// ...
-		Util.displayTaggedMessage("A matching resolved valueset coding scheme was found with urn: "+ acsvr.getCodingSchemeURN());
+		Util.displayAndLogMessage("A matching resolved valueset coding scheme was found with urn: "+ acsvr.getCodingSchemeURN());
 		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
 				.getServiceManager(null);
 		boolean isActive = getCodingSchemeStatus(acsvr.getCodingSchemeURN(),
@@ -181,9 +181,9 @@ public class RemoveVSResolvedFromCodingSchemes {
 
 		if (confirmed) {
 			lbsm.removeCodingSchemeVersion(acsvr);
-			Util.displayTaggedMessage("Resolved valueset [URN=" + acsvr.getCodingSchemeURN() + ", Version=" + acsvr.getCodingSchemeVersion() + "] was removed.");
+			Util.displayAndLogMessage("Resolved valueset [URN=" + acsvr.getCodingSchemeURN() + ", Version=" + acsvr.getCodingSchemeVersion() + "] was removed.");
 		} else {
-			Util.displayTaggedMessage("Action cancelled by user");
+			Util.displayAndLogMessage("Action cancelled by user");
 		}
 	}
 

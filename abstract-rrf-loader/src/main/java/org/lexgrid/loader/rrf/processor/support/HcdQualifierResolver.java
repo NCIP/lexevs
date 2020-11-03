@@ -34,7 +34,7 @@ public class HcdQualifierResolver implements QualifierResolver<Mrhier> {
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.QualifierResolver#getQualifierName()
 	 */
-	public String getQualifierName() {
+	public String getQualifierName(Mrhier item) {
 		return RrfLoaderConstants.HCD_QUALIFIER;
 	}
 

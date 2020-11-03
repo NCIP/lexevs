@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -323,6 +325,27 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+	public void testGetValueSetDefinitionFromAssertedValueSetTEST() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/TEST/C48323"), null);
+		assertNotNull(vdDef);
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());	
+	}
+	
+	
+	@Test
+	public void testGetValueSetDefinitionFromAssertedValueSetTestFDA() throws LBException, URISyntaxException {
+		ValueSetDefinition vdDef = getValueSetDefinitionService().
+				getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C48323"), null);
+		assertNotNull(vdDef);
+		assertTrue(vdDef.getDefaultCodingScheme().equals("owl2lexevs"));
+		assertTrue(vdDef.getStatus().equals("ACTIVE"));
+		assertTrue(vdDef.getIsActive());	
+	}
+	
+	@Test
 	public void isBadValueSetDefinitionCreated() throws LBException, URISyntaxException{
 		ValueSetDefinition def = getValueSetDefinitionService()
 				.getValueSetDefinition(new URI("http://evs.nci.nih.gov/valueset/FDA/C117743"), null);
@@ -426,6 +449,7 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	}
 	
 	@Test
+    @Category(RemoveFromDistributedTests.class)
 	public void testGetValueSetEntitiesForTermFromOWL2() throws LBException, URISyntaxException {
 		
 		ResolvedValueSetCodedNodeSet vdcns = getValueSetDefinitionService().
@@ -1566,6 +1590,26 @@ public class LexEVSValueSetDefServicesImplTest extends TestCase {
 	            } 
 	        } 
 		}
+	}
+	
+	@Test
+	public void testGetURIVSDefinitionMap() {
+		// Start the value set resolution export
+		Map<String, ValueSetDefinition> map =  getValueSetDefinitionService().getURIToValueSetDefinitionsMap();
+		assertEquals(map.values().size(), 29);
+		Iterator<Entry<String, ValueSetDefinition>> itr = map.entrySet().iterator();
+		assertTrue(itr.hasNext());
+		Entry<String, ValueSetDefinition> entry = (Entry<String, ValueSetDefinition>)itr.next();
+		assertEquals(entry.getKey(), entry.getValue().getValueSetDefinitionURI());
+		assertNotNull(entry.getValue().getMappings().getSupportedCodingScheme(0));
+		assertNotNull(entry.getValue().getMappings().getSupportedCodingScheme(0).getLocalId());
+		assertNotNull(entry.getValue().getMappings().getSupportedCodingScheme(0).getContent());
+		assertNotNull(entry.getValue().getMappings().getSupportedNamespace(0));
+		assertNotNull(entry.getValue().getMappings().getSupportedNamespace(0).getLocalId());
+		assertNotNull(entry.getValue().getMappings().getSupportedNamespace(0).getContent());
+		assertNotNull(entry.getValue().getMappings().getSupportedSource(0));
+		assertNotNull(entry.getValue().getMappings().getSupportedSource(0).getLocalId());
+		assertNotNull(entry.getValue().getMappings().getSupportedSource(0).getContent());
 	}
 	
 	private LexEVSValueSetDefinitionServices getValueSetDefinitionService(){

@@ -145,6 +145,7 @@ public class SourceAssertedValueSetTest{
 		assertTrue(itr.hasNext());
 		assertTrue(itr.numberRemaining() > 0);
 		assertEquals(itr.numberRemaining(), 2);
+		
 	}
 	
 	@Test

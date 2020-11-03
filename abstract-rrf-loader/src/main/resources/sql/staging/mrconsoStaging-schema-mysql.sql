@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `@PREFIX@mrconsoStaging`;
 CREATE TABLE `@PREFIX@mrconsoStaging` (
-  `CUI` varchar(8) collate utf8_bin default NULL,
+  `CUI` varchar(10) collate utf8_bin default NULL,
   `LAT` varchar(3) collate utf8_bin default NULL,
   `TS` varchar(1) collate utf8_bin default NULL,
   `LUI` varchar(9) collate utf8_bin default NULL,

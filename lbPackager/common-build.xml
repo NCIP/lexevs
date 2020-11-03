@@ -79,7 +79,7 @@
   <!-- Cleaning up target                                                     -->
   <!-- ====================================================================== -->
 
-  <target name="clean" description="Clean the output directory">
+  <target name="clean" depends="clean:dependencies" description="Clean the output directory">
     <delete dir="${build.dir}"/>
   </target>
 

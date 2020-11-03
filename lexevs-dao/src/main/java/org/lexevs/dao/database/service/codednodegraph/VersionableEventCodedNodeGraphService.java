@@ -34,6 +34,8 @@ import org.apache.commons.lang.StringUtils;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.model.Node;
+import org.lexevs.dao.database.access.association.model.Sextuple;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.codednodegraph.CodedNodeGraphDao.TripleNode;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
@@ -820,6 +822,22 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 								relationsContainerName, 
 								tripleUids);
 	}
+	
+	public List<Triple> getMappingTripleForContainerOnly(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String relationsContainerName){
+		String mappingCodingSchemeUid = this.
+				getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+				getCodedNodeGraphDao(
+						codingSchemeUri, 
+						codingSchemeVersion).
+						getTriplesForMappingRelationsContainer(
+								mappingCodingSchemeUid,  
+								relationsContainerName);
+	}
 
 	@Override
 	public List<String> getTripleUidsForMappingRelationsContainerForCodes(
@@ -930,6 +948,62 @@ public class VersionableEventCodedNodeGraphService extends AbstractDatabaseServi
 					getTriplesForMappingRelationsContainerCount(
 							mappingCodingSchemeUid, 
 							relationsContainerName);
+	}
+
+	@Override
+	public List<Triple> getValidTriplesOfAssociation(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String uid) {
+	String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+				codingSchemeUri, 
+				codingSchemeVersion).
+			getValidTriplesOfAssociation(codingSchemeUid,
+							uid);
+	}
+	
+	@Override
+	public List<Sextuple> getValidSextuplesOfAssociation(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String uid) {
+	String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+				codingSchemeUri, 
+				codingSchemeVersion).
+			getValidSexTuplesOfAssociation(codingSchemeUid,
+							uid);
+	}
+	
+	@Override
+	public Integer validateNodeForAssociation(
+			String codingSchemeUri,
+			String codingSchemeVersion, 
+			String associationName,
+			String code) {
+	String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+    String uid = this.getAssociationPredicateUid(codingSchemeUri, codingSchemeVersion, codingSchemeUid, null, associationName);
+		return this.getDaoManager().
+			getCodedNodeGraphDao(
+				codingSchemeUri, 
+				codingSchemeVersion).validateNodeInAssociation(codingSchemeUid, uid, code);
+	}
+
+	@Override
+	public List<String> getValidAssociationsforTargetandSourceOf(
+			String codingSchemeUri, 
+			String codingSchemeVersion,
+			String code) {
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+			return this.getDaoManager().
+				getCodedNodeGraphDao(
+					codingSchemeUri, 
+					codingSchemeVersion).getValidPredicatesForTargetandSourceOf(codingSchemeUid, code);
 	}
 
 }

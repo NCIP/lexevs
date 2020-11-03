@@ -77,6 +77,7 @@ public class ListExtensions {
             try {
                 cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
+                Util.displayAndLogError("Parsing command line options failed: " + e.getMessage() , e);
                 Util.displayCommandOptions("ListExtensions", options, "ListExtensions -a", e);
                 return;
             }
@@ -154,10 +155,10 @@ public class ListExtensions {
      * @param list
      */
     private void list(String label, Enumeration extensions) {
-        Util.displayTaggedMessage(label);
+        Util.displayAndLogMessage(label);
         while (extensions.hasMoreElements()) {
-            Util.displayMessage(ObjectToString.toString(extensions.nextElement()));
-            Util.displayMessage("");
+            Util.displayAndLogMessage(ObjectToString.toString(extensions.nextElement()));
+            Util.displayAndLogMessage("");
         }
     }
 }

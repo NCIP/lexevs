@@ -672,4 +672,15 @@ public class VersionableEventEntityService extends RevisableAbstractDatabaseServ
 		
 		return entityDao.getEntityDescription(codingSchemeUid, code, codeNamespace);
 	}
+
+	@Override
+	public String getEntityDescriptionAsString(String codingSchemeUri, String codingSchemeVersion, String entityCode,
+			String entityCodeNamespace) {
+		EntityDao entityDao = getDaoManager().getEntityDao(codingSchemeUri,
+				codingSchemeVersion);
+		
+		String codingSchemeUid = this.getCodingSchemeUId(codingSchemeUri, codingSchemeVersion);
+		
+		return entityDao.getEntityDescriptionAsString(codingSchemeUid, entityCode, entityCodeNamespace);
+	}
 }

@@ -75,6 +75,28 @@ public class TestOtherMatchingTechniques extends LexBIGServiceTestCase {
         assertTrue(found);
 
     }
+    
+    public void testMoreCodeSystemsLargeCUI() throws LBException {
+        // Test some other code systems that aren't used by the other tests...
+
+        // Do a query against a umls loaded terminology - make sure it is
+        // present.
+        CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts("AI/RHEUM, 1993", null);
+
+        cns = cns.restrictToMatchingDesignations("Neck pain", null, "LuceneQuery", null);
+
+        ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
+
+        // should have found the concept code: PURPR
+        boolean found = false;
+        for (int i = 0; i < rcr.length; i++) {
+            if (rcr[i].getConceptCode().equals("CSRL")) {
+                found = true;
+            }
+        }
+        assertTrue(found);
+
+    }
 
     public void testRegExp() throws LBException {
         CodedNodeSet cns = ServiceHolder.instance().getLexBIGService().getCodingSchemeConcepts(AUTO_SCHEME, null);

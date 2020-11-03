@@ -41,10 +41,32 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 						getPredUid(csUID), csUID);
 		List<Entity> entity = getDaoManager().getCurrentAssertedValueSetDao()
 				.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
-		CodingScheme scheme = transformToCodingScheme(entity, entities);
+		List<CodingScheme> transcheme = transformToCodingScheme(entity, entities);
+		if(transcheme == null || transcheme.size() == 0){return null;}
 		List<CodingScheme> schemes = new ArrayList<CodingScheme>();
-		schemes.add(scheme);
+		schemes.addAll(transcheme);
 		return schemes;
+	}
+	
+	@Override
+	public CodingScheme getSourceAssertedValueSetforDescription(String description) throws LBException {
+		String csUID = getCsUid();
+		List<Entity> entity = getDaoManager().getCurrentAssertedValueSetDao()
+				.getSourceAssertedValueSetTopNodeDescription(description, csUID);
+		
+		if (entity != null && entity.size() > 0) {
+			String entityCode = entity.get(0).getEntityCode();
+			
+			List<Entity> entities = getDaoManager().getCurrentAssertedValueSetDao()
+				.getSourceAssertedValueSetEntitiesForEntityCode(entityCode, 
+						params.getAssertedValueSetRelation(), getPredUid(csUID), csUID);
+			
+			List<CodingScheme> transcheme = transformToCodingScheme(entity, entities);
+			if (transcheme != null && transcheme.size() > 0) {
+				return transcheme.get(0);
+			}
+		}
+		return null;
 	}
 	
 	@Override
@@ -53,8 +75,12 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 			throw new RuntimeException("Entity code cannot be null!");
 		}
 		String csUID = getCsUid();
-		return getDaoManager().getCurrentAssertedValueSetDao()
-				.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID).get(0);
+		List<Entity> entities =  getDaoManager().getCurrentAssertedValueSetDao()
+				.getSourceAssertedValueSetTopNodeForEntityCode(matchCode, csUID);
+		if(entities != null && entities.size() > 0){
+			return entities.get(0);
+		}
+		else{ return null;}
 	}
 	
 	@Override
@@ -71,7 +97,7 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 			List<Entity> topNodeListOfOne = new ArrayList<Entity>();
 			topNodeListOfOne.add(entity);
 					try {
-						schemes.add(transformToCodingScheme(topNodeListOfOne, vsEntities));
+						schemes.addAll(transformToCodingScheme(topNodeListOfOne, vsEntities));
 					} catch (LBException e) {
 						throw new RuntimeException("Failed to retrieve value set for: " + entity.getEntityCode(), e);
 					}
@@ -86,22 +112,37 @@ public class AssertedValueSetServiceImpl extends AbstractDatabaseService impleme
 		return nodes.stream().map(node -> node.getEntityCode()).collect(Collectors.toList());
 	}
 
-	private CodingScheme transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
+	private List<CodingScheme> transformToCodingScheme(List<Entity> entity, List<Entity> entities) throws LBException {
 		if (entity == null || entity.size() == 0) {
 			return null;
 		}
 		Entities list = new Entities();
 		list.getEntityAsReference().addAll(entities);
 		Entity ent = entity.iterator().next();
-		String source = null;
+		List<String> sources = null;
 		if (ent.getPropertyAsReference().stream().filter(x -> x.getPropertyName().equals(params.getSourceName()))
 				.findAny().isPresent()) {
-			source = ent.getPropertyAsReference().stream()
+			sources = ent.getPropertyAsReference().stream()
 					.filter(x -> x.getPropertyName().equals(params.getSourceName())).map(x -> x.getValue().getContent())
-					.collect(Collectors.toList()).get(0);
+					.collect(Collectors.toList());
 		}
-		return AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(),
-				params.getCodingSchemeURI());
+		if (sources != null && sources.size() > 0) {
+			return sources.stream().map(source -> {
+				CodingScheme cs = null;
+				try {
+					cs = AssertedValueSetServices.transform(ent, source, null, list, params.getCodingSchemeVersion(),
+							params.getCodingSchemeURI());
+				} catch (LBException e) {
+					e.printStackTrace();
+				}
+				return cs;
+			}).collect(Collectors.toList());
+		} else {
+			List<CodingScheme> newList = new ArrayList<CodingScheme>();
+			newList.add(AssertedValueSetServices.transform(ent, null, null, list, params.getCodingSchemeVersion(),
+					params.getCodingSchemeURI()));
+			return newList;
+		}
 	}
 	
 

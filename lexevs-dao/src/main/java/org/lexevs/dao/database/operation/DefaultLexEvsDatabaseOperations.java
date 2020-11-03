@@ -88,7 +88,7 @@ public class DefaultLexEvsDatabaseOperations implements LexEvsDatabaseOperations
 				MYSQL_CREATION_PARAMETERS.addParameter(null, "ENGINE", "INNODB");
 				MYSQL_CREATION_PARAMETERS.addParameter(null, "CHARACTER SET", "utf8");
 				MYSQL_CREATION_PARAMETERS.addParameter(null, "COLLATE", systemVariables.getMysql_collation());
-			
+				MYSQL_CREATION_PARAMETERS.addParameter(null, "ROW_FORMAT", "DYNAMIC");
 				return platform.getCreateTablesSql(database, MYSQL_CREATION_PARAMETERS, false, true);
 		}	
 	}

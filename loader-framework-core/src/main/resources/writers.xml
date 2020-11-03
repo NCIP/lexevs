@@ -24,6 +24,8 @@
 	<beans:bean name="entityPropertyWriter" class="org.lexgrid.loader.writer.EntityPropertyWriter" parent="abstractLexEvsDaoWriter"/>
 		
 	<beans:bean name="associationSourceWriter" class="org.lexgrid.loader.writer.AssociationSourceWriter" parent="abstractLexEvsDaoWriter"/>
+	
+	<beans:bean name="associationQualifierWriter" class="org.lexgrid.loader.writer.AssociationQualifierWriter" parent="abstractLexEvsDaoWriter"/>
 
 	<beans:bean name="associationSourceListWriter" class="org.lexgrid.loader.writer.ListWriter">
 		<beans:property name="delegate" ref="associationSourceWriter"/>

@@ -38,6 +38,7 @@ public class AssociationWrapper {
     private AssociationPredicate ap;
     private AssociationEntity ae;
     private String relationsContainerName;
+    private boolean inverseTransitive;
     
     public AssociationWrapper(){
         ap = new AssociationPredicate();
@@ -52,7 +53,7 @@ public class AssociationWrapper {
         return ae;
     }
     
-    public void setAssociationPrediate(AssociationPredicate in) {
+    public void setAssociationPredicate(AssociationPredicate in) {
         ap = in;
     }
     
@@ -104,5 +105,13 @@ public class AssociationWrapper {
 
     public String getRelationsContainerName() {
         return relationsContainerName;
+    }
+
+    public boolean isInverseTransitive() {
+        return inverseTransitive;
+    }
+
+    public void setInverseTransitive(boolean inverseTransitive) {
+        this.inverseTransitive = inverseTransitive;
     }
 }

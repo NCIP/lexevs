@@ -36,7 +36,7 @@ public class IteratorBackedResolvedConceptReferencesIterator implements Resolved
     public static int UNKNOWN_NUMBER = -1;
     private int count;
 
-    private Iterator<ResolvedConceptReference> iterator;
+    protected Iterator<ResolvedConceptReference> iterator;
     
     public IteratorBackedResolvedConceptReferencesIterator(){
     }

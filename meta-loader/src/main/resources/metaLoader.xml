@@ -35,7 +35,7 @@
 			<tasklet ref="hardcodedValuesLoadingTasklet" />
 		</step>
 
-		<step id="generateMrsabMetadataXml" next="loadMrsabMetadata">
+		<step id="generateMrsabMetadataXml" next="generateMrdocMetadataXml">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
@@ -46,11 +46,7 @@
 			</tasklet>
 		</step>
 
-		<step id="loadMrsabMetadata" next="generateMrdocMetadataXml">
-			<tasklet ref="mrsabMetadataLoadingTasklet" />
-		</step>
-
-		<step id="generateMrdocMetadataXml" next="loadMrdocMetadata">
+		<step id="generateMrdocMetadataXml" next="loadEntitiesAndRelationships">
 			<tasklet>
 				<listeners>
 					<listener ref="stepCompletionListener" />
@@ -61,18 +57,10 @@
 			</tasklet>
 		</step>
 
-		<step id="loadMrdocMetadata" next="loadEntitiesAndRelationships">
-			<tasklet ref="mrdocMetadataLoadingTasklet" />
-		</step>
-
 		<split id="loadEntitiesAndRelationships" task-executor="taskExecutor">
 	
 			<flow>
-				<step id="loadEntities" parent="metaLoadEntitiesPartitioned" next="index" />
-	
-				<step id="index">
-					<tasklet ref="indexingTasklet" />
-				</step>
+				<step id="loadEntities" parent="metaLoadEntitiesPartitioned" />
 			</flow>
 	
 			<flow>
@@ -89,7 +77,7 @@
 						</chunk>
 					</tasklet>
 				</step>
-				<step id="processAssociations">
+				<step id="processAssociations" next="index">
 						<tasklet>
 							<chunk reader="mrdocAssociationGroupReader" processor="metaAssociationProcessor"
 								writer="entityListWriter" commit-interval="1">
@@ -98,7 +86,25 @@
 								</streams>
 							</chunk>
 						</tasklet>
-					</step>		
+					</step>	
+			 <step id="index" next="processMrSatAssocQualifiers">
+					<tasklet ref="indexingTasklet" />
+			 </step>
+			  <step id="processMrSatAssocQualifiers">
+			  			<tasklet>
+							<chunk reader="metaMrsatRuiSkippingReader" processor="metasMrsatQualifierProcessor"
+								 writer="associationQualifierWriter" commit-interval="10000" skip-limit="100000">
+								<streams>
+									<stream ref="mrsatReader" />
+								</streams>
+								<skippable-exception-classes>
+									<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
+								</skippable-exception-classes>
+							</chunk>
+						</tasklet>
+						
+			  </step>
+						
 			</flow>
 		</split>
 		
@@ -206,6 +212,19 @@
 			</chunk>
 		</tasklet>
 	</step>
+	
+	<beans:bean id="metasMrsatQualifierProcessor" parent="metaDefaultPropertyProcessor"
+		class="org.lexgrid.loader.processor.EntityAsscToEntityMrsatQualsProcessor">	
+		<beans:property name="supportedAttributeTemplate" ref="cachingSupportedAttribuiteTemplate" />
+					
+		<beans:property name="associationInstanceIdResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.data.association.MrsatRuiAssociationInstanceIdResolver"/>
+		</beans:property>		
+ 
+		<beans:property name="qualifierResolver">
+			<beans:bean class="org.lexgrid.loader.rrf.processor.support.MrsatRuiAssocQualResolver" />	
+		</beans:property>
+	</beans:bean>
 
 	<!-- Relation Processing Below -->
 
@@ -782,6 +801,17 @@
 		</beans:property>
 		<beans:property name="delegate">
 			<beans:ref bean="mrrelReader" />
+		</beans:property>
+	</beans:bean>
+	
+	<beans:bean id="metaMrsatRuiSkippingReader"
+		class="org.lexgrid.loader.reader.SkippingItemReader">
+		<beans:property name="skipPolicy">
+			<beans:bean
+				class="org.lexgrid.loader.meta.reader.support.MetaMrsatAssQualSkipPolicy"/>
+		</beans:property>
+		<beans:property name="delegate">
+			<beans:ref bean="mrsatReader" />
 		</beans:property>
 	</beans:bean>
 

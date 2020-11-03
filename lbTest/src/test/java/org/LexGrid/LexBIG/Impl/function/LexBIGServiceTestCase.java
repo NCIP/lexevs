@@ -39,6 +39,8 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     public final static String BOOST_SCHEME = "BoostedQueryScheme";
     public final static String BOOST_SCHEME_URL = "urn:oid:77.77.77.77";
     public final static String BOOST_SCHEME_VERSION = "1.0";
+    public final static String GMP_URI = "urn:oid:11.11.0.2";
+    public final static String GMP_VERSION = "2.0";
     protected final static String HL7_SCHEME = "RIM_0219";
     protected final static String HL7_VERSION = "V 02-19";
     protected final static String PARTS_SCHEME = "GermanMadeParts";

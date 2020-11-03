@@ -31,6 +31,7 @@ import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
+import org.LexGrid.LexBIG.Utility.Constructors;
 
 /**
  * The Class BaseSearchAlgorithmTest.
@@ -69,9 +70,23 @@ public class BaseSearchAlgorithmTest extends LexBIGServiceTestCase {
      * 
      * @throws Exception the exception
      */
+    protected CodedNodeSet getOWLSchemeCodedNodeSet() throws Exception {
+        return lbs.getCodingSchemeConcepts(OWL2_SNIPPET_INDIVIDUAL_URN, 
+        		Constructors.createCodingSchemeVersionOrTagFromVersion(
+        				OWL2_SNIPPET_SPECIAL_CASE_INDIVIDUAL_VERSION));
+    }
+    
+    /**
+     * Gets the autos coded node set.
+     * 
+     * @return the autos coded node set
+     * 
+     * @throws Exception the exception
+     */
     protected CodedNodeSet getAutosCodedNodeSet() throws Exception {
         return lbs.getCodingSchemeConcepts(AUTO_SCHEME, null);
     }
+
 
     /**
      * Check for match.

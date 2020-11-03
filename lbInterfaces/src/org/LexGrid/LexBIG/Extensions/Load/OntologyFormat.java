@@ -25,6 +25,8 @@ public enum OntologyFormat {
     HL7,
     UMLS,
     TEXT,
+    LEXGRID_XML,
+    LEXGRID_MAPPING,
     NICHISTORY,
     UMLSHISTORY,
     MRMAP,

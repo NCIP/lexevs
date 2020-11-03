@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 import org.springframework.core.annotation.Order;
 
 import java.io.File;
+import java.util.Arrays;
 
 /**
  * This class should be used as a place to write JUnit tests which show a bug,
@@ -124,10 +125,11 @@ public class GForge19650 extends LexBIGServiceTestCase {
         CodingScheme cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.AUTO_EXPORT_SCHEME, null);
         Properties csProps = cs.getProperties();
         Property[] props = csProps.getProperty();
-        assertTrue(props.length == 1);
-        
-        Property csProperty = props[0];
-        assertTrue(csProperty.getValue().getContent().equals("Property Text"));
+        assertEquals(2, props.length);
+
+        assertTrue(Arrays.asList(props)
+        		.stream()
+        		.anyMatch(x -> x.getValue().getContent().equals("Property Text")));
     }
 
     @Test
@@ -136,11 +138,13 @@ public class GForge19650 extends LexBIGServiceTestCase {
         CodingScheme cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.AUTO_EXPORT_SCHEME, null);
         Properties csProps = cs.getProperties();
         Property[] props = csProps.getProperty();
-        assertTrue(props.length == 1);
-        
-        Property csProperty = props[0];
-        assertTrue(csProperty.getValue().getContent().equals("Property Text"));
-        
+        assertEquals(2, props.length);
+
+        assertTrue(Arrays.asList(props).stream().anyMatch(x -> x.getValue().getContent().equals("Property Text")));;
+        Property csProperty = Arrays.asList(props).stream()
+        		.filter(x -> x.getValue().getContent().equals("Property Text"))
+        		.reduce((a, b) -> a )
+        		.get();
         PropertyQualifier[] quals = csProperty.getPropertyQualifier();
         assertTrue(quals.length == 1);
         
@@ -155,10 +159,13 @@ public class GForge19650 extends LexBIGServiceTestCase {
         CodingScheme cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.AUTO_EXPORT_SCHEME, null);
         Properties csProps = cs.getProperties();
         Property[] props = csProps.getProperty();
-        assertTrue(props.length == 1);
-        
-        Property csProperty = props[0];
-        assertTrue(csProperty.getValue().getContent().equals("Property Text"));
+        assertEquals(2, props.length);
+
+        assertTrue(Arrays.asList(props).stream().anyMatch(x -> x.getValue().getContent().equals("Property Text")));;
+        Property csProperty = Arrays.asList(props).stream()
+        		.filter(x -> x.getValue().getContent().equals("Property Text"))
+        		.reduce((a, b) -> a )
+        		.get();
         
         Source[] sources = csProperty.getSource();
         assertTrue(sources.length == 1);
@@ -175,11 +182,13 @@ public class GForge19650 extends LexBIGServiceTestCase {
         CodingScheme cs = lbs.resolveCodingScheme(LexBIGServiceTestCase.AUTO_EXPORT_SCHEME, null);
         Properties csProps = cs.getProperties();
         Property[] props = csProps.getProperty();
-        assertTrue(props.length == 1);
-        
-        Property csProperty = props[0];
-        assertTrue(csProperty.getValue().getContent().equals("Property Text"));
-        
+        assertEquals(2, props.length);
+
+        assertTrue(Arrays.asList(props).stream().anyMatch(x -> x.getValue().getContent().equals("Property Text")));;
+        Property csProperty = Arrays.asList(props).stream()
+        		.filter(x -> x.getValue().getContent().equals("Property Text"))
+        		.reduce((a, b) -> a )
+        		.get();
         String[] usageContexts = csProperty.getUsageContext();
         assertTrue(usageContexts.length == 1);
         

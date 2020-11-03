@@ -20,9 +20,13 @@ package org.LexGrid.LexBIG.Impl.testUtility;
 
 import junit.framework.TestCase;
 
+import java.net.URI;
+import java.util.List;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.History.HistoryService;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceManagerImpl;
@@ -31,6 +35,9 @@ import org.LexGrid.LexBIG.Impl.function.query.TestPostLoadManifest;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
+import org.LexGrid.LexBIG.admin.Util;
+import org.lexgrid.valuesets.LexEVSValueSetDefinitionServices;
+import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 /**
  * This test removes the terminologies loaded by the JUnit tests.
@@ -428,5 +435,40 @@ public class CleanUpTest extends TestCase {
 		scheme.setCodingSchemeVersion("1.0");
 		lbsm.deactivateCodingSchemeVersion(scheme, null);
 		lbsm.removeCodingSchemeVersion(scheme);
+	}
+	
+	public void testRemoveMrMap2Mapping() throws LBException, LBInvocationException{
+        LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+
+        AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
+                "urn:oid:CL413321.MDR.CST", "200909");
+        
+        lbsm.deactivateCodingSchemeVersion(a, null);
+        lbsm.removeCodingSchemeVersion(a);
+	}
+	
+	public void testRemoveValueSetArtifacts() throws LBException{
+		LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance()
+				.getServiceManager(null);
+		AbsoluteCodingSchemeVersionReference scheme = new AbsoluteCodingSchemeVersionReference();
+		scheme.setCodingSchemeURN("SRITEST:AUTO:AllDomesticButGM");
+		scheme.setCodingSchemeVersion("12.03test");
+		lbsm.deactivateCodingSchemeVersion(scheme, null);
+		lbsm.removeCodingSchemeVersion(scheme);
+		
+		final LexEVSValueSetDefinitionServices vss = new LexEVSValueSetDefinitionServicesImpl();
+		List<String> uris = vss.listValueSetDefinitionURIs();
+		for (String urn : uris) {
+			try {
+				vss.removeValueSetDefinition(URI.create(urn));
+			} catch (LBException e) {
+				Util.displayAndLogError(e);
+				e.printStackTrace();
+			}
+			Util.displayAndLogMessage("ValueSetDefinition removed: " + urn);
+		}
+		
+		
 	}
 }

@@ -34,7 +34,7 @@ public class SelfReferencingAssocQualResolver implements OptionalQualifierResolv
 	/* (non-Javadoc)
 	 * @see org.lexgrid.loader.processor.support.QualifierResolver#getQualifierName()
 	 */
-	public String getQualifierName() {
+	public String getQualifierName(Mrrel item) {
 		return MetaLoaderConstants.SELF_REFERENCING_QUALIFIER;
 	}
 

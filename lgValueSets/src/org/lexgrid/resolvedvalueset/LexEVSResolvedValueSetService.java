@@ -34,6 +34,16 @@ public interface LexEVSResolvedValueSetService extends Serializable {
    	public List<CodingScheme> listAllResolvedValueSets() throws LBException;
    	
    	/**
+   	 * Returns a fully resolved coding scheme representation of a value set.  Includes
+   	 * entities for the value set.  
+   	 * 
+   	 * @String description - Description to match exactly.
+   	 * @return CodingScheme - fully resolved coding scheme representation of value set 
+   	 * @throws LBException
+   	 */
+   	public CodingScheme listResolvedValueSetForDescription(String description) throws LBException;
+   	
+   	/**
    	 * Returns a minimal (i.e. no entities included) coding scheme object list
    	 * 
    	 * @return List<CodingScheme> - coding scheme representation of value set list

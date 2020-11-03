@@ -93,6 +93,7 @@ public class DeactivateScheme {
                 if (cl.hasOption("d"))
                     when = _df.parse(cl.getOptionValue("d"));
             } catch (Exception e) {
+                Util.displayAndLogError("Parsing of command line options failed: " + e.getMessage() , e);
                 Util
                         .displayCommandOptions(
                                 "DeactivateScheme",
@@ -137,7 +138,7 @@ public class DeactivateScheme {
 
             // Continue and confirm the action (if not bypassed by force option)
             // ...
-            Util.displayTaggedMessage("A matching coding scheme was found ...");
+            Util.displayAndLogMessage("A matching coding scheme was found ...");
             boolean confirmed = true;
             if (!force) {
                 Util.displayMessage((when == null ? "DEACTIVATE NOW?" : ("DEACTIVATE ON: " + when.toString()))
@@ -148,9 +149,9 @@ public class DeactivateScheme {
             if (confirmed) {
                 LexBIGServiceManager lbsm = LexBIGServiceImpl.defaultInstance().getServiceManager(null);
                 lbsm.deactivateCodingSchemeVersion(Constructors.createAbsoluteCodingSchemeVersionReference(css), when);
-                Util.displayTaggedMessage("Request complete");
+                Util.displayAndLogMessage("Request complete");
             } else {
-                Util.displayTaggedMessage("Action cancelled by user");
+                Util.displayAndLogMessage("Action cancelled by user");
             }
         }
     }

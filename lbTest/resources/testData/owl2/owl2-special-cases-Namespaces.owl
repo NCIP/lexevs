@@ -480,6 +480,35 @@
         <rdfs:range rdf:resource="#C12219"/>
         <rdfs:domain rdf:resource="#C12219"/>
     </owl:ObjectProperty>
+    
+    
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R82 -->
+
+    <owl:ObjectProperty rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R82">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdfs:domain rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12219"/>
+        <rdfs:range rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12219"/>
+        <NHC0>R82</NHC0>
+        <P106>Conceptual Entity</P106>
+        <P107>Is Physical Part Of</P107>
+        <P108>Anatomic_Structure_Is_Physical_Part_Of</P108>
+        <P90>Anatomic_Structure_Is_Physical_Part_Of</P90>
+        <P97>A role used to indicate that an anatomic structure has a physical association with a broader system or organ. Both the domain and range for this role are &apos;Anatomic Structure, System, or Substance&apos;.</P97>
+        <rdfs:label>Anatomic_Structure_Is_Physical_Part_Of</rdfs:label>
+    </owl:ObjectProperty>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R82"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Anatomic_Structure_Is_Physical_Part_Of</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R82"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97"/>
+        <owl:annotatedTarget>A role used to indicate that an anatomic structure has a physical association with a broader system or organ. Both the domain and range for this role are &apos;Anatomic Structure, System, or Substance&apos;.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
 
 
     <!-- 
@@ -2213,6 +2242,167 @@ A cultured cell population maintained in vitro: "Rat cortical neurons from 15 da
         <P383>AB</P383>
         <P384>NCI</P384>
     </owl:Axiom>
+
+<!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434">
+        <rdfs:subClassOf rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C13236"/>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R82"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12909"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <NHC0>C12434</NHC0>
+        <P106>Body Substance</P106>
+        <P107>Blood</P107>
+        <P108>Blood</P108>
+        <P207>C0005767</P207>
+        <P322>CDISC</P322>
+        <P322>CTRP</P322>
+        <P325>A liquid tissue with the primary function of transporting oxygen and carbon dioxide. It supplies the tissues with nutrients, removes waste products, and contains various components of the immune system defending the body against infection.</P325>
+        <P325>A tissue with red blood cells, white blood cells, platelets, and other substances suspended in fluid called plasma. Blood takes oxygen and nutrients to the tissues, and carries away wastes.</P325>
+        <P366>Blood</P366>
+        <P90>BLOOD</P90>
+        <P90>Blood</P90>
+        <P90>Peripheral Blood</P90>
+        <P90>Reticuloendothelial System, Blood</P90>
+        <P90>Whole Blood</P90>
+        <P90>blood</P90>
+        <P90>peripheral blood</P90>
+        <P97>A liquid tissue; its major function is to transport oxygen throughout the body. It also supplies the tissues with nutrients, removes waste products, and contains various components of the immune system defending the body against infection. Several hormones also travel in the blood.</P97>
+        <rdfs:label>Blood</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P325"/>
+        <owl:annotatedTarget>A liquid tissue with the primary function of transporting oxygen and carbon dioxide. It supplies the tissues with nutrients, removes waste products, and contains various components of the immune system defending the body against infection.</owl:annotatedTarget>
+        <P378>CDISC</P378>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P325"/>
+        <owl:annotatedTarget>A tissue with red blood cells, white blood cells, platelets, and other substances suspended in fluid called plasma. Blood takes oxygen and nutrients to the tissues, and carries away wastes.</owl:annotatedTarget>
+        <P378>NCI-GLOSS</P378>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>BLOOD</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Blood</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Blood</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+        <P385>TCGA</P385>
+        <P386>caDSR</P386>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Peripheral Blood</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Peripheral Blood</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Reticuloendothelial System, Blood</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Whole Blood</owl:annotatedTarget>
+        <P383>SY</P383>
+        <P384>CDISC</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>blood</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI-GLOSS</P384>
+        <P385>CDR0000270735</P385>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>peripheral blood</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI-GLOSS</P384>
+        <P385>CDR0000046011</P385>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P97"/>
+        <owl:annotatedTarget>A liquid tissue; its major function is to transport oxygen throughout the body. It also supplies the tissues with nutrients, removes waste products, and contains various components of the immune system defending the body against infection. Several hormones also travel in the blood.</owl:annotatedTarget>
+        <P378>NCI</P378>
+    </owl:Axiom>
+
+    <!-- http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C93035 -->
+
+    <owl:Class rdf:about="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C93035">
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#R82"/>
+                <owl:someValuesFrom rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C12434"/>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+        <NHC0>C93035</NHC0>
+        <P106>Cell</P106>
+        <P108>Nonspecific Immune Cell</P108>
+        <P207>C2985405</P207>
+        <P325>A cell (such as a phagocyte or a macrophage) that responds to many antigens, not just one antigen.</P325>
+        <P90>Nonspecific Immune Cell</P90>
+        <P90>nonspecific immune cell</P90>
+        <rdfs:label>Nonspecific Immune Cell</rdfs:label>
+    </owl:Class>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C93035"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P325"/>
+        <owl:annotatedTarget>A cell (such as a phagocyte or a macrophage) that responds to many antigens, not just one antigen.</owl:annotatedTarget>
+        <P378>NCI-GLOSS</P378>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C93035"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#P90"/>
+        <owl:annotatedTarget>Nonspecific Immune Cell</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI</P384>
+    </owl:Axiom>
+    <owl:Axiom>
+        <owl:annotatedSource rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#C93035"/>
+        <owl:annotatedProperty rdf:resource="http://ncicb.nci.nih.gov/xml/owl/EVS/Thesauzrus.owl#P90"/>
+        <owl:annotatedTarget>nonspecific immune cell</owl:annotatedTarget>
+        <P383>PT</P383>
+        <P384>NCI-GLOSS</P384>
+        <P385>CDR0000044934</P385>
+    </owl:Axiom>
+
+    
+
+
+
     <!-- 
     ///////////////////////////////////////////////////////////////////////////////////////
     //
