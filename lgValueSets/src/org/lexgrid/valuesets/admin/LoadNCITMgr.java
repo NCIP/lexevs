@@ -52,7 +52,14 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import edu.mayo.informatics.resourcereader.core.StringUtils;
 
 /**
- * Imports from an OWL-based XML file to the LexBIG repository.
+ * 
+ * Load manager script that performs the following tasks:
+ * 	- Imports from an OWL-based XML file to the LexBIG repository.
+ * 	- Removes All Value Set Definitions
+ *  - Loads Asserted Value Set Definitions 
+ * 	- Builds indexes associated with the source asserted value sets of the specified coding scheme.
+ *  - Loads NCI History
+ * 
  * 
  * <pre>
  * Example: org.lexgrid.valuesets.admin.LoadNCITMgr
@@ -103,7 +110,7 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *         be added into the current history database; otherwise the
  *         current database will be replaced by the new content.
  * 
- * Example: java -Xmx512m -cp lgRuntime.jar
+ * Example: java -Xmx8000m -cp lgRuntime.jar
  *  org.lexgrid.valuesets.admin.LoadNCITMgr 
  *  -in &quot;file:///path/to/somefile.owl&quot; 
  *  -mf &quot;file:///path/to/Thesaurus_MF_OWL2_20.09d.xml&quot;
