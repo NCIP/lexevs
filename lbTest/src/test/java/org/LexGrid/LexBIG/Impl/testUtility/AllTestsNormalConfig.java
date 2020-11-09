@@ -252,7 +252,7 @@ public class AllTestsNormalConfig {
 
         mainSuite.addTestSuite(ConfigureTest.class);
         mainSuite.addTestSuite(OrderingTestRunnerTest.class);
-        mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
+//        mainSuite.addTest(orderedSuite(LoadTestDataTest.class));
         mainSuite.addTestSuite(CodeToReturnTest.class);
         mainSuite.addTestSuite(NCIThesaurusHistoryServiceTest.class);
         mainSuite.addTestSuite(UMLSHistoryServiceTest.class);
@@ -291,15 +291,15 @@ public class AllTestsNormalConfig {
         
         
         // Graph DB Tests
-        TestSuite graphDBTests = new TestSuite("graphDBTests");
-        graphDBTests.addTest(new JUnit4TestAdapter(LoadGraphDBDataTest.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(NodeGraphResolutionExtensionTest.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(LexEVSSpringRestClientImplTest.class));
-        graphDBTests.addTest(new JUnit4TestAdapter(CleanUpGraphDBDataTest.class));
-        mainSuite.addTest(graphDBTests);
+//        TestSuite graphDBTests = new TestSuite("graphDBTests");
+//        graphDBTests.addTest(new JUnit4TestAdapter(LoadGraphDBDataTest.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraphDao.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(TestLexEVSRelsToGraph.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(TestGraphingDatabaseUtil.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(NodeGraphResolutionExtensionTest.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(LexEVSSpringRestClientImplTest.class));
+//        graphDBTests.addTest(new JUnit4TestAdapter(CleanUpGraphDBDataTest.class));
+//        mainSuite.addTest(graphDBTests);
         
         
         TestSuite owlLoaderSuite = new TestSuite("OWL Tests");
@@ -549,55 +549,55 @@ public class AllTestsNormalConfig {
         //Association Authoring Mapping tests
         mainSuite.addTest(org.LexGrid.LexBIG.mapping.MappingAllTests.suite());
         
-        mainSuite.addTestSuite(CleanUpTest.class);
-        
-        //Special Preferences Adjustments need reload and retest
-        mainSuite.addTestSuite(OWL2SpecialCasesPreferencesLoad.class);
-       
-        //ValueSets tests
-        mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());
-        
-        //LexGrid XML Exporter tests
-        mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
-        
-        //MRMAP RRF load tests
-        mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
-        
-        //AsserteValueSets
-        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
-        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
-        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
-        assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
-        mainSuite.addTest(assertedValueSets);
-        TestSuite assertedValueSetUpdates = new TestSuite("AssertedValueSetUpdates");
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
-        assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchIndexServiceTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchExtensionTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSIteratorTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(BuildMatchAlgorithmQueryTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(ValueSetHierarchyServiceTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetTagTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(TestAssertedValueSetInitialization.class));
-        assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
-        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
-        mainSuite.addTest(assertedValueSetUpdates);
+//        mainSuite.addTestSuite(CleanUpTest.class);
+//        
+//        //Special Preferences Adjustments need reload and retest
+//        mainSuite.addTestSuite(OWL2SpecialCasesPreferencesLoad.class);
+//       
+//        //ValueSets tests
+//        mainSuite.addTest(org.LexGrid.valueset.test.VDAllTests.suite());
+//        
+//        //LexGrid XML Exporter tests
+//        mainSuite.addTest(org.LexGrid.LexBIG.Impl.export.xml.lgxml.AllTests.suite());
+//        
+//        //MRMAP RRF load tests
+//        mainSuite.addTest(edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MrMapAllTests.suite());
+//        
+//        //AsserteValueSets
+//        TestSuite assertedValueSets = new TestSuite("AssertedValueSets");
+//        assertedValueSets.addTestSuite(AssertedValueSetServicesTest.class);
+//        assertedValueSets.addTestSuite(EntityToVSDTransFormerTest.class);
+//        assertedValueSets.addTestSuite(EntityToRVSTransformerTest.class);
+//        mainSuite.addTest(assertedValueSets);
+//        TestSuite assertedValueSetUpdates = new TestSuite("AssertedValueSetUpdates");
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSLoadTest.class));
+//        assertedValueSetUpdates.addTest(orderedSuite(LoadAndUpdateSourceAssertedValueSetsTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchIndexServiceTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedValueSetSearchExtensionTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(SourceAssertedVSIteratorTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(BuildMatchAlgorithmQueryTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetIndexSupport.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(ValueSetHierarchyServiceTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(AssertedValueSetTagTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(TestAssertedValueSetInitialization.class));
+//        assertedValueSetUpdates.addTest(orderedSuite(ValueSetDaoTest.class));
+//        assertedValueSetUpdates.addTest(new JUnit4TestAdapter(CleanUpResolvedValueSetUpdateLoads.class));
+//        mainSuite.addTest(assertedValueSetUpdates);
 
         
         // Clean Up Function tests
-        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
-        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
-        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
-
-        //*******Always run this last and just before the JVM exits since ***********
-        //*******it breaks a lot of things that are created in ServiceHolder********* 
-        mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
-        // $JUnit-END$
+//        mainSuite.addTest(new JUnit4TestAdapter(CleanUpUtilityTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCleanupIndexesTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateIndexTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(DefaultLexEVSIndexOperationsCreateMultipleIndexesTest.class));
+//        mainSuite.addTest(orderedSuite(DefaultLexEVSIndexOperationsRemoveTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(SameSessionLoadandQueryTest.class));
+//        mainSuite.addTest(new JUnit4TestAdapter(ManifestLoadWithAssociationTest.class));
+//
+//        //*******Always run this last and just before the JVM exits since ***********
+//        //*******it breaks a lot of things that are created in ServiceHolder********* 
+//        mainSuite.addTest(new JUnit4TestAdapter(OrphanedIndexTest.class));
+//        // $JUnit-END$
 
         return mainSuite;
     }

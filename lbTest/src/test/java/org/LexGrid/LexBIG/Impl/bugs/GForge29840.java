@@ -53,7 +53,7 @@ public void testLanguageTags() throws Throwable {
     	
     	AssociatedConcept focus = new AssociatedConcept();
         focus.setCode("PizzaTopping");
-        focus.setCodeNamespace("pizza.owl");
+        focus.setCodeNamespace("pizza");
 
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         Entity entity = list.getResolvedConceptReference()[0].getEntity();
