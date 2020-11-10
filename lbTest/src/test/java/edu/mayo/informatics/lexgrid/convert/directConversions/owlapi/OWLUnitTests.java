@@ -44,7 +44,7 @@ public class OWLUnitTests extends TestCase {
 		
 		PropertyQualifier[] qualifiers = ref.getEntity().getProperty()[0].getPropertyQualifier();
 		
-		assertTrue(qualifiers.length == 4);
+		assertEquals(qualifiers.length, 4);
 		
 		for (int i = 0; i < qualifiers.length; i++) {
 			String qualifier = qualifiers[i].getPropertyQualifierName();

@@ -62,7 +62,8 @@ public class TestOWLLoaderPreferences extends LexBIGServiceTestCase {
 
         ResolvedConceptReference[] rcr = cns.resolveToList(null, null, null, 0).getResolvedConceptReference();
 
-        assertTrue(rcr.length == 1);
+        assertNotNull(rcr);
+        assertEquals(rcr.length, 1);
 
         ResolvedConceptReference testConcept = rcr[0];
 
