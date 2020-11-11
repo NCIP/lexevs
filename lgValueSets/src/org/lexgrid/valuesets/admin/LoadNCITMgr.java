@@ -63,6 +63,7 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  * 
  * <pre>
  * Example: org.lexgrid.valuesets.admin.LoadNCITMgr
+ *   -ncit -ncitLoad Use this parameter to initiate the OWL2 load option of NCIt.
  *   -in,--input &lt;uri&gt; URI or path specifying location of the source file
  *   -mf,--manifest &lt;uri&gt; URI or path specifying location of the manifest file
  *   -lp,--loader preferences &lt;uri&gt; URI or path specifying location of the loader preference file
@@ -95,7 +96,9 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *   -savsdl_v --SourceAssertedValueSetDefinitionLoad_version
  *   
  * ------------- BuildAssertedValueSetIndex Parameters -------------  
- *   -bavsi --BuildAssertedValueSetIndex Build indexes associated with the source asserted value sets of the specified coding scheme.
+ *   -bavsi --BuildAssertedValueSetIndex Build indexes associated with the source 
+ *   		asserted value sets of the specified coding scheme. 
+ *   		Note: There is no confirmation/force option in this script.
  *  		Use this parameter to initiate this option.
  *   -bavsi_u --buildAssertedValueSetIndex_urn Coding Scheme URN
  *   -bavsi_v --BuildAssertedValueSetIndex_version Coding Scheme Version
@@ -112,12 +115,15 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  * 
  * Example: java -Xmx8000m -cp lgRuntime.jar
  *  org.lexgrid.valuesets.admin.LoadNCITMgr 
+ *  -ncit -ncitLoad Use this parameter to initiate the OWL2 load option of NCIt.
  *  -in &quot;file:///path/to/somefile.owl&quot; 
  *  -mf &quot;file:///path/to/Thesaurus_MF_OWL2_20.09d.xml&quot;
  *  -lp &quot;file:///path/to/Thesaurus_PF_OWL2.xml&quot;
  *  -a 
  *  -v &quot;20.09d&quot; 
  *  -t &quot;PRODUCTION&quot;
+ *  -meta --meatadata input &lt;uri&gt; URI or path specifying location of the metadata source file.  
+ *        metadata is applied to the code system and code system version being loaded.
  *  -rvsd
  *  -savsdl -savsdl_v &quot;20.09d&quot;
  *  -bavsi
@@ -133,11 +139,15 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
 public class LoadNCITMgr {
 
     private static final String EXAMPLE_CALL =  
-           "\n LoadNCITMgr -in \"file:///path/to/ThesaurusInf-200929-20.09d.owl-forProduction.owl\""
-            + "-mf \"file:///path/to/Thesaurus_MF_OWL2_20.09d.xml\" "  
-            + "-lp \"file:///path/to/Thesaurus_PF_OWL2.xml"
-            + "-a"
-            + "-t \"PRODUCTION\""
+           "\n LoadNCITMgr "
+    		+ "\n -ncit"
+    		+ "\n -in \"file:///path/to/ThesaurusInf-200929-20.09d.owl-forProduction.owl\""
+            + "\n -mf \"file:///path/to/Thesaurus_MF_OWL2_20.09d.xml\" "  
+            + "\n -lp \"file:///path/to/Thesaurus_PF_OWL2.xml"
+            + "\n -a"
+            + "\n -t \"PRODUCTION\""
+            + "\n -meta --meatadata input <uri> URI or path specifying location of the metadata source file. " 
+            +       "metadata is applied to the code system and code system version being loaded."
             + "\n -rvsd"
             + "\n -savsdl"
             + "\n -savsdl_v \"20.09d\""
@@ -178,73 +188,99 @@ public class LoadNCITMgr {
             // Parse the command line ...
             CommandLine cl = null;
             Options options = getCommandOptions();
+            
+            boolean loadNcit = false;
             int vl = -1;
             int v2 = -1;
+            URI source = null;
+            URI manifest = null;
+            URI loaderPrefs = null;
+            int memSafe = 1;
+            boolean activate = false;
+            URI metaUri = null;
+            boolean force = false;
+            boolean overwrite = false;
+            
             try {
-                cl = new BasicParser().parse(options, args);
-                if (cl.hasOption("v")){
-                    vl = Integer.parseInt(cl.getOptionValue("v"));
-                }
-                if (cl.hasOption("metav")) {
-                    v2 = Integer.parseInt(cl.getOptionValue("metav"));
-                }
+            	cl = new BasicParser().parse(options, args);
             } catch (ParseException e) {
                 Util.displayCommandOptions("LoadNCITMgr", options,
                         EXAMPLE_CALL + Util.getURIHelp(), e);
-                return;                
-                
-            } catch (NumberFormatException nfe) {
-                Util.displayCommandOptions("LoadNCITMgr", options,
-                        EXAMPLE_CALL + Util.getURIHelp(), nfe);
-                return;
-            }
-
-            // Interpret provided values ...
-            URI source = Util.string2FileURI(cl.getOptionValue("in"));
-
-            String manUriStr = cl.getOptionValue("mf");
-            URI manifest = null;
-            if (!StringUtils.isNull(manUriStr))
-                manifest = Util.string2FileURI(manUriStr);
-
-            String lpUriStr = cl.getOptionValue("lp");
-            URI loaderPrefs = null;
-            if (!StringUtils.isNull(lpUriStr))
-                loaderPrefs = Util.string2FileURI(lpUriStr);
-            
-            String memorySafe = cl.getOptionValue("ms");
-            int memSafe = 1;
-            if (!StringUtils.isNull(memorySafe)) {
-                try {
-                    memSafe = Integer.parseInt(memorySafe);
-                } catch (NumberFormatException e) {
-                    Util.displayAndLogError("Unrecognized memory setting specified.", e);
-                }
+                return; 
             }
             
-            // metatdata - input file (optional)
-            String metaUriStr = cl.getOptionValue("meta");
-            URI metaUri = null;
-            if (!StringUtils.isNull(metaUriStr)){
-               metaUri = Util.string2FileURI(metaUriStr);
-            }
-              
-            // metatdata - validate input file (optional)
-            if (v2 >= 0) {
-                Util.displayAndLogMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
-            } 
-           
-            // metadata force
-            boolean force = cl.hasOption("metaf");
-            // metadata overwrite
-            boolean overwrite = cl.hasOption("metao");
+            // deterrmine if the NCIt OWL2 load should be performed.
+            loadNcit = cl.hasOption("ncit");
             
-            boolean activate = vl < 0 && cl.hasOption("a");
-            if (vl >= 0) {
-                Util.displayAndLogMessage("VALIDATING SOURCE URI: " + source.toString());
-            } else {
-                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
-                Util.displayAndLogMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
+            // gather all OWL2 load parameters if the option to load OWL2 is set
+            if (loadNcit) {
+	            try {
+	                
+	                if (cl.hasOption("v")){
+	                    vl = Integer.parseInt(cl.getOptionValue("v"));
+	                }
+	                if (cl.hasOption("metav")) {
+	                    v2 = Integer.parseInt(cl.getOptionValue("metav"));
+	                } 
+	            } catch (NumberFormatException nfe) {
+	                Util.displayCommandOptions("LoadNCITMgr", options,
+	                        EXAMPLE_CALL + Util.getURIHelp(), nfe);
+	                return;
+	            }
+	
+	            // Interpret provided values ...
+	            
+	            try {
+	            	source = Util.string2FileURI(cl.getOptionValue("in"));
+	            } catch (LBResourceUnavailableException e) {
+	            	Util.displayCommandOptions("LoadNCITMgr", options,
+	                        EXAMPLE_CALL + Util.getURIHelp(), e);
+	                return;
+	            }
+	
+	            String manUriStr = cl.getOptionValue("mf");
+	            
+	            if (!StringUtils.isNull(manUriStr))
+	                manifest = Util.string2FileURI(manUriStr);
+	
+	            String lpUriStr = cl.getOptionValue("lp");
+	            
+	            if (!StringUtils.isNull(lpUriStr))
+	                loaderPrefs = Util.string2FileURI(lpUriStr);
+	            
+	            String memorySafe = cl.getOptionValue("ms");
+	            if (!StringUtils.isNull(memorySafe)) {
+	                try {
+	                    memSafe = Integer.parseInt(memorySafe);
+	                } catch (NumberFormatException e) {
+	                    Util.displayAndLogError("Unrecognized memory setting specified.", e);
+	                }
+	            }
+	            
+	            // metatdata - input file (optional)
+	            String metaUriStr = cl.getOptionValue("meta");
+	            
+	            if (!StringUtils.isNull(metaUriStr)){
+	               metaUri = Util.string2FileURI(metaUriStr);
+	            }
+	              
+	            // metatdata - validate input file (optional)
+	            if (v2 >= 0) {
+	                Util.displayAndLogMessage("VALIDATING METADATA SOURCE URI: " + source.toString());
+	            } 
+	           
+	            // metadata force
+	            force = cl.hasOption("metaf");
+	            // metadata overwrite
+	            overwrite = cl.hasOption("metao");
+	            
+	            activate = vl < 0 && cl.hasOption("a");
+	            if (vl >= 0) {
+	                Util.displayAndLogMessage("VALIDATING SOURCE URI: " + source.toString());
+	            } else {
+	                Util.displayAndLogMessage("LOADING FROM URI: " + source.toString());
+	                Util.displayAndLogMessage(activate ? "ACTIVATE ON SUCCESS" : "NO ACTIVATION");
+	            }
             }
             
             boolean removeAllValueSetDefinitions = cl.hasOption("rvsd");
@@ -281,94 +317,107 @@ public class LoadNCITMgr {
             // Find the registered extension handling this type of load ...
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();
             LexBIGServiceManager lbsm = lbs.getServiceManager(null);
-            OWL2_Loader loader = (OWL2_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl.name);
-                                 
-            // Perform the requested load or validate action ...
-            if (vl >= 0) {
-                loader.validate(source, manifest, vl);
-                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
-            } else {
-                if (loaderPrefs != null)
-                    loader.setLoaderPreferences(loaderPrefs);
-                loader.load(source, manifest, memSafe, false,  true);
-                Util.displayLoaderStatus(loader);
+            
+            Util.displayAndLogMessage("");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("* Loading NCIt (OWL2)");
+        	Util.displayAndLogMessage("****************************************");
+        	Util.displayAndLogMessage("");
+        	
+            // if loadNcit is set, perform the OWL2 load 
+            if (loadNcit) {
+            	
+	            OWL2_Loader loader = (OWL2_Loader) lbsm.getLoader(org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl.name);
+	                                 
+	            // Perform the requested load or validate action ...
+	            if (vl >= 0) {
+	                loader.validate(source, manifest, vl);
+	                Util.displayAndLogMessage("VALIDATION SUCCESSFUL");
+	            } else {
+	                if (loaderPrefs != null)
+	                    loader.setLoaderPreferences(loaderPrefs);
+	                loader.load(source, manifest, memSafe, false,  true);
+	                Util.displayLoaderStatus(loader);
+	            }
+	
+	            // If specified, set the associated tag on the newly loaded
+	            // scheme(s) ...
+	            if (vl < 0 && cl.hasOption("t")) {
+	                String tag = cl.getOptionValue("t");
+	                AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+	                for (int i = 0; i < refs.length; i++) {
+	                    AbsoluteCodingSchemeVersionReference ref = refs[i];
+	                    lbsm.setVersionTag(ref, tag);
+	                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
+	                            + ref.getCodingSchemeVersion());
+	                }
+	            }
+	
+	            // If requested, activate the newly loaded scheme(s) ...
+	            if (activate) {
+	                AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+	                for (int i = 0; i < refs.length; i++) {
+	                    AbsoluteCodingSchemeVersionReference ref = refs[i];
+	                    lbsm.activateCodingSchemeVersion(ref);
+	                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
+	                            + ref.getCodingSchemeVersion());
+	                }
+	            }
+	                                   
+	            // If there is a metadata URI passed in, then load it.
+	            if (metaUri != null) {
+	                CodingSchemeSummary css = null;
+	                
+	                // Find the registered extension handling this type of load ...               
+	                MetaData_Loader metadataLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
+	                                           
+	                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
+	                        .enumerateCodingSchemeRendering();
+	                while (schemes.hasMoreElements() && css == null) {
+	                    CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
+	                    
+	                    AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
+	                    for (int i = 0; i < refs.length; i++) {
+	                        AbsoluteCodingSchemeVersionReference ref = refs[i];
+	                                                
+	                        if (ref.getCodingSchemeURN().equalsIgnoreCase(summary.getCodingSchemeURI())
+	                                && ref.getCodingSchemeVersion().equalsIgnoreCase(summary.getRepresentsVersion())){
+	                            css = summary;
+	                            break;
+	                        }
+	                    }
+	                }
+	                
+	                if (css == null){
+	                    Util.displayAndLogMessage("Unable to apply metadata");
+	                    return;
+	                }
+	                     
+	                loader = null;
+	                
+	                if (v2 >=0 ){
+	                    Util.displayAndLogMessage("Validating Metadata");
+	                    metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v2);
+	                    Util.displayAndLogMessage("METADATA VALIDATION SUCCESSFUL");
+	                }
+	                else{
+	                    boolean confirmed = true;
+	                    if (overwrite && !force) {
+	                        Util.displayMessage("OVERWRITE EXISTING METADATA? ('Y' to confirm, any other key to cancel)");
+	                        char choice = Util.getConsoleCharacter();
+	                        confirmed = choice == 'Y' || choice == 'y';
+	                    }
+	                    if (confirmed) {
+	                        Util.displayAndLogMessage("Loading Metadata");
+	                        metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
+	                                overwrite, false, true);
+	                        Util.displayLoaderStatus(metadataLoader);
+	                    }
+	                }
+	            }
             }
-
-            // If specified, set the associated tag on the newly loaded
-            // scheme(s) ...
-            if (vl < 0 && cl.hasOption("t")) {
-                String tag = cl.getOptionValue("t");
-                AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
-                for (int i = 0; i < refs.length; i++) {
-                    AbsoluteCodingSchemeVersionReference ref = refs[i];
-                    lbsm.setVersionTag(ref, tag);
-                    Util.displayAndLogMessage("Tag assigned>> " + ref.getCodingSchemeURN() + " Version>> "
-                            + ref.getCodingSchemeVersion());
-                }
-            }
-
-            // If requested, activate the newly loaded scheme(s) ...
-            if (activate) {
-                AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
-                for (int i = 0; i < refs.length; i++) {
-                    AbsoluteCodingSchemeVersionReference ref = refs[i];
-                    lbsm.activateCodingSchemeVersion(ref);
-                    Util.displayAndLogMessage("Scheme activated>> " + ref.getCodingSchemeURN() + " Version>> "
-                            + ref.getCodingSchemeVersion());
-                }
-            }
-                                   
-            // If there is a metadata URI passed in, then load it.
-            if (metaUri != null) {
-                CodingSchemeSummary css = null;
-                
-                // Find the registered extension handling this type of load ...               
-                MetaData_Loader metadataLoader = (MetaData_Loader) lbsm.getLoader("MetaDataLoader");
-                                           
-                Enumeration<? extends CodingSchemeRendering> schemes = lbs.getSupportedCodingSchemes()
-                        .enumerateCodingSchemeRendering();
-                while (schemes.hasMoreElements() && css == null) {
-                    CodingSchemeSummary summary = schemes.nextElement().getCodingSchemeSummary();
-                    
-                    AbsoluteCodingSchemeVersionReference[] refs = loader.getCodingSchemeReferences();
-                    for (int i = 0; i < refs.length; i++) {
-                        AbsoluteCodingSchemeVersionReference ref = refs[i];
-                                                
-                        if (ref.getCodingSchemeURN().equalsIgnoreCase(summary.getCodingSchemeURI())
-                                && ref.getCodingSchemeVersion().equalsIgnoreCase(summary.getRepresentsVersion())){
-                            css = summary;
-                            break;
-                        }
-                    }
-                }
-                
-                if (css == null){
-                    Util.displayAndLogMessage("Unable to apply metadata");
-                    return;
-                }
-                     
-                loader = null;
-                
-                if (v2 >=0 ){
-                    Util.displayAndLogMessage("Validating Metadata");
-                    metadataLoader.validateAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css), v2);
-                    Util.displayAndLogMessage("METADATA VALIDATION SUCCESSFUL");
-                }
-                else{
-                    boolean confirmed = true;
-                    if (overwrite && !force) {
-                        Util.displayMessage("OVERWRITE EXISTING METADATA? ('Y' to confirm, any other key to cancel)");
-                        char choice = Util.getConsoleCharacter();
-                        confirmed = choice == 'Y' || choice == 'y';
-                    }
-                    if (confirmed) {
-                        Util.displayAndLogMessage("Loading Metadata");
-                        metadataLoader.loadAuxiliaryData(metaUri, Constructors.createAbsoluteCodingSchemeVersionReference(css),
-                                overwrite, false, true);
-                        Util.displayLoaderStatus(metadataLoader);
-                    }
-                }
-                
+            else {
+            	Util.displayAndLogMessage("* Skipping Loading NCIt (OWL2)");
             }
             //*************************************************************
             // RemoveAllValueSetDefinitions
@@ -448,6 +497,7 @@ public class LoadNCITMgr {
         	Util.displayAndLogMessage("\tbuildAssertedValueSetIndexVersion:" + buildAssertedValueSetIndexVersionStr);
         	Util.displayAndLogMessage("");
         	
+        	// There is no option for confirmation/force option in this script.
             if (buildAssertedValueSetIndex) {
             	CodingSchemeSummary css = null;
             	
@@ -535,9 +585,14 @@ public class LoadNCITMgr {
         Options options = new Options();
         Option o;
 
+        o = new Option("ncit", "ncitLoad", false, "Use this parameter to initiate the OWL2 load option of NCIt.");
+        o.setArgName("uri");
+        o.setRequired(false);
+        options.addOption(o);
+        
         o = new Option("in", "input", true, "URI or path specifying location of the source file.");
         o.setArgName("uri");
-        o.setRequired(true);
+        o.setRequired(false);
         options.addOption(o);
 
         o = new Option("mf", "manifest", true, "URI or path specifying location of the manifest file.");
