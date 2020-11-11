@@ -7,6 +7,7 @@
 #   - Loads NCI History
 
 # Options:
+#   -ncit -ncitLoad Use this parameter to initiate the OWL2 load option of NCIt.
 #   -in,--input &lt;uri&gt; URI or path specifying location of the source file
 #   -mf,--manifest &lt;uri&gt; URI or path specifying location of the manifest file
 #   -lp,--loader preferences &lt;uri&gt; URI or path specifying location of the loader preference file
@@ -39,7 +40,9 @@
 #   -savsdl_v --SourceAssertedValueSetDefinitionLoad_version
 #   
 # ------------- BuildAssertedValueSetIndex Parameters -------------  
-#   -bavsi --BuildAssertedValueSetIndex Build indexes associated with the source asserted value sets of the specified coding scheme.
+#   -bavsi --BuildAssertedValueSetIndex Build indexes associated with the source asserted value sets 
+#		of the specified coding scheme.
+#       Note: There is no confirmation/force option in this script.
 #  		Use this parameter to initiate this option.
 #   -bavsi_u --buildAssertedValueSetIndex_urn Coding Scheme URN
 #   -bavsi_v --BuildAssertedValueSetIndex_version Coding Scheme Version
@@ -54,13 +57,16 @@
 #         be added into the current history database; otherwise the
 #         current database will be replaced by the new content.
 #        
-# Example: LoadNCITMgr -in /path/to/directory
+# Example: LoadNCITMgr -
+#  -ncit 
 #  -in "file:///path/to/somefile.owl" 
 #  -mf "file:///path/to/Thesaurus_MF_OWL2_20.09d.xml"
 #  -lp "file:///path/to/Thesaurus_PF_OWL2.xml"
 #  -a 
 #  -v "20.09d" 
 #  -t "PRODUCTION"
+#  -meta --meatadata input <uri> URI or path specifying location of the metadata source file. 
+#          metadata is applied to the code system and code system version being loaded.
 #  -rvsd
 #  -savsdl -savsdl_v "20.09d"
 #  -bavsi
