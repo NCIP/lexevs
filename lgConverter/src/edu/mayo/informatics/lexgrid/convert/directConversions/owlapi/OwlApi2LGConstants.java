@@ -130,7 +130,7 @@ public class OwlApi2LGConstants {
      * properties within the LexGrid model (can be altered via preferences).
      */
     public static final List<String> PRIORITIZED_COMMENT_NAMES = Arrays.asList(new String[] { "DesignNote", "Editor_Note",
-            "Citation", "VA_Workflow_Comment", "rdfs:comment" });
+            "Citation", "VA_Workflow_Comment", "rdfs:comment","comment" });
     public static final List<String> PRIORITIZED_DEFINITION_NAMES = Arrays.asList(new String[] { "DEFINITION", "dDEFINITION",
             "LONG_DEFINITION", "ALT_DEFINITION", "ALT_LONG_DEFINITION", "MeSH_Definition","definition", "rdf:Description" });
     public static final List<String> PRIORITIZED_PRESENTATION_NAMES = Arrays.asList(new String[] { "NCI_Preferred_Term",
