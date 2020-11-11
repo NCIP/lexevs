@@ -65,8 +65,7 @@
 #  -a 
 #  -v "20.09d" 
 #  -t "PRODUCTION"
-#  -meta --meatadata input <uri> URI or path specifying location of the metadata source file. 
-#          metadata is applied to the code system and code system version being loaded.
+#  -meta "file:///path/to/metadata.xml"
 #  -rvsd
 #  -savsdl -savsdl_v "20.09d"
 #  -bavsi

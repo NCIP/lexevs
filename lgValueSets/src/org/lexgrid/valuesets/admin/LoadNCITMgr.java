@@ -122,8 +122,7 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  *  -a 
  *  -v &quot;20.09d&quot; 
  *  -t &quot;PRODUCTION&quot;
- *  -meta --meatadata input &lt;uri&gt; URI or path specifying location of the metadata source file.  
- *        metadata is applied to the code system and code system version being loaded.
+ *  -meta &quot;file:///path/to/metadata.xml&quot;
  *  -rvsd
  *  -savsdl -savsdl_v &quot;20.09d&quot;
  *  -bavsi
@@ -142,12 +141,11 @@ public class LoadNCITMgr {
            "\n LoadNCITMgr "
     		+ "\n -ncit"
     		+ "\n -in \"file:///path/to/ThesaurusInf-200929-20.09d.owl-forProduction.owl\""
-            + "\n -mf \"file:///path/to/Thesaurus_MF_OWL2_20.09d.xml\" "  
-            + "\n -lp \"file:///path/to/Thesaurus_PF_OWL2.xml"
+            + "\n -mf \"file:///path/to/Thesaurus_MF_OWL2_20.09d.xml\""  
+            + "\n -lp \"file:///path/to/Thesaurus_PF_OWL2.xml\""
             + "\n -a"
             + "\n -t \"PRODUCTION\""
-            + "\n -meta --meatadata input <uri> URI or path specifying location of the metadata source file. " 
-            +       "metadata is applied to the code system and code system version being loaded."
+            + "\n -meta \"file:///path/to/metadata.xml\""
             + "\n -rvsd"
             + "\n -savsdl"
             + "\n -savsdl_v \"20.09d\""
