@@ -58,7 +58,7 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
     	
     	// entity isBaseOf
         focus.setCode("isBaseOf");
-        focus.setCodeNamespace("pizza");
+        focus.setCodeNamespace("pizza.owl");
 
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         Entity entity = list.getResolvedConceptReference()[0].getEntity();
@@ -68,10 +68,9 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
         		typeList.add(p.getValue().getContent());
         }
         
-        assertEquals(typeList.size(), 3);
-        assertEquals(typeList.contains("InverseFunctionalProperty"), true);
-        assertEquals(typeList.contains("FunctionalProperty"), true);
-        assertEquals(typeList.contains("ObjectProperty"), true);
+        assertEquals(typeList.size(), 2);
+        assertEquals(typeList.contains("InverseFunctional"), true);
+        assertEquals(typeList.contains("Functional"), true);
         
         // entity hasSpiciness
         focus.setCode("hasSpiciness");

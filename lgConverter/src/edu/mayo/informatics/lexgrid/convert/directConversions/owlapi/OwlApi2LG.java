@@ -2125,8 +2125,7 @@ public class OwlApi2LG {
     String getDefaultNameSpace() {
         IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI().isPresent()? 
                 ontology.getOntologyID().getOntologyIRI().get(): null;
-        String localName = renderer.getOntologyShortFormProvider().getShortForm(ontologyIRI);
-        return localName;
+       return ontologyIRI.getFragment();
     }
 
     protected void initAnnotationProperties() {

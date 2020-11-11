@@ -65,7 +65,7 @@ public class GForge29940 extends LexBIGServiceTestCase {
 		 * targets should not be 0
 		*/
 		focus.setCode("MozzarellaTopping");
-		focus.setCodeNamespace("pizza");
+		focus.setCodeNamespace("pizza.owl");
 
 		ResolvedConceptReferenceList list = cng.resolveAsList(focus, true,
 				false, 1, -1, null, null, null, null, -1);
