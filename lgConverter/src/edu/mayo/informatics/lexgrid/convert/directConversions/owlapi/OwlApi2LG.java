@@ -1252,7 +1252,7 @@ public class OwlApi2LG {
             String propClass = owlDatatypeName2lgPropClass_.get(propName);
             if (isNoop(propClass))
                 continue;
-            
+            String lang = annotationAxiom.getValue().asLiteral().get().getLang();
             // if the IRI is not in the cache, call isAnyURIDataType() method, get the result, and add it to the cache
             Boolean isAnyURIDataType;
                  
@@ -1305,7 +1305,7 @@ public class OwlApi2LG {
             // property to the list to eventually add to the concept.
             else {
                 Property newProp = resolveProp(annotationAxiom, propClass, generatePropertyID(++i), lgLabel, lgDType,
-                        getNameSpace(annotationAxiom.getProperty()), resolvedText, null);
+                        getNameSpace(annotationAxiom.getProperty()), resolvedText, lang != null?lang: null);
                 if (newProp.getValue() != null) {
                     sortedProps.add(newProp);
                     if (newProp instanceof Presentation)
