@@ -101,7 +101,7 @@ public class LoadNCIHistory {
             // Interpret provided values ...
             URI source = Util.string2FileURI(cl.getOptionValue("in"));
             URI versions = Util.string2FileURI(cl.getOptionValue("vf"));
-            boolean replace = vl >= 0 && cl.hasOption("r");
+            boolean replace = vl <= 0 && cl.hasOption("r");
             if (vl >= 0) {
                 Util.displayAndLogMessage("VALIDATING SOURCE URI: " + source.toString());
             } else {
