@@ -138,7 +138,7 @@ public class TestGetTree extends TestCase{
         tree = service.getTree("npo", csvt, "NPO_1607", "npo", "is_a");	            
             LexEvsTreeNode focusNode = tree.getCurrentFocus();
             List<LexEvsTreeNode> listForTree = service.getEvsTreeConverter().buildEvsTreePathFromRootTree(focusNode);
-            String json = service.getJsonConverter().buildJsonPathFromRootTree(focusNode);	        
+            String json = service.getJsonConverter(-1).buildJsonPathFromRootTree(focusNode);	        
             List <LexEvsTreeNode> listOfone = new ArrayList<LexEvsTreeNode>();
             listOfone.add(focusNode);
             System.out.println("Printing from focus Node");
@@ -162,7 +162,7 @@ public class TestGetTree extends TestCase{
             assertTrue(processNode.getOntology_node_child_count() == 1);
             //checking actual size -- 6th child is an ellipsis  (...)
             assertTrue(processNode.getChildren_nodes().size() > 0);
-            assertTrue(processNode.getChildren_nodes().size() == 6);
+            assertEquals(processNode.getChildren_nodes().size(),20);
             //this wouldn't be seen using default children sizing
             assertFalse(processNode.getChildren_nodes().stream().anyMatch(x -> x.getOntology_node_name().equals("nanoparticle response to stimulus")));
             
