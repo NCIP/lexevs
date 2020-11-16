@@ -74,7 +74,7 @@ public class TestBugFixes extends LexBIGServiceTestCase {
         CodingScheme cs = ServiceHolder.instance().getLexBIGService().resolveCodingScheme(THES_SCHEME, null);
 
         SupportedAssociation[] sa = cs.getMappings().getSupportedAssociation();
-        assertEquals(sa.length, 125);
+        assertEquals(sa.length, 167);
         assertTrue(contains(sa, "subClassOf"));
         assertTrue(contains(sa, "Anatomic_Structure_Has_Location"));
         assertTrue(contains(sa, "Disease_Excludes_Molecular_Abnormality"));

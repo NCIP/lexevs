@@ -1940,6 +1940,9 @@ public class OwlApi2LG {
                 // lgSupportedMappings_.registerSupportedSource(prefix,
                 // nm.getNamespaceForPrefix(prefix), prefix, null, false);
                 lgSupportedMappings_.registerSupportedNamespace(prefixName, prefix, prefixName, null, false);
+            }else {
+                lgSupportedMappings_.registerSupportedNamespace(getDefaultNameSpace(), prefix, getDefaultNameSpace(), null, false);
+                
             }
 
         }
