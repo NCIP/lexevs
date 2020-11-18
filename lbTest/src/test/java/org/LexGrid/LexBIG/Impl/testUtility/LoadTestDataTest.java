@@ -308,7 +308,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     public void testLoadOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+        OWL2LoaderImpl loader = (OWL2LoaderImpl)lbsm.getLoader("OWL2Loader");
  
         CodingSchemeManifest csm = new CodingSchemeManifest();
         CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
@@ -337,7 +337,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     public void testLoadOwlThesaurus() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+        OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
  
         CodingSchemeManifest csm = new CodingSchemeManifest();
         CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
@@ -366,7 +366,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     public void testLoadOwlLoaderPreferences() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-        OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+        OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
 
         loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
         loader.load(new File("resources/testData/camera.owl").toURI(), new File(
@@ -389,7 +389,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     public void testLoadGenericOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+        OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
         loader.load(new File("resources/testData/amino-acid.owl").toURI(), new File(
                 "resources/testData/amino-acid-manifest.xml").toURI(), 0, true, true);
 
@@ -410,7 +410,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     public void testLoadGenericOwlWithInstanceData() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+        OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
         loader.load(new File("resources/testData/OvarianMass_SNOMED_ValueSets.owl").toURI(), null,  1, false, true);
 
         while (loader.getStatus().getEndTime() == null) {
@@ -446,7 +446,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     public void testLoadOWL2NPOwMultiNamespace() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+        OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
         loader.setLoaderPreferences(new File("resources/testData/OWLPrefsLoadAnonAsAssocPF.XML").toURI());
         loader.load(new File("resources/testData/multiName_npo-2011-12-08_inferred.owl").toURI(), 
         		new File("resources/testData/NPOMF.xml").toURI(),  1, false, true);
@@ -467,7 +467,7 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
     public void testLoadCompPropsOwl() throws InterruptedException, LBException {
         LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+        OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
         loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
         
         CodingSchemeManifest csm = new CodingSchemeManifest();

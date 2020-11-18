@@ -68,10 +68,9 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
         		typeList.add(p.getValue().getContent());
         }
         
-        assertEquals(typeList.size(), 3);
-        assertEquals(typeList.contains("InverseFunctionalProperty"), true);
-        assertEquals(typeList.contains("FunctionalProperty"), true);
-        assertEquals(typeList.contains("ObjectProperty"), true);
+        assertEquals(typeList.size(), 2);
+        assertEquals(typeList.contains("InverseFunctional"), true);
+        assertEquals(typeList.contains("Functional"), true);
         
         // entity hasSpiciness
         focus.setCode("hasSpiciness");
@@ -83,9 +82,9 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
         		typeList.add(p.getValue().getContent());
         }
         
-        assertEquals(typeList.size(), 2);
-        assertEquals(typeList.contains("FunctionalProperty"), true);
-        assertEquals(typeList.contains("ObjectProperty"), true);
+        assertEquals(typeList.size(), 1);
+        assertEquals(typeList.contains("Functional"), true);
+       // assertEquals(typeList.contains("ObjectProperty"), true);
         
     }
     

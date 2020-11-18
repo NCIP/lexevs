@@ -29,32 +29,37 @@ public class OWLUnitTests extends TestCase {
 		cns = lbs.getNodeSet(LexBIGServiceTestCase.OWL_COMPLEX_PROP_URN, 
 				Constructors.createCodingSchemeVersionOrTagFromVersion(LexBIGServiceTestCase.OWL_COMPLEX_PROP_VERSION), null);
 	}
-	
 	@Test
-	public void testPropertyForAnnotationPropertySource()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
-		String[] qualiferNames = {"Relationship_to_Target", "Target_Term_Type", "Target_Code", "Target_Terminology" };
-		String[] qualiferValues = {"Has Synonym", "LLT", "10012444", "MedDRA" };
+	public void test() {
 		
-		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("C10000"));
-		
-		ResolvedConceptReferencesIterator itr  = cns.resolve(null, null, null);
-		assertNotNull(itr);
-		assertTrue(itr.hasNext());	
-		ResolvedConceptReference ref = itr.next();
-		
-		PropertyQualifier[] qualifiers = ref.getEntity().getProperty()[0].getPropertyQualifier();
-		
-		assertTrue(qualifiers.length == 4);
-		
-		for (int i = 0; i < qualifiers.length; i++) {
-			String qualifier = qualifiers[i].getPropertyQualifierName();
-			String value = qualifiers[i].getValue().getContent();
-			
-			assertTrue(Arrays.asList(qualiferNames).contains(qualifier));
-			assertTrue(Arrays.asList(qualiferValues).contains(value));
-		}
-			
 	}
+	
+//	No longer a valid test now that NCIt doesn't employ complex property parsing	
+//	@Test
+//	public void testPropertyForAnnotationPropertySource()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
+//		String[] qualiferNames = {"Relationship_to_Target", "Target_Term_Type", "Target_Code", "Target_Terminology" };
+//		String[] qualiferValues = {"Has Synonym", "LLT", "10012444", "MedDRA" };
+//		
+//		cns = cns.restrictToCodes(Constructors.createConceptReferenceList("C10000"));
+//		
+//		ResolvedConceptReferencesIterator itr  = cns.resolve(null, null, null);
+//		assertNotNull(itr);
+//		assertTrue(itr.hasNext());	
+//		ResolvedConceptReference ref = itr.next();
+//		
+//		PropertyQualifier[] qualifiers = ref.getEntity().getProperty()[0].getPropertyQualifier();
+//		
+//		assertEquals(qualifiers.length, 4);
+//		
+//		for (int i = 0; i < qualifiers.length; i++) {
+//			String qualifier = qualifiers[i].getPropertyQualifierName();
+//			String value = qualifiers[i].getValue().getContent();
+//			
+//			assertTrue(Arrays.asList(qualiferNames).contains(qualifier));
+//			assertTrue(Arrays.asList(qualiferValues).contains(value));
+//		}
+//			
+//	}
 	
 }
 

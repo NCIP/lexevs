@@ -77,32 +77,33 @@ public class GForge26741 extends LexBIGServiceTestCase {
      * 
      * @throws Throwable
      */
-    public void testOwlInstanceToInstanceAssociation() throws Throwable {
-        String code = "111333002";
-        String relatedCode="300479008";
-       
-        LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
-        
-        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(OVARIANMASS_SCHEME_VERSION);   
-        CodedNodeGraph cng = lbs.getNodeGraph(OVARIANMASS_SCHEME_URN, csvt, null);
-        cng.restrictToAssociations(Constructors.createNameAndValueList("broader"), null);
-
-        ResolvedConceptReferenceList rcrl = cng.resolveAsList(Constructors.createConceptReference(code, OVARIANMASS_SCHEME_URN), true, true, 1, 1, null, null, null, null, -1);
-        ResolvedConceptReference[] rcr = rcrl.getResolvedConceptReference();
-        Association[] assocs = rcr[0].getSourceOf().getAssociation();
-
-        assertTrue(assocs.length == 1);
-
-        Association assoc = assocs[0];
-
-        AssociatedConcept[] assocConcepts = assoc.getAssociatedConcepts().getAssociatedConcept();
-
-        assertTrue(searchAssociatedConceptsForCode(assocConcepts, relatedCode));
-
-        
-
-
-    }    
+// No longer valid to load skos structures using current OWL api
+//    public void testOwlInstanceToInstanceAssociation() throws Throwable {
+//        String code = "111333002";
+//        String relatedCode="300479008";
+//       
+//        LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
+//        
+//        CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(OVARIANMASS_SCHEME_VERSION);   
+//        CodedNodeGraph cng = lbs.getNodeGraph(OVARIANMASS_SCHEME_URN, csvt, null);
+//        cng.restrictToAssociations(Constructors.createNameAndValueList("broader"), null);
+//
+//        ResolvedConceptReferenceList rcrl = cng.resolveAsList(Constructors.createConceptReference(code, OVARIANMASS_SCHEME_URN), true, true, 1, 1, null, null, null, null, -1);
+//        ResolvedConceptReference[] rcr = rcrl.getResolvedConceptReference();
+//        Association[] assocs = rcr[0].getSourceOf().getAssociation();
+//
+//        assertTrue(assocs.length == 1);
+//
+//        Association assoc = assocs[0];
+//
+//        AssociatedConcept[] assocConcepts = assoc.getAssociatedConcepts().getAssociatedConcept();
+//
+//        assertTrue(searchAssociatedConceptsForCode(assocConcepts, relatedCode));
+//
+//        
+//
+//
+//    }    
     public boolean searchAssociatedConceptsForCode(AssociatedConcept[] assocConcepts, String code){
         boolean found = false;
         for(AssociatedConcept concept : assocConcepts){

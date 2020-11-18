@@ -88,11 +88,11 @@ public class TestEnumerateProperties extends LexBIGServiceTestCase {
     }
 
     public void testT1_FNC_29a() throws LBException {
-        enumerateProps("External_Lip", new String[] { "primitive", "Semantic_Type", "code" });
+        enumerateProps("External_Lip", new String[] { "label", "Semantic_Type", "code" });
     }
 
     public void testT1_FNC_29b() throws LBException {
-        enumerateProps("Bone_of_the_Extremity", new String[] { "primitive", "Semantic_Type", "code" });
+        enumerateProps("Bone_of_the_Extremity", new String[] { "label", "Semantic_Type", "code" });
     }
 
 }
