@@ -26,6 +26,6 @@
 #
 # Example: LoadOWL2 -in "file:///path/to/somefile.owl" -a
 #          LoadOWL2 -in "file:///path/to/somefile.owl" -v 0
-#          LoadOWL2 -in "file:///path/to/somefile.owl" -a -meta "file:///path/to/metadata.xml" -metao
+#          LoadOWL2 -in "file:///path/to/somefile.owl" -lp "file:///path/to/preferences.xml" -a -meta "file:///path/to/metadata.xml" -metao
 #
-java -Xmx3000m -XX:MaxPermSize=256M -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadOWL2 $@
+java -Xmx12000m -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.LexGrid.LexBIG.admin.LoadOWL2 $@
