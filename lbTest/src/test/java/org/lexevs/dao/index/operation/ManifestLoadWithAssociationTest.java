@@ -10,6 +10,7 @@ import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Extensions.Load.OWL_Loader;
+import org.LexGrid.LexBIG.Impl.loaders.OWL2LoaderImpl;
 import org.LexGrid.LexBIG.Impl.loaders.OWLLoaderImpl;
 import org.LexGrid.LexBIG.Impl.testUtility.ServiceHolder;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGServiceManager;
@@ -43,7 +44,7 @@ public class ManifestLoadWithAssociationTest {
 	public void LoadOwlWAssocDefManifest() throws InterruptedException, LBException {
 		LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-		OWL_Loader loader = (OWL_Loader) lbsm.getLoader("OWLLoader");
+		OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
 
 		loader.load(new File("resources/testData/ManifestTest/sample.owl").toURI(),
 				new File("resources/testData/ManifestTest/Thesaurus_MF_Test.xml").toURI(), 1, false, true);
@@ -65,7 +66,7 @@ public class ManifestLoadWithAssociationTest {
 		
 		        LexBIGServiceManager lbsm = getLexBIGServiceManager();
 
-		        OWLLoaderImpl loader = (OWLLoaderImpl) lbsm.getLoader("OWLLoader");
+				OWL2LoaderImpl loader = (OWL2LoaderImpl) lbsm.getLoader("OWL2Loader");
 		        loader.setLoaderPreferences(new File("resources/testData/OWLPrefs.xml").toURI());
 		        
 		        CodingSchemeManifest csm = new CodingSchemeManifest();

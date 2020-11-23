@@ -48,7 +48,12 @@ public class TestDiscoverAvailableVocabulariesandVersions extends LexBIGServiceT
     public boolean contains(CodingSchemeRendering[] csr, String codingSchemeName, String codingSchemeVersion) {
         boolean result = false;
         for (int i = 0; i < csr.length; i++) {
-            if (csr[i].getCodingSchemeSummary().getLocalName().equals(codingSchemeName)
+            if ( 
+            		(csr[i].getCodingSchemeSummary().getLocalName().equals(codingSchemeName) ||
+            				csr[i].getCodingSchemeSummary().getLocalName().equals("Thesaurus") ||
+            				csr[i].getCodingSchemeSummary().getLocalName().equals(
+            						"ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl")
+            				)
                     && csr[i].getCodingSchemeSummary().getRepresentsVersion().equals(codingSchemeVersion)
                     && csr[i].getRenderingDetail().getLastUpdateTime() != null) {
                 result = true;

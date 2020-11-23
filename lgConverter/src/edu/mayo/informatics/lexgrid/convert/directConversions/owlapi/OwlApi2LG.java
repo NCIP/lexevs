@@ -1253,6 +1253,11 @@ public class OwlApi2LG {
             if (isNoop(propClass))
                 continue;
             
+            
+            String lang = null;
+            if(annotationAxiom.getValue().asLiteral().isPresent()) {
+                lang = annotationAxiom.getValue().asLiteral().get().getLang();
+            }
             // if the IRI is not in the cache, call isAnyURIDataType() method, get the result, and add it to the cache
             Boolean isAnyURIDataType;
                  
@@ -1305,7 +1310,7 @@ public class OwlApi2LG {
             // property to the list to eventually add to the concept.
             else {
                 Property newProp = resolveProp(annotationAxiom, propClass, generatePropertyID(++i), lgLabel, lgDType,
-                        getNameSpace(annotationAxiom.getProperty()), resolvedText, null);
+                        getNameSpace(annotationAxiom.getProperty()), resolvedText, lang != null?lang: null);
                 if (newProp.getValue() != null) {
                     sortedProps.add(newProp);
                     if (newProp instanceof Presentation)
@@ -1935,6 +1940,9 @@ public class OwlApi2LG {
                 // lgSupportedMappings_.registerSupportedSource(prefix,
                 // nm.getNamespaceForPrefix(prefix), prefix, null, false);
                 lgSupportedMappings_.registerSupportedNamespace(prefixName, prefix, prefixName, null, false);
+            }else {
+                lgSupportedMappings_.registerSupportedNamespace(getDefaultNameSpace(), prefix, getDefaultNameSpace(), null, false);
+                
             }
 
         }
@@ -2125,8 +2133,7 @@ public class OwlApi2LG {
     String getDefaultNameSpace() {
         IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI().isPresent()? 
                 ontology.getOntologyID().getOntologyIRI().get(): null;
-        String localName = renderer.getOntologyShortFormProvider().getShortForm(ontologyIRI);
-        return localName;
+       return ontologyIRI.getFragment();
     }
 
     protected void initAnnotationProperties() {
