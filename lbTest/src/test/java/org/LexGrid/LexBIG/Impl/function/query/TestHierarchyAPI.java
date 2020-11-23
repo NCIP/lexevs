@@ -19,6 +19,7 @@
 package org.LexGrid.LexBIG.Impl.function.query;
 
 import java.util.Iterator;
+import java.util.stream.Stream;
 
 import org.LexGrid.LexBIG.DataModel.Collections.AssociationList;
 import org.LexGrid.LexBIG.DataModel.Collections.ConceptReferenceList;
@@ -233,7 +234,7 @@ public class TestHierarchyAPI extends LexBIGServiceTestCase {
         assertTrue(associations.getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0).getCode().equals("GO_0048518"));
         AssociationList associationsNPO = lbscm.getHierarchyPathToRoot(NPO_SCHEME_MULTI_NAMESPACE, csvt, hierarchyId, code, "npo", false, LexBIGServiceConvenienceMethods.HierarchyPathResolveOption.ALL, null);
         assertTrue(associationsNPO.getAssociation().length > 0);
-        assertTrue(associationsNPO.getAssociation()[0].getAssociatedConcepts().getAssociatedConcept(0).getCode().equals("GO_0008156"));
+        assertTrue(Stream.of(associationsNPO.getAssociation()[0].getAssociatedConcepts().getAssociatedConcept()).anyMatch(x -> x.getCode().equals("GO_0008156")));
 
     } 
     /**
