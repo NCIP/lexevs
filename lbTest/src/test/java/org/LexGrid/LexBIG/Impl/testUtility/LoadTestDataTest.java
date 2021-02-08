@@ -312,8 +312,8 @@ public class LoadTestDataTest extends LexBIGServiceTestCase {
  
         CodingSchemeManifest csm = new CodingSchemeManifest();
         CsmfCodingSchemeURI uri = new CsmfCodingSchemeURI();
-        csm.setId("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
-        uri.setContent("http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#");
+        csm.setId("http://www.co-ode.org/ontologies/pizza/pizza.owl#");
+        uri.setContent("http://www.co-ode.org/ontologies/pizza/pizza.owl#");
         uri.setToOverride(true);
         csm.setCodingSchemeURI(uri);
         loader.setCodingSchemeManifest(csm);

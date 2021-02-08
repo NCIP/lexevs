@@ -19,6 +19,8 @@
 package org.LexGrid.LexBIG.Impl.bugs;
 
 
+import java.util.stream.Stream;
+
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
 import org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept;
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeVersionOrTag;
@@ -53,15 +55,12 @@ public void testLanguageTags() throws Throwable {
     	
     	AssociatedConcept focus = new AssociatedConcept();
         focus.setCode("PizzaTopping");
-        focus.setCodeNamespace("pizza.owl");
+        focus.setCodeNamespace("pizza");
 
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         Entity entity = list.getResolvedConceptReference()[0].getEntity();
-        for (Property p : entity.getAllProperties()) {
-        	if (p.getPropertyName().equals("label"))
-        		assertEquals(p.getLanguage(), "pt");
-        }
-        
+        Stream.of(entity.getAllProperties()).filter(x -> x.getPropertyName().equals("label")).anyMatch(y -> y.getLanguage().equals("en"));
+        Stream.of(entity.getAllProperties()).filter(x -> x.getPropertyName().equals("label")).anyMatch(y -> y.getLanguage().equals("pt"));
     }
     
    

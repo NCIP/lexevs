@@ -57,7 +57,7 @@ public void testAnonymousClassOfAnonymousClass() throws Throwable {
         
         AssociatedConcept focus = new AssociatedConcept();
         focus.setCode("American");
-        focus.setCodeNamespace("pizza.owl");
+        focus.setCodeNamespace("pizza");
         
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         

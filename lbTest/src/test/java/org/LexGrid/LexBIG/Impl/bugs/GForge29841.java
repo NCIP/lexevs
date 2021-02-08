@@ -54,7 +54,7 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
     	
     	AssociatedConcept focus = new AssociatedConcept();
         focus.setCode("VegetarianPizza");
-        focus.setCodeNamespace("pizza.owl");
+        focus.setCodeNamespace("pizza");
 
         int counter = 0; 
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);

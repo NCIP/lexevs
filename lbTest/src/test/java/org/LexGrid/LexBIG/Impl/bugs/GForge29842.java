@@ -58,7 +58,7 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
     	
     	// entity isBaseOf
         focus.setCode("isBaseOf");
-        focus.setCodeNamespace("pizza.owl");
+        focus.setCodeNamespace("pizza");
 
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         Entity entity = list.getResolvedConceptReference()[0].getEntity();
