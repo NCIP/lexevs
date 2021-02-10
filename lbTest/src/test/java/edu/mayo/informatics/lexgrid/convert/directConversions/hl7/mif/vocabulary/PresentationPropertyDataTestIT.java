@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
@@ -9,8 +10,8 @@ import org.junit.Test;
 
 public class PresentationPropertyDataTestIT extends DataLoadTestBase {
 
-	/** The test entity. */
-	private Entity testEntity;
+/** The test entity. */
+private Entity testEntity;
 
 	/**
 	 * Builds the test entity.

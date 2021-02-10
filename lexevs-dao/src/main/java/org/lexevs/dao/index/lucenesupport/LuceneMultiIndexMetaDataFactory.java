@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.index.lucenesupport;
 
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;

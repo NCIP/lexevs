@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.util.file;
 
 import java.io.BufferedInputStream;
@@ -31,19 +14,21 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class CopyrightScrubber {
-    protected static String COPYRIGHT = "/*" + "\n"
-            + " * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and " + "\n"
-            + " * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the" + "\n"
-            + " * triple-shield Mayo logo are trademarks and service marks of MFMER." + "\n" + " *" + "\n"
-            + " * Except as contained in the copyright notice above, or as used to identify " + "\n"
-            + " * MFMER as the author of this software, the trade names, trademarks, service" + "\n"
-            + " * marks, or product names of the copyright holder shall not be used in" + "\n"
-            + " * advertising, promotion or otherwise in connection with this software without" + "\n"
-            + " * prior written authorization of the copyright holder." + "\n" + " * " + "\n"
-            + " * Licensed under the Eclipse Public License, Version 1.0 (the \"License\");" + "\n"
-            + " * you may not use this file except in compliance with the License." + "\n"
-            + " * You may obtain a copy of the License at " + "\n" + " * " + "\n"
-            + " * \t\thttp://www.eclipse.org/legal/epl-v10.html" + "\n" + " * " + "\n" + " */";
+    protected static String COPYRIGHT = "";
+    
+//    protected static String COPYRIGHT = "/*" + "\n"
+//            + " * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and " + "\n"
+//            + " * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the" + "\n"
+//            + " * triple-shield Mayo logo are trademarks and service marks of MFMER." + "\n" + " *" + "\n"
+//            + " * Except as contained in the copyright notice above, or as used to identify " + "\n"
+//            + " * MFMER as the author of this software, the trade names, trademarks, service" + "\n"
+//            + " * marks, or product names of the copyright holder shall not be used in" + "\n"
+//            + " * advertising, promotion or otherwise in connection with this software without" + "\n"
+//            + " * prior written authorization of the copyright holder." + "\n" + " * " + "\n"
+//            + " * Licensed under the Eclipse Public License, Version 1.0 (the \"License\");" + "\n"
+//            + " * you may not use this file except in compliance with the License." + "\n"
+//            + " * You may obtain a copy of the License at " + "\n" + " * " + "\n"
+//            + " * \t\thttp://www.eclipse.org/legal/epl-v10.html" + "\n" + " * " + "\n" + " */";
     protected Pattern P_head = Pattern.compile("^(/\\*.*?\\*/.*?)?(package.*)");
     protected Pattern P_body = Pattern.compile("^([^/]*)(/\\*\\*.*?\\*/)(.*)");
     protected Pattern P_oldComment = Pattern.compile("(.*)(Copyright:)(.*?)(<p>)(.*)(\\*/)");
@@ -96,10 +81,12 @@ public class CopyrightScrubber {
      * @throws Exception
      */
     protected void run(String[] args) throws Exception {
-        File root = new File(args[0]);
-        if (!root.exists() || !root.isDirectory())
-            throw new IOException("root not found or not a directory");
-        process(root);
+        for (int x=0; x< args.length;  x++) {
+            File root = new File(args[x]);
+            if (!root.exists() || !root.isDirectory())
+                throw new IOException("root not found or not a directory");
+            process(root);
+        }
     }
 
     protected void process(File root) throws IOException {

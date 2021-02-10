@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.datasource;
 
 import org.lexevs.logging.Logger;
@@ -98,10 +99,10 @@ public class GraphDbDataSourceInstance {
 		dbInstance.drop();
 	}
 
-	/**
+/**
 	 * @return the arangoDb
 	 */
-	public ArangoDB getArangoDb() {
+public ArangoDB getArangoDb() {
 		return arangoDb;
 	}
 

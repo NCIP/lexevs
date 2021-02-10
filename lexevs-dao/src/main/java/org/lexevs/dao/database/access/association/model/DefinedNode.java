@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.access.association.model;
 
 public class DefinedNode extends Node {
@@ -8,10 +9,10 @@ public class DefinedNode extends Node {
 		super();
 	}
 
-	/**
+/**
 	 * @return the description
 	 */
-	public String getDescription() {
+public String getDescription() {
 		return description;
 	}
 

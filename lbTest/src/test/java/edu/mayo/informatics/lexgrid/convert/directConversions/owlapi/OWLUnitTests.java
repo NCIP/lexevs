@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
 import java.util.Arrays;
@@ -62,4 +63,3 @@ public class OWLUnitTests extends TestCase {
 //	}
 	
 }
-

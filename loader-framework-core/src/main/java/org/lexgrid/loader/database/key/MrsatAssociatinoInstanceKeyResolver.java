@@ -1,3 +1,4 @@
+
 package org.lexgrid.loader.database.key;
 
 public class MrsatAssociatinoInstanceKeyResolver implements AssociationInstanceKeyResolver {

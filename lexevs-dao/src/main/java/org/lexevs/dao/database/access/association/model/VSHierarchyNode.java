@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.access.association.model;
 
 public class VSHierarchyNode implements Comparable<VSHierarchyNode>{

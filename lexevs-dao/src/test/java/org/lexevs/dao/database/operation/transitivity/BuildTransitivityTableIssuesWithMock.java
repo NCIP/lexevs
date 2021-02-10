@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.operation.transitivity;
 
 import static org.junit.Assert.*;

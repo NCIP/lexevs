@@ -1,3 +1,4 @@
+
 package org.LexGrid.custom.relations;
 
 
@@ -12,13 +13,13 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 
 public class RelationsUtil {
-	
-	/**
+
+/**
 	 * Returns the list of AssociationPredicates within the given coding scheme
 	 * @param scheme
 	 * @return List
 	 */
-	public static List<AssociationPredicate> resolveAssociationPredicates(CodingScheme scheme) {
+public static List<AssociationPredicate> resolveAssociationPredicates(CodingScheme scheme) {
 		List<AssociationPredicate> aps = new ArrayList<AssociationPredicate>();
 		for (Relations rs : scheme.getRelations()) {
 			for (AssociationPredicate ap : rs.getAssociationPredicate()) {

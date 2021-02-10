@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.access.association.model;
 
 import com.arangodb.entity.DocumentField;
@@ -33,10 +34,10 @@ public class NodeEdge {
 		this.associationName = label;
 	}
 
-	/**
+/**
 	 * @return the id
 	 */
-	public String getId() {
+public String getId() {
 		return id;
 	}
 

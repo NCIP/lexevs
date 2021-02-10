@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Utility;
 
 import org.junit.runners.BlockJUnit4ClassRunner;
@@ -79,4 +80,3 @@ public class OrderingTestRunner extends BlockJUnit4ClassRunner {
         return tests;
     }
 }
-

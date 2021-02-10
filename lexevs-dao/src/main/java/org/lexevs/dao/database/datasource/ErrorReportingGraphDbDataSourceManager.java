@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.datasource;
 
 import java.sql.Timestamp;
@@ -147,10 +148,10 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		}
 	}
 
-	/**
+/**
 	 * @return the strictArangoRequirement
 	 */
-	public boolean isStrictArangoRequirement() {
+public boolean isStrictArangoRequirement() {
 		return strictArangoRequirement;
 	}
 

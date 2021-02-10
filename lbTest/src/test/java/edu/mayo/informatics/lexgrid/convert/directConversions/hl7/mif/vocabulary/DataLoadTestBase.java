@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -15,8 +16,8 @@ import junit.framework.TestCase;
 
 public class DataLoadTestBase extends TestCase {
 
-	/** The lbs. */
-	protected LexBIGService lbs;
+/** The lbs. */
+protected LexBIGService lbs;
 	protected CodedNodeSet cns;
 	protected CodedNodeGraph cng;
 	

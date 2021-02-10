@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.util.Set;
@@ -13,11 +14,11 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 @LgProxyClass
 public class SourceAssertedScoreDocTransformer implements ResolvedConceptReferenceTransformer {
-    
-    /**
+
+/**
      * 
      */
-    private static final long serialVersionUID = -3758150388888800474L;
+private static final long serialVersionUID = -3758150388888800474L;
 
     public ResolvedConceptReference doTransform(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
             ProxyProtectedScoreDocWrapper item) {

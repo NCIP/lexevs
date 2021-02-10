@@ -1,3 +1,4 @@
+
 package org.lexgrid.loader.umls;
 
 import java.io.BufferedReader;

@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;
@@ -22,10 +23,11 @@ import org.lexevs.locator.LexEvsServiceLocator;
 public class LexEVSArangoGraphingDbLoader extends AbstractExtendable implements GraphingDBLoader {
 
     private String versionOrTag;
-    /**
+
+/**
      * 
      */
-    private static final long serialVersionUID = -8949642539009509699L;
+private static final long serialVersionUID = -8949642539009509699L;
 
     //TODO: Move To Launcher and set up command line processing
     public static void main(String[] args) {

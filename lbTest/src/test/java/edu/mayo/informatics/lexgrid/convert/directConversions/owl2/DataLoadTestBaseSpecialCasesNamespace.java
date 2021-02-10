@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.owl2;
 
 import java.util.Iterator;
@@ -29,8 +30,8 @@ import junit.framework.TestCase;
 
 public class DataLoadTestBaseSpecialCasesNamespace extends TestCase {
 
-	/** The lbs. */
-	protected LexBIGService lbs;
+/** The lbs. */
+protected LexBIGService lbs;
 	protected CodingScheme cs;
 	protected CodedNodeSet cns;
 	protected CodedNodeGraph cng;

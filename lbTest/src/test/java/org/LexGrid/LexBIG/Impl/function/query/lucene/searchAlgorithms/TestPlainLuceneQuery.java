@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package org.LexGrid.LexBIG.Impl.function.query.lucene.searchAlgorithms;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;

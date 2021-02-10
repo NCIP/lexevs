@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.access.valuesets;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 
 public interface ValueSetHierarchyDao extends LexGridSchemaVersionAwareDao {
 
-	/**
+/**
 	 * Highly specialized for an asserted value set hierarchy such as that found in the 
 	 * NCIthesaurus.  Nodes are designed to carry data elements specific to this need.
 	 * 
@@ -24,7 +25,7 @@ public interface ValueSetHierarchyDao extends LexGridSchemaVersionAwareDao {
 	 * @param pagesize - paging result set size
 	 * @return List<VSHierarchyNode> - returns results as hierarchy specific object list
 	 */
-	List<VSHierarchyNode> getAllVSTriplesTrOfVSNode(String codingSchemeId, String code,
+List<VSHierarchyNode> getAllVSTriplesTrOfVSNode(String codingSchemeId, String code,
 			String associationName, String propertyOne, String propertyTwo, String canPublish, int start, int pagesize);
 
 	/**

@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 
 import java.io.UnsupportedEncodingException;
@@ -48,10 +49,10 @@ import com.hp.hpl.jena.sparql.function.library.namespace;
 
 public class NodeGraphResolutionExtensionImpl extends AbstractExtendable implements NodeGraphResolutionExtension {
 
-    /**
+/**
      * url is the REST service URL.  It must be initialized by calling init()
      */
-    String url;
+String url;
     
     /**
      * 

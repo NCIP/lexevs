@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.index.lucene.v2013.search;
 
 import java.io.IOException;
@@ -27,8 +28,8 @@ import org.lexevs.logging.LoggerFactory;
 
 public class ValueSetEntityDao extends AbstractBaseLuceneIndexTemplateDao implements SearchDao {
 
-	/** The supported index version2013. */
-	public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion
+/** The supported index version2013. */
+public static LexEvsIndexFormatVersion supportedIndexVersion2013 = LexEvsIndexFormatVersion
 			.parseStringToVersion("2013");
 
 	private static LgLoggerIF logger = LoggerFactory.getLogger();

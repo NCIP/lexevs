@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.cache;
 
 /* Copyright (c) 2001-2005, The HSQL Development Group
