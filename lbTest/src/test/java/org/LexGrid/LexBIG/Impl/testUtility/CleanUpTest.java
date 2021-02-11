@@ -246,7 +246,7 @@ public class CleanUpTest extends TestCase {
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
         AbsoluteCodingSchemeVersionReference a = ConvenienceMethods.createAbsoluteCodingSchemeVersionReference(
-                "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#", "version 1.2");
+        		"http://www.co-ode.org/ontologies/pizza/pizza.owl#", "2.0");
 
         lbsm.deactivateCodingSchemeVersion(a, null);
         lbsm.removeCodingSchemeVersion(a);

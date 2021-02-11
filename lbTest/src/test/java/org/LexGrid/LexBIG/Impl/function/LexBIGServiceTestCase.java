@@ -76,9 +76,9 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String OVARIANMASS_SCHEME_VERSION = "UNASSIGNED";
     protected final static String MAPPING_SCHEME_URI = "urn:oid:mapping:sample";
     protected final static String MAPPING_SCHEME_VERSION = "1.0";
-    protected final static String PIZZA_SCHEME_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#";
-    protected final static String PIZZA_SCHEME_VERSION = "version 1.2";
-    protected final static String PIZZA_SCHEME_NAME = "pizza.owl";
+    protected final static String PIZZA_SCHEME_URI = "http://www.co-ode.org/ontologies/pizza/pizza.owl#";
+    protected final static String PIZZA_SCHEME_VERSION = "2.0";
+    protected final static String PIZZA_SCHEME_NAME = "pizza";
     public final static String NPO_SCHEME_URI = "http://purl.bioontology.org/ontology/npo";
     public final static String NPO_SCHEME_VERSION = "2012-01-25 (yyyy-mm-dd)";
     public final static String NPO_SCHEME_MULTI_NAMESPACE = "npo";
