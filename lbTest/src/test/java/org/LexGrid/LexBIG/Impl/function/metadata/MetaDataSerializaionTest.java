@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.function.metadata;
 
 import static org.junit.Assert.*;

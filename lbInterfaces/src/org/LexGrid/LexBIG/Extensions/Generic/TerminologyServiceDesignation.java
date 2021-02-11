@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Extensions.Generic;
 
 import java.io.Serializable;
@@ -5,11 +6,11 @@ import java.io.Serializable;
 
 
 public class TerminologyServiceDesignation implements Serializable{
-	
-	/**
+
+/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6694550235166923110L;
+private static final long serialVersionUID = -6694550235166923110L;
 
 	
 	public TerminologyServiceDesignation(){

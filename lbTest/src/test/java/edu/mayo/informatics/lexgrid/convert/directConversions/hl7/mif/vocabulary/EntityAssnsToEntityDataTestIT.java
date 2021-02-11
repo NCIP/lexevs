@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary;
 
 import org.LexGrid.LexBIG.DataModel.Collections.ResolvedConceptReferenceList;
@@ -12,9 +13,8 @@ import org.junit.Test;
 
 public class EntityAssnsToEntityDataTestIT extends DataLoadTestBase {
 
-	
-	/** The graph focus. */
-	private ResolvedConceptReference graphFocus;
+/** The graph focus. */
+private ResolvedConceptReference graphFocus;
 	
 	/**
 	 * Builds the test entity.

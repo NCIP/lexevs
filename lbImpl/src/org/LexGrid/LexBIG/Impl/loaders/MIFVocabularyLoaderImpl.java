@@ -1,6 +1,4 @@
-/**
- * TODO - Need to add Mayo copyright here
- */
+
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.net.URI;

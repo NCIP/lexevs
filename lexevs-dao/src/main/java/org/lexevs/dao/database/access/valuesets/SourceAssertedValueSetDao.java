@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.access.valuesets;
 
 import java.util.List;
@@ -8,8 +9,8 @@ import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
 
 public interface SourceAssertedValueSetDao extends LexGridSchemaVersionAwareDao {
-	
-	/**
+
+/**
 	 * Returns list of entities for top node entity code exact match.  The entity code represents
 	 * the target of a set of value set source entities.  
 	 * 
@@ -19,7 +20,7 @@ public interface SourceAssertedValueSetDao extends LexGridSchemaVersionAwareDao 
 	 * @param codingSchemeGuid - database specific coding scheme identifier must be pulled from db 
 	 * @return List<Entity> 
 	 */
-	List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String matchCode, String assertedRelation, String predicatGuid, String codingSchemeGuid);
+List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String matchCode, String assertedRelation, String predicatGuid, String codingSchemeGuid);
 
 	/**
 	 * A list of value set top nodes represented as Entity objects which are related to this the concept

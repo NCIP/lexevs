@@ -1,3 +1,4 @@
+
 package org.lexevs.tree.model;
 
 import static org.junit.Assert.assertEquals;

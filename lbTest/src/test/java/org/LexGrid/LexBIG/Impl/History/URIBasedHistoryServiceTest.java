@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.History;
 
 import static org.junit.Assert.*;

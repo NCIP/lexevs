@@ -1,1 +1,2 @@
-package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;public interface DatabaseMapRecord extends DatabaseRecord {    public String getSource();    public String getTarget();}
+
+package edu.mayo.informatics.lexgrid.convert.directConversions.medDRA.Data;public interface DatabaseMapRecord extends DatabaseRecord {    public String getSource();    public String getTarget();}

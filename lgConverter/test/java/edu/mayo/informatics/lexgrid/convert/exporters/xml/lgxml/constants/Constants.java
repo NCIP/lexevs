@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants;
 
 public class Constants {

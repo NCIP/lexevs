@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.graphdb;
 
 import static org.junit.Assert.assertEquals;

@@ -1,3 +1,4 @@
+
 package org.lexgrid.valuesets.sourceasserted.impl;
 
 import java.net.URI;
@@ -30,11 +31,10 @@ import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 
 public class SourceAssertedValueSetHierarchyServicesImpl implements SourceAssertedValueSetHierarchyServices {
 
-
-	/**
+/**
 	 * 
 	 */
-	private static final long serialVersionUID = 6898341008352626661L;
+private static final long serialVersionUID = 6898341008352626661L;
 	private static SourceAssertedValueSetHierarchyServices assertedService = null;
 	private transient LexBIGService lbs ;
 	

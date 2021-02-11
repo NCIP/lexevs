@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.tree.test;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ public class TestGetTree extends TestCase{
 
 	
 	@Test
-	public void testGetTreeWithMultipleHieØrarchyAsscDirectionNames() {
+	public void testGetTreeWithMultipleHieÃrarchyAsscDirectionNames() {
 		 lbs = ServiceHolder.instance().getLexBIGService();
 		  pathToRootTreeServiceImpl = (PathToRootTreeServiceImpl) TreeServiceFactory.getInstance().getTreeService(lbs);
 		  iterator = pathToRootTreeServiceImpl.getTree("http://ncicb.nci.nih.gov/xml/owl/EVS/owl2lexevs.owl", 

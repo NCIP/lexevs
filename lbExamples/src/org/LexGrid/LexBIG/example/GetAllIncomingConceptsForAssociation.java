@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.example;
 
 import java.util.Iterator;
@@ -15,10 +16,10 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 
 public class GetAllIncomingConceptsForAssociation {
 
-    /**
+/**
      * @param args
      */
-    public GetAllIncomingConceptsForAssociation() {
+public GetAllIncomingConceptsForAssociation() {
         super();
     }
 

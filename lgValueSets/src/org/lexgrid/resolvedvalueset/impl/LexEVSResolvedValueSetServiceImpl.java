@@ -1,3 +1,4 @@
+
 package org.lexgrid.resolvedvalueset.impl;
 
 import java.net.URI;
@@ -36,10 +37,11 @@ import org.lexgrid.valuesets.sourceasserted.SourceAssertedValueSetService;
 import org.lexgrid.valuesets.sourceasserted.impl.SourceAssertedValueSetServiceImpl;
 
 public class LexEVSResolvedValueSetServiceImpl implements LexEVSResolvedValueSetService {
-	/**
+
+/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5438158832122711604L;
+private static final long serialVersionUID = -5438158832122711604L;
 	private transient LexBIGService lbs;
 	private AssertedValueSetParameters params;
 	

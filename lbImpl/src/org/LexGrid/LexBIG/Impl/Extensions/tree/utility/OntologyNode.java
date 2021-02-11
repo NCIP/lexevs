@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.tree.utility;
 
 import java.util.List;
@@ -14,10 +15,10 @@ public class OntologyNode {
 
     private List<OntologyNode> children_nodes;
 
-    /**
+/**
      * @return the ontology_node_child_count
      */
-    public int getOntology_node_child_count() {
+public int getOntology_node_child_count() {
         return ontology_node_child_count;
     }
 
