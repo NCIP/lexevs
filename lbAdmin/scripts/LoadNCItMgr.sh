@@ -75,5 +75,5 @@
 #  -lncih_in "file:///path/to/cumulative_history_20.09d.txt"
 #  -lncih_vf "file:///path/to/NCISystemReleaseHistory.txt"
 #
-java -Xmx12000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.valuesets.admin.LoadNCITMgr $@
+java -Xmx15000m -Djava.awt.headless=true -cp "../runtime/lbPatch.jar:../runtime-components/extLib/*" org.lexgrid.valuesets.admin.LoadNCITMgr $@
 
