@@ -58,7 +58,7 @@ private static final long serialVersionUID = -5438158832122711604L;
 	
 	@Override
 	public List<CodingScheme> listAllResolvedValueSets() throws LBException {
-		SourceAssertedValueSetService vsSvc = getSourceAssertedValueSetService(this.params == null? params = new AssertedValueSetParameters.Builder().build(): null);
+		SourceAssertedValueSetService vsSvc = getSourceAssertedValueSetService(this.params == null? params = new AssertedValueSetParameters.Builder().build(): params);
 		List<CodingScheme> minSchemeList = getLexBIGService().getMinimalResolvedVSCodingSchemes();
 		List<CodingScheme> assertVSList = new ArrayList<CodingScheme>();
 		if (vsSvc != null) {
