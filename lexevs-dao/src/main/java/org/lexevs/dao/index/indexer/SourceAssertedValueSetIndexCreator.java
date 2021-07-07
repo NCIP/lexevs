@@ -76,7 +76,6 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		System.out.println("Processing entities");
 		List<String> topNodes = valueSetService.getAllValidValueSetTopNodeCodes();
 		List<CodingScheme> valueSets = null;
-		//List<Document> documents = new ArrayList<Document>();
 		for(String s: topNodes) {
 		try {
 			valueSets = valueSetService.getSourceAssertedValueSetforTopNodeEntityCode(s);
