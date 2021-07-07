@@ -137,7 +137,9 @@ public class BuildAssertedValueSetIndex {
                 ProcessRunner loader = new AssertedValueSetIndexLoaderImpl();
                 Util.displayAndLogMessage("Re-creation of index extension '" + 
                         indexName + "' in progress...");
-                Util.displayStatus(loader.runProcess(ref, null));
+                long start = System.currentTimeMillis();
+                Util.displayVSIndexerStatus(loader.runProcess(ref, null));
+                System.out.println("indexed in " + ((System.currentTimeMillis() - start)/1000) + "  seconds");
             } catch (UnsupportedOperationException e) {
                 Util.displayAndLogMessage("Build index extension for '" + indexName + "' is not supported.");
             }

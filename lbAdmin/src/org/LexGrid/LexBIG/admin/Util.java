@@ -14,6 +14,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Export.Exporter;
@@ -119,6 +120,33 @@ public class Util {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
+            }
+            status = reporter.getStatus();
+            String s = status.getMessage();
+            if (s != null && !s.equals(msg)) {
+                Util.displayAndLogMessage(s);
+                msg = s;
+            }
+        } while (status.getEndTime() == null);
+    }
+    
+    
+    /**
+     * Displays any available status messages, polling periodically and
+     * returning when the export operation is complete.
+     * 
+     * @param loader
+     */
+    public static void displayVSIndexerStatus(StatusReporter reporter) {
+        ProcessStatus status = null;
+        String msg = "";
+        do {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                status.setEndTime(new Date(System.currentTimeMillis()));
+                status.setState(ProcessState.FAILED);
+                throw new RuntimeException("Error while checking for load status", e);
             }
             status = reporter.getStatus();
             String s = status.getMessage();

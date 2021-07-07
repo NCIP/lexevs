@@ -71,6 +71,7 @@ public abstract class AbstractProcessRunner implements ProcessRunner {
             } catch (Exception e) {
                 md.fatal("Failed while running the process", e);
                 status.setState(ProcessState.FAILED);
+                System.out.println(e.getCause());
             } 
 
             status.setState(ProcessState.COMPLETED);

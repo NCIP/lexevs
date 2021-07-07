@@ -1,8 +1,11 @@
 
 package org.LexGrid.LexBIG.Impl.loaders;
 
+import java.util.Date;
+
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.lexevs.dao.index.service.search.SourceAssertedValueSetSearchIndexService;
@@ -23,7 +26,17 @@ public class AssertedValueSetIndexLoaderImpl extends AbstractProcessRunner {
                 entityIndexService.dropIndex(codingSchemeVersion);
             }
             
+            try {
             entityIndexService.createIndex(codingSchemeVersion);
+            }catch(OutOfMemoryError e) {
+                String message = "Out of Memory for this monolithic Index. Increase Memory Size.";
+                status.setMessage(message + " " + e.getMessage());
+                status.setState(ProcessState.FAILED);
+                status.setEndTime(new Date(System.currentTimeMillis()));
+                status.setErrorsLogged(true);
+                Thread.currentThread().interrupt();
+                throw new RuntimeException(message, e);
+            }
             
             md.info("Indexed Asserted Value Set Entities.");
 
