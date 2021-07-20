@@ -125,6 +125,9 @@ public class LoadMetaBatchWithMetadata {
             parser.parseArgument(umlsArgs);    
             launcher.loadAndWait();
          
+            if(launcher.getCodingSchemeRefs() == null  || launcher.getCodingSchemeRefs().length == 0) {
+                return;
+            }
             Util.displayAndLogMessage("Metabatch load complete.");
                                     
             LexBIGService lbs = LexBIGServiceImpl.defaultInstance();

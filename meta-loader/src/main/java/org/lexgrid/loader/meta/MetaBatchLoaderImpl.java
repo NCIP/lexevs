@@ -3,9 +3,11 @@ package org.lexgrid.loader.meta;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Date;
 import java.util.Properties;
 
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExtensionDescription;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.LexGrid.LexBIG.Extensions.Load.MetaBatchLoader;
 import org.LexGrid.LexBIG.Extensions.Load.UmlsBatchLoader;
@@ -109,6 +111,10 @@ public class MetaBatchLoaderImpl extends AbstractSpringBatchLoader implements Me
 				launchJob(connectionProps, META_LOADER_CONFIG, "metaJob");
 			} catch (Exception e) {
 				throw new RuntimeException(e);
+			}
+			if(this.getStatus().getErrorsLogged()) {
+				this.getStatus().setEndTime(new Date(System.currentTimeMillis()));
+				return null;
 			}
 			return this.getLoadedCodingSchemes();
 		}
