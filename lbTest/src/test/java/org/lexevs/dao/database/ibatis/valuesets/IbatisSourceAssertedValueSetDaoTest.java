@@ -1,11 +1,15 @@
 
 package org.lexevs.dao.database.ibatis.valuesets;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.LexGrid.LexBIG.Exceptions.LBException;
+import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
+import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Before;
@@ -53,6 +57,8 @@ public class IbatisSourceAssertedValueSetDaoTest {
         
         assertNotNull(list);
         assertTrue(list.size() > 0);
+        assertTrue(list.stream().anyMatch(x -> x.getEntityCode().equals("C99989")));
+        assertTrue(list.stream().anyMatch(x -> x.getEntityCode().equals("C99988")));
 	}
 	
 	@Test
@@ -67,6 +73,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
         
         assertNotNull(list);
         assertTrue(list.size() > 0);
+        assertEquals("C99999",list.get(0).getEntityCode());
 	}
 	
 	@Test
@@ -81,6 +88,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
         
         assertNotNull(list);
         assertTrue(list.size() > 0);
+        System.out.println(list.get(0));
 	}
 	
 	@Test
@@ -95,6 +103,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
         
         assertNotNull(list);
         assertTrue(list.size() > 0);
+        list.stream().forEach(x -> System.out.println(x));
 	}
 	
 	@Test
@@ -103,7 +112,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 
 			public List<Entity> execute(DaoManager daoManager) {
                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
-                return savsDao.getPagedValueSetEntities(matchCode,csUID, predicateUID, 0, 10);
+                return savsDao.getPagedValueSetEntities("C48325",csUID, predicateUID, 0, 10);
             }
         });
         
