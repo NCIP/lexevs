@@ -3,6 +3,7 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.List;
@@ -112,12 +113,119 @@ public class IbatisSourceAssertedValueSetDaoTest {
 
 			public List<Entity> execute(DaoManager daoManager) {
                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
-                return savsDao.getPagedValueSetEntities("C48325",csUID, predicateUID, 0, 10);
+                return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 0, 1);
             }
         });
         
         assertNotNull(list);
-        assertTrue(list.size() > 0);
+        assertTrue(list.size() == 1);
+        
+        List<Entity> list2 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 1, 1);
+             }
+         });
+        
+        assertNotNull(list2);
+        assertTrue(list2.size() == 1);
+        
+        List<Entity> list3 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 2, 1);
+             }
+         });
+        
+        assertNotNull(list3);
+        assertTrue(list3.size() == 1);
+        
+        assertTrue(list.get(0) != list2.get(0));
+        assertTrue(list.get(0) != list3.get(0));
+        assertTrue(list2.get(0) != list3.get(0));
+        
+        List<Entity> list4 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 2, 1);
+             }
+         });
+        
+        assertNotNull(list4);
+        assertTrue(list4.size() == 1);
+        
+        List<Entity> list5 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 0, 3);
+             }
+         });
+        
+        assertNotNull(list5);
+        assertTrue(list5.size() == 3);
+        
+        
+        List<Entity> list6 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 1, 3);
+             }
+         });
+        
+        assertNotNull(list6);
+        assertTrue(list6.size() == 2);
+        
+        
+        List<Entity> list7 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 2, 3);
+             }
+         });
+        
+        assertNotNull(list7);
+        assertTrue(list7.size() == 1);
+        
+        List<Entity> list8 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 3, 3);
+             }
+         });
+        
+        assertNotNull(list8);
+        assertTrue(list8.size() == 0);
+        
+        List<Entity> list9 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 3, 2);
+             }
+         });
+        
+        assertNotNull(list9);
+        assertTrue(list9.size() == 0);
+        
+        
+        List<Entity> list10 = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
+
+ 			public List<Entity> execute(DaoManager daoManager) {
+                 savsDao = (IbatisSourceAssertedValueSetDao)daoManager.getCurrentAssertedValueSetDao();
+                 return savsDao.getPagedValueSetEntities("C54453",csUID, predicateUID, 0, 0);
+             }
+         });
+        
+        assertNotNull(list10);
+        assertTrue(list10.size() == 0);
+        
 	}
 	
 	@Test
