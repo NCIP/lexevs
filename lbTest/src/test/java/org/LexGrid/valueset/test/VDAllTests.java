@@ -11,6 +11,7 @@ import org.LexGrid.valueset.impl.LexEVSPickListServicesImplTest;
 import org.LexGrid.valueset.impl.LexEVSResolvedValueSetInvalidParamsTest;
 import org.LexGrid.valueset.impl.LexEVSResolvedValueSetTest;
 import org.LexGrid.valueset.impl.LexEVSValueSetDefServicesImplTest;
+import org.lexevs.dao.database.ibatis.valuesets.IbatisSourceAssertedValueSetDaoTest;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.EntityToVSDTransFormerTest;
 import edu.mayo.informatics.lexgrid.convert.directConversions.assertedValueSets.ExternalResolvedValueSetIndexingTest;
@@ -27,6 +28,7 @@ public class VDAllTests {
 				"LG Value Set and Pick List Definition Test");
 		//$JUnit-BEGIN$
 		suite.addTest(AllTestsNormalConfig.orderedSuite(LoadTestDataTest.class));
+		suite.addTest(new JUnit4TestAdapter(IbatisSourceAssertedValueSetDaoTest.class));
 		suite.addTestSuite(LexEVSValueSetDefServicesImplTest.class);
 		suite.addTestSuite(EntityToVSDTransFormerTest.class);
 		suite.addTestSuite(LexEVSPickListServicesImplTest.class);
