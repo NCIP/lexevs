@@ -11,10 +11,12 @@ import java.util.List;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Impl.LexBIGServiceImpl;
 import org.LexGrid.LexBIG.Utility.Constructors;
+import org.LexGrid.LexBIG.Utility.RemoveFromDistributedTests;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
@@ -32,6 +34,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 	private AssertedValueSetServiceImpl svc;
 
 	@Before
+	@Category(RemoveFromDistributedTests.class)
 	public void setUp() throws Exception {
 		daoCallbackService = LexEvsServiceLocator.getInstance().getDatabaseServiceManager().getDaoCallbackService();
 		AssertedValueSetParameters params = new AssertedValueSetParameters.Builder("0.1.5").
@@ -47,6 +50,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 	}
 
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testGetSourceAssertedValueSetEntitiesForEntityCode() {
         List<Entity> list = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
 
@@ -63,6 +67,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testGetSourceAssertedValueSetTopNodeForEntityCode() {
         List<Entity> list = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
 
@@ -78,6 +83,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testGetValueSetEntityUidForTopNodeEntityCode() {
         List<String> list = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>() {
 
@@ -93,6 +99,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testGetValueSetEntityUids() {
         List<String> list = daoCallbackService.executeInDaoLayer(new DaoCallback<List<String>>() {
 
@@ -108,6 +115,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testGetValueSetEntities() {
         List<Entity> list = daoCallbackService.executeInDaoLayer(new DaoCallback<List<Entity>>() {
 
@@ -229,6 +237,7 @@ public class IbatisSourceAssertedValueSetDaoTest {
 	}
 	
 	@Test
+	 @Category(RemoveFromDistributedTests.class)
 	public void testGetValueSetEntityCount() {
         Integer count = daoCallbackService.executeInDaoLayer(new DaoCallback<Integer>() {
 
