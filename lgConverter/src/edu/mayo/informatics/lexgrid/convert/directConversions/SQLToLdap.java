@@ -42,7 +42,8 @@ import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.utility.Constants;
 
@@ -62,7 +63,7 @@ public class SQLToLdap {
 
     private SQLTableConstants stc_;
 
-    private static Logger log = Logger.getLogger("convert.SqlToLdap");
+    private static Logger log = LogManager.getLogger("convert.SqlToLdap");
     private LgMessageDirectorIF messages_;
 
     private boolean failOnError_ = false;

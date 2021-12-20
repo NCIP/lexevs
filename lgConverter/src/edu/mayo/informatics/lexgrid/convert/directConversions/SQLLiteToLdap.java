@@ -47,7 +47,8 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Convert-o-matic to take content from a SQL Lite database, convert it, and put
@@ -67,7 +68,7 @@ public class SQLLiteToLdap {
     private ArrayList codingSchemesToDelete_;
     private String defaultLanguage_;
 
-    private static Logger log = Logger.getLogger("convert.SqlLiteToLdap");
+    private static Logger log = LogManager.getLogger("convert.SqlLiteToLdap");
     private LgMessageDirectorIF messages_;
 
     private SearchControls searchControls_;

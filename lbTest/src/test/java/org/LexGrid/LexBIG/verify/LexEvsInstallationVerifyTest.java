@@ -36,8 +36,9 @@ import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ConvenienceMethods;
 import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lexevs.logging.LoggerFactory;
 import org.springframework.util.Assert;
 
@@ -58,7 +59,7 @@ public class LexEvsInstallationVerifyTest {
 		
 		//don't log all the extra info -- start this early.
 		LoggerFactory.getLogger();
-		Logger.getRootLogger().setLevel(Level.ERROR);
+		LogManager.getRootLogger().atLevel(Level.ERROR);
 		
 		test.printTaskName("Starting LexEVS");
 		

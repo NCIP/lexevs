@@ -31,7 +31,8 @@ import org.LexGrid.util.sql.lgTables.SQLLiteTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLLiteTableUtilities;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.utility.Constants;
 
@@ -49,7 +50,7 @@ public class SQLToSQLLite {
     private Connection sqlConnection_;
     private SQLTableConstants stc_;
 
-    private static Logger log = Logger.getLogger("convert.SqlLiteToSql");
+    private static Logger log = LogManager.getLogger("convert.SqlLiteToSql");
 
     private GenericSQLModifier sqlModifier_;
 

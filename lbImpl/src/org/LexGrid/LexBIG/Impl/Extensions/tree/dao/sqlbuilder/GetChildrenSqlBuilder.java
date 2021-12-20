@@ -27,7 +27,8 @@ import org.LexGrid.LexBIG.Impl.Extensions.tree.dao.LexEvsTreeDao.Direction;
 import org.LexGrid.LexBIG.Impl.namespace.NamespaceHandlerFactory;
 import org.LexGrid.LexBIG.Utility.Constructors;
 import org.LexGrid.LexBIG.Utility.ServiceUtility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.healthmarketscience.sqlbuilder.BinaryCondition;
 import com.healthmarketscience.sqlbuilder.ComboCondition;
@@ -49,7 +50,7 @@ import com.healthmarketscience.sqlbuilder.dbspec.basic.DbTable;
 public class GetChildrenSqlBuilder extends AbstractSqlBuilder {
 
 	/** The logger. */
-	private static Logger logger = Logger.getLogger(GetChildrenSqlBuilder.class);
+	private static Logger logger = LogManager.getLogger(GetChildrenSqlBuilder.class);
 	
 	/** The exclude anonymous. */
 	private boolean excludeAnonymous = true;

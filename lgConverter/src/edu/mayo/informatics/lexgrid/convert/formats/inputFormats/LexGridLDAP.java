@@ -30,7 +30,8 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.exceptions.UnexpectedError;
@@ -56,7 +57,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.StringComparator;
  *          18:08:36 +0000 (Fri, 15 Feb 2008) $
  */
 public class LexGridLDAP extends LDAPBase implements InputFormatInterface {
-    private static Logger log = Logger.getLogger("convert.gui");
+    private static Logger log = LogManager.getLogger("convert.gui");
 
     public LexGridLDAP(String username, String password, String host, int port, String service) {
         if (host.toLowerCase().startsWith("ldap://")) {

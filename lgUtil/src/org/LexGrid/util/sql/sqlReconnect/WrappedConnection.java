@@ -38,7 +38,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class in combination with the WrappedPreparedStatement give you an
@@ -61,7 +62,7 @@ public class WrappedConnection implements Connection {
 
     private int maxFailCount_ = 3;
 
-    public final static org.apache.log4j.Logger logger = Logger
+    public final static Logger logger = LogManager
             .getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedConnection");
 
     public WrappedConnection(String userName, String password, String driver, String server)

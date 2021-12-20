@@ -28,7 +28,8 @@ import org.LexGrid.LexBIG.LexBIGService.CodedNodeSet.SearchDesignationOption;
 import org.LexGrid.LexBIG.gui.DialogHandler;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.Utility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionEvent;
@@ -49,7 +50,7 @@ import org.eclipse.swt.widgets.Text;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class RestrictionGUI {
-	private static Logger log = Logger.getLogger("LB_GUI_LOGGER");
+	private static Logger log = LogManager.getLogger("LB_GUI_LOGGER");
 	LB_GUI lb_gui_;
 	DialogHandler dialog_;
 	private Restriction restriction_;

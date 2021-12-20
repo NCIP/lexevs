@@ -60,7 +60,8 @@ import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.ibm.icu.util.StringTokenizer;
 
@@ -88,7 +89,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.URNVersionPair;
  *          05:42:24 -0600 (Mon, 30 Jan 2006) $
  */
 public class SemNetToLg {
-    private static Logger log = Logger.getLogger("convert.SemNetRead");
+    private static Logger log = LogManager.getLogger("convert.SemNetRead");
 
     URI semNetFolderLocation_;
 

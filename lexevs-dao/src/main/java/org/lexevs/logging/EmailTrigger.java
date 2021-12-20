@@ -23,6 +23,8 @@ import java.util.Date;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Need to implement this class to make the SMTP appender work the way I want it

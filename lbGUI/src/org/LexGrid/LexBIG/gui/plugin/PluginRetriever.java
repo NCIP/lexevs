@@ -31,7 +31,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -49,7 +50,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author <A HREF="mailto:leisch.jason@mayo.edu">Jason Leisch</A>
  */
 public class PluginRetriever {
-	private static Logger log = Logger.getLogger("LexBIG.GUI");
+	private static Logger log = LogManager.getLogger("LexBIG.GUI");
 
 	private final String baseFolder;
 

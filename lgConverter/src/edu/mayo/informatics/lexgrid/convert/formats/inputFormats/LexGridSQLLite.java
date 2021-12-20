@@ -26,8 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.LexGrid.util.sql.sqlReconnect.WrappedConnection;
-import org.apache.log4j.Logger;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.exceptions.UnexpectedError;
 import edu.mayo.informatics.lexgrid.convert.formats.InputFormatInterface;
@@ -45,7 +45,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.StringComparator;
  *          18:08:36 +0000 (Fri, 15 Feb 2008) $
  */
 public class LexGridSQLLite extends SQLBase implements InputFormatInterface {
-    protected static Logger log = Logger.getLogger("convert.gui");
+    protected static Logger log = LogManager.getLogger("convert.gui");
 
     public static final String description = "LexGrid SQLLite Database";
 

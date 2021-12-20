@@ -28,7 +28,8 @@ import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.gui.LB_VSD_GUI;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
@@ -40,7 +41,7 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class CodingSchemeReferenceContentProvider implements IStructuredContentProvider {
     private LB_VSD_GUI lbVDGui_;
-    private static Logger log = Logger.getLogger("LB_VSGUI_LOGGER");
+    private static Logger log = LogManager.getLogger("LB_VSGUI_LOGGER");
     private org.LexGrid.valueSets.DefinitionEntry[] currentDEntryRenderings_ = null;
     private ValueSetDefinition vsd_;
 

@@ -19,7 +19,8 @@
 package org.lexevs.logging.messaging.impl;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An implementation of the LgMessageDirectorIF that routes the messages to the
@@ -44,7 +45,7 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
      */
     public CommandLineMessageDirector(String logName, boolean showDebug) {
         if (logName != null && logName.length() > 0) {
-            log = Logger.getLogger(logName);
+            log = LogManager.getLogger(logName);
         } else {
             log = null;
         }
@@ -59,7 +60,7 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
      */
     public CommandLineMessageDirector(String logName) {
         if (logName != null && logName.length() > 0) {
-            log = Logger.getLogger(logName);
+            log = LogManager.getLogger(logName);
         } else {
             log = null;
         }

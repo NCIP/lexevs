@@ -33,7 +33,8 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
@@ -49,7 +50,7 @@ import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
  */
 public class BasePreferenceLoader {
 
-    protected static Logger log = Logger.getLogger("convert.PreferenceLoader");
+    protected static Logger log = LogManager.getLogger("convert.PreferenceLoader");
 
     protected URI prefs;
 

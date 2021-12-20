@@ -20,7 +20,8 @@ package org.lexevs.dao.indexer.lucene;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.analysis.util.CharArraySet;
@@ -33,7 +34,7 @@ import org.apache.lucene.index.IndexReader;
  * @author <A HREF="mailto:armbrust.daniel@mayo.edu">Dan Armbrust </A>
  */
 public class Index {
-    private final Logger logger = Logger.getLogger("Indexer.Index");
+    private final Logger logger = LogManager.getLogger("Indexer.Index");
     public final static String UNIQUE_DOCUMENT_IDENTIFIER_FIELD = "UNIQUE_DOCUMENT_IDENTIFIER_FIELD";
 
     private final File location_ ;

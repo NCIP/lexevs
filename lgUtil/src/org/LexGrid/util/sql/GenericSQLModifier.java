@@ -21,7 +21,8 @@ package org.LexGrid.util.sql;
 import java.sql.Connection;
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * A class to read my quasi-sql and convert it to database specific sql.
@@ -37,7 +38,7 @@ public class GenericSQLModifier {
     private String[] customDatatypes_;
     private String properQuote_;
 
-    private static Logger log = Logger.getLogger("convert.sqlMod");
+    private static Logger log = LogManager.getLogger("convert.sqlMod");
 
     // CTS needs to override the LIKE replacement with a different string
     // to get case insentive queries.
