@@ -298,16 +298,16 @@ public class PropertiesUtility {
      * @return
      * @throws Exception
      */
-    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName,
-            String classToSearchFor) throws Exception {
-        String temp = locatePropFile(fileName, classToSearchFor);
-        if (temp == null) {
-            throw new IOException("Couldn't find file '" + fileName + "'");
-        }
-        Properties props = loadPropertiesFromFileOrURL(temp);
-        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
-        return props;
-    }
+//    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName,
+//            String classToSearchFor) throws Exception {
+//        String temp = locatePropFile(fileName, classToSearchFor);
+//        if (temp == null) {
+//            throw new IOException("Couldn't find file '" + fileName + "'");
+//        }
+//        Properties props = loadPropertiesFromFileOrURL(temp);
+//        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
+//        return props;
+//    }
 
     /**
      * Convenience method that combines locatePropFile(fileName,
@@ -318,16 +318,16 @@ public class PropertiesUtility {
      * @return
      * @throws Exception
      */
-    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName)
-            throws Exception {
-        String temp = locatePropFile(fileName, PropertiesUtility.class.getName());
-        if (temp == null) {
-            throw new IOException("Couldn't find file '" + fileName + "'");
-        }
-        Properties props = loadPropertiesFromFileOrURL(temp);
-        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
-        return props;
-    }
+//    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName)
+//            throws Exception {
+//        String temp = locatePropFile(fileName, PropertiesUtility.class.getName());
+//        if (temp == null) {
+//            throw new IOException("Couldn't find file '" + fileName + "'");
+//        }
+//        Properties props = loadPropertiesFromFileOrURL(temp);
+//        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
+//        return props;
+//    }
 
     // public static void main(String[] args) throws IOException,
     // ClassNotFoundException

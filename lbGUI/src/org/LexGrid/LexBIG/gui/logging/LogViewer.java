@@ -18,13 +18,16 @@
  */
 package org.LexGrid.LexBIG.gui.logging;
 
-import org.apache.log4j.Appender;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.WriterAppender;
-import org.apache.log4j.varia.LevelRangeFilter;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+//import org.apache.log4j.Appender;
+//import org.apache.log4j.Level;
+//import org.apache.log4j.LogManager;
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.PatternLayout;
+//import org.apache.log4j.WriterAppender;
+//import org.apache.log4j.varia.LevelRangeFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.SelectionEvent;
@@ -46,7 +49,7 @@ import org.lexevs.system.constants.SystemVariables;
  *          11:42:24 +0000 (Mon, 30 Jan 2006) $
  */
 public class LogViewer {
-	private static Logger log_ = Logger.getLogger("LB_GUI_LOGGER");
+	private static Logger log_ = LogManager.getLogger("LB_GUI_LOGGER");
 	CustomStringWriter writer_;
 	LogViewerOptions logViewerOptions_;
 	protected Log[] logs_ = new Log[] {
@@ -77,21 +80,21 @@ public class LogViewer {
 
 		buildComponents();
 		writer_ = new CustomStringWriter(styledTextLog_);
-		LogManager.getRootLogger().setLevel(Level.DEBUG);
+		//LogManager.getRootLogger().setLevel(Level.DEBUG);
 		configureLogs();
 	}
 
-	@SuppressWarnings("unchecked")
-	public void removeOpenLoggers() {
-		// Enumeration<Logger> logEnum = LogManager.getCurrentLoggers();
-		// while (logEnum.hasMoreElements())
-		// {
-		// ((Logger) logEnum.nextElement()).removeAllAppenders();
-		// }
-		if (!SystemVariables.isDebugEnabled()) {
-			LogManager.getRootLogger().removeAllAppenders();
-		}
-	}
+//	@SuppressWarnings("unchecked")
+//	public void removeOpenLoggers() {
+//		// Enumeration<Logger> logEnum = LogManager.getCurrentLoggers();
+//		// while (logEnum.hasMoreElements())
+//		// {
+//		// ((Logger) logEnum.nextElement()).removeAllAppenders();
+//		// }
+//		if (!SystemVariables.isDebugEnabled()) {
+//			LogManager.getRootLogger().removeAllAppenders();
+//		}
+//	}
 
 	public void configureLogs() {
 		// removeOpenLoggers();
@@ -130,14 +133,14 @@ public class LogViewer {
 
 	private void setupLogger(Logger logger, String level) {
 
-		logger.setAdditivity(true);
-		logger.setLevel(Level.toLevel(level));
-		Appender appender = new WriterAppender(
-				new PatternLayout("%p %c - %m%n"), writer_);
-		LevelRangeFilter tempFilter = new LevelRangeFilter();
-		tempFilter.setLevelMin(Level.toLevel(level));
-		appender.addFilter(tempFilter);
-		logger.addAppender(appender);
+//		logger.setAdditivity(true);
+//		logger.setLevel(Level.toLevel(level));
+//		Appender appender = new WriterAppender(
+//				new PatternLayout("%p %c - %m%n"), writer_);
+//		LevelRangeFilter tempFilter = new LevelRangeFilter();
+//		tempFilter.setLevelMin(Level.toLevel(level));
+//		appender.addFilter(tempFilter);
+//		logger.addAppender(appender);
 	}
 
 	StyledText styledTextLog_;

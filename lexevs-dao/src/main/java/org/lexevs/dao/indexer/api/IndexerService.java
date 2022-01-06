@@ -24,7 +24,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.apache.lucene.index.IndexNotFoundException;
-import org.apache.logging.log4j.*;
+//import org.apache.logging.log4j.*;
 import org.lexevs.dao.indexer.lucene.Index;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;

@@ -186,7 +186,7 @@ public class PluginRetriever {
 	 * @author <A HREF="mailto:leisch.jason@mayo.edu">Jason Leisch</A>
 	 */
 	static class PluginHandler extends DefaultHandler {
-		private static Logger log = Logger.getLogger("LexBIG.GUI");
+		private static Logger log = LogManager.getLogger("LexBIG.GUI");
 
 		private TabbedContent tabbedContent;
 		private final String absolutePath;

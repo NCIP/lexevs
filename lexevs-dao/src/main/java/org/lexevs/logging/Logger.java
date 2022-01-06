@@ -68,6 +68,9 @@ public class Logger implements LgLoggerIF, Serializable {
     
     /** The is debug enabled. */
     private boolean isDebugEnabled = false;
+    
+    final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
+    final Configuration config = ctx.getConfiguration();
 
     /**
      * Instantiates a new logger.
@@ -77,15 +80,14 @@ public class Logger implements LgLoggerIF, Serializable {
         //Appender simpleAppender = ConsoleAppender.newBuilder().setLayout(PatternLayout.newBuilder().withPattern("%c %p - %d - %m%n").build()).build();
         // only warnings and worse to the screen
 
-        final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
+
         final Layout<String> layout = PatternLayout.newBuilder().withPattern("%c %p - %d - %m%n").build();
-        Appender simpleAppender = ConsoleAppender.newBuilder().setLayout(layout).build();
+        Appender simpleAppender = ConsoleAppender.newBuilder().setLayout(layout).setName("Console").build();
         simpleAppender.start();
         config.addAppender(simpleAppender);
         AppenderRef ref = AppenderRef.createAppenderRef("Console", null, null);
         AppenderRef[] refs = new AppenderRef[] {ref};
-        LoggerConfig fatalConfig = LoggerConfig.createLogger(false, Level.FATAL, "LB_FATAL_LOGGER",
+        fatalConfig = LoggerConfig.createLogger(false, Level.FATAL, "LB_FATAL_LOGGER",
                 "true", refs, null, config, null );
         fatalConfig.addAppender(simpleAppender, null, null);
         config.addLogger("LB_FATAL_LOGGER", fatalConfig);
@@ -93,7 +95,7 @@ public class Logger implements LgLoggerIF, Serializable {
         fatal_ = ctx.getLogger("LB_FATAL_LOGGER");
 
 
-        LoggerConfig errorConfig = LoggerConfig.createLogger(false, Level.ERROR, "LB_ERROR_LOGGER",
+        errorConfig = LoggerConfig.createLogger(false, Level.ERROR, "LB_ERROR_LOGGER",
                 "true", refs, null, config, null );
         errorConfig.addAppender(simpleAppender, null, null);
         config.addLogger("LB_ERROR_LOGGER", errorConfig);
@@ -104,7 +106,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //        error_.setAdditivity(false);
 //        error_.addAppender(simpleAppender);
 
-        LoggerConfig warnConfig = LoggerConfig.createLogger(false, Level.WARN, "LB_ERROR_LOGGER",
+        warnConfig = LoggerConfig.createLogger(false, Level.WARN, "LB_ERROR_LOGGER",
                 "true", refs, null, config, null );
         warnConfig.addAppender(simpleAppender, null, null);
         config.addLogger("LB_ERROR_LOGGER", warnConfig);
@@ -115,7 +117,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //        warn_.setAdditivity(false);
 //        warn_.addAppender(simpleAppender);
 
-        LoggerConfig infoConfig = LoggerConfig.createLogger(false, Level.INFO, "LB_INFO_LOGGER",
+         infoConfig = LoggerConfig.createLogger(false, Level.INFO, "LB_INFO_LOGGER",
                 "true", refs, null, config, null );
         config.addLogger("LB_INFO_LOGGER", infoConfig);
         ctx.updateLoggers();        
@@ -127,17 +129,17 @@ public class Logger implements LgLoggerIF, Serializable {
 //        info_.atLevel(Level.INFO);
 
         
-        LoggerConfig debugConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_DEBUG_LOGGER",
+         debugConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_DEBUG_LOGGER",
                 "true", refs, null, config, null );
         config.addLogger("LB_DEBUG_LOGGER", debugConfig);
         ctx.updateLoggers();        
-        info_ = ctx.getLogger("LB_DEBUG_LOGGER");
+        debug_ = ctx.getLogger("LB_DEBUG_LOGGER");
         
 //        debug_ = LogManager.getLogger("LB_DEBUG_LOGGER");
 //        debug_.setAdditivity(false);
 //        debug_.atLevel(Level.DEBUG);
 
-        LoggerConfig loadLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_LOAD_LOGGER",
+        loadLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_LOAD_LOGGER",
                 "true", refs, null, config, null );
         config.addLogger("LB_LOAD_LOGGER", loadLogConfig);
         ctx.updateLoggers();        
@@ -148,7 +150,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //        loadLog_.atLevel(Level.DEBUG);
         
         
-        LoggerConfig exportLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_EXPORT_LOGGER",
+        exportLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_EXPORT_LOGGER",
                 "true", refs, null, config, null );
         config.addLogger("LB_EXPORT_LOGGER", exportLogConfig);
         ctx.updateLoggers();        
@@ -159,7 +161,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //        exportLog_.atLevel(Level.DEBUG);
         
         
-        LoggerConfig apiLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_API_LOGGER",
+        apiLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_API_LOGGER",
                 "true", refs, null, config, null );
         config.addLogger("LB_API_LOGGER", apiLogConfig);
         ctx.updateLoggers();        
@@ -169,7 +171,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //        apiLog_.setAdditivity(false);
 //        apiLog_.atLevel(Level.DEBUG);
         
-        LoggerConfig sqlLogConfig = LoggerConfig.createLogger(false, Level.ERROR, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
+        sqlLogConfig = LoggerConfig.createLogger(false, Level.ERROR, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
                 "true", refs, null, config, null );
         sqlLogConfig.addAppender(simpleAppender, null, null);
         config.addLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement", sqlLogConfig);
@@ -182,7 +184,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //        sqlLog_.addAppender(simpleAppender);
         
 
-        LoggerConfig guiLogConfig = LoggerConfig.createLogger(false, Level.WARN, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
+        guiLogConfig = LoggerConfig.createLogger(false, Level.WARN, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
                 "true", refs, null, config, null );
         guiLogConfig.addAppender(simpleAppender, null, null);
         config.addLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement", guiLogConfig);
@@ -194,7 +196,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //        guiLog_.setAdditivity(false);
 //        guiLog_.addAppender(simpleAppender);
         
-        LoggerConfig vsGuiLogConfig = LoggerConfig.createLogger(false, Level.WARN, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
+        vsGuiLogConfig = LoggerConfig.createLogger(false, Level.WARN, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
                 "true", refs, null, config, null );
         vsGuiLogConfig.addAppender(simpleAppender, null, null);
         config.addLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement", vsGuiLogConfig);
@@ -209,7 +211,7 @@ public class Logger implements LgLoggerIF, Serializable {
         // The root logger by default has a console appender - only let it write
         // warnings or worse.
         // this catches all of the loggers in the software that I am including.
-        LogManager.getRootLogger().atLevel(Level.WARN);
+        config.getRootLogger().addAppender(simpleAppender, Level.WARN, null);
 
         // I need to queue messages before the logger is completely configured.
         messageQueue_ = new ArrayList<MessageHolder>();
@@ -239,11 +241,10 @@ public class Logger implements LgLoggerIF, Serializable {
                 File fullLog = new File(vars.getLogLocation(), "LexBIG_full_log.txt");
                 File loadLog = new File(vars.getLogLocation(), "LexBIG_load_log.txt");
                 File exportLog = new File(vars.getLogLocation(), "LexBIG_export_log.txt");
-
-                Appender fileAppender;
-                Appender loadFileAppender, exportFileAppender;
+                Appender fileAppender = null;
+                Appender loadFileAppender, exportFileAppender = null;
                 final Layout<String> layout = PatternLayout.newBuilder().withPattern("%c %p - %d - %m%n").build();
-                Appender consoleAppender = ConsoleAppender.newBuilder().setLayout(layout).build();
+                //Appender consoleAppender = ConsoleAppender.newBuilder().setLayout(layout).setName();
 
                 String logChange = vars.getLogChange();
                 if (logChange.equals("daily") || logChange.equals("weekly") || logChange.equals("monthly")) {
@@ -260,16 +261,16 @@ public class Logger implements LgLoggerIF, Serializable {
                         }
                     }
 
-//                    String formatString = "";
-//                    if (logChange.equals("daily")) {
-//                        formatString = "'.'yyyy-MM-dd";
-//                    } else if (logChange.equals("weekly")) {
-//                        formatString = "'.'yyyy-ww";
-//                    } else {
-//                        formatString = "'.'yyyy-MM";
-//                    }
+                    String formatString = "";
+                    if (logChange.equals("daily")) {
+                        formatString = "'.'yyyy-MM-dd";
+                    } else if (logChange.equals("weekly")) {
+                        formatString = "'.'yyyy-ww";
+                    } else {
+                        formatString = "'.'yyyy-MM";
+                    }
                     
-                    int interval = 0;
+                    int interval = 24;
                     if (logChange.equals("daily")) {
                         interval = 24;
                     } else if (logChange.equals("weekly")) {
@@ -287,7 +288,10 @@ public class Logger implements LgLoggerIF, Serializable {
                     		.withModulate(true)
                     		.build())
                     .withAppend(true)
+                    .withFilePattern("'.'yyyy-MM-dd")
+                    .setName("File")
                     .build();
+                    fileAppender.start();
                     
 //                    fileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), fullLog
 //                            .getAbsolutePath(), formatString);
@@ -304,7 +308,10 @@ public class Logger implements LgLoggerIF, Serializable {
                     		.withModulate(true)
                     		.build())
                     .withAppend(true)
+                    .withFilePattern("'.'yyyy-MM-dd")
+                    .setName("LoadFile")
                     .build();
+                    loadFileAppender.start();
 
 //                    loadFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), loadLog
 //                            .getAbsolutePath(), formatString);
@@ -321,7 +328,10 @@ public class Logger implements LgLoggerIF, Serializable {
                     		.withModulate(true)
                     		.build())
                     .withAppend(true)
+                    .withFilePattern("'.'yyyy-MM-dd")
+                    .setName("ExportFile")
                     .build();
+                    exportFileAppender.start();
                     
 //                    exportFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
 //                            .getAbsolutePath(), formatString);
@@ -335,7 +345,8 @@ public class Logger implements LgLoggerIF, Serializable {
                     .withFileName(fullLog.getAbsolutePath())
                     .withPolicy(
                     		SizeBasedTriggeringPolicy.createPolicy(logChange))
-                    .withAppend(true)
+                    .withFilePattern("'.'yyyy-MM-dd")
+                    .setName("File")
                     .build();
                     
 //                    fileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), fullLog
@@ -348,7 +359,8 @@ public class Logger implements LgLoggerIF, Serializable {
                     .withFileName(loadLog.getAbsolutePath())
                     .withPolicy(
                     		SizeBasedTriggeringPolicy.createPolicy(logChange))
-                    .withAppend(true)
+                    .withFilePattern("'.'yyyy-MM-dd")
+                    .setName("LoadFile")
                     .build();
 //                    
 //                    loadFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), loadLog
@@ -360,7 +372,8 @@ public class Logger implements LgLoggerIF, Serializable {
                     .withFileName(exportLog.getAbsolutePath())
                     .withPolicy(
                     		SizeBasedTriggeringPolicy.createPolicy(logChange))
-                    .withAppend(true)
+                    .withFilePattern("'.'yyyy-MM-dd")
+                    .setName("ExportFile")
                     .build();
                     
 //                    exportFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
@@ -370,17 +383,17 @@ public class Logger implements LgLoggerIF, Serializable {
                 }
 
                 // log everything to the file.
-                fatalConfig.addAppender(fileAppender, null, null);
-                errorConfig.addAppender(fileAppender, null, null);
-                warnConfig.addAppender(fileAppender, null, null);
-                infoConfig.addAppender(fileAppender, null, null);
-                debugConfig.addAppender(fileAppender, null, null);
-                loadLogConfig.addAppender(fileAppender, null, null);
-                exportLogConfig.addAppender(fileAppender, null, null);
-                apiLogConfig.addAppender(fileAppender, null, null);
-                sqlLogConfig.addAppender(fileAppender, null, null);
-                guiLogConfig.addAppender(fileAppender, null, null);
-                vsGuiLogConfig.addAppender(fileAppender, null, null);
+                fatalConfig.addAppender(fileAppender, Level.FATAL, null);
+                errorConfig.addAppender(fileAppender, Level.ERROR, null);
+                warnConfig.addAppender(fileAppender, Level.WARN, null);
+                infoConfig.addAppender(fileAppender, Level.INFO, null);
+                debugConfig.addAppender(fileAppender, Level.DEBUG, null);
+                loadLogConfig.addAppender(loadFileAppender, Level.DEBUG, null);
+                exportLogConfig.addAppender(exportFileAppender, Level.DEBUG, null);
+                apiLogConfig.addAppender(fileAppender, Level.DEBUG, null);
+                sqlLogConfig.addAppender(fileAppender, Level.ERROR, null);
+                guiLogConfig.addAppender(fileAppender, Level.WARN, null);
+                vsGuiLogConfig.addAppender(fileAppender, Level.WARN, null);
                 
 //                fatal_.addAppender(fileAppender);
 //                error_.addAppender(fileAppender);
@@ -394,7 +407,7 @@ public class Logger implements LgLoggerIF, Serializable {
 //                exportLog_.addAppender(exportFileAppender);
 
                 // add the root logger to the console appender.
-//                LogManager.getRootLogger()..addAppender(consoleAppender);
+               config.getRootLogger().addAppender(fileAppender, null, null);
 
                 // configure the e-mail appender (if they want one)
 //                if (vars.emailErrors()) {
