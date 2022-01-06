@@ -19,19 +19,23 @@
 package org.lexevs.logging;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.Serializable;
-import java.net.InetAddress;
 import java.util.ArrayList;
 
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.log4j.Appender;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.DailyRollingFileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.RollingFileAppender;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.core.Appender;
+import org.apache.logging.log4j.core.Layout;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.appender.RollingFileAppender;
+import org.apache.logging.log4j.core.appender.rolling.SizeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.appender.rolling.TimeBasedTriggeringPolicy;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.layout.PatternLayout;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.constants.SystemVariables;
 
@@ -49,8 +53,10 @@ public class Logger implements LgLoggerIF, Serializable {
 	private static final long serialVersionUID = -4792431175428737078L;
 
 	/** The gui log_. */
-    private org.apache.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, exportLog_, apiLog_, sqlLog_, guiLog_, vsGUILog_;
+    private org.apache.logging.log4j.Logger fatal_, error_, warn_, info_, debug_, loadLog_, exportLog_, apiLog_, sqlLog_, guiLog_, vsGUILog_;
 
+    /** The Logger Configuration **/
+    private LoggerConfig fatalConfig,errorConfig,warnConfig,infoConfig,debugConfig,loadLogConfig,exportLogConfig,apiLogConfig,sqlLogConfig,guiLogConfig,vsGuiLogConfig;
     /** The log message id_. */
     private int logMessageId_ = 1;
     
@@ -67,59 +73,143 @@ public class Logger implements LgLoggerIF, Serializable {
      * Instantiates a new logger.
      */
     public Logger() {
-        Appender simpleAppender = new ConsoleAppender(new PatternLayout("%c %p - %d - %m%n"));
+       // Appender simpleAppender = new ConsoleAppender(new PatternLayout("%c %p - %d - %m%n"));
+        //Appender simpleAppender = ConsoleAppender.newBuilder().setLayout(PatternLayout.newBuilder().withPattern("%c %p - %d - %m%n").build()).build();
         // only warnings and worse to the screen
 
-        fatal_ = org.apache.log4j.Logger.getLogger("LB_FATAL_LOGGER");
-        fatal_.setAdditivity(false);
-        fatal_.addAppender(simpleAppender);
+        final LoggerContext ctx = (LoggerContext)LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
+        final Layout<String> layout = PatternLayout.newBuilder().withPattern("%c %p - %d - %m%n").build();
+        Appender simpleAppender = ConsoleAppender.newBuilder().setLayout(layout).build();
+        simpleAppender.start();
+        config.addAppender(simpleAppender);
+        AppenderRef ref = AppenderRef.createAppenderRef("Console", null, null);
+        AppenderRef[] refs = new AppenderRef[] {ref};
+        LoggerConfig fatalConfig = LoggerConfig.createLogger(false, Level.FATAL, "LB_FATAL_LOGGER",
+                "true", refs, null, config, null );
+        fatalConfig.addAppender(simpleAppender, null, null);
+        config.addLogger("LB_FATAL_LOGGER", fatalConfig);
+        ctx.updateLoggers();
+        fatal_ = ctx.getLogger("LB_FATAL_LOGGER");
 
-        error_ = org.apache.log4j.Logger.getLogger("LB_ERROR_LOGGER");
-        error_.setAdditivity(false);
-        error_.addAppender(simpleAppender);
 
-        warn_ = org.apache.log4j.Logger.getLogger("LB_WARN_LOGGER");
-        warn_.setAdditivity(false);
-        warn_.addAppender(simpleAppender);
-
-        info_ = org.apache.log4j.Logger.getLogger("LB_INFO_LOGGER");
-        info_.setAdditivity(false);
-        info_.setLevel(Level.INFO);
-
-        debug_ = LogManager.getLogger("LB_DEBUG_LOGGER");
-        debug_.setAdditivity(false);
-        debug_.setLevel(Level.DEBUG);
-
-        loadLog_ = LogManager.getLogger("LB_LOAD_LOGGER");
-        loadLog_.setAdditivity(false);
-        loadLog_.setLevel(Level.DEBUG);
+        LoggerConfig errorConfig = LoggerConfig.createLogger(false, Level.ERROR, "LB_ERROR_LOGGER",
+                "true", refs, null, config, null );
+        errorConfig.addAppender(simpleAppender, null, null);
+        config.addLogger("LB_ERROR_LOGGER", errorConfig);
+        ctx.updateLoggers();
+        error_ = ctx.getLogger("LB_ERROR_LOGGER");
         
-        exportLog_ = LogManager.getLogger("LB_EXPORT_LOGGER");
-        exportLog_.setAdditivity(false);
-        exportLog_.setLevel(Level.DEBUG);
+//        error_ = LogManager.getLogger("LB_ERROR_LOGGER");
+//        error_.setAdditivity(false);
+//        error_.addAppender(simpleAppender);
 
-        apiLog_ = LogManager.getLogger("LB_API_LOGGER");
-        apiLog_.setAdditivity(false);
-        apiLog_.setLevel(Level.DEBUG);
+        LoggerConfig warnConfig = LoggerConfig.createLogger(false, Level.WARN, "LB_ERROR_LOGGER",
+                "true", refs, null, config, null );
+        warnConfig.addAppender(simpleAppender, null, null);
+        config.addLogger("LB_ERROR_LOGGER", warnConfig);
+        ctx.updateLoggers();        
+        warn_ = ctx.getLogger("LB_ERROR_LOGGER");
         
-        sqlLog_= LogManager.getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
-        sqlLog_.setAdditivity(false);
-        sqlLog_.setLevel(Level.ERROR);
-        sqlLog_.addAppender(simpleAppender);
+//        warn_ = LogManager.getLogger("LB_WARN_LOGGER");
+//        warn_.setAdditivity(false);
+//        warn_.addAppender(simpleAppender);
+
+        LoggerConfig infoConfig = LoggerConfig.createLogger(false, Level.INFO, "LB_INFO_LOGGER",
+                "true", refs, null, config, null );
+        config.addLogger("LB_INFO_LOGGER", infoConfig);
+        ctx.updateLoggers();        
+        info_ = ctx.getLogger("LB_INFO_LOGGER");
+        
+        
+//        info_ = LogManager.getLogger("LB_INFO_LOGGER");
+//        info_.setAdditivity(false);
+//        info_.atLevel(Level.INFO);
+
+        
+        LoggerConfig debugConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_DEBUG_LOGGER",
+                "true", refs, null, config, null );
+        config.addLogger("LB_DEBUG_LOGGER", debugConfig);
+        ctx.updateLoggers();        
+        info_ = ctx.getLogger("LB_DEBUG_LOGGER");
+        
+//        debug_ = LogManager.getLogger("LB_DEBUG_LOGGER");
+//        debug_.setAdditivity(false);
+//        debug_.atLevel(Level.DEBUG);
+
+        LoggerConfig loadLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_LOAD_LOGGER",
+                "true", refs, null, config, null );
+        config.addLogger("LB_LOAD_LOGGER", loadLogConfig);
+        ctx.updateLoggers();        
+        loadLog_ = ctx.getLogger("LB_LOAD_LOGGER");
+        
+//        loadLog_ = LogManager.getLogger("LB_LOAD_LOGGER");
+//        loadLog_.setAdditivity(false);
+//        loadLog_.atLevel(Level.DEBUG);
+        
+        
+        LoggerConfig exportLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_EXPORT_LOGGER",
+                "true", refs, null, config, null );
+        config.addLogger("LB_EXPORT_LOGGER", exportLogConfig);
+        ctx.updateLoggers();        
+        exportLog_ = ctx.getLogger("LB_EXPORT_LOGGER");
+//        
+//        exportLog_ = LogManager.getLogger("LB_EXPORT_LOGGER");
+//        exportLog_.setAdditivity(false);
+//        exportLog_.atLevel(Level.DEBUG);
+        
+        
+        LoggerConfig apiLogConfig = LoggerConfig.createLogger(false, Level.DEBUG, "LB_API_LOGGER",
+                "true", refs, null, config, null );
+        config.addLogger("LB_API_LOGGER", apiLogConfig);
+        ctx.updateLoggers();        
+        apiLog_ = ctx.getLogger("LB_API_LOGGER");
+//        
+//        apiLog_ = LogManager.getLogger("LB_API_LOGGER");
+//        apiLog_.setAdditivity(false);
+//        apiLog_.atLevel(Level.DEBUG);
+        
+        LoggerConfig sqlLogConfig = LoggerConfig.createLogger(false, Level.ERROR, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
+                "true", refs, null, config, null );
+        sqlLogConfig.addAppender(simpleAppender, null, null);
+        config.addLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement", sqlLogConfig);
+        ctx.updateLoggers();        
+        sqlLog_ = ctx.getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
+        
+//        sqlLog_= LogManager.getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
+//        sqlLog_.setAdditivity(false);
+//        sqlLog_.atLevel(Level.ERROR);
+//        sqlLog_.addAppender(simpleAppender);
         
 
-        guiLog_ = LogManager.getLogger("LB_GUI_LOGGER");
-        guiLog_.setAdditivity(false);
-        guiLog_.addAppender(simpleAppender);
+        LoggerConfig guiLogConfig = LoggerConfig.createLogger(false, Level.WARN, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
+                "true", refs, null, config, null );
+        guiLogConfig.addAppender(simpleAppender, null, null);
+        config.addLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement", guiLogConfig);
+        ctx.updateLoggers();        
+        guiLog_ = ctx.getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
         
-        vsGUILog_ = LogManager.getLogger("LB_VSGUI_LOGGER");
-        vsGUILog_.setAdditivity(false);
-        vsGUILog_.addAppender(simpleAppender);
+//        guiLog_= LogManager.getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
+//        guiLog_ = LogManager.getLogger("LB_GUI_LOGGER");
+//        guiLog_.setAdditivity(false);
+//        guiLog_.addAppender(simpleAppender);
+        
+        LoggerConfig vsGuiLogConfig = LoggerConfig.createLogger(false, Level.WARN, "org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement",
+                "true", refs, null, config, null );
+        vsGuiLogConfig.addAppender(simpleAppender, null, null);
+        config.addLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement", vsGuiLogConfig);
+        ctx.updateLoggers();        
+        vsGUILog_ = ctx.getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
+        
+ //       sqlLog_= LogManager.getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
+//        vsGUILog_ = LogManager.getLogger("LB_VSGUI_LOGGER");
+//        vsGUILog_.setAdditivity(false);
+//        vsGUILog_.addAppender(simpleAppender);
 
         // The root logger by default has a console appender - only let it write
         // warnings or worse.
         // this catches all of the loggers in the software that I am including.
-        LogManager.getRootLogger().setLevel(Level.WARN);
+        LogManager.getRootLogger().atLevel(Level.WARN);
 
         // I need to queue messages before the logger is completely configured.
         messageQueue_ = new ArrayList<MessageHolder>();
@@ -137,7 +227,7 @@ public class Logger implements LgLoggerIF, Serializable {
         // but the logger
         // cant be used until the system variables are read... chicken and egg
         // problem.
-        try {
+        //try {
             File parent = new File(vars.getLogLocation());
 
             if (!parent.exists()) {
@@ -152,7 +242,8 @@ public class Logger implements LgLoggerIF, Serializable {
 
                 Appender fileAppender;
                 Appender loadFileAppender, exportFileAppender;
-                Appender consoleAppender = new ConsoleAppender(new PatternLayout("%c %p - %d - %m%n"));
+                final Layout<String> layout = PatternLayout.newBuilder().withPattern("%c %p - %d - %m%n").build();
+                Appender consoleAppender = ConsoleAppender.newBuilder().setLayout(layout).build();
 
                 String logChange = vars.getLogChange();
                 if (logChange.equals("daily") || logChange.equals("weekly") || logChange.equals("monthly")) {
@@ -169,92 +260,173 @@ public class Logger implements LgLoggerIF, Serializable {
                         }
                     }
 
-                    String formatString = "";
-                    if (logChange.equals("daily")) {
-                        formatString = "'.'yyyy-MM-dd";
-                    } else if (logChange.equals("weekly")) {
-                        formatString = "'.'yyyy-ww";
-                    } else {
-                        formatString = "'.'yyyy-MM";
-                    }
-                    fileAppender = new DailyRollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), fullLog
-                            .getAbsolutePath(), formatString);
-                    ((DailyRollingFileAppender) fileAppender).setAppend(true);
-                    ((DailyRollingFileAppender) fileAppender).activateOptions();
-
-                    loadFileAppender = new DailyRollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), loadLog
-                            .getAbsolutePath(), formatString);
-                    ((DailyRollingFileAppender) loadFileAppender).setAppend(true);
-                    ((DailyRollingFileAppender) loadFileAppender).activateOptions();
+//                    String formatString = "";
+//                    if (logChange.equals("daily")) {
+//                        formatString = "'.'yyyy-MM-dd";
+//                    } else if (logChange.equals("weekly")) {
+//                        formatString = "'.'yyyy-ww";
+//                    } else {
+//                        formatString = "'.'yyyy-MM";
+//                    }
                     
-                    exportFileAppender = new DailyRollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
-                            .getAbsolutePath(), formatString);
-                    ((DailyRollingFileAppender) exportFileAppender).setAppend(true);
-                    ((DailyRollingFileAppender) exportFileAppender).activateOptions();
+                    int interval = 0;
+                    if (logChange.equals("daily")) {
+                        interval = 24;
+                    } else if (logChange.equals("weekly")) {
+                        interval = 168;
+                    } else {
+                       interval = 5040;
+                    }
+                    fileAppender = RollingFileAppender.newBuilder()
+                    .setLayout(layout)
+                    .withFileName(fullLog.getAbsolutePath())
+                    .withPolicy(
+                    		TimeBasedTriggeringPolicy
+                    		.newBuilder()
+                    		.withInterval(interval)
+                    		.withModulate(true)
+                    		.build())
+                    .withAppend(true)
+                    .build();
+                    
+//                    fileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), fullLog
+//                            .getAbsolutePath(), formatString);
+//                    ((RollingFileAppender) fileAppender).setAppend(true);
+//                    ((RollingFileAppender) fileAppender).activateOptions();
+                    
+                    loadFileAppender = RollingFileAppender.newBuilder()
+                    .setLayout(layout)
+                    .withFileName(loadLog.getAbsolutePath())
+                    .withPolicy(
+                    		TimeBasedTriggeringPolicy
+                    		.newBuilder()
+                    		.withInterval(interval)
+                    		.withModulate(true)
+                    		.build())
+                    .withAppend(true)
+                    .build();
+
+//                    loadFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), loadLog
+//                            .getAbsolutePath(), formatString);
+//                    ((RollingFileAppender) loadFileAppender).setAppend(true);
+//                    ((RollingFileAppender) loadFileAppender).activateOptions();
+                    
+                    exportFileAppender = RollingFileAppender.newBuilder()
+                    .setLayout(layout)
+                    .withFileName(exportLog.getAbsolutePath())
+                    .withPolicy(
+                    		TimeBasedTriggeringPolicy
+                    		.newBuilder()
+                    		.withInterval(interval)
+                    		.withModulate(true)
+                    		.build())
+                    .withAppend(true)
+                    .build();
+                    
+//                    exportFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
+//                            .getAbsolutePath(), formatString);
+//                    ((RollingFileAppender) exportFileAppender).setAppend(true);
+//                    ((RollingFileAppender) exportFileAppender).activateOptions();
 
                 } else {
-                    fileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), fullLog
-                            .getAbsolutePath(), true);
-                    ((RollingFileAppender) fileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
-                    ((RollingFileAppender) fileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
-
-                    loadFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), loadLog
-                            .getAbsolutePath(), true);
-                    ((RollingFileAppender) loadFileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
-                    ((RollingFileAppender) loadFileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
+                	
+                    fileAppender = RollingFileAppender.newBuilder()
+                    .setLayout(layout)
+                    .withFileName(fullLog.getAbsolutePath())
+                    .withPolicy(
+                    		SizeBasedTriggeringPolicy.createPolicy(logChange))
+                    .withAppend(true)
+                    .build();
                     
-                    exportFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
-                            .getAbsolutePath(), true);
-                    ((RollingFileAppender) exportFileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
-                    ((RollingFileAppender) exportFileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
+//                    fileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), fullLog
+//                            .getAbsolutePath(), true);
+//                    ((RollingFileAppender) fileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
+//                    ((RollingFileAppender) fileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
+
+                    loadFileAppender = RollingFileAppender.newBuilder()
+                    .setLayout(layout)
+                    .withFileName(loadLog.getAbsolutePath())
+                    .withPolicy(
+                    		SizeBasedTriggeringPolicy.createPolicy(logChange))
+                    .withAppend(true)
+                    .build();
+//                    
+//                    loadFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), loadLog
+//                            .getAbsolutePath(), true);
+//                    ((RollingFileAppender) loadFileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
+//                    ((RollingFileAppender) loadFileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
+                    exportFileAppender = RollingFileAppender.newBuilder()
+                    .setLayout(layout)
+                    .withFileName(exportLog.getAbsolutePath())
+                    .withPolicy(
+                    		SizeBasedTriggeringPolicy.createPolicy(logChange))
+                    .withAppend(true)
+                    .build();
+                    
+//                    exportFileAppender = new RollingFileAppender(new PatternLayout("%c %p - %d - %m%n"), exportLog
+//                            .getAbsolutePath(), true);
+//                    ((RollingFileAppender) exportFileAppender).setMaxBackupIndex(Integer.parseInt(logChange));
+//                    ((RollingFileAppender) exportFileAppender).setMaxFileSize(vars.getEraseLogsAfter() + "MB");
                 }
 
                 // log everything to the file.
-                fatal_.addAppender(fileAppender);
-                error_.addAppender(fileAppender);
-                warn_.addAppender(fileAppender);
-                info_.addAppender(fileAppender);
-                debug_.addAppender(fileAppender);
-                sqlLog_.addAppender(fileAppender);
-                apiLog_.addAppender(fileAppender);
-
-                loadLog_.addAppender(loadFileAppender);
-                exportLog_.addAppender(exportFileAppender);
+                fatalConfig.addAppender(fileAppender, null, null);
+                errorConfig.addAppender(fileAppender, null, null);
+                warnConfig.addAppender(fileAppender, null, null);
+                infoConfig.addAppender(fileAppender, null, null);
+                debugConfig.addAppender(fileAppender, null, null);
+                loadLogConfig.addAppender(fileAppender, null, null);
+                exportLogConfig.addAppender(fileAppender, null, null);
+                apiLogConfig.addAppender(fileAppender, null, null);
+                sqlLogConfig.addAppender(fileAppender, null, null);
+                guiLogConfig.addAppender(fileAppender, null, null);
+                vsGuiLogConfig.addAppender(fileAppender, null, null);
+                
+//                fatal_.addAppender(fileAppender);
+//                error_.addAppender(fileAppender);
+//                warn_.addAppender(fileAppender);
+//                info_.addAppender(fileAppender);
+//                debug_.addAppender(fileAppender);
+//                sqlLog_.addAppender(fileAppender);
+//                apiLog_.addAppender(fileAppender);
+//
+//                loadLog_.addAppender(loadFileAppender);
+//                exportLog_.addAppender(exportFileAppender);
 
                 // add the root logger to the console appender.
-                LogManager.getRootLogger().addAppender(consoleAppender);
+//                LogManager.getRootLogger()..addAppender(consoleAppender);
 
                 // configure the e-mail appender (if they want one)
-                if (vars.emailErrors()) {
-                    SimpleEmailAppender emailAppender = new SimpleEmailAppender(new EmailTrigger());
-                    emailAppender.setBufferSize(1);
-                    emailAppender.setLayout(new PatternLayout("%c %p - %d - %m%n"));
-                    emailAppender.setSMTPHost(vars.getSMTPServer());
-                    emailAppender.setSubject("[LexBIG Error]");
-                    try {
-                        InetAddress addr = InetAddress.getLocalHost();
-                        emailAppender.setFrom("LexBIG@" + addr.getHostName());
-                    } catch (RuntimeException e) {
-                        emailAppender.setFrom("LexBIG@unknown");
-                    }
-                    emailAppender.setTo(vars.getEmailTo());
-
-                    emailAppender.activateOptions();
-
-                    debug_.addAppender(emailAppender);
-                    debug_
-                            .debug("[This is not an error] This is a test message to ensure that LexBIG is properly configured to send e-mail.  If this message does not arrive as an e-mail, then it is not configured properly.");
-                    debug_.removeAppender(emailAppender);
-                    emailAppender.setThreshold(Level.WARN);
-
-                    fatal_.addAppender(emailAppender);
-                    error_.addAppender(emailAppender);
-                    warn_.addAppender(emailAppender);
-                }
+//                if (vars.emailErrors()) {
+//                    SimpleEmailAppender emailAppender = new SimpleEmailAppender(new EmailTrigger());
+//                    emailAppender.setBufferSize(1);
+//                    emailAppender.setLayout(new PatternLayout("%c %p - %d - %m%n"));
+//                    emailAppender.setSMTPHost(vars.getSMTPServer());
+//                    emailAppender.setSubject("[LexBIG Error]");
+//                    try {
+//                        InetAddress addr = InetAddress.getLocalHost();
+//                        emailAppender.setFrom("LexBIG@" + addr.getHostName());
+//                    } catch (RuntimeException e) {
+//                        emailAppender.setFrom("LexBIG@unknown");
+//                    }
+//                    emailAppender.setTo(vars.getEmailTo());
+//
+//                    emailAppender.activateOptions();
+//
+//                    debug_.addAppender(emailAppender);
+//                    debug_
+//                            .debug("[This is not an error] This is a test message to ensure that LexBIG is properly configured to send e-mail.  If this message does not arrive as an e-mail, then it is not configured properly.");
+//                    debug_.removeAppender(emailAppender);
+//                    emailAppender.setThreshold(Level.WARN);
+//
+//                    fatal_.addAppender(emailAppender);
+//                    error_.addAppender(emailAppender);
+//                    warn_.addAppender(emailAppender);
+//                }
             }
-        } catch (IOException e) {
-            error("Problem creating file appender", e);
-        }
+//        } catch (IOException e) {
+//            error("Problem creating file appender", e);
+//        }
 
         Level level = Level.WARN;
         if (SystemVariables.isDebugEnabled()) {
@@ -262,12 +434,12 @@ public class Logger implements LgLoggerIF, Serializable {
         }
 
         if (vars.isSQLLoggingEnabled()) {
-            sqlLog_.setLevel(Level.DEBUG);
+            sqlLog_.atLevel(Level.DEBUG);
         }
         // enable SQL statement debugging
-        org.apache.log4j.Logger sqlStatements = LogManager
+        org.apache.logging.log4j.Logger sqlStatements = LogManager
                 .getLogger("managedobj.service.jdbc.sqlReconnect.WrappedPreparedStatement");
-        sqlStatements.setLevel(level);
+        sqlStatements.atLevel(level);
 
         // I don't think that we need to debug the wrapped connections anymore -
         // preparedStatement debugging
