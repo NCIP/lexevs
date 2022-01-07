@@ -344,7 +344,7 @@ public class Logger implements LgLoggerIF, Serializable {
                     .setLayout(layout)
                     .withFileName(fullLog.getAbsolutePath())
                     .withPolicy(
-                    		SizeBasedTriggeringPolicy.createPolicy(logChange))
+                    		SizeBasedTriggeringPolicy.createPolicy("20 MB"))
                     .withFilePattern("'.'yyyy-MM-dd")
                     .setName("File")
                     .build();
@@ -358,7 +358,7 @@ public class Logger implements LgLoggerIF, Serializable {
                     .setLayout(layout)
                     .withFileName(loadLog.getAbsolutePath())
                     .withPolicy(
-                    		SizeBasedTriggeringPolicy.createPolicy(logChange))
+                    		SizeBasedTriggeringPolicy.createPolicy("20 MB"))
                     .withFilePattern("'.'yyyy-MM-dd")
                     .setName("LoadFile")
                     .build();
@@ -371,7 +371,7 @@ public class Logger implements LgLoggerIF, Serializable {
                     .setLayout(layout)
                     .withFileName(exportLog.getAbsolutePath())
                     .withPolicy(
-                    		SizeBasedTriggeringPolicy.createPolicy(logChange))
+                    		SizeBasedTriggeringPolicy.createPolicy("20 MB"))
                     .withFilePattern("'.'yyyy-MM-dd")
                     .setName("ExportFile")
                     .build();
