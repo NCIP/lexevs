@@ -10,7 +10,7 @@ package org.LexGrid.LexBIG.Impl;
  */
 public class LexEVSVersion {
     private static final String VERSION = "6.5.4.3.RC2";
-    private static final String TIMESTAMP = "2022-01-06_14:31:43";
+    private static final String TIMESTAMP = "2022-01-11_13:46:06";
     
     public static String getLexEVSBuildVersion(){
         return VERSION;

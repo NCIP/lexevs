@@ -58,12 +58,8 @@
 		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.17.1" conf="default" />
   		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.17.1" conf="default" />  
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false" conf="default->*"/>
-		<!--dependency org="org.slf4j" name="slf4j-api" rev="1.5.6" conf="default" />
-		<dependency org="org.slf4j" name="slf4j-log4j12" rev="1.5.6" conf="default" /-->
-		
-		<dependency org="org.slf4j" name="slf4j-api" rev="1.8.0-beta4" conf="default"/>
-		<dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.17.1" conf="default"/>
-		
+		<dependency org="org.slf4j" name="slf4j-api" rev="1.8.0-beta4" conf="default" />
+        <dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.17.1" conf="default" />
 		<dependency org="javax.transaction" name="jta" rev="1.1" conf="default" />
 		<dependency org="javassist" name="javassist" rev="3.8.0.GA" conf="default" />
 		<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.3.1" conf="default" />
