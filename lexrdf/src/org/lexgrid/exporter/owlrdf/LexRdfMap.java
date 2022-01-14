@@ -26,60 +26,60 @@ import org.LexGrid.LexBIG.Extensions.Load.OntologyFormat;
 import org.LexGrid.commonTypes.types.EntityTypes;
 import org.LexGrid.concepts.Entity;
 
-import com.hp.hpl.jena.rdf.model.Resource;
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.vocabulary.RDFS;
+//import com.hp.hpl.jena.rdf.model.Resource;
+//import com.hp.hpl.jena.vocabulary.OWL;
+//import com.hp.hpl.jena.vocabulary.RDF;
+//import com.hp.hpl.jena.vocabulary.RDFS;
 
 public class LexRdfMap {
 
-	private static final Map<String, Resource> map = new HashMap<String, Resource>();
+//	private static final Map<String, Resource> map = new HashMap<String, Resource>();
 	private final static String OBO = OntologyFormat.OBO.toString() + "#";
 	private final static String UMLS = OntologyFormat.UMLS.toString() + "#";
 
 	static {
-		map.put(LexRdfConstants.LOADER_IS_DATA_TYPE_PROPERTY.toLowerCase(),
-				OWL.DatatypeProperty);
-		map.put(LexRdfConstants.LOADER_IS_OBJECT_PROPERTY.toLowerCase(),
-				OWL.ObjectProperty);
-
-		// OWL/RDFs
-		map.put("type", RDF.type);
-		map.put(EntityTypes.CONCEPT.value().toLowerCase(), OWL.Class);
-		map.put("ObjectProperty".toLowerCase(), OWL.ObjectProperty);
-		map.put("DatatypeProperty".toLowerCase(), OWL.DatatypeProperty);
-		map.put("FunctionalProperty".toLowerCase(), OWL.FunctionalProperty);
-		map.put("InverseFunctionalProperty".toLowerCase(),
-				OWL.InverseFunctionalProperty);
-		map.put("SymmetricProperty".toLowerCase(), OWL.SymmetricProperty);
-		map.put("equivalentProperty", OWL.equivalentProperty);
-		map.put("TransitiveProperty".toLowerCase(), OWL.TransitiveProperty);
-		map.put("DefaultOWLObjectProperty".toLowerCase(), OWL.ObjectProperty);
-		map.put("DefaultOWLDataTypeProperty".toLowerCase(),
-				OWL.DatatypeProperty);
-		map.put("subPropertyOf".toLowerCase(), RDFS.subPropertyOf);
-		map.put("oneOf".toLowerCase(), OWL.oneOf);
-		map.put("AnnotationProperty".toLowerCase(), OWL.AnnotationProperty);
-
-		// OBO
-		map.put(OBO + "is_a", RDFS.subClassOf);
-		map.put(OBO + "union_of", OWL.unionOf);
-		map.put(OBO + "disjoint_from", OWL.disjointWith);
-		// map.put(OBO + "comemnt", null);
-		// map.put(OBO + "subset", null);
-
-		// UMLs
-		map.put(UMLS + "chd", RDFS.subClassOf);
-		map.put(UMLS + "par", RDFS.subClassOf);
+//		map.put(LexRdfConstants.LOADER_IS_DATA_TYPE_PROPERTY.toLowerCase(),
+//				OWL.DatatypeProperty);
+//		map.put(LexRdfConstants.LOADER_IS_OBJECT_PROPERTY.toLowerCase(),
+//				OWL.ObjectProperty);
+//
+//		// OWL/RDFs
+//		map.put("type", RDF.type);
+//		map.put(EntityTypes.CONCEPT.value().toLowerCase(), OWL.Class);
+//		map.put("ObjectProperty".toLowerCase(), OWL.ObjectProperty);
+//		map.put("DatatypeProperty".toLowerCase(), OWL.DatatypeProperty);
+//		map.put("FunctionalProperty".toLowerCase(), OWL.FunctionalProperty);
+//		map.put("InverseFunctionalProperty".toLowerCase(),
+//				OWL.InverseFunctionalProperty);
+//		map.put("SymmetricProperty".toLowerCase(), OWL.SymmetricProperty);
+//		map.put("equivalentProperty", OWL.equivalentProperty);
+//		map.put("TransitiveProperty".toLowerCase(), OWL.TransitiveProperty);
+//		map.put("DefaultOWLObjectProperty".toLowerCase(), OWL.ObjectProperty);
+//		map.put("DefaultOWLDataTypeProperty".toLowerCase(),
+//				OWL.DatatypeProperty);
+//		map.put("subPropertyOf".toLowerCase(), RDFS.subPropertyOf);
+//		map.put("oneOf".toLowerCase(), OWL.oneOf);
+//		map.put("AnnotationProperty".toLowerCase(), OWL.AnnotationProperty);
+//
+//		// OBO
+//		map.put(OBO + "is_a", RDFS.subClassOf);
+//		map.put(OBO + "union_of", OWL.unionOf);
+//		map.put(OBO + "disjoint_from", OWL.disjointWith);
+//		// map.put(OBO + "comemnt", null);
+//		// map.put(OBO + "subset", null);
+//
+//		// UMLs
+//		map.put(UMLS + "chd", RDFS.subClassOf);
+//		map.put(UMLS + "par", RDFS.subClassOf);
 
 	}
 
-	public static Resource get(String key, OntologyFormat ontType) {
-		if (ontType.equals(OntologyFormat.OWLRDF)) {
-			return map.get(key.toLowerCase());
-		}
-		return map.get(ontType.toString() + "#" + key.toLowerCase());
-	}
+//	public static Resource get(String key, OntologyFormat ontType) {
+//		if (ontType.equals(OntologyFormat.OWLRDF)) {
+//			return map.get(key.toLowerCase());
+//		}
+//		return map.get(ontType.toString() + "#" + key.toLowerCase());
+//	}
 
 	public static boolean isMapped(Entity entity, OntologyFormat ontType) {
 		if (ontType.equals(OntologyFormat.OWLRDF)) {
@@ -99,12 +99,12 @@ public class LexRdfMap {
 		} else {
 			// if (entity.getPropertyCount()==0 && map.containsKey(OBO +
 			// entity.getEntityCode()))
-			if (entity.getPropertyCount() == 0
-					&& map.containsKey(ontType.toString() + "#"
-							+ entity.getEntityCode()))
-				return true;
-			else
-				return false;
+//			if (entity.getPropertyCount() == 0
+//					&& map.containsKey(ontType.toString() + "#"
+//							+ entity.getEntityCode()))
+//				return true;
+//			else
+//				return false;
 		}
 		return false;
 	}
@@ -122,7 +122,7 @@ public class LexRdfMap {
 		}
 		// else if(ontType.equals(OntologyType.OBO)) {
 		else {
-			return map.containsKey(ontType.toString() + "#" + conRef.getCode());
+//			return map.containsKey(ontType.toString() + "#" + conRef.getCode());
 		}
 		return false;
 	}
@@ -136,7 +136,7 @@ public class LexRdfMap {
 					|| LexRdfConstants.NOT_IMPORT_NS.contains(ns))
 				return true;
 		} else {
-			return map.containsKey(ontType.toString() + "#" + code);
+//			return map.containsKey(ontType.toString() + "#" + code);
 		}
 		return false;
 	}

@@ -25,9 +25,9 @@ import java.util.Map;
 
 import org.LexGrid.commonTypes.types.EntityTypes;
 
-import com.hp.hpl.jena.vocabulary.OWL;
-import com.hp.hpl.jena.vocabulary.RDF;
-import com.hp.hpl.jena.rdf.model.Resource;
+//import com.hp.hpl.jena.vocabulary.OWL;
+//import com.hp.hpl.jena.vocabulary.RDF;
+//import com.hp.hpl.jena.rdf.model.Resource;
 
 public class LexRdfConstants {
 	// for owl ontology output

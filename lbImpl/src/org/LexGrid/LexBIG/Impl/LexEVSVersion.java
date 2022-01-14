@@ -9,8 +9,8 @@ package org.LexGrid.LexBIG.Impl;
  * and timestamp are updated with the current values.
  */
 public class LexEVSVersion {
-    private static final String VERSION = "6.5.4.3.RC2";
-    private static final String TIMESTAMP = "2022-01-11_13:46:06";
+    private static final String VERSION = "6.5.5.RC1";
+    private static final String TIMESTAMP = "2022-01-14_12:58:04";
     
     public static String getLexEVSBuildVersion(){
         return VERSION;

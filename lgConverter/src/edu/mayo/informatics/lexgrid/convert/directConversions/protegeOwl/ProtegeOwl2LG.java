@@ -77,7 +77,8 @@ import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallbac
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 
-import com.hp.hpl.jena.vocabulary.RDF;
+//import org.apache.jena.vocabulary.RDF;
+///import org.apache.jena.rdf.model.
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
@@ -87,7 +88,7 @@ import edu.stanford.smi.protege.util.PropertyList;
 import edu.stanford.smi.protegex.owl.ProtegeOWL;
 import edu.stanford.smi.protegex.owl.database.CreateOWLDatabaseFromFileProjectPlugin;
 import edu.stanford.smi.protegex.owl.database.OWLDatabaseKnowledgeBaseFactory;
-import edu.stanford.smi.protegex.owl.jena.JenaOWLModel;
+//import edu.stanford.smi.protegex.owl.jena.JenaOWLModel;
 import edu.stanford.smi.protegex.owl.model.NamespaceManager;
 import edu.stanford.smi.protegex.owl.model.OWLAllDifferent;
 import edu.stanford.smi.protegex.owl.model.OWLCardinalityBase;
@@ -129,6 +130,7 @@ import edu.stanford.smi.protegex.owl.model.impl.DefaultRDFSLiteral;
  *         annotation properties loaded as Associations in the association
  *         container
  */
+@Deprecated
 public class ProtegeOwl2LG {
     /* Define some global variables */
     // Input & output ...
@@ -300,7 +302,9 @@ public class ProtegeOwl2LG {
             // LgModelUtil.setNotifyRequired(true);
             if (owlModel_ != null) {
                 owlModel_.flushCache();
-                owlModel_.getJenaModel().close();
+                //*****This Comment Breaks this Legacy loader***//
+                //We'll remove it once we know we are safe to update the API, removing the loader class or deprecating it
+  //              owlModel_.getJenaModel().close();
             }
         }
     }
@@ -1942,13 +1946,13 @@ public class ProtegeOwl2LG {
                     + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
             BufferedReader r = null;
-            JenaOWLModel fileModel = null;
+//            JenaOWLModel fileModel = null;
             try {
                 // Check if the memory profiling option indicates to create
                 // and hold the Protege model in-memory.
                 if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY
                         || memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB) {
-                    owlModel_ = ProtegeOWL.createJenaOWLModelFromURI(owlURI_.toString());
+//                    owlModel_ = ProtegeOWL.createJenaOWLModelFromURI(owlURI_.toString());
                     messages_.info("After Protege load into memory");
                     snap = SimpleMemUsageReporter.snapshot();
                     messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
@@ -1965,21 +1969,21 @@ public class ProtegeOwl2LG {
                 // (without
                 // building it in memory first).
                 if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_NON_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB) {
-                    fileModel = ProtegeOWL.createJenaOWLModelFromReader(r = new BufferedReader(new FileReader(new File(
-                            owlURI_.getPath()))));
+//                    fileModel = ProtegeOWL.createJenaOWLModelFromReader(r = new BufferedReader(new FileReader(new File(
+ //                           owlURI_.getPath()))));
 
                     List errors = new ArrayList();
-                    Project fileProject = fileModel.getProject();
+//                    Project fileProject = fileModel.getProject();
                     OWLDatabaseKnowledgeBaseFactory factory = new OWLDatabaseKnowledgeBaseFactory();
-                    PropertyList sources = PropertyList.create(fileProject.getInternalProjectKnowledgeBase());
+ //                   PropertyList sources = PropertyList.create(fileProject.getInternalProjectKnowledgeBase());
 
-                    DatabaseKnowledgeBaseFactory.setSources(sources, dbDriver_, dbUrl_, dbProtegeTempTable_, dbUser_,
-                            dbPassword_);
-                    factory.saveKnowledgeBase(fileModel, sources, errors);
+//                    DatabaseKnowledgeBaseFactory.setSources(sources, dbDriver_, dbUrl_, dbProtegeTempTable_, dbUser_,
+ //                           dbPassword_);
+//                    factory.saveKnowledgeBase(fileModel, sources, errors);
                     handleProtegeErrors(errors);
                     if (!errors.isEmpty()) {
                         messages_.warn("Unable to load source ontology to database, proceeding with memory model.");
-                        owlModel_ = fileModel;
+//                        owlModel_ = fileModel;
                     } else {
                         Project dbProject = Project.createNewProject(factory, errors);
                         DatabaseKnowledgeBaseFactory.setSources(dbProject.getSources(), dbDriver_, dbUrl_,
@@ -1988,7 +1992,7 @@ public class ProtegeOwl2LG {
                         dbProject.createDomainKnowledgeBase(factory, errors, true);
                         handleProtegeErrors(errors);
                         owlModel_ = (OWLModel) dbProject.getKnowledgeBase();
-                        fileModel.dispose();
+ //                       fileModel.dispose();
                     }
 
                     messages_.info("After Protege load into temp DB (NON_STREAMING)");
@@ -2650,9 +2654,9 @@ public class ProtegeOwl2LG {
         // functional, inverse functional, transitive and object property is in rdf type collection 
         for (Iterator itr = rdfProp.getRDFTypes().iterator(); itr.hasNext();) {
             RDFSClass rdfsClass = (RDFSClass) itr.next();
-            Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", 
-                    rdfsClass.getLocalName(), lgSupportedMappings_, RDF.type.getURI(), null);
-            assocEntity.addProperty(pro);
+//            Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", 
+  //                  rdfsClass.getLocalName(), lgSupportedMappings_, RDF.type.getURI(), null);
+//            assocEntity.addProperty(pro);
         }
         
         for (Iterator itr = rdfProp.getRDFProperties().iterator(); itr.hasNext();) {

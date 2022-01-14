@@ -198,8 +198,8 @@ public class OwlRdfExporterImpl extends BaseExporter implements OWL_Exporter {
         // cng and cns MUST be set by setter methods
         // call code in lgConverter
         
-        LexGridToOwlRdfConverter converter = new LexGridToOwlRdfConverter();
-        converter.toTripleStore(codingScheme, cng, cns, out, this.getMessageDirector(), null);
+       // LexGridToOwlRdfConverter converter = new LexGridToOwlRdfConverter();
+       // converter.toTripleStore(codingScheme, cng, cns, out, this.getMessageDirector(), null);
     }
 
     @Override

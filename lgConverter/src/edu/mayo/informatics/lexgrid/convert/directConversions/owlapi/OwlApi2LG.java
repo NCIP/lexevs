@@ -145,8 +145,9 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
-import com.hp.hpl.jena.vocabulary.RDF;
+//import com.hp.hpl.jena.vocabulary.RDF;
 
+//import org.apache.jena.vocabulary.RDF;
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
@@ -2635,7 +2636,7 @@ public class OwlApi2LG {
         for (String str : characteristics) {
 
             Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", str, lgSupportedMappings_,
-                    RDF.type.getURI(), null);
+                    property.getIRI().toString(), null);
             assocEntity.addProperty(pro);
         }
         addPropertiesToAssociationEntity(assocEntity, property);
@@ -2649,7 +2650,7 @@ public class OwlApi2LG {
         }
         for (String str : characteristics) {
             Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", str, lgSupportedMappings_,
-                    RDF.type.getURI(), null);
+                   property.getIRI().toString(), null);
             assocEntity.addProperty(pro);
         }
         addPropertiesToAssociationEntity(assocEntity, property);
