@@ -22,9 +22,11 @@ package org.lexgrid.exporter.owlrdf;
 //import com.hp.hpl.jena.rdf.model.ModelFactory;
 //import com.hp.hpl.jena.rdf.model.Property;
 
+@Deprecated
 public class LexRdf {
 
 /** <p>The RDF model that holds the vocabulary terms</p> */
+	
 //private static Model model = ModelFactory.createDefaultModel();
 //    
 //    public static Property isDefined = model.createProperty(LexRdfConstants.LEXRDF_IS_DEFINED);

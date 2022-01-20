@@ -156,7 +156,6 @@ public class ProtegeOwl2LG {
     private Entities tempEmfEntityList_ = null;
 
     // Shared mapping information ...
-//    private Map<String, Object> attributeMap_ = null;
     private Map<String, String> owlDatatypeName2label_ = null;
     private Map<String, String> owlDatatypeName2lgPropClass_ = null;
     private Map<String, String> owlDatatypeName2lgDatatype_ = null;
@@ -207,14 +206,7 @@ public class ProtegeOwl2LG {
      */
     public ProtegeOwl2LG(URI owlURI, CodingSchemeManifest manifest, LoaderPreferences loadPrefs, int memorySafe,
             LgMessageDirectorIF messages) {
-        super();
-        owlURI_ = owlURI;
-        messages_ = messages;
-        this.manifest_ = manifest;
-        this.memoryProfile_ = memorySafe;
-        this.loadPrefs_ = loadPrefs;
-        bxp = new BasicXMLParser();
-        databaseServiceManager = LexEvsServiceLocator.getInstance().getDatabaseServiceManager();
+        throw new UnsupportedOperationException("We no longer support Jena based projects");
     }
 
     /**
@@ -225,88 +217,7 @@ public class ProtegeOwl2LG {
      *             If an error occurs in processing.
      */
     public CodingScheme run() throws LgConvertException {
-        // Honor preferences, if provided
-        prefManager = new PreferenceManager(loadPrefs_);
-        // Set the property comparator
-        propertyComparator = new PropertyComparator(prefManager);
-
-        // Load the OWL Java model from source
-        initOWLModelFromSource();
-
-        // Create the EMF model
-        try {
-            // Disable unnecessary notifications
-            // LgModelUtil.setNotifyRequired(false);
-
-            // Initialize structures referenced during conversion ...
-            initSupportedMappings();
-            initScheme();
-            initSupportedDatatypes();
-            assocManager = new AssociationManager(lgSupportedMappings_, lgRelationsContainer_Assoc,
-                    lgRelationsContainer_Roles);
-            initSupportedDatatypeProperties();
-            initSupportedObjectProperties();
-            initSupportedAssociationAnnotationProperties();
-            
-            try {
-                // If we are streaming the LexGrid model to database, write
-                // the coding scheme metadata as defined so far.
-                if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-                    databaseServiceManager.getAuthoringService().loadRevision(lgScheme_, null, null);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("OWL load Failed: ", e);
-            }
-            
-            initAssociationEntities();
-            
-            // Populate the coding scheme from the OWL model
-            initSubtypeRoot();
-            processOWL();
-
-            // Apply all supported attributes that have been registered
-            // over the course of processing the OWL model ...
-            if (lgSupportedMappings_.getSupportedAssociations().size() > 0) {
-                String name = EntityTypes.ASSOCIATION.toString();
-
-                lgSupportedMappings_.registerSupportedEntityType(name, null, name, false);
-            }
-
-            lgSupportedMappings_.applyToCodingScheme(lgScheme_);
-
-            if (memoryProfile_ != ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY) {
-                final String uri = lgScheme_.getCodingSchemeURI();
-                final String version = lgScheme_.getRepresentsVersion();
-
-                databaseServiceManager.getDaoCallbackService().executeInDaoLayer(new DaoCallback<Object>() {
-
-                    public Object execute(DaoManager daoManager) {
-                        String codingSchemeId = daoManager.getCodingSchemeDao(uri, version)
-                                .getCodingSchemeUIdByUriAndVersion(uri, version);
-
-                        daoManager.getCodingSchemeDao(uri, version).insertMappings(codingSchemeId,
-                                lgScheme_.getMappings());
-
-                        return null;
-                    }
-                });
-            }
-
-            // Register the number of concepts found and return the scheme
-            updateApproximateConceptNumber();
-            return lgScheme_;
-        } catch (Exception e) {
-            throw new LgConvertException(e);
-        } finally {
-            // Restore state and cleanup resources ...
-            // LgModelUtil.setNotifyRequired(true);
-            if (owlModel_ != null) {
-                owlModel_.flushCache();
-                //*****This Comment Breaks this Legacy loader***//
-                //We'll remove it once we know we are safe to update the API, removing the loader class or deprecating it
-  //              owlModel_.getJenaModel().close();
-            }
-        }
+        throw new UnsupportedOperationException("We no longer support Jena based projects");
     }
 
     // ////////////////////////////////////////////////
@@ -1946,13 +1857,13 @@ public class ProtegeOwl2LG {
                     + SimpleMemUsageReporter.formatMemStat(snap.getHeapUsageDelta(null)));
 
             BufferedReader r = null;
-//            JenaOWLModel fileModel = null;
+
             try {
                 // Check if the memory profiling option indicates to create
                 // and hold the Protege model in-memory.
                 if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_ALL_IN_MEMORY
                         || memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_LEXGRID_DIRECT_DB) {
-//                    owlModel_ = ProtegeOWL.createJenaOWLModelFromURI(owlURI_.toString());
+
                     messages_.info("After Protege load into memory");
                     snap = SimpleMemUsageReporter.snapshot();
                     messages_.info("Read Time : " + SimpleMemUsageReporter.formatTimeDiff(snap.getTimeDelta(null))
@@ -1969,21 +1880,15 @@ public class ProtegeOwl2LG {
                 // (without
                 // building it in memory first).
                 if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_NON_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB) {
-//                    fileModel = ProtegeOWL.createJenaOWLModelFromReader(r = new BufferedReader(new FileReader(new File(
- //                           owlURI_.getPath()))));
+
 
                     List errors = new ArrayList();
-//                    Project fileProject = fileModel.getProject();
                     OWLDatabaseKnowledgeBaseFactory factory = new OWLDatabaseKnowledgeBaseFactory();
- //                   PropertyList sources = PropertyList.create(fileProject.getInternalProjectKnowledgeBase());
 
-//                    DatabaseKnowledgeBaseFactory.setSources(sources, dbDriver_, dbUrl_, dbProtegeTempTable_, dbUser_,
- //                           dbPassword_);
-//                    factory.saveKnowledgeBase(fileModel, sources, errors);
                     handleProtegeErrors(errors);
                     if (!errors.isEmpty()) {
                         messages_.warn("Unable to load source ontology to database, proceeding with memory model.");
-//                        owlModel_ = fileModel;
+
                     } else {
                         Project dbProject = Project.createNewProject(factory, errors);
                         DatabaseKnowledgeBaseFactory.setSources(dbProject.getSources(), dbDriver_, dbUrl_,
@@ -1992,7 +1897,7 @@ public class ProtegeOwl2LG {
                         dbProject.createDomainKnowledgeBase(factory, errors, true);
                         handleProtegeErrors(errors);
                         owlModel_ = (OWLModel) dbProject.getKnowledgeBase();
- //                       fileModel.dispose();
+
                     }
 
                     messages_.info("After Protege load into temp DB (NON_STREAMING)");
@@ -2150,12 +2055,7 @@ public class ProtegeOwl2LG {
 
             // The URN w/ protocol and type removed is a second local name
             String localProtocol = getCleanURIString(uri);
-//            if (uri.endsWith("#"))
-//                localProtocol = uri.substring(0, uri.length() - 1);
-//            else
-//                localProtocol = uri;
-//            if (localProtocol.endsWith("/"))
-//                localProtocol = localProtocol.substring(0, localProtocol.length() - 1);
+
 
             if (localProtocol.toLowerCase().startsWith("http://"))
                 lgScheme_.addLocalName(localProtocol.substring("http://".length()));
@@ -2654,9 +2554,6 @@ public class ProtegeOwl2LG {
         // functional, inverse functional, transitive and object property is in rdf type collection 
         for (Iterator itr = rdfProp.getRDFTypes().iterator(); itr.hasNext();) {
             RDFSClass rdfsClass = (RDFSClass) itr.next();
-//            Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", 
-  //                  rdfsClass.getLocalName(), lgSupportedMappings_, RDF.type.getURI(), null);
-//            assocEntity.addProperty(pro);
         }
         
         for (Iterator itr = rdfProp.getRDFProperties().iterator(); itr.hasNext();) {

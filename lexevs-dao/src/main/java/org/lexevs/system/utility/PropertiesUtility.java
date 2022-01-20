@@ -39,8 +39,8 @@ public class PropertiesUtility {
     public static String propertiesParentFolderKey = "_propertiesFileParentFolder_";
     public static LgMessageDirectorIF logger = null; // If provided, warnings
                                                      // will be printed here.
-    public static String systemVariable = "PropFileLocation"; // this is the
-                                                              // system variable
+    
+    public static String systemVariable = "PropFileLocation"; // this is the system variable
                                                               // it will
 
     // use as an override
@@ -289,60 +289,4 @@ public class PropertiesUtility {
         return loadPropertiesFromFileOrURL(temp);
     }
 
-    /**
-     * Convenience method that combines locatePropFile(fileName,
-     * classToSearchFor) and loadPropertiesFromFileOrURL(String) and
-     * Log4JUtility.configureLog4JFromPathSpecifiedInProperties
-     * 
-     * @param fileName
-     * @return
-     * @throws Exception
-     */
-//    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName,
-//            String classToSearchFor) throws Exception {
-//        String temp = locatePropFile(fileName, classToSearchFor);
-//        if (temp == null) {
-//            throw new IOException("Couldn't find file '" + fileName + "'");
-//        }
-//        Properties props = loadPropertiesFromFileOrURL(temp);
-//        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
-//        return props;
-//    }
-
-    /**
-     * Convenience method that combines locatePropFile(fileName,
-     * classToSearchFor) and loadPropertiesFromFileOrURL(String) and
-     * Log4JUtility.configureLog4JFromPathSpecifiedInProperties
-     * 
-     * @param fileName
-     * @return
-     * @throws Exception
-     */
-//    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName)
-//            throws Exception {
-//        String temp = locatePropFile(fileName, PropertiesUtility.class.getName());
-//        if (temp == null) {
-//            throw new IOException("Couldn't find file '" + fileName + "'");
-//        }
-//        Properties props = loadPropertiesFromFileOrURL(temp);
-//        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
-//        return props;
-//    }
-
-    // public static void main(String[] args) throws IOException,
-    // ClassNotFoundException
-    // {
-    //        
-    // File temp = new
-    // File("C:\\Eclipse Projects\\general-workspace\\CTS\\resources\\CTSProperties.prps");
-    // loadPropertiesFromFileOrURL(temp.getAbsolutePath());
-    //        
-    // Class clazz = Class.forName("edu.mayo.mir.utility.PropertiesUtility");
-    // java.net.URL url =
-    // clazz.getProtectionDomain().getCodeSource().getLocation();
-    //        
-    //       
-    // loadPropertiesFromFileOrURL(url.toString() +
-    // "../../CTS/resources/CTSProperties.prps");
-    // }
 }

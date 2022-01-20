@@ -24,7 +24,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.apache.lucene.index.IndexNotFoundException;
-//import org.apache.logging.log4j.*;
 import org.lexevs.dao.indexer.lucene.Index;
 import org.lexevs.dao.indexer.utility.CodingSchemeMetaData;
 import org.lexevs.dao.indexer.utility.ConcurrentMetaData;
@@ -70,9 +69,6 @@ public class IndexerService {
     }
 
     private void initServices(String rootLocation, boolean configureLog4j) throws RuntimeException {
-//        if (configureLog4j) {
-//            BasicConfigurator.configure();
-//        }
 
         indexes_ = new Hashtable<String, Index>();
         File root = new File(rootLocation);

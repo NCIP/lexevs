@@ -27,8 +27,9 @@ public class TestAdminUtilDisplayAndLog extends LexBIGServiceTestCase {
 
 	@Test
 	public void test() throws Exception {
-		LgLoggerIF logger = LoggerFactory.getLogger();
-		logger.fatalAndThrowException("very bad exception", new UnexpectedException("Fatal Unexpected Exception"));
+//		LgLoggerIF logger = LoggerFactory.getLogger();
+//		logger.fatalAndThrowException("very bad exception", new UnexpectedException("Fatal Unexpected Exception"));
+		
 	}
 
 	@Override

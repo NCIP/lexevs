@@ -105,12 +105,12 @@ public class Logger implements LgLoggerIF, Serializable {
         ctx.updateLoggers();
         error_ = ctx.getLogger("LB_ERROR_LOGGER");
 
-        warnConfig = LoggerConfig.createLogger(false, Level.WARN, "LB_ERROR_LOGGER",
+        warnConfig = LoggerConfig.createLogger(false, Level.WARN, "LB_WARN_LOGGER",
                 "true", refs, null, config, null );
         warnConfig.addAppender(simpleAppender, null, null);
-        config.addLogger("LB_ERROR_LOGGER", warnConfig);
+        config.addLogger("LB_WARN_LOGGER", warnConfig);
         ctx.updateLoggers();        
-        warn_ = ctx.getLogger("LB_ERROR_LOGGER");
+        warn_ = ctx.getLogger("LB_WARN_LOGGER");
 
 
          infoConfig = LoggerConfig.createLogger(false, Level.INFO, "LB_INFO_LOGGER",
