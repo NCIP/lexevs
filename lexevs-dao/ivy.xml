@@ -38,7 +38,9 @@
 		<dependency org="org.springframework" name="spring-aspects" rev="3.1.0.RELEASE" conf="default"/>
 		<dependency org="org.springframework" name="spring-aop" rev="3.1.0.RELEASE" conf="default"/>
 		<dependency org="org.springframework" name="spring-context" rev="3.1.0.RELEASE" conf="default"/>
-		<dependency org="org.springframework" name="spring-core" rev="3.1.0.RELEASE" conf="default"/>
+		<dependency org="org.springframework" name="spring-core" rev="3.1.0.RELEASE" conf="default">
+		  <exclude org="commons-logging" name="commons-logging"/>
+		</dependency>
 		<dependency org="org.springframework" name="spring-test" rev="3.1.0.RELEASE" conf="default" />
 		<dependency org="org.springframework" name="spring-beans" rev="3.1.0.RELEASE" conf="default" />
 		<dependency org="org.springframework" name="spring-jdbc" rev="3.1.0.RELEASE" conf="default" />
@@ -57,6 +59,7 @@
 		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" conf="default" />
 		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.17.1" conf="default" />
   		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.17.1" conf="default" />  
+  		<dependency org="org.apache.logging.log4j" name="log4j-jcl" rev="2.17.1" conf="default" />  
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false" conf="default->*"/>
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.8.0-beta4" conf="default" />
         <dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.17.1" conf="default" />

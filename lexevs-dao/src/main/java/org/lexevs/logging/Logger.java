@@ -287,6 +287,7 @@ public class Logger implements LgLoggerIF, Serializable {
                     .withFilePattern("'.'yyyy-MM-dd")
                     .setName("File")
                     .build();
+                    fileAppender.start();
                     
 
                     loadFileAppender = RollingFileAppender.newBuilder()
@@ -297,6 +298,7 @@ public class Logger implements LgLoggerIF, Serializable {
                     .withFilePattern("'.'yyyy-MM-dd")
                     .setName("LoadFile")
                     .build();
+                    loadFileAppender.start();
 
                     exportFileAppender = RollingFileAppender.newBuilder()
                     .setLayout(layout)
@@ -306,6 +308,7 @@ public class Logger implements LgLoggerIF, Serializable {
                     .withFilePattern("'.'yyyy-MM-dd")
                     .setName("ExportFile")
                     .build();
+                    exportFileAppender.start();
                     
                 }
 

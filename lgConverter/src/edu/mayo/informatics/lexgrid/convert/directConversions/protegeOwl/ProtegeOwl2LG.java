@@ -19,8 +19,6 @@
 package edu.mayo.informatics.lexgrid.convert.directConversions.protegeOwl;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,11 +29,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
@@ -70,25 +68,17 @@ import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.types.ChangeType;
 import org.apache.commons.lang.StringUtils;
-import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
-import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
-
-//import org.apache.jena.vocabulary.RDF;
-///import org.apache.jena.rdf.model.
 
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protege.model.Project;
 import edu.stanford.smi.protege.storage.database.DatabaseKnowledgeBaseFactory;
-import edu.stanford.smi.protege.util.PropertyList;
-import edu.stanford.smi.protegex.owl.ProtegeOWL;
 import edu.stanford.smi.protegex.owl.database.CreateOWLDatabaseFromFileProjectPlugin;
-import edu.stanford.smi.protegex.owl.database.OWLDatabaseKnowledgeBaseFactory;
-//import edu.stanford.smi.protegex.owl.jena.JenaOWLModel;
+
 import edu.stanford.smi.protegex.owl.model.NamespaceManager;
 import edu.stanford.smi.protegex.owl.model.OWLAllDifferent;
 import edu.stanford.smi.protegex.owl.model.OWLCardinalityBase;
@@ -329,7 +319,6 @@ public class ProtegeOwl2LG {
                 resolveComplementOfRelations(source, namedClass);
                 resolveOWLObjectPropertyRelations(source, namedClass);
                 resolveAnnotationPropertyRelations(source, namedClass);
-                // resolveDatatypePropertyRelations(source, namedClass);
             }
         }
 
@@ -1883,21 +1872,14 @@ public class ProtegeOwl2LG {
 
 
                     List errors = new ArrayList();
-                    OWLDatabaseKnowledgeBaseFactory factory = new OWLDatabaseKnowledgeBaseFactory();
+ //                   OWLDatabaseKnowledgeBaseFactory factory = new OWLDatabaseKnowledgeBaseFactory();
 
                     handleProtegeErrors(errors);
                     if (!errors.isEmpty()) {
                         messages_.warn("Unable to load source ontology to database, proceeding with memory model.");
 
                     } else {
-                        Project dbProject = Project.createNewProject(factory, errors);
-                        DatabaseKnowledgeBaseFactory.setSources(dbProject.getSources(), dbDriver_, dbUrl_,
-                                dbProtegeTempTable_, dbUser_, dbPassword_);
-
-                        dbProject.createDomainKnowledgeBase(factory, errors, true);
-                        handleProtegeErrors(errors);
-                        owlModel_ = (OWLModel) dbProject.getKnowledgeBase();
-
+//
                     }
 
                     messages_.info("After Protege load into temp DB (NON_STREAMING)");
@@ -1914,7 +1896,6 @@ public class ProtegeOwl2LG {
                 // profile, but results in significant performance degradation.
                 if (memoryProfile_ == ProtegeOwl2LGConstants.MEMOPT_STREAMING_PROTEGE_DB_AND_LEXGRID_DIRECT_DB) {
                     CreateOWLDatabaseFromFileProjectPlugin creator = new CreateOWLDatabaseFromFileProjectPlugin();
-                    creator.setKnowledgeBaseFactory(new OWLDatabaseKnowledgeBaseFactory());
                     creator.setDriver(dbDriver_);
                     creator.setURL(dbUrl_);
                     creator.setTable(dbProtegeTempTable_);
