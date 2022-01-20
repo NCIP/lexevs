@@ -1,7 +1,8 @@
 
 package org.LexGrid.LexBIG.gui;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -15,7 +16,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class DialogHandler {
 	Shell shell;
-	private static Logger log = Logger.getLogger("LB_GUI");
+	private static Logger log = LogManager.getLogger("LB_GUI");
 
 	public DialogHandler(Shell shell) {
 		this.shell = shell;

@@ -13,7 +13,8 @@ import org.LexGrid.LexBIG.gui.restrictions.Association;
 import org.LexGrid.LexBIG.gui.restrictions.CodeSystem;
 import org.LexGrid.LexBIG.gui.restrictions.DirectionalName;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Holder class for constructing graphs.
@@ -22,7 +23,7 @@ import org.apache.log4j.Logger;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class CodedNodeGraph extends CodeSet {
-	private static Logger log = Logger.getLogger("LB_GUI_LOGGER");
+	private static Logger log = LogManager.getLogger("LB_GUI_LOGGER");
 
 	public String relationName = "";
 	public boolean resolveForward = true;

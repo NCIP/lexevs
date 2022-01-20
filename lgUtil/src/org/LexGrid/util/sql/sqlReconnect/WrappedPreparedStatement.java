@@ -26,7 +26,8 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An automatically reconnecting prepared statement. See description in the
@@ -45,7 +46,7 @@ public class WrappedPreparedStatement implements PreparedStatement {
 
     private Integer resultSetType_, resultSetConcurrency_;
 
-    public final static org.apache.log4j.Logger logger = Logger
+    public final static Logger logger = LogManager
             .getLogger("org.LexGrid.util.sql.sqlReconnect.WrappedPreparedStatement");
     
     public WrappedPreparedStatement(WrappedConnection connection, String sql) throws SQLException {

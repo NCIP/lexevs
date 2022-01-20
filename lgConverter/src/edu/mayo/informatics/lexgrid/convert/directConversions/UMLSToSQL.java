@@ -16,7 +16,8 @@ import org.LexGrid.LexBIG.Preferences.loader.LoadPreferences.LoaderPreferences;
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.UMLSBaseCode;
 
@@ -132,7 +133,7 @@ public class UMLSToSQL extends UMLSBaseCode {
             String umlsServer, String umlsDriver, String umlsUserName, String umlsPassword, String codingScheme,
             LoaderPreferences loadPrefs, URI manifestLocation, boolean enforceIntegrity, LgMessageDirectorIF director)
             throws Exception {
-        log = Logger.getLogger("convert.UMLSToSQL");
+        log = LogManager.getLogger("convert.UMLSToSQL");
         messages_ = director;
         manifestLocation_ = manifestLocation;
         loadPrefs_ = loadPrefs;

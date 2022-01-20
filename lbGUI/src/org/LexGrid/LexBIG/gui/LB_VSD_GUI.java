@@ -45,7 +45,8 @@ import org.LexGrid.naming.Mappings;
 import org.LexGrid.valueSets.PickListDefinition;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -89,7 +90,7 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class LB_VSD_GUI{
-    private static Logger log = Logger.getLogger("LB_VSGUI_LOGGER");
+    private static Logger log = LogManager.getLogger("LB_VSGUI_LOGGER");
     protected Shell shell_;
     private DialogHandler errorHandler;
     private Composite valueSetDefComposite_, pickListComposite_;

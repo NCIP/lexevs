@@ -16,7 +16,8 @@ import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.commonTypes.EntityDescription;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.widgets.Composite;
@@ -34,7 +35,7 @@ import org.eclipse.swt.widgets.TreeItem;
  * 
  */
 public class ConceptTreeView {
-	private static Logger log = Logger.getLogger("ConceptTreeView");
+	private static Logger log = LogManager.getLogger("ConceptTreeView");
 
     private Tree tree;
 	private final Shell shell;

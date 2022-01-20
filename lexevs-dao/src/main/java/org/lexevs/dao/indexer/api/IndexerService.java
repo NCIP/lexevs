@@ -52,9 +52,6 @@ public class IndexerService {
     }
 
     private void initServices(String rootLocation, boolean configureLog4j) throws RuntimeException {
-        if (configureLog4j) {
-            org.apache.log4j.BasicConfigurator.configure();
-        }
 
         indexes_ = new Hashtable<String, Index>();
         File root = new File(rootLocation);

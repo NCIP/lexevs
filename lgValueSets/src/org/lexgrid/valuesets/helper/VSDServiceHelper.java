@@ -43,7 +43,8 @@ import org.LexGrid.proxy.CastorProxy;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.castor.xml.XMLProperties;
 import org.exolab.castor.xml.MarshalListener;
 import org.exolab.castor.xml.Marshaller;
@@ -69,7 +70,7 @@ import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.Stream
  */
 public class VSDServiceHelper {
 	@SuppressWarnings("unused")
-	private static Logger log = Logger.getLogger("convert.SQL");
+	private static Logger log = LogManager.getLogger("convert.SQL");
 
 	private ValueSetDefinitionCompiler valueSetDefinitionCompiler;
 

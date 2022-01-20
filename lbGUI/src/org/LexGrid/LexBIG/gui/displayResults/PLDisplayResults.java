@@ -18,7 +18,8 @@ import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Presentation;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
@@ -57,7 +58,7 @@ import prefuse.Constants;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class PLDisplayResults {
-    private static Logger log = Logger.getLogger("LexBIG.GUI");
+    private static Logger log = LogManager.getLogger("LexBIG.GUI");
     private LB_VSD_GUI lb_gui_;
     private DialogHandler dialog_;
     private Shell shell_;

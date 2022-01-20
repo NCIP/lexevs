@@ -8,7 +8,8 @@ import java.util.HashMap;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.relations.Relations;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lexevs.logging.LoggerFactory;
 
 import junit.framework.TestCase;

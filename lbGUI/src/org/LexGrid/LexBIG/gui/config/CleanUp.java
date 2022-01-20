@@ -7,7 +7,8 @@ import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
 import org.LexGrid.LexBIG.gui.DialogHandler;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.Utility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -34,7 +35,7 @@ public class CleanUp {
 	List orphans_;
 	Button remove_;
 
-	private static Logger log = Logger.getLogger("LB_GUI_LOGGER");
+	private static Logger log = LogManager.getLogger("LB_GUI_LOGGER");
 
 	public CleanUp(LB_GUI lb_gui) {
 		lb_gui_ = lb_gui;

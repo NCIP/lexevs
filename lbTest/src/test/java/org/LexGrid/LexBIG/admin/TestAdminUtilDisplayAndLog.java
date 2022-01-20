@@ -1,20 +1,15 @@
 
 package org.LexGrid.LexBIG.admin;
 
-import static org.junit.Assert.*;
-
-import java.io.StringWriter;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
+import java.rmi.UnexpectedException;
 
 import org.LexGrid.LexBIG.Impl.function.LexBIGServiceTestCase;
 import org.LexGrid.LexBIG.Utility.logging.LgLoggerIF;
-import org.apache.log4j.Layout;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
-import org.apache.log4j.WriterAppender;
+import org.apache.logging.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
+import org.lexevs.logging.LoggerFactory;
 
 
 public class TestAdminUtilDisplayAndLog extends LexBIGServiceTestCase {
@@ -32,14 +27,10 @@ public class TestAdminUtilDisplayAndLog extends LexBIGServiceTestCase {
 	}
 
 	@Test
-	public void test() {
-		Layout layout = new PatternLayout();
-		StringWriter stringWriter = new StringWriter();
-		WriterAppender writerAppender = new WriterAppender(layout, stringWriter);
-		forjlogger.addAppender(writerAppender);
-		Util.displayAndLogMessage("Not yet implemented");
-		assertEquals(true, stringWriter.toString().contains("Not yet implemented"));
-		System.out.println(stringWriter.toString());
+	public void test() throws Exception {
+//		LgLoggerIF logger = LoggerFactory.getLogger();
+//		logger.fatalAndThrowException("very bad exception", new UnexpectedException("Fatal Unexpected Exception"));
+		
 	}
 
 	@Override

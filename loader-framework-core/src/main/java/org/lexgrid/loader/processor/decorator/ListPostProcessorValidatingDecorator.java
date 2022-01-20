@@ -4,7 +4,8 @@ package org.lexgrid.loader.processor.decorator;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lexgrid.loader.logging.LoggerFactory;
 import org.lexgrid.loader.logging.LoggingBean;
 import org.springframework.batch.item.ItemProcessor;

@@ -15,7 +15,8 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 
 import org.LexGrid.util.Utility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * This class is an automatically reconnecting ldap dir context. If the
@@ -33,7 +34,7 @@ public class AutoReconnectDirContext implements DirContext {
     public int MAX_RECONNECT_ATTEMPTS = 5;
 
     private DirContext context_;
-    public final static org.apache.log4j.Logger logger = Logger
+    public final static Logger logger = LogManager
             .getLogger("edu.mayo.informatics.cts.utility.AutoReconnectDirContext");
 
     public AutoReconnectDirContext(Hashtable env, boolean logPassword) throws javax.naming.NamingException {

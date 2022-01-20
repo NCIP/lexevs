@@ -16,7 +16,8 @@ import org.LexGrid.LexBIG.gui.restrictions.MatchingCode;
 import org.LexGrid.LexBIG.gui.restrictions.MatchingDesignation;
 import org.LexGrid.LexBIG.gui.restrictions.MatchingProperties;
 import org.LexGrid.LexBIG.gui.restrictions.Status;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Holder class for constructing coded node sets. Stores all of the options that
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 public class CodedNodeSet extends CodeSet {
-	private static Logger log = Logger.getLogger("LB_GUI_LOGGER");
+	private static Logger log = LogManager.getLogger("LB_GUI_LOGGER");
 
 	public CodedNodeSet(CodingSchemeRendering csr) {
 		super();

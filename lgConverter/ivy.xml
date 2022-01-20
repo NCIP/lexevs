@@ -16,8 +16,6 @@
 	    <dependency org="protege" name="protege" rev="3.4.4" conf="default"/>
 	    <dependency org="protege" name="orphanNodesAlg" rev="3.4.4" conf="default"/>
 	    <dependency org="protege" name="protege-owl" rev="3.4.4" conf="default"/>
-	    <dependency org="com.hp.hpl.jena" name="jena" rev="2.6.4" conf="default"/>
-	    <dependency org="com.hp.hpl.jena" name="iri" rev="0.8" conf="default"/>
 		<dependency org="com.ibm.icu" name="icu4j" rev="3.6.1" conf="default"/>
 	    <dependency org="commons-cli" name="commons-cli" rev="1.2" conf="default"/>
 		<dependency org="org.apache.commons" name="commons-rdf-api" rev="0.5.0" conf="default"/>
@@ -33,7 +31,10 @@
 		<dependency org="net.sourceforge.owlapi" name="owlapi-impl" rev="5.1.9" conf="default"/>
 		<dependency org="net.sourceforge.owlapi" name="owlapi-api" rev="5.1.9" conf="default"/>
 		<dependency org="net.sourceforge.owlapi" name="owlapi-apibinding" rev="5.1.9" conf="default"/>
-		<dependency org="net.sourceforge.owlapi" name="owlapi-distribution" rev="5.1.9" conf="default"/>
+		<dependency org="net.sourceforge.owlapi" name="owlapi-distribution" rev="5.1.9" conf="default">
+			<exclude org="log4j" name="log4j"/>
+   			<exclude org="slf4j" name="slf4j-lg4j12"/>
+		</dependency>
 		<dependency org="net.sourceforge.owlapi" name="owlapi-parsers" rev="5.1.9" conf="default"/>
 		<dependency org="net.sourceforge.owlapi" name="owlapi-tools" rev="5.1.9" conf="default"/>
 		<dependency org="net.sourceforge.owlapi" name="owlapi-oboformat" rev="5.1.9" conf="default"/>

@@ -24,8 +24,9 @@ import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.LBConstants.KnownTags;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -53,8 +54,8 @@ public class TestProductionTags extends LexBIGServiceTestCase {
         // reference)");
 
         // silence some extraneous warnings from a logger here:
-        Logger temp = Logger.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
-        temp.setLevel(Level.ERROR);
+        Logger temp = LogManager.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
+        temp.atLevel(Level.ERROR);
 
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -535,8 +536,8 @@ public class TestProductionTags extends LexBIGServiceTestCase {
         assertTrue(TestUtil.removeScheme(AUTO_URN, updatedVersion));
 
         // restore the logger level
-        Logger temp = Logger.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
-        temp.setLevel(Level.DEBUG);
+        Logger temp = LogManager.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
+        temp.atLevel(Level.DEBUG);
     }
 
 }

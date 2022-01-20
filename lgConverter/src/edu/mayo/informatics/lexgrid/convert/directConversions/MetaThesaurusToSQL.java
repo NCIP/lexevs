@@ -24,7 +24,8 @@ import org.apache.commons.collections.OrderedMapIterator;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.UmlsCommon.UMLSBaseCode;
 
@@ -99,7 +100,7 @@ public class MetaThesaurusToSQL extends UMLSBaseCode {
             String tablePrefix, String umlsServer, String umlsDriver, String umlsUserName, String umlsPassword,
             LoaderPreferences loadPrefs, URI manifestLocation, boolean enforceIntegrity, boolean rootRecalcOnly,
             LgMessageDirectorIF director) throws Exception {
-        log = Logger.getLogger("convert.MetaThesaurusToSQL");
+        log = LogManager.getLogger("convert.MetaThesaurusToSQL");
         messages_ = director;
         loadPrefs_ = loadPrefs;
         manifestLocation_ = manifestLocation;

@@ -7,7 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import org.LexGrid.util.sql.GenericSQLModifier;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class for creating, adding/removing constraints, and cleaning the SQLLite
@@ -17,7 +18,7 @@ import org.apache.log4j.Logger;
  */
 public class SQLLiteTableUtilities {
     private Connection sqlConnection_;
-    private static Logger log = Logger.getLogger("convert.SQLLiteTableUtilities");
+    private static Logger log = LogManager.getLogger("convert.SQLLiteTableUtilities");
     private ArrayList tableIndexSql_ = new ArrayList();
 
     private GenericSQLModifier gsm_;

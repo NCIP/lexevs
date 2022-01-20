@@ -24,7 +24,8 @@ import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
 import org.LexGrid.util.sql.DBUtility;
 import org.LexGrid.util.sql.GenericSQLModifier;
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class to make the tables for the new SQL format.
@@ -39,7 +40,7 @@ public class SQLTableUtilities {
     private Connection sqlConnection_;
     private DataSource connectionPool_;
 
-    private static Logger log = Logger.getLogger("convert.SQL");
+    private static Logger log = LogManager.getLogger("convert.SQL");
 
     private Hashtable<String, String> defaultTableCreateSql_ = new Hashtable<String, String>();
     private ArrayList<String> defaultTableIndexSql_ = new ArrayList<String>();
