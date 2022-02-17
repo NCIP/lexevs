@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.io.Serializable;
@@ -9,10 +10,10 @@ import org.apache.lucene.search.ScoreDoc;
 
 public class SourceAssertedScoreDocTransformerExecutor implements Serializable {
 
-    /**
+/**
      * 
      */
-    private static final long serialVersionUID = -1028542916993160550L;
+private static final long serialVersionUID = -1028542916993160550L;
 
     public ResolvedConceptReferenceList transform(Set<AbsoluteCodingSchemeVersionReference> codeSystemsToInclude,
             SourceAssertedScoreDocTransformer transformer, Iterable<ScoreDoc> items) {

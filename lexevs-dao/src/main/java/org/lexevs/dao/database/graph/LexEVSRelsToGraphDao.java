@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.graph;
 
 import java.util.ArrayList;
@@ -135,10 +136,10 @@ public class LexEVSRelsToGraphDao implements InitializingBean {
 		return graphSourceMgr.getDataSource(nameOrUri, version).getDbInstance();
 	}
 
-	/**
+/**
 	 * @return the graphSourceMgr
 	 */
-	public ErrorReportingGraphDbDataSourceManager getGraphSourceMgr() {
+public ErrorReportingGraphDbDataSourceManager getGraphSourceMgr() {
 		return graphSourceMgr;
 	}
 

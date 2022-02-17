@@ -1,3 +1,4 @@
+
 package org.lexgrid.valuesets.sourceasserted;
 
 import java.io.Serializable;
@@ -15,17 +16,15 @@ import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.concepts.Entity;
 
 public interface SourceAssertedValueSetService extends Serializable{
-	
-			
-	
-	/**
+
+/**
    	 * Returns a list of coding scheme representations of value sets.  Includes
    	 * entities for value sets.  
    	 * 
    	 * @return List<CodingScheme> - List of value sets as coding schemes
    	 * @throws LBException
 	 */
-	public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException;
+public List<CodingScheme> listAllSourceAssertedValueSets() throws LBException;
 	/**
    	 * Returns a fully resolved coding scheme representation of a value set.  Includes
    	 * entities for the value set.  

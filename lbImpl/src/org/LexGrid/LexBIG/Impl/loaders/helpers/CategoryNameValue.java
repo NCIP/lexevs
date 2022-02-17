@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package org.LexGrid.LexBIG.Impl.loaders.helpers;
 
 /**

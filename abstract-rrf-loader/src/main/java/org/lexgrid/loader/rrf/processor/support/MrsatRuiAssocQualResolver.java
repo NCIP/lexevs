@@ -1,3 +1,4 @@
+
 package org.lexgrid.loader.rrf.processor.support;
 
 import org.LexGrid.commonTypes.Text;

@@ -1,3 +1,4 @@
+
 package org.lexgrid.loader.processor;
 
 import java.util.concurrent.TimeUnit;
@@ -13,9 +14,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 public class EntityAsscToEntityMrsatQualsProcessor<I> extends AbstractSupportedAttributeRegisteringProcessor<I, ParentIdHolder<AssociationQualification>> implements InitializingBean{
 
-
-	/** The key resolver. */
-	private AssociationInstanceIdResolver<I> associationInstanceIdResolver;
+/** The key resolver. */
+private AssociationInstanceIdResolver<I> associationInstanceIdResolver;
 	
 	/** The qualifier resolver. */
 	private OptionalQualifierResolver<I> qualifierResolver;

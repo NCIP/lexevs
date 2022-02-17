@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7;
 
 import static org.junit.Assert.*;

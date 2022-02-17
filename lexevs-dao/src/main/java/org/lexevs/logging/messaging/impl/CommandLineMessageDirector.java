@@ -1,25 +1,9 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.lexevs.logging.messaging.impl;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * An implementation of the LgMessageDirectorIF that routes the messages to the
@@ -44,7 +28,7 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
      */
     public CommandLineMessageDirector(String logName, boolean showDebug) {
         if (logName != null && logName.length() > 0) {
-            log = Logger.getLogger(logName);
+            log = LogManager.getLogger(logName);
         } else {
             log = null;
         }
@@ -59,7 +43,7 @@ public class CommandLineMessageDirector implements LgMessageDirectorIF {
      */
     public CommandLineMessageDirector(String logName) {
         if (logName != null && logName.length() > 0) {
-            log = Logger.getLogger(logName);
+            log = LogManager.getLogger(logName);
         } else {
             log = null;
         }

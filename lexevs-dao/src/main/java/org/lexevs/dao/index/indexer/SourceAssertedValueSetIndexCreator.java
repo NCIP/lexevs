@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.index.indexer;
 
 import java.util.ArrayList;
@@ -75,7 +76,6 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		System.out.println("Processing entities");
 		List<String> topNodes = valueSetService.getAllValidValueSetTopNodeCodes();
 		List<CodingScheme> valueSets = null;
-		List<Document> documents = new ArrayList<Document>();
 		for(String s: topNodes) {
 		try {
 			valueSets = valueSetService.getSourceAssertedValueSetforTopNodeEntityCode(s);
@@ -85,6 +85,7 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 		}
 		
 			for (CodingScheme cs : valueSets) {
+				List<Document> documents = new ArrayList<Document>();
 				Entities entities = cs.getEntities();
 				logger.info("Indexing " + entities.getEntityCount() + " entities");
 				System.out.println("Indexing " + entities.getEntityCount() + " entities");
@@ -94,11 +95,12 @@ public class SourceAssertedValueSetIndexCreator implements IndexCreator {
 							reference.getCodingSchemeVersion(), cs.getCodingSchemeURI(), cs.getCodingSchemeName(),
 							entity));
 				}
+
+				entityIndexService.addDocuments(indexName, reference.getCodingSchemeVersion(), documents,
+						entityIndexer.getAnalyzer());
 			}
 		}
 
-		entityIndexService.addDocuments(indexName, reference.getCodingSchemeVersion(), documents,
-				entityIndexer.getAnalyzer());
 		return indexName;
 	}
 

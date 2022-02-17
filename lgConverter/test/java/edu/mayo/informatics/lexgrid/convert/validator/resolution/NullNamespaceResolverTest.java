@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.validator.resolution;
 
 import junit.framework.Assert;

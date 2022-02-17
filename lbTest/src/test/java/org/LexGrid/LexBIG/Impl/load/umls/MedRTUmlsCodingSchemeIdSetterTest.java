@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.load.umls;
 
 import static org.junit.Assert.*;

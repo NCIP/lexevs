@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package edu.mayo.informatics.lexgrid.convert.formats.inputFormats;
 
 import java.sql.Connection;
@@ -28,7 +11,8 @@ import java.util.Arrays;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.util.sql.lgTables.SQLTableUtilities;
 import org.LexGrid.util.sql.sqlReconnect.WrappedConnection;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import edu.mayo.informatics.lexgrid.convert.exceptions.ConnectionFailure;
 import edu.mayo.informatics.lexgrid.convert.exceptions.UnexpectedError;
@@ -56,7 +40,7 @@ import edu.mayo.informatics.lexgrid.convert.utility.StringComparator;
  *          22:28:55 +0000 (Thu, 05 Jun 2008) $
  */
 public class LexGridSQL extends SQLBase implements InputFormatInterface {
-    protected static Logger log = Logger.getLogger("convert.gui");
+    protected static Logger log = LogManager.getLogger("convert.gui");
 
     public static final String description = "LexGrid SQL Database";
 

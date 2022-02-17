@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.util.ArrayList;

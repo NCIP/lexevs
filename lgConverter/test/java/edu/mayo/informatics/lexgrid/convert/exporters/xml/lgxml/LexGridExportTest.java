@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml;
 
 import java.io.BufferedReader;

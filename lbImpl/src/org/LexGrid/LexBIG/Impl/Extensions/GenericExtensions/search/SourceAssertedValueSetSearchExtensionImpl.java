@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.util.HashSet;
@@ -16,10 +17,10 @@ import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 
 public class SourceAssertedValueSetSearchExtensionImpl extends AbstractExtendable implements SourceAssertedValueSetSearchExtension {
 
-    /**
+/**
      * 
      */
-    private static final long serialVersionUID = 6623199682766189795L;
+private static final long serialVersionUID = 6623199682766189795L;
 
     @Override
     public ResolvedConceptReferencesIterator search(String text, Set<CodingSchemeReference> assertedSources,

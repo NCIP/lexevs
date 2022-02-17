@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.index.lucene.v2013.search;
 
 import static org.junit.Assert.assertEquals;

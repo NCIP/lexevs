@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.lexevs.system.utility;
 
 import java.io.File;
@@ -39,8 +22,8 @@ public class PropertiesUtility {
     public static String propertiesParentFolderKey = "_propertiesFileParentFolder_";
     public static LgMessageDirectorIF logger = null; // If provided, warnings
                                                      // will be printed here.
-    public static String systemVariable = "PropFileLocation"; // this is the
-                                                              // system variable
+    
+    public static String systemVariable = "PropFileLocation"; // this is the system variable
                                                               // it will
 
     // use as an override
@@ -289,60 +272,4 @@ public class PropertiesUtility {
         return loadPropertiesFromFileOrURL(temp);
     }
 
-    /**
-     * Convenience method that combines locatePropFile(fileName,
-     * classToSearchFor) and loadPropertiesFromFileOrURL(String) and
-     * Log4JUtility.configureLog4JFromPathSpecifiedInProperties
-     * 
-     * @param fileName
-     * @return
-     * @throws Exception
-     */
-    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName,
-            String classToSearchFor) throws Exception {
-        String temp = locatePropFile(fileName, classToSearchFor);
-        if (temp == null) {
-            throw new IOException("Couldn't find file '" + fileName + "'");
-        }
-        Properties props = loadPropertiesFromFileOrURL(temp);
-        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
-        return props;
-    }
-
-    /**
-     * Convenience method that combines locatePropFile(fileName,
-     * classToSearchFor) and loadPropertiesFromFileOrURL(String) and
-     * Log4JUtility.configureLog4JFromPathSpecifiedInProperties
-     * 
-     * @param fileName
-     * @return
-     * @throws Exception
-     */
-    public static Properties locateAndLoadPropFileConfigureLog4J(String fileName, String log4JConfigFilePropertyName)
-            throws Exception {
-        String temp = locatePropFile(fileName, PropertiesUtility.class.getName());
-        if (temp == null) {
-            throw new IOException("Couldn't find file '" + fileName + "'");
-        }
-        Properties props = loadPropertiesFromFileOrURL(temp);
-        Log4JUtility.configureLog4JFromPathSpecifiedInProperties(props, log4JConfigFilePropertyName, true);
-        return props;
-    }
-
-    // public static void main(String[] args) throws IOException,
-    // ClassNotFoundException
-    // {
-    //        
-    // File temp = new
-    // File("C:\\Eclipse Projects\\general-workspace\\CTS\\resources\\CTSProperties.prps");
-    // loadPropertiesFromFileOrURL(temp.getAbsolutePath());
-    //        
-    // Class clazz = Class.forName("edu.mayo.mir.utility.PropertiesUtility");
-    // java.net.URL url =
-    // clazz.getProtectionDomain().getCodeSource().getLocation();
-    //        
-    //       
-    // loadPropertiesFromFileOrURL(url.toString() +
-    // "../../CTS/resources/CTSProperties.prps");
-    // }
 }

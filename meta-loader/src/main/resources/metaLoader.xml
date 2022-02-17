@@ -90,8 +90,11 @@
 			 <step id="index" next="processMrSatAssocQualifiers">
 					<tasklet ref="indexingTasklet" />
 			 </step>
-			  <step id="processMrSatAssocQualifiers">
+			  <step id="processMrSatAssocQualifiers" parent="listenerStep">
 			  			<tasklet>
+			  			<listeners>
+							<listener ref="stepCompletionListener" />
+						</listeners>
 							<chunk reader="metaMrsatRuiSkippingReader" processor="metasMrsatQualifierProcessor"
 								 writer="associationQualifierWriter" commit-interval="10000" skip-limit="100000">
 								<streams>
@@ -101,8 +104,7 @@
 									<include class="org.lexgrid.loader.database.key.KeyNotFoundException"/>
 								</skippable-exception-classes>
 							</chunk>
-						</tasklet>
-						
+						</tasklet>						
 			  </step>
 						
 			</flow>

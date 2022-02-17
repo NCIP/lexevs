@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
 import java.util.Arrays;
@@ -130,7 +113,7 @@ public class OwlApi2LGConstants {
      * properties within the LexGrid model (can be altered via preferences).
      */
     public static final List<String> PRIORITIZED_COMMENT_NAMES = Arrays.asList(new String[] { "DesignNote", "Editor_Note",
-            "Citation", "VA_Workflow_Comment", "rdfs:comment" });
+            "Citation", "VA_Workflow_Comment", "rdfs:comment","comment" });
     public static final List<String> PRIORITIZED_DEFINITION_NAMES = Arrays.asList(new String[] { "DEFINITION", "dDEFINITION",
             "LONG_DEFINITION", "ALT_DEFINITION", "ALT_LONG_DEFINITION", "MeSH_Definition","definition", "rdf:Description" });
     public static final List<String> PRIORITIZED_PRESENTATION_NAMES = Arrays.asList(new String[] { "NCI_Preferred_Term",

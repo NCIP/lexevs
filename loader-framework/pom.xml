@@ -137,10 +137,10 @@
         <scope>test</scope>
     </dependency>
     <dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-context</artifactId>
-    <version>2.5.6</version>
-</dependency> 
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+        <version>2.5.6</version>
+	</dependency> 
     <dependency>
     	<groupId>org.apache.lucene</groupId>
     	<artifactId>lucene-core</artifactId>
@@ -183,10 +183,20 @@
     	<version>2.4</version>
     	<scope>test</scope>
     </dependency>
-    <dependency>
+     <dependency>
     	<groupId>net.sf.ehcache</groupId>
     	<artifactId>ehcache</artifactId>
     	<version>1.6.0-beta5</version>
+    	<exclusions>
+			<exclusion>
+	          <groupId>log4j</groupId>
+	          <artifactId>log4j</artifactId>
+	        </exclusion>
+			<exclusion>
+	          <groupId>org.slf4j</groupId>
+			  <artifactId>slf4j-log4j12</artifactId>
+	        </exclusion>
+      	</exclusions> 
     </dependency>
    
     <dependency>

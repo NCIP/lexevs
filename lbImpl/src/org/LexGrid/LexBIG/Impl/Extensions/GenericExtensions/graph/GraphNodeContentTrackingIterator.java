@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 
 import java.io.Serializable;
@@ -9,11 +10,10 @@ import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 
 public class GraphNodeContentTrackingIterator<T> implements Iterator<T>, Iterable<T>, Serializable {
 
-
-    /**
+/**
      * 
      */
-    private static final long serialVersionUID = 2508802737228472504L;
+private static final long serialVersionUID = 2508802737228472504L;
     private List<T> cache = new ArrayList<T>();
     private int inCachePosition = 0;
     

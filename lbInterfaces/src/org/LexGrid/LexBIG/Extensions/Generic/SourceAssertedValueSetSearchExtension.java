@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Extensions.Generic;
 
 import java.io.IOException;
@@ -9,8 +10,8 @@ import org.LexGrid.LexBIG.Extensions.Generic.SearchExtension.MatchAlgorithm;
 import org.LexGrid.LexBIG.Utility.Iterators.ResolvedConceptReferencesIterator;
 
 public interface SourceAssertedValueSetSearchExtension extends SearchExtension {
-	
-	/**
+
+/**
      * Search based on a given text string over a coding schemes source
      * asserted value sets.  Returns and empty iterator if none exist for
      * this scheme
@@ -28,7 +29,7 @@ public interface SourceAssertedValueSetSearchExtension extends SearchExtension {
 	 * @throws LBParameterException
 	 * @throws IOException 
 	 */
-	public ResolvedConceptReferencesIterator search(
+public ResolvedConceptReferencesIterator search(
 			String text, 
 			CodingSchemeReference  codingScheme,
 			MatchAlgorithm matchAlgorithm) throws LBParameterException;

@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.LexBIG.gui.config;
 
 import java.util.ArrayList;
@@ -24,7 +7,8 @@ import org.LexGrid.LexBIG.Impl.dataAccess.CleanUpUtility;
 import org.LexGrid.LexBIG.gui.DialogHandler;
 import org.LexGrid.LexBIG.gui.LB_GUI;
 import org.LexGrid.LexBIG.gui.Utility;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -51,7 +35,7 @@ public class CleanUp {
 	List orphans_;
 	Button remove_;
 
-	private static Logger log = Logger.getLogger("LB_GUI_LOGGER");
+	private static Logger log = LogManager.getLogger("LB_GUI_LOGGER");
 
 	public CleanUp(LB_GUI lb_gui) {
 		lb_gui_ = lb_gui;

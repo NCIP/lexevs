@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.LexBIG.admin;
 
 import java.net.URI;
@@ -71,7 +54,7 @@ import edu.mayo.informatics.resourcereader.core.StringUtils;
  * -or-
  *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -v 0
  *  -or-
- *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -a -meta &quot;file:///path/to/metadata.xml&quot; -metao
+ *  org.LexGrid.LexBIG.admin.LoadOWL2 -in &quot;file:///path/to/somefile.owl&quot; -lp &quot;file:///path/to/preferences.xml&quot; -a -meta &quot;file:///path/to/metadata.xml&quot; -metao
  * </pre>
  * 
  * @author <A HREF="mailto:kanjamala.pradip@mayo.edu">Pradip Kanjamala</A>
@@ -81,7 +64,7 @@ public class LoadOWL2 {
 
     private static final String EXAMPLE_CALL =  "\n LoadOWL2 -in \"file:///path/to/somefile.owl\" -a"
             + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -v 0"
-            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -mf \"file:///path/to/myCodingScheme-manifest.xml\" -a -meta \"file:///path/to/metadata.xml\" -metav 0 -metao";
+            + "\n LoadOWL -in \"file:///path/to/somefile.owl\" -lp \"file:///path/to/preferences.xml\" -mf \"file:///path/to/myCodingScheme-manifest.xml\" -a -meta \"file:///path/to/metadata.xml\" -metav 0 -metao";
     
     public static void main(String[] args) {
         try {
