@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary;
 
 
@@ -9,8 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class ContentScrubberTestIT extends DataLoadTestBase {
-	/** The test entity. */
-	private Entity testEntity;
+
+/** The test entity. */
+private Entity testEntity;
 	
 	@Before
 	public void setUp() throws Exception {

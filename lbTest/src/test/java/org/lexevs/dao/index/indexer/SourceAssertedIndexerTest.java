@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.index.indexer;
 
 import static org.junit.Assert.assertNotNull;

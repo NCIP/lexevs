@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.function.query;
 
 import java.util.stream.Stream;

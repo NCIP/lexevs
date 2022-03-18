@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.owlapi;
 
 import java.net.URI;
@@ -145,8 +128,9 @@ import org.semanticweb.owlapi.util.ShortFormProvider;
 import org.semanticweb.owlapi.util.SimpleShortFormProvider;
 import org.semanticweb.owlapi.vocab.OWL2Datatype;
 
-import com.hp.hpl.jena.vocabulary.RDF;
+//import com.hp.hpl.jena.vocabulary.RDF;
 
+//import org.apache.jena.vocabulary.RDF;
 import edu.mayo.informatics.lexgrid.convert.Conversions.SupportedMappings;
 import edu.mayo.informatics.lexgrid.convert.exceptions.LgConvertException;
 import edu.stanford.smi.protegex.owl.model.RDFSNames;
@@ -1253,6 +1237,11 @@ public class OwlApi2LG {
             if (isNoop(propClass))
                 continue;
             
+            
+            String lang = null;
+            if(annotationAxiom.getValue().asLiteral().isPresent()) {
+                lang = annotationAxiom.getValue().asLiteral().get().getLang();
+            }
             // if the IRI is not in the cache, call isAnyURIDataType() method, get the result, and add it to the cache
             Boolean isAnyURIDataType;
                  
@@ -1305,7 +1294,7 @@ public class OwlApi2LG {
             // property to the list to eventually add to the concept.
             else {
                 Property newProp = resolveProp(annotationAxiom, propClass, generatePropertyID(++i), lgLabel, lgDType,
-                        getNameSpace(annotationAxiom.getProperty()), resolvedText, null);
+                        getNameSpace(annotationAxiom.getProperty()), resolvedText, lang != null?lang: null);
                 if (newProp.getValue() != null) {
                     sortedProps.add(newProp);
                     if (newProp instanceof Presentation)
@@ -1935,6 +1924,9 @@ public class OwlApi2LG {
                 // lgSupportedMappings_.registerSupportedSource(prefix,
                 // nm.getNamespaceForPrefix(prefix), prefix, null, false);
                 lgSupportedMappings_.registerSupportedNamespace(prefixName, prefix, prefixName, null, false);
+            }else {
+                lgSupportedMappings_.registerSupportedNamespace(getDefaultNameSpace(), prefix, getDefaultNameSpace(), null, false);
+                
             }
 
         }
@@ -2125,8 +2117,7 @@ public class OwlApi2LG {
     String getDefaultNameSpace() {
         IRI ontologyIRI = ontology.getOntologyID().getOntologyIRI().isPresent()? 
                 ontology.getOntologyID().getOntologyIRI().get(): null;
-        String localName = renderer.getOntologyShortFormProvider().getShortForm(ontologyIRI);
-        return localName;
+       return ontologyIRI.getFragment();
     }
 
     protected void initAnnotationProperties() {
@@ -2628,7 +2619,7 @@ public class OwlApi2LG {
         for (String str : characteristics) {
 
             Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", str, lgSupportedMappings_,
-                    RDF.type.getURI(), null);
+                    property.getIRI().toString(), null);
             assocEntity.addProperty(pro);
         }
         addPropertiesToAssociationEntity(assocEntity, property);
@@ -2642,7 +2633,7 @@ public class OwlApi2LG {
         }
         for (String str : characteristics) {
             Property pro = CreateUtils.createProperty(generatePropertyID(++i), "type", str, lgSupportedMappings_,
-                    RDF.type.getURI(), null);
+                   property.getIRI().toString(), null);
             assocEntity.addProperty(pro);
         }
         addPropertiesToAssociationEntity(assocEntity, property);

@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.codedNodeSetOperations.interfaces;
 
 import org.LexGrid.LexBIG.Exceptions.LBException;
@@ -11,10 +12,10 @@ import org.lexevs.exceptions.InternalException;
 
 public abstract class AbstractJoinQueryRestriction implements Restriction {
 
-    /**
+/**
      * 
      */
-    private static final long serialVersionUID = 9067083083894835005L;
+private static final long serialVersionUID = 9067083083894835005L;
 
     @Override
     public final Query getQuery() throws LBException, InternalException {

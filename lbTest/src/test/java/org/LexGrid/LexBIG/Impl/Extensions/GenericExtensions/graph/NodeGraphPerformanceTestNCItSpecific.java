@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.graph;
 
 import java.util.Iterator;
@@ -210,4 +211,3 @@ public class NodeGraphPerformanceTestNCItSpecific {
 	        System.out.println("Millisecond return time: " + (System.currentTimeMillis() - start13));
 	}
 }
-

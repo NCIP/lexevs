@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.graph.rest.client.model;
 
 import java.util.List;
@@ -14,10 +15,10 @@ public class GraphDatabase {
 		this.graphs = graphs;
 	}
 
-	/**
+/**
 	 * @return the graphDbName
 	 */
-	public String getGraphDbName() {
+public String getGraphDbName() {
 		return graphDbName;
 	}
 

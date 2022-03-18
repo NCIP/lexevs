@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.LexBIG.Impl.function;
 
 import junit.framework.TestCase;
@@ -76,9 +59,9 @@ abstract public class LexBIGServiceTestCase extends TestCase {
     protected final static String OVARIANMASS_SCHEME_VERSION = "UNASSIGNED";
     protected final static String MAPPING_SCHEME_URI = "urn:oid:mapping:sample";
     protected final static String MAPPING_SCHEME_VERSION = "1.0";
-    protected final static String PIZZA_SCHEME_URI = "http://www.co-ode.org/ontologies/pizza/2005/05/16/pizza.owl#";
-    protected final static String PIZZA_SCHEME_VERSION = "version 1.2";
-    protected final static String PIZZA_SCHEME_NAME = "pizza.owl";
+    protected final static String PIZZA_SCHEME_URI = "http://www.co-ode.org/ontologies/pizza/pizza.owl#";
+    protected final static String PIZZA_SCHEME_VERSION = "2.0";
+    protected final static String PIZZA_SCHEME_NAME = "pizza";
     public final static String NPO_SCHEME_URI = "http://purl.bioontology.org/ontology/npo";
     public final static String NPO_SCHEME_VERSION = "2012-01-25 (yyyy-mm-dd)";
     public final static String NPO_SCHEME_MULTI_NAMESPACE = "npo";

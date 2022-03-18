@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.tree.model;
 
 import java.util.regex.Matcher;
@@ -11,6 +12,11 @@ import org.LexGrid.LexBIG.Impl.Extensions.tree.test.LexEvsTreeTestBase;
 import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 @Ignore
 public class LexEvsTreeNodeJsonNameSpaceTest extends LexEvsTreeTestBase {
@@ -48,15 +54,17 @@ public class LexEvsTreeNodeJsonNameSpaceTest extends LexEvsTreeTestBase {
 
 		focusNode = tree.getCurrentFocus();
 		
-		String json = service.getJsonConverter().buildJsonPathFromRootTree(focusNode);	    
-    
+		String json = service.getJsonConverter(-1).buildJsonPathFromRootTree(focusNode);	
+		JsonElement jsonElement = new JsonParser().parse(json);
+		 Gson gson = new GsonBuilder().setPrettyPrinting().create();
+		 System.out.println(gson.toJson(jsonElement));
 		// verify that the JSON namespace npo is present 
         Pattern pattern = Pattern.compile("\"ontology_node_ns\":\"npo\""); 
         Matcher matcher = pattern.matcher(json);
         int namespaceCount = 0;
         while (matcher.find()) namespaceCount++;
-        
-        assertTrue(namespaceCount == 5);
+        //ordering is not assured. The count may vary and break this if we limit results
+        assertEquals(namespaceCount, 16);
         
         // verify that the JSON namespace span is present
         pattern = Pattern.compile("\"ontology_node_ns\":\"span\""); 

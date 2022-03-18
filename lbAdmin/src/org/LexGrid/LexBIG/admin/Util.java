@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.LexBIG.admin;
 
 import java.io.File;
@@ -31,6 +14,7 @@ import org.LexGrid.LexBIG.DataModel.InterfaceElements.CodingSchemeRendering;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ExportStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.LoadStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.ProcessStatus;
+import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBResourceUnavailableException;
 import org.LexGrid.LexBIG.Extensions.Export.Exporter;
@@ -136,6 +120,33 @@ public class Util {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {
+            }
+            status = reporter.getStatus();
+            String s = status.getMessage();
+            if (s != null && !s.equals(msg)) {
+                Util.displayAndLogMessage(s);
+                msg = s;
+            }
+        } while (status.getEndTime() == null);
+    }
+    
+    
+    /**
+     * Displays any available status messages, polling periodically and
+     * returning when the export operation is complete.
+     * 
+     * @param loader
+     */
+    public static void displayVSIndexerStatus(StatusReporter reporter) {
+        ProcessStatus status = null;
+        String msg = "";
+        do {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                status.setEndTime(new Date(System.currentTimeMillis()));
+                status.setState(ProcessState.FAILED);
+                throw new RuntimeException("Error while checking for load status", e);
             }
             status = reporter.getStatus();
             String s = status.getMessage();

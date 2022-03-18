@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.directConversions.hl7.mif.vocabulary;
 
 import org.LexGrid.LexBIG.Utility.logging.LgMessageDirectorIF;

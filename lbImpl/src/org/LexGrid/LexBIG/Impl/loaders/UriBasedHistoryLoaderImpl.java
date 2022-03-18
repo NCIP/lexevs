@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.loaders;
 
 import java.io.File;
@@ -32,13 +33,11 @@ import edu.mayo.informatics.lexgrid.convert.options.StringOption;
 import edu.mayo.informatics.lexgrid.convert.options.URIOption;
 
 public class UriBasedHistoryLoaderImpl implements UriBasedHistoryLoader {
-    
 
-    
-    /**
+/**
      * 
      */
-    private static final long serialVersionUID = -3252187227741353311L;
+private static final long serialVersionUID = -3252187227741353311L;
     public final static String name = "UriBasedHistoryLoader";
     private final static String description = "This loader loads Files for any source based on Thesaurus history formatted files.";
 

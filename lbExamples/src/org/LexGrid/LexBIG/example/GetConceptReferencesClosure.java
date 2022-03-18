@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.example;
 
 import java.util.List;
@@ -13,10 +14,10 @@ import org.LexGrid.LexBIG.LexBIGService.LexBIGService;
 
 public class GetConceptReferencesClosure {
 
-    /**
+/**
      * @param args
      */
-    public static void main(String[] args) {
+public static void main(String[] args) {
         if (args.length < 2) {
             System.out.println("Example: GetConceptReferencesClosure \"C3262\" \"subClassOf\"");
             return;

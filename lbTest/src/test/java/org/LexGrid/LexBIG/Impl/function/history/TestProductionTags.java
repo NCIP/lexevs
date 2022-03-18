@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.LexBIG.Impl.function.history;
 
 import org.LexGrid.LexBIG.DataModel.Collections.LocalNameList;
@@ -41,8 +24,9 @@ import org.LexGrid.LexBIG.Utility.LBConstants;
 import org.LexGrid.LexBIG.Utility.LBConstants.KnownTags;
 import org.LexGrid.LexBIG.Utility.OrderingTestRunner;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -70,8 +54,8 @@ public class TestProductionTags extends LexBIGServiceTestCase {
         // reference)");
 
         // silence some extraneous warnings from a logger here:
-        Logger temp = Logger.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
-        temp.setLevel(Level.ERROR);
+        Logger temp = LogManager.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
+        temp.atLevel(Level.ERROR);
 
         LexBIGServiceManager lbsm = ServiceHolder.instance().getLexBIGService().getServiceManager(null);
 
@@ -552,8 +536,8 @@ public class TestProductionTags extends LexBIGServiceTestCase {
         assertTrue(TestUtil.removeScheme(AUTO_URN, updatedVersion));
 
         // restore the logger level
-        Logger temp = Logger.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
-        temp.setLevel(Level.DEBUG);
+        Logger temp = LogManager.getLogger("org.LexGrid.emf.base.xml.LgXMLHandlerImpl");
+        temp.atLevel(Level.DEBUG);
     }
 
 }

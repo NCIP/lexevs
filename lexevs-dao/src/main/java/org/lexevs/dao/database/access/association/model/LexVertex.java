@@ -1,4 +1,5 @@
- package org.lexevs.dao.database.access.association.model;
+
+package org.lexevs.dao.database.access.association.model;
 
 import com.arangodb.entity.DocumentField;
 import com.arangodb.entity.DocumentField.Type;
@@ -28,10 +29,10 @@ public class LexVertex {
 			this.description = description;
 		}
 
-		/**
+/**
 		 * @return the id
 		 */
-		public String getId() {
+public String getId() {
 			return id;
 		}
 

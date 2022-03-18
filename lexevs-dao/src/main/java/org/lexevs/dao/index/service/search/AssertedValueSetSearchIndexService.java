@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.index.service.search;
 
 import org.LexGrid.annotations.LgAdminFunction;
@@ -5,7 +6,7 @@ import org.LexGrid.concepts.Entity;
 
 public interface AssertedValueSetSearchIndexService extends SearchIndexService {
 
-	/**
+/**
 	 * Updates an indexed entity by first deleting the old entity, then adding the
 	 * new entity
 	 * 
@@ -15,7 +16,7 @@ public interface AssertedValueSetSearchIndexService extends SearchIndexService {
 	 * @param vsName - coding scheme representation of value set name
 	 * @param entity - full entity representation of a value in a value set
 	 */
-	@LgAdminFunction
+@LgAdminFunction
 	public void updateIndexForEntity(String codingSchemeUri,String codingSchemeVersion,
 			String vsURI, String vsName, Entity entity);
 	

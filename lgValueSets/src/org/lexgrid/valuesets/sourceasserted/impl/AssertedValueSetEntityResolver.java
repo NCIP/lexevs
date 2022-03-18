@@ -1,3 +1,4 @@
+
 package org.lexgrid.valuesets.sourceasserted.impl;
 
 import java.io.Serializable;
@@ -15,11 +16,11 @@ import org.lexevs.dao.database.service.valuesets.AssertedValueSetServiceImpl;
 import org.lexevs.locator.LexEvsServiceLocator;
 
 public class AssertedValueSetEntityResolver implements Serializable {
-	
-	/**
+
+/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2108382187250742000L;
+private static final long serialVersionUID = -2108382187250742000L;
 	AssertedValueSetService vsSvc;
     AssertedValueSetParameters params;
 	String code;

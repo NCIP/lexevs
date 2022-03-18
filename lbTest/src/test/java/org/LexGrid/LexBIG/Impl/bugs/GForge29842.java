@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.LexBIG.Impl.bugs;
 
 
@@ -58,7 +41,7 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
     	
     	// entity isBaseOf
         focus.setCode("isBaseOf");
-        focus.setCodeNamespace("pizza.owl");
+        focus.setCodeNamespace("pizza");
 
         ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         Entity entity = list.getResolvedConceptReference()[0].getEntity();
@@ -68,10 +51,9 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
         		typeList.add(p.getValue().getContent());
         }
         
-        assertEquals(typeList.size(), 3);
-        assertEquals(typeList.contains("InverseFunctionalProperty"), true);
-        assertEquals(typeList.contains("FunctionalProperty"), true);
-        assertEquals(typeList.contains("ObjectProperty"), true);
+        assertEquals(typeList.size(), 2);
+        assertEquals(typeList.contains("InverseFunctional"), true);
+        assertEquals(typeList.contains("Functional"), true);
         
         // entity hasSpiciness
         focus.setCode("hasSpiciness");
@@ -83,9 +65,9 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
         		typeList.add(p.getValue().getContent());
         }
         
-        assertEquals(typeList.size(), 2);
-        assertEquals(typeList.contains("FunctionalProperty"), true);
-        assertEquals(typeList.contains("ObjectProperty"), true);
+        assertEquals(typeList.size(), 1);
+        assertEquals(typeList.contains("Functional"), true);
+       // assertEquals(typeList.contains("ObjectProperty"), true);
         
     }
     

@@ -1,3 +1,4 @@
+
 package edu.mayo.informatics.lexgrid.convert.validator;
 
 import static org.junit.Assert.*;

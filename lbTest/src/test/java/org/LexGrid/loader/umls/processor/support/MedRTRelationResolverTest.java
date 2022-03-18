@@ -1,3 +1,4 @@
+
 package org.LexGrid.loader.umls.processor.support;
 
 import static org.junit.Assert.*;

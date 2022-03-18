@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.helpers;
 
 import java.io.Serializable;

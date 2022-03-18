@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.access.association.model;
 
 public class Sextuple {
@@ -39,10 +40,11 @@ public class Sextuple {
 	public void setAssociationPredicateId(String associationPredicateId) {
 		this.associationPredicateId = associationPredicateId;
 	}
-	/**
+
+/**
 	 * @return the sourceEntityDescription
 	 */
-	public String getSourceEntityDescription() {
+public String getSourceEntityDescription() {
 		return sourceEntityDescription;
 	}
 	/**

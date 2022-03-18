@@ -1,21 +1,4 @@
-/*
- * Copyright: (c) 2004-2010 Mayo Foundation for Medical Education and 
- * Research (MFMER). All rights reserved. MAYO, MAYO CLINIC, and the
- * triple-shield Mayo logo are trademarks and service marks of MFMER.
- *
- * Except as contained in the copyright notice above, or as used to identify 
- * MFMER as the author of this software, the trade names, trademarks, service
- * marks, or product names of the copyright holder shall not be used in
- * advertising, promotion or otherwise in connection with this software without
- * prior written authorization of the copyright holder.
- * 
- * Licensed under the Eclipse Public License, Version 1.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at 
- * 
- * 		http://www.eclipse.org/legal/epl-v10.html
- * 
- */
+
 package org.LexGrid.LexBIG.Impl.exporters;
 
 import java.io.BufferedWriter;
@@ -132,74 +115,12 @@ public class OwlRdfExporterImpl extends BaseExporter implements OWL_Exporter {
         }
         return rv;
     }
-        
+    
+    @Deprecated
     protected void exportCodingSchemeData(){
-        URI destination = super.getResourceUri();
-        AbsoluteCodingSchemeVersionReference source = super.getSource();
         
-        boolean overwrite = super.getOptions().getBooleanOption(LexGridConstants.OPTION_FORCE).getOptionValue().booleanValue();
-        
-        // construct out file name
-        String separator = File.separator;
-        String directory = destination.getPath();
-        this.verifyOutputDirectory(directory);
-        String outDirWithEndingPathSeparator = directory;
-        if(outDirWithEndingPathSeparator.endsWith(separator) == false) {
-            outDirWithEndingPathSeparator = outDirWithEndingPathSeparator + separator;
-        }
-        
-        String codingSchemeUri = source.getCodingSchemeURN();
-        String codingSchemeVersion = source.getCodingSchemeVersion();
-        String codingSchemeName = this.getCodingSchemeName(codingSchemeUri, codingSchemeVersion);
-        String outFileName = outDirWithEndingPathSeparator + codingSchemeName + 
-                    "_" + codingSchemeVersion + ".owl";  
-        
-        File outFile = new File(outFileName);
-        
-        System.out.println("Content will be exported to file: " + outFile.getAbsolutePath());
-                
-        if(outFile.exists() == true && overwrite == true)
-        {
-            outFile.delete();
-        } else if (outFile.exists() == true && overwrite == false) {
-            String msg = "Output file \"" + outFileName + "\" already exists. Set force option to overwrite an existing file.";
-            this.getLogger().fatal(msg);
-            this.getStatus().setErrorsLogged(true);
-            throw new RuntimeException(msg);
-        } else {
-            // outFile did not exist.  do nothing.
-        }
-        
-        // enter exporter code here
-        Writer w = null;
-        BufferedWriter out = null;
-        LexBIGService lbsvc = null;
-        CodingScheme codingScheme = null;
-        try {
-            w = new FileWriter(outFile, false);
-            out = new BufferedWriter(w);
-
-            lbsvc = LexBIGServiceImpl.defaultInstance();
-            codingScheme = lbsvc.resolveCodingScheme(codingSchemeUri, 
-                                        Constructors.createCodingSchemeVersionOrTagFromVersion(codingSchemeVersion));
-            
-            cns = lbsvc.getNodeSet(codingSchemeUri, Constructors.createCodingSchemeVersionOrTagFromVersion(codingSchemeVersion),
-                    null);
-
-            cng = lbsvc.getNodeGraph(codingSchemeUri,
-                    Constructors.createCodingSchemeVersionOrTagFromVersion(codingSchemeVersion), null);
-            
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (LBException e) {
-            e.printStackTrace();
-        }
-        
-        // cng and cns MUST be set by setter methods
-        // call code in lgConverter
-        
-        LexGridToOwlRdfConverter converter = new LexGridToOwlRdfConverter();
-        converter.toTripleStore(codingScheme, cng, cns, out, this.getMessageDirector(), null);
+       //Converter removed.  We no longer support Jena based exportations
+        throw new UnsupportedOperationException("We no longer support Jena based exportations");
     }
 
     @Override

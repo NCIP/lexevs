@@ -1,3 +1,4 @@
+
 package org.lexgrid.valuesets.admin;
 
 
@@ -17,10 +18,10 @@ import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 
 public class RemoveValueSetDefinition {
 
-    /**
+/**
      * @param args
      */
-    @LgAdminFunction
+@LgAdminFunction
     public static void main(String[] args) {
         try {
             new RemoveValueSetDefinition().run(args);

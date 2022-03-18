@@ -1,3 +1,4 @@
+
 package org.lexgrid.resolvedvalueset;
 
 import java.io.Serializable;
@@ -16,13 +17,13 @@ import org.LexGrid.util.assertedvaluesets.AssertedValueSetParameters;
 
 
 public interface LexEVSResolvedValueSetService extends Serializable {
-      
-	/**
+
+/**
 	 * This parameter set is required for asserted value set services
 	 * 
 	 * @param params - extensive asserted value set source parameter defintion
 	 */
-	public void initParams(AssertedValueSetParameters params);
+public void initParams(AssertedValueSetParameters params);
 	
    	/**
    	 * Returns a list of coding scheme representations of value sets.  Includes

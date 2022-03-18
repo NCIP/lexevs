@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.graph.rest.client.errorhandler;
 
 import java.io.IOException;
@@ -49,10 +50,10 @@ public class LexEVSGraphClientResponseErrorHandler implements ResponseErrorHandl
         }
     }
 
-	/**
+/**
 	 * @return the graphDb
 	 */
-	public String getGraphDb() {
+public String getGraphDb() {
 		return graphDb;
 	}
 

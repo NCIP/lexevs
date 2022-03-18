@@ -1,3 +1,4 @@
+
 package org.mayo.edu.lgModel;
 
 
@@ -14,4 +15,3 @@ public class LexGridBase {
 	}
 
 }
-

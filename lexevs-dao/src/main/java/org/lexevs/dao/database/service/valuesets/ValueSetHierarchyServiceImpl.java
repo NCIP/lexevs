@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.service.valuesets;
 
 import java.net.URI;
@@ -26,10 +27,10 @@ import org.lexevs.locator.LexEvsServiceLocator;
 
 public class ValueSetHierarchyServiceImpl extends AbstractDatabaseService implements ValueSetHierarchyService {
 
-	/**
+/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2755261228867112212L;
+private static final long serialVersionUID = 2755261228867112212L;
 	String scheme = SCHEME;
 	String version = null;
 	String association = HIERARCHY;

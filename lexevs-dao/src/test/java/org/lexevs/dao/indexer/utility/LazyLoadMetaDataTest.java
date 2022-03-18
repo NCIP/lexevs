@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.indexer.utility;
 
 import static org.junit.Assert.fail;

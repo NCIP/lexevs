@@ -1,3 +1,4 @@
+
 package org.lexevs.dao.database.graph.rest.client.model;
 
 import java.util.List;
@@ -5,10 +6,10 @@ import java.util.List;
 public class SystemMetadata {
 	private List<String> dataBases;
 
-	/**
+/**
 	 * @return the dataBases
 	 */
-	public List<String> getDataBases() {
+public List<String> getDataBases() {
 		return dataBases;
 	}
 

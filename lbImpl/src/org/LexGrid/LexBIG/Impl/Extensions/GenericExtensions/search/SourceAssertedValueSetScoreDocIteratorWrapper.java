@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.Impl.Extensions.GenericExtensions.search;
 
 import java.util.ArrayList;
@@ -15,10 +16,10 @@ import org.apache.lucene.search.ScoreDoc;
 @LgClientSideSafe
 public class SourceAssertedValueSetScoreDocIteratorWrapper extends SearchScoreDocIterator {
 
-    /**
+/**
      * 
      */
-    private static final long serialVersionUID = -8590261353875073492L;
+private static final long serialVersionUID = -8590261353875073492L;
     
     private SourceAssertedScoreDocTransformerExecutor saVSTransformerExecutor = new SourceAssertedScoreDocTransformerExecutor();
     protected SourceAssertedScoreDocTransformer sAVSTransformer;

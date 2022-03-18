@@ -1,3 +1,4 @@
+
 package org.LexGrid.LexBIG.admin;
 
 import java.net.URI;
@@ -38,12 +39,12 @@ public class ExportOwlRdf {
         super();
     }
 
-    /**
+/**
      * Primary entry point for the program.
      * 
      * @throws Exception
      */
-    public void run(String[] args) throws Exception {
+public void run(String[] args) throws Exception {
         synchronized (ResourceManager.instance()) {
 
             // Parse the command line ...
