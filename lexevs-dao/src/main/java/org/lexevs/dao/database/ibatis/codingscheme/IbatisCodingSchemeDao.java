@@ -44,7 +44,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.springframework.orm.ibatis.SqlMapClientCallback;
+//import org.springframework.orm.ibatis.SqlMapClientCallback;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -184,7 +184,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		CodingScheme scheme = 
-			(CodingScheme) this.getSqlMapClientTemplate().queryForObject(
+			(CodingScheme) this.getSqlSessionTemplate().selectOne(
 				GET_CODING_SCHEME_BY_ID_SQL, new PrefixedParameter(prefix, codingSchemeUId));
 
 		scheme.setMappings(
@@ -235,7 +235,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public void deleteCodingSchemeSources(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_CODINGSCHEME_MULTIATTRIBUTE_BY_CODINGSCHEME_ID_SQL, 
 				new PrefixedParameterTuple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_SOURCE));
 		
@@ -245,7 +245,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public void deleteCodingSchemeLocalNames(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_CODINGSCHEME_MULTIATTRIBUTE_BY_CODINGSCHEME_ID_SQL, 
 				new PrefixedParameterTuple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_LOCALNAME));
 	}
@@ -254,7 +254,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public void deleteCodingSchemeMappings(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_MAPPINGS_BY_CODINGSCHEME_ID_SQL, 
 				new PrefixedParameter(prefix, codingSchemeId));
 	}
@@ -271,7 +271,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		param.setActualTableSetPrefix(actualTableSetPrefix);
 		
 		return (CodingScheme)
-			this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_BY_ID_AND_REVISION_GUID_SQL, 
+			this.getSqlSessionTemplate().selectOne(GET_CODING_SCHEME_BY_ID_AND_REVISION_GUID_SQL, 
 					param);
 	}
 
@@ -283,7 +283,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
 		return (CodingSchemeSummary)
-			this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_SUMMARY_BY_URI_AND_VERSION_SQL, 
+			this.getSqlSessionTemplate().selectOne(GET_CODING_SCHEME_SUMMARY_BY_URI_AND_VERSION_SQL, 
 				new PrefixedParameterTuple(prefix, codingSchemeUri, version));
 	}
 
@@ -312,7 +312,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().
+		this.getSqlSessionTemplate().
 			delete(REMOVE_CODING_SCHEME_BY_UID_SQL, new PrefixedParameter(prefix, codingSchemeUId));	
 	}
 	
@@ -353,7 +353,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			String entryStateUId,
 			boolean cascade) {
 
-		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_SQL, 
+		this.getSqlSessionTemplate().insert(INSERT_CODING_SCHEME_SQL, 
 				this.buildInsertCodingSchemeBean(
 						prefix,
 						codingSchemeUId, releaseUId, entryStateUId, codingScheme));	
@@ -428,14 +428,14 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
 
-		this.getSqlMapClientTemplate().update(UPDATE_CODING_SCHEME_BY_ID_SQL,
+		this.getSqlSessionTemplate().update(UPDATE_CODING_SCHEME_BY_ID_SQL,
 				bean);
 
 		Source[] sourceList = codingScheme.getSource();
 
 		if (sourceList.length != 0) {
 			
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ALL_CODINGSCHEME_SOURCE_BY_CSID_SQL,
 					new PrefixedParameter(prefix, codingSchemeUId));
 
@@ -452,12 +452,12 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				multiAttribBean.setSubRef(sourceList[i].getSubRef());
 				multiAttribBean.setEntryStateUId(entryStateUId);
 
-				this.getSqlMapClientTemplate().insert(
+				this.getSqlSessionTemplate().insert(
 						INSERT_CODING_SCHEME_MULTIATTRIB_SQL, multiAttribBean);
 			}
 		} else {
 			
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 					new PrefixedParameterTriple(prefix, codingSchemeUId,
 							SQLTableConstants.TBLCOLVAL_SOURCE,
@@ -468,7 +468,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 		if (localNameList.length != 0) {
 
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ALL_CODINGSCHEME_LOCALNAMES_BY_CSID_SQL,
 					new PrefixedParameter(prefix, codingSchemeUId));
 
@@ -482,12 +482,12 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				multiAttribBean.setAttributeValue(localNameList[i]);
 				multiAttribBean.setEntryStateUId(entryStateUId);
 
-				this.getSqlMapClientTemplate().insert(
+				this.getSqlSessionTemplate().insert(
 						INSERT_CODING_SCHEME_MULTIATTRIB_SQL, multiAttribBean);
 			}
 		} else {
 			
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 					new PrefixedParameterTriple(prefix, codingSchemeUId,
 							SQLTableConstants.TBLCOLVAL_LOCALNAME,
@@ -517,15 +517,15 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
 		
-		this.getSqlMapClientTemplate().update(UPDATE_CODING_SCHEME_VER_ATTRIB_BY_ID_SQL, bean);
+		this.getSqlSessionTemplate().update(UPDATE_CODING_SCHEME_VER_ATTRIB_BY_ID_SQL, bean);
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 				new PrefixedParameterTriple(prefix, codingSchemeUId,
 						SQLTableConstants.TBLCOLVAL_SOURCE,
 						entryStateUId));
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 				new PrefixedParameterTriple(prefix, codingSchemeUId,
 						SQLTableConstants.TBLCOLVAL_LOCALNAME,
@@ -551,7 +551,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@CacheMethod
 	public String getCodingSchemeUIdByNameAndVersion(String codingSchemeName, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeName, version);
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL,
+		return (String) this.getSqlSessionTemplate().selectOne(GET_CODING_SCHEME_ID_BY_NAME_AND_VERSION_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeName, version));
 	}
 	
@@ -561,7 +561,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@CacheMethod
 	public String getCodingSchemeUIdByUriAndVersion(String codingSchemeUri, String version) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUri, version);
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL,
+		return (String) this.getSqlSessionTemplate().selectOne(GET_CODING_SCHEME_ID_BY_URI_AND_VERSION_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUri, version));
 	}
 	
@@ -574,7 +574,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 				
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_ENTRYSTATE_UID_BY_CODINGSCHEME_UID_SQL,
+		return (String) this.getSqlSessionTemplate().selectOne(GET_ENTRYSTATE_UID_BY_CODINGSCHEME_UID_SQL,
 				new PrefixedParameter(prefix, codingSchemeUId));
 	}
 	
@@ -595,7 +595,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 
-		int count = this.getSqlMapClientTemplate().update(
+		int count = this.getSqlSessionTemplate().update(
 				UPDATE_CODINGSCHEME_SOURCE_BY_CONTENT_SQL, 
 				this.buildInsertOrUpdateSourceBean(prefix, null, codingSchemeId, null, source));
 		
@@ -605,7 +605,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	}
 	
 	protected void doInsertCodingSchemeSource(String prefix, String codingSchemeId, String sourceId, String entryStateId, Source source) {
-		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_MULTIATTRIB_SQL,
+		this.getSqlSessionTemplate().insert(INSERT_CODING_SCHEME_MULTIATTRIB_SQL,
 				this.buildInsertOrUpdateSourceBean(prefix, sourceId, codingSchemeId, entryStateId, source));
 	}
 	
@@ -622,7 +622,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	}
 	
 	protected void doInsertCodingSchemeLocalName(String prefix, String codingSchemeId, String localNameId, String entryStateId, String localName) {
-		this.getSqlMapClientTemplate().insert(INSERT_CODING_SCHEME_MULTIATTRIB_SQL,
+		this.getSqlSessionTemplate().insert(INSERT_CODING_SCHEME_MULTIATTRIB_SQL,
 				this.buildInsertLocalNameBean(prefix, localNameId, codingSchemeId, entryStateId, localName));
 	}
 	
@@ -630,7 +630,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@Override
 	@ClearCache
 	public void insertOrUpdateURIMap(String codingSchemeId, URIMap uriMap) {
-		int rows = this.getSqlMapClientTemplate().update(
+		int rows = this.getSqlSessionTemplate().update(
 				UPDATE_URIMAP_BY_LOCALID_SQL, 
 				this.buildInsertOrUpdateURIMapBean(
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId), 
@@ -650,7 +650,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@ClearCache
 	public void insertURIMap(String codingSchemeId, URIMap uriMap) {
 		String uriMapId = this.createUniqueId();
-		this.getSqlMapClientTemplate().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_URIMAP_SQL, buildInsertOrUpdateURIMapBean(
 									this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 									uriMapId, 
@@ -665,7 +665,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@ClearCache
 	public void insertURIMap(final String codingSchemeId,
 			final List<URIMap> supportedProperties) {
-		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
 	
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 			throws SQLException {
@@ -754,7 +754,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public List<NameAndValue> getDistinctPropertyNameAndType(
 			String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().queryForList(
 				GET_DISTINCT_PROPERTY_NAME_AND_TYPE_SQL, 
 				new PrefixedParameter(prefix, codingSchemeId));
 	}
@@ -770,7 +770,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@SuppressWarnings("unchecked")
 	protected List<String> doDistinctQuery(String queryName, String codingSchemeId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().queryForList(
 				queryName, 
 				new PrefixedParameter(prefix, codingSchemeId));
 	}
@@ -803,7 +803,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public List<String> getDistinctEntityTypesOfCodingScheme(
 			String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().queryForList(
 				GET_DISTINCT_ENTITY_TYPES_OF_CS_SQL, 
 				new PrefixedParameter(prefix, codingSchemeId));
 	}
@@ -819,7 +819,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		Mappings mappings = new Mappings();
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		List<URIMap> uriMaps = this.getSqlMapClientTemplate().queryForList(	
+		List<URIMap> uriMaps = this.getSqlSessionTemplate().queryForList(	
 				GET_URIMAPS_SQL, 
 				new PrefixedParameter(prefix, codingSchemeId));
 		
@@ -836,7 +836,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	@SuppressWarnings("unchecked")
 	public <T extends URIMap> T getUriMap(String codingSchemeId, String localId, Class<T> uriMap) {	
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return (T) this.getSqlMapClientTemplate().queryForObject(	
+		return (T) this.getSqlSessionTemplate().selectOne(	
 				GET_URIMAP_BY_LOCALNAME_AND_TYPE_SQL, 
 				new PrefixedParameterTriple(prefix, codingSchemeId, localId, this.classToStringMappingClassifier.classify(uriMap)));
 	}
@@ -849,7 +849,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		String classifiedName = this.classToStringMappingClassifier.classify(uriMap);
-		int count = (Integer) this.getSqlMapClientTemplate().queryForObject(	
+		int count = (Integer) this.getSqlSessionTemplate().selectOne(	
 				GET_URIMAP_COUNT_BY_LOCALNAME_AND_TYPE_SQL, 
 				new PrefixedParameterTriple(prefix, codingSchemeId, localId, classifiedName));
 		
@@ -1022,14 +1022,14 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		InsertOrUpdateCodingSchemeBean codingSchemeData = (InsertOrUpdateCodingSchemeBean) this
-				.getSqlMapClientTemplate().queryForObject(GET_CODINGSCHEME_METADATA_BY_UID,
+				.getSqlSessionTemplate().selectOne(GET_CODINGSCHEME_METADATA_BY_UID,
 						new PrefixedParameter(prefix, codingSchemeUId));
 
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		
 		codingSchemeData.setPrefix(historyPrefix);
 		
-		this.getSqlMapClientTemplate().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_CODING_SCHEME_SQL, codingSchemeData);
 		
 		if( codingSchemeData.getCsMultiAttribList() != null ) {
@@ -1037,7 +1037,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				
 				codingSchemeData.getCsMultiAttribList().get(i).setPrefix(historyPrefix);
 				
-				this.getSqlMapClientTemplate().insert(
+				this.getSqlSessionTemplate().insert(
 						INSERT_CODING_SCHEME_MULTIATTRIB_SQL,
 						codingSchemeData.getCsMultiAttribList().get(i));
 			}
@@ -1067,7 +1067,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	public List<SupportedProperty> getPropertyUriMapForPropertyType(
 			String codingSchemeId, PropertyTypes propertyType) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return (List<SupportedProperty>) this.getSqlMapClientTemplate().queryForList(	
+		return (List<SupportedProperty>) this.getSqlSessionTemplate().queryForList(	
 				GET_PROPERTY_URIMAP_FOR_PROPERTYTYPE_SQL, 
 				new PrefixedParameterTriple(prefix, codingSchemeId, SQLTableConstants.TBLCOLVAL_SUPPTAG_PROPERTY, propertyType.name()));
 	}
@@ -1077,17 +1077,17 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_CODING_SCHEME_ENTRYSTATE_UID, 
 				new PrefixedParameterTuple(prefix, codingSchemeUId, entryStateUId));
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 				new PrefixedParameterTriple(prefix, codingSchemeUId,
 						SQLTableConstants.TBLCOLVAL_SOURCE,
 						entryStateUId));
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_CS_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 				new PrefixedParameterTriple(prefix, codingSchemeUId,
 						SQLTableConstants.TBLCOLVAL_LOCALNAME,
@@ -1099,7 +1099,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_CODING_SCHEME_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, codingSchemeUId));
 	}
@@ -1109,7 +1109,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_CODING_SCHEME_REVISION_ID_WHEN_NEW_BY_UID, 
 				new PrefixedParameter(prefix, codingSchemeUId));
 	}
@@ -1135,7 +1135,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				csUId);
 
-		List<String> revisionList = this.getSqlMapClientTemplate()
+		List<String> revisionList = this.getSqlSessionTemplate()
 				.queryForList(GET_ALL_CODING_SCHEME_REVISIONS_SQL,
 						new PrefixedParameter(prefix, csUId));
 

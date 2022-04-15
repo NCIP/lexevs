@@ -14,7 +14,7 @@ import org.lexevs.dao.database.ibatis.ncihistory.IbatisNciHistoryDao;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.springframework.batch.classify.Classifier;
+import org.springframework.classify.Classifier;
 
 public class BatchOrderClassifier implements Classifier<String,Integer>{
 	

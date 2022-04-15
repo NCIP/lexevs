@@ -467,10 +467,17 @@
    		<constructor-arg ref="sqlSessionFactory" />
  	</bean>
 
+	<bean id="sqlSessionBatchTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+   		<constructor-arg ref="sqlSessionFactory" />
+		<constructor-arg ref="executorType" value="BATCH" />
+ 	</bean>
+
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
   		<property name="dataSource" ref="dataSource" />
-		<property name="mapperLocations" value="classpath*:resources/ibatis.20/**/*.xml" />
+		<property name="mapperLocations" value="classpath*:resources/ibatis.v20/**/*.xml" />
 	</bean>
+
+	<bean id="executorType" class="org.apache.ibatis.session.ExecutorType"/>
     
     <bean id="abstractResourceManagerVariableFactory" 
      	class="org.lexevs.system.constants.IndividualVariableFactory"
