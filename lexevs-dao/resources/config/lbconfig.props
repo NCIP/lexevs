@@ -122,7 +122,7 @@ SINGLE_TABLE_MODE=false
 # registry.xml file.
 
 # Examples for DB_URL'
-DB_URL=jdbc:mysql://localhost/unittest
+DB_URL=jdbc:mysql://localhost/fulltest
 #DB_URL=jdbc:mysql://bmidev4:3307/lexevs_medra
 #DB_URL=jdbc:mysql://bmidev4:3306/medra2
 #DB_URL=jdbc:mysql://bmidev4:3307/lexevs

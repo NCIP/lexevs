@@ -462,6 +462,15 @@
 		<property name="dataSource" ref="dataSource"/>
 		<property name="sqlMapClient" ref="sqlMap"/>
 	</bean>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+   		<constructor-arg ref="sqlSessionFactory" />
+ 	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+  		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:resources/ibatis.20/**/*.xml" />
+	</bean>
     
     <bean id="abstractResourceManagerVariableFactory" 
      	class="org.lexevs.system.constants.IndividualVariableFactory"

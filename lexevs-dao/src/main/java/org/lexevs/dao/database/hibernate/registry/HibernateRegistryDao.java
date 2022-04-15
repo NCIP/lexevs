@@ -13,7 +13,6 @@ import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
 import org.springframework.util.Assert;
 
 /**
@@ -21,7 +20,7 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {
+public class HibernateRegistryDao extends org.springframework.orm.hibernate5.support.HibernateDaoSupport implements RegistryDao {
 	
 	/** The Constant REGISTRY_ID. */
 	private static final int REGISTRY_ID = 0;
@@ -115,7 +114,7 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		
 		Criterion uriRestriction = Restrictions.eq("resourceUri", uri);
 		
-		List<RegistryEntry> entries = this.getHibernateTemplate().findByCriteria(		
+		List<RegistryEntry> entries = (List<RegistryEntry>) this.getHibernateTemplate().findByCriteria(		
 				criteria.add(Restrictions.and(uriRestriction, typeRestriction)));
 		
 		return entries;

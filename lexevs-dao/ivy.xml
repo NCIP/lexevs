@@ -35,23 +35,25 @@
 		<dependency org="org.aspectj" name="aspectjrt" rev="1.7.2" conf="default"/>
 		<dependency org="org.aspectj" name="aspectjweaver" rev="1.7.2" conf="default"/>
 		<dependency org="aopalliance" name="aopalliance" rev="1.0" conf="default->*"/>
-		<dependency org="org.springframework" name="spring-aspects" rev="3.1.0.RELEASE" conf="default"/>
-		<dependency org="org.springframework" name="spring-aop" rev="3.1.0.RELEASE" conf="default"/>
-		<dependency org="org.springframework" name="spring-context" rev="3.1.0.RELEASE" conf="default"/>
-		<dependency org="org.springframework" name="spring-core" rev="3.1.0.RELEASE" conf="default">
+		<dependency org="org.springframework" name="spring-aspects" rev="5.3.19" conf="default"/>
+		<dependency org="org.springframework" name="spring-aop" rev="5.3.19" conf="default"/>
+		<dependency org="org.springframework" name="spring-context" rev="5.3.19" conf="default"/>
+		<dependency org="org.springframework" name="spring-core" rev="5.3.19" conf="default">
 		  <exclude org="commons-logging" name="commons-logging"/>
 		</dependency>
-		<dependency org="org.springframework" name="spring-test" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-beans" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-jdbc" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-orm" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-tx" rev="3.1.0.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-test" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-beans" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-jdbc" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-orm" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-tx" rev="5.3.19" conf="default" />
 		<dependency org="org.springframework" name="spring-asm" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-expression" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-context-support" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework.batch" name="spring-batch-infrastructure" rev="2.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-web" rev="3.1.0.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-expression" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-context-support" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework.batch" name="spring-batch-core" rev="4.3.5" conf="default" />
+		<dependency org="org.springframework.batch" name="spring-batch-infrastructure" rev="4.3.5" conf="default" />
+		<dependency org="org.springframework" name="spring-web" rev="5.3.19" conf="default" />
+		<dependency org="org.mybatis" name="mybatis-spring" rev="2.0.7" conf="default" />
+		<dependency org="org.mybatis" name="mybatis" rev="3.5.9" conf="default" />
 		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.10.Final" conf="default" />
 		<dependency org="org.hibernate.common" name="hibernate-commons-annotations" rev="4.0.0.Final" conf="default" />
 		<dependency org="org.jboss.logging" name="jboss-logging" rev="3.1.2.GA" conf="default" />
