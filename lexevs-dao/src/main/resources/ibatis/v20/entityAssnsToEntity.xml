@@ -1,382 +1,357 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Association">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:16 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Association">
 
-	<typeAlias alias="node" type="org.lexevs.dao.database.access.association.model.Node"/>
-	<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
-	<typeAlias alias="sextuple" type="org.lexevs.dao.database.access.association.model.Sextuple"/>
-	<typeAlias alias="graphdbTriple" type="org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple"/>
-	<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept"/>
-	<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
-	<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
-	<typeAlias alias="countConceptReference" type="org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference"/>
-	<typeAlias alias="mappingTriple" type="org.lexevs.dao.database.ibatis.codednodegraph.model.TripleUidReferencingResolvedConceptReference"/>
-	<typeAlias alias="vsEntity" type="org.lexevs.dao.database.ibatis.entity.model.IdableEntity"/>
-	<typeAlias alias="vsProperty" type="org.LexGrid.commonTypes.Property"/>
+
 	
-	<resultMap id="countConceptReferenceResult" class="countConceptReference">
-		<result property="code" column="entityCode" />
-		<result property="codeNamespace" column="entityCodeNamespace" />
-		<result property="childCount" column="relationshipsCount" />
+	<resultMap id="countConceptReferenceResult" type="countConceptReference">
+		<result property="code" column="entityCode"/>
+		<result property="codeNamespace" column="entityCodeNamespace"/>
+		<result property="childCount" column="relationshipsCount"/>
 	</resultMap>
 	
-	<resultMap id="nodeResult" class="node">
-		<result property="entityCode" column="entityCode" />
-		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+	<resultMap id="nodeResult" type="node">
+		<result property="entityCode" column="entityCode"/>
+		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 	</resultMap>
 	
-	<resultMap id="countResult" class="java.util.HashMap">
-		<result property="key" column="associationName" />
-		<result property="value" column="relationshipsCount" javaType="int" />
+	<resultMap id="countResult" type="java.util.HashMap">
+		<result property="key" column="associationName"/>
+		<result property="value" column="relationshipsCount" javaType="int"/>
 	</resultMap>
 	
-	<resultMap id="tripleResult" class="triple" groupBy="tripleGuid">
-		<result property="sourceEntityCode" column="sourceEntityCode" />
-		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
-		<result property="targetEntityCode" column="targetEntityCode" />
-		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
-		<result property="associationPredicateId" column="associationPredicateGuid" />
+	<resultMap id="tripleResult" type="triple">
+		<result property="sourceEntityCode" column="sourceEntityCode"/>
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace"/>
+		<result property="targetEntityCode" column="targetEntityCode"/>
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace"/>
+		<result property="associationPredicateId" column="associationPredicateGuid"/>
 	</resultMap>
 	
-	<resultMap id="sextupleResult" class="sextuple" groupBy="tripleGuid">
-		<result property="sourceEntityCode" column="sourceEntityCode" />
-		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
+	<resultMap id="sextupleResult" type="sextuple">
+		<result property="sourceEntityCode" column="sourceEntityCode"/>
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace"/>
 		<result property="sourceEntityDescription" column="sourceEntityDescription"/>
-		<result property="targetEntityCode" column="targetEntityCode" />
-		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+		<result property="targetEntityCode" column="targetEntityCode"/>
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace"/>
 		<result property="targetEntityDescription" column="targetEntityDescription"/>
-		<result property="associationPredicateId" column="associationPredicateGuid" />
+		<result property="associationPredicateId" column="associationPredicateGuid"/>
 	</resultMap>
 	
-	<resultMap id="graphdbTripleResult" class="graphdbTriple" groupBy="tripleGuid">
-		<result property="sourceEntityCode" column="sourceEntityCode" />
-		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
-		<result property="targetEntityCode" column="targetEntityCode" />
-		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
-		<result property="associationPredicateId" column="associationPredicateGuid" />
- 		<result property="entityAssnsGuid" column="entityAssnsGuid" />
-		<result property="associationInstanceId" column="associationInstanceId" /> 
-		<result property="associationName"	column="associationName" />
-		<result property="sourceDescription" column="sd" nullValue="Description Missing"/>
-		<result property="targetDescription" column="td" nullValue="Description Missing"/>
+	<resultMap id="graphdbTripleResult" type="graphdbTriple">
+		<result property="sourceEntityCode" column="sourceEntityCode"/>
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace"/>
+		<result property="targetEntityCode" column="targetEntityCode"/>
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace"/>
+		<result property="associationPredicateId" column="associationPredicateGuid"/>
+ 		<result property="entityAssnsGuid" column="entityAssnsGuid"/>
+		<result property="associationInstanceId" column="associationInstanceId"/> 
+		<result property="associationName" column="associationName"/>
+		<result property="sourceDescription" column="sd"/>
+		<result property="targetDescription" column="td"/>
 	</resultMap>
 	
-	<resultMap id="graphdbTripleTrResult" class="graphdbTriple" groupBy="tripleGuid">
-		<result property="sourceEntityCode" column="sourceEntityCode" />
-		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
-		<result property="targetEntityCode" column="targetEntityCode" />
-		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
-		<result property="associationPredicateId" column="associationPredicateGuid" />
- 		<result property="entityAssnsGuid" column="entityAssnsTrGuid" />
-		<result property="associationName"	column="associationName" />
-		<result property="sourceDescription" column="sd" nullValue="Description Missing"/>
-		<result property="targetDescription" column="td" nullValue="Description Missing"/>
+	<resultMap id="graphdbTripleTrResult" type="graphdbTriple">
+		<result property="sourceEntityCode" column="sourceEntityCode"/>
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace"/>
+		<result property="targetEntityCode" column="targetEntityCode"/>
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace"/>
+		<result property="associationPredicateId" column="associationPredicateGuid"/>
+ 		<result property="entityAssnsGuid" column="entityAssnsTrGuid"/>
+		<result property="associationName" column="associationName"/>
+		<result property="sourceDescription" column="sd"/>
+		<result property="targetDescription" column="td"/>
 	</resultMap>
 	
-	<resultMap id="associatedConceptResult" class="associatedConcept" groupBy="guid">
+	<resultMap id="associatedConceptResult" type="associatedConcept">
 		<result property="guid" column="entityAssnsGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="entityGuid" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="code" column="entityCode" />
-		<result property="codeNamespace" column="entityCodeNamespace" />
-		<result property="entityDescription.content" column="description" />
-		<result property="associationQualification" resultMap="Association.associationQualificationResult"/>
+		<result property="code" column="entityCode"/>
+		<result property="codeNamespace" column="entityCodeNamespace"/>
+		<result property="entityDescription.content" column="description"/>
+		<collection property="associationQualification" resultMap="Association.associationQualificationResult"/>
 	</resultMap>
 	
-	<resultMap id="mappingTripleSubjectResult" class="mappingTriple" groupBy="tripleUid">
+	<resultMap id="mappingTripleSubjectResult" type="mappingTriple">
 		<result property="tripleUid" column="tripleUid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="code" column="sourceEntityCode" />
-		<result property="codeNamespace" column="sourceEntityCodeNamespace" />
-		<result property="entityDescription.content" column="sourceEntityDescription" />
-		<result property="_sourceOf._associationList" resultMap="Association.mappingTripleAssociationResult" />
+		<result property="code" column="sourceEntityCode"/>
+		<result property="codeNamespace" column="sourceEntityCodeNamespace"/>
+		<result property="entityDescription.content" column="sourceEntityDescription"/>
+		<collection property="_sourceOf._associationList" resultMap="Association.mappingTripleAssociationResult"/>
 	</resultMap>
 	
-	<resultMap id="mappingTripleAssociationResult" class="org.LexGrid.LexBIG.DataModel.Core.Association" groupBy="associationName">
+	<resultMap id="mappingTripleAssociationResult" type="org.LexGrid.LexBIG.DataModel.Core.Association">
 		<result property="associationName" column="associationName"/>
-		<result property="_associatedConcepts._associatedConceptList" resultMap="Association.mappingTripleObjectResult"/>
+		<collection property="_associatedConcepts._associatedConceptList" resultMap="Association.mappingTripleObjectResult"/>
 	</resultMap>
 	
-	<resultMap id="mappingTripleObjectResult" class="org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept" groupBy="code,namespace">
-		<result property="code" column="targetEntityCode" />
-		<result property="codeNamespace" column="targetEntityCodeNamespace" />
+	<resultMap id="mappingTripleObjectResult" type="org.LexGrid.LexBIG.DataModel.Core.AssociatedConcept">
+		<result property="code" column="targetEntityCode"/>
+		<result property="codeNamespace" column="targetEntityCodeNamespace"/>
 		<result property="entityDescription.content" column="targetEntityDescription"/>
-		<result property="_associationQualifiers._nameAndValueList" resultMap="Association.associationQualificationResult"/>
+		<collection property="_associationQualifiers._nameAndValueList" resultMap="Association.associationQualificationResult"/>
 	</resultMap>
 	
-	<resultMap id="mappingTripleResult" class="org.lexevs.dao.database.access.association.model.Triple" >
-		<result property="sourceEntityCode" column="sourceEntityCode" />
-		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace" />
-		<result property="targetEntityCode" column="targetEntityCode" />
-		<result property="targetEntityNamespace" column="targetEntityCodeNamespace" />
+	<resultMap id="mappingTripleResult" type="org.lexevs.dao.database.access.association.model.Triple">
+		<result property="sourceEntityCode" column="sourceEntityCode"/>
+		<result property="sourceEntityNamespace" column="sourceEntityCodeNamespace"/>
+		<result property="targetEntityCode" column="targetEntityCode"/>
+		<result property="targetEntityNamespace" column="targetEntityCodeNamespace"/>
 		<result property="associationPredicateId" column="associationPredicateGuid"/>
 	</resultMap>
 
-	<resultMap id="associationQualificationResult" class="associationQualification" groupBy="name,content">
-		<result property="name" column="qualifierName" />
-		<result property="content" column="qualifierValue" />
+	<resultMap id="associationQualificationResult" type="associationQualification">
+		<result property="name" column="qualifierName"/>
+		<result property="content" column="qualifierValue"/>
 	</resultMap>
 	
-	<resultMap id="associationTargetEntry" class="associationTarget" groupBy="uid">
+	<resultMap id="associationTargetEntry" type="associationTarget">
 		<result property="uid" column="entityAssnsGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="associationPredicateUId" column="associationPredicateGuid" />
-		<result property="associationSource.sourceEntityCode" column="sourceEntityCode" />
-		<result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
-		<result property="associationTarget.targetEntityCode" column="targetEntityCode" />
-		<result property="associationTarget.targetEntityCodeNamespace" column="targetEntityCodeNamespace" />
-		<result property="associationTarget.associationInstanceId" column="associationInstanceId" />
+		<result property="associationPredicateUId" column="associationPredicateGuid"/>
+		<result property="associationSource.sourceEntityCode" column="sourceEntityCode"/>
+		<result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace"/>
+		<result property="associationTarget.targetEntityCode" column="targetEntityCode"/>
+		<result property="associationTarget.targetEntityCodeNamespace" column="targetEntityCodeNamespace"/>
+		<result property="associationTarget.associationInstanceId" column="associationInstanceId"/>
 		<result property="associationTarget.isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
 		<result property="associationTarget.isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
 		<result property="associationTarget.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="associationTarget.owner" column="owner" />
-		<result property="associationTarget.status" column="status" />
-		<result property="associationTarget.effectiveDate" column="effectiveDate" />
-		<result property="associationTarget.expirationDate" column="expirationDate" />
+		<result property="associationTarget.owner" column="owner"/>
+		<result property="associationTarget.status" column="status"/>
+		<result property="associationTarget.effectiveDate" column="effectiveDate"/>
+		<result property="associationTarget.expirationDate" column="expirationDate"/>
 		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="assnQualsAndUsageContextList" resultMap="Association.qualContextResult"/>
+		<collection property="assnQualsAndUsageContextList" resultMap="Association.qualContextResult"/>
 	</resultMap>
 	
-	<resultMap id="associationSourceTripleEntry" class="org.LexGrid.relations.AssociationSource" 
-		groupBy="sourceEntityCode,sourceEntityCodeNamespace">
-		<result property="sourceEntityCode" column="sourceEntityCode" />
-		<result property="sourceEntityCodeNamespace" column="sourceEntityCodeNamespace" />
-		<result property="_targetList" resultMap="Association.associationTargetTripleEntry"/>
+	<resultMap id="associationSourceTripleEntry" type="org.LexGrid.relations.AssociationSource">
+		<result property="sourceEntityCode" column="sourceEntityCode"/>
+		<result property="sourceEntityCodeNamespace" column="sourceEntityCodeNamespace"/>
+		<collection property="_targetList" resultMap="Association.associationTargetTripleEntry"/>
 	</resultMap>
 	
-	<resultMap id="associationTargetTripleEntry" class="org.LexGrid.relations.AssociationTarget" groupBy="associationInstanceId">
-		<result property="targetEntityCode" column="targetEntityCode" />
-		<result property="targetEntityCodeNamespace" column="targetEntityCodeNamespace" />
-		<result property="associationInstanceId" column="associationInstanceId" />
+	<resultMap id="associationTargetTripleEntry" type="org.LexGrid.relations.AssociationTarget">
+		<result property="targetEntityCode" column="targetEntityCode"/>
+		<result property="targetEntityCodeNamespace" column="targetEntityCodeNamespace"/>
+		<result property="associationInstanceId" column="associationInstanceId"/>
 		<result property="isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
 		<result property="isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
 	</resultMap>
 	
-	<resultMap id="valueSetHierarchyRootNodeResolution" class="org.lexevs.dao.database.access.association.model.VSHierarchyNode" groupBy="description, publish, source">
-		<result property="entityCode" column="entityCode" />
-		<result property="namespace" column="namespace" />
-		<result property="description" column="description" />
+	<resultMap id="valueSetHierarchyRootNodeResolution" type="org.lexevs.dao.database.access.association.model.VSHierarchyNode">
+		<result property="entityCode" column="entityCode"/>
+		<result property="namespace" column="namespace"/>
+		<result property="description" column="description"/>
 		<result property="source" column="source"/>
 	</resultMap>
 	
-	<resultMap id="definedNodeResolution" class="org.lexevs.dao.database.access.association.model.DefinedNode" groupBy="description, publish, source">
-		<result property="entityCode" column="entityCode" />
-		<result property="entityCodeNamespace" column="namespace" />
-		<result property="description" column="description" />
+	<resultMap id="definedNodeResolution" type="org.lexevs.dao.database.access.association.model.DefinedNode">
+		<result property="entityCode" column="entityCode"/>
+		<result property="entityCodeNamespace" column="namespace"/>
+		<result property="description" column="description"/>
 	</resultMap>
 	
-	<resultMap id="vsEntityResult" class="vsEntity" groupBy="entityCode,entityCodeNamespace">
+	<resultMap id="vsEntityResult" type="vsEntity">
 		<result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="entityCode" column="entityCode" />
-		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="entityCode" column="entityCode"/>
+		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 		<result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
 		<result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
-		<result property="entityDescription.content" column="description" />
+		<result property="entityDescription.content" column="description"/>
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
 	</resultMap>
 	
-	<resultMap id="vsEntityResultWithProperties" class="vsEntity" groupBy="entityCode,entityCodeNamespace">
+	<resultMap id="vsEntityResultWithProperties" type="vsEntity">
 		<result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="entityCode" column="entityCode" />
-		<result property="entityCodeNamespace" column="entityCodeNamespace" />
+		<result property="entityCode" column="entityCode"/>
+		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 		<result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
 		<result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
-		<result property="entityDescription.content" column="description" />
+		<result property="entityDescription.content" column="description"/>
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="_propertyList" resultMap="Association.vsPropertyResult"/>
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
+		<collection property="_propertyList" resultMap="Association.vsPropertyResult"/>
 	</resultMap>
 	
-	<resultMap id="vsPropertyResult" class="vsProperty" >
+	<resultMap id="vsPropertyResult" type="vsProperty">
 		<result property="propertyName" column="propertyName"/>
 		<result property="value.content" column="propertyValue"/>
 	</resultMap>
 	
-	<resultMap id="vsEntityCount" class="string">
-		<result property="java.util.String" column="vsEntityCount" />
+	<resultMap id="vsEntityCount" type="string">
+		<result property="java.util.String" column="vsEntityCount"/>
 	</resultMap>
 	
-	<resultMap id="instanceToGuidMapResult" class="org.lexevs.dao.database.access.association.model.InstanceToGuid" >
-		<result property="instance" column="instance" />
-		<result property="value" column="value" />
+	<resultMap id="instanceToGuidMapResult" type="org.lexevs.dao.database.access.association.model.InstanceToGuid">
+		<result property="instance" column="instance"/>
+		<result property="value" column="value"/>
 	</resultMap>
 	
-	<resultMap id="mapGraphSuperTriplesAndMetaData" class="org.LexGrid.custom.relations.TerminologyMapBean">
-		<result property="source" column="source" />
-		<result property="sourceCode" column="sourceCode" />
-		<result property="sourceName" column="sourceName" />
-		<result property="rel" column="rel" />
-		<result property="mapRank" column="mapRank" />
-		<result property="target" column="target" />
-		<result property="targetCode" column="targetCode" />
-		<result property="targetName" column="targetName" />
+	<resultMap id="mapGraphSuperTriplesAndMetaData" type="org.LexGrid.custom.relations.TerminologyMapBean">
+		<result property="source" column="source"/>
+		<result property="sourceCode" column="sourceCode"/>
+		<result property="sourceName" column="sourceName"/>
+		<result property="rel" column="rel"/>
+		<result property="mapRank" column="mapRank"/>
+		<result property="target" column="target"/>
+		<result property="targetCode" column="targetCode"/>
+		<result property="targetName" column="targetName"/>
 	</resultMap>
 
-	<select id="getConceptReferenceFromEntityAssnsToEntityUid" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		remapResults="true" 
-		resultMap="Entity.conceptReferenceResult">
+	<select id="getConceptReferenceFromEntityAssnsToEntityUid" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="Entity.conceptReferenceResult">
 		SELECT
 
-			<isEqual property="param1" compareValue="SUBJECT">
+			<if test="param1 == &quot;SUBJECT&quot;">
 				eate.sourceEntityCode as entityCode,
 				eate.sourceEntityCodeNamespace as entityCodeNamespace
-			</isEqual>
-			<isEqual property="param1" compareValue="OBJECT">
+			</if>
+			<if test="param1 == &quot;OBJECT&quot;">
 				eate.targetEntityCode as entityCode,
 				eate.targetEntityCodeNamespace as entityCodeNamespace
-			</isEqual>
+			</if>
 			
 		entityType.entityType
 			
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 		LEFT JOIN
-			$prefix$entity entity
+			${prefix}entity entity
 		ON
 			entityCode = entity.entityCode	
 		LEFT JOIN
-			$prefix$entityType entityType
+			${prefix}entityType entityType
 		ON
 			entity.entityGuid =
 			entityType.entityGuid	
 		
 		WHERE
-			eate.entityAssnsGuid IN ( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
+			eate.entityAssnsGuid IN (  <foreach collection="param2" item="item" separator=",">#{param2[],handler=variablePrimaryKeyTypeHandler}</foreach> )
 	</select>
 	
-	<select id="getNodesPath"
-		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetNodesPathBean"
-		remapResults="true" resultClass="string">
+	<select id="getNodesPath" parameterType="org.lexevs.dao.database.ibatis.association.parameter.GetNodesPathBean" resultType="string">
 		SELECT 
 			tr.path
 		FROM 
-			$prefix$entityAssnsToEntityTr tr
+			${prefix}entityAssnsToEntityTr tr
 		WHERE
-			tr.sourceEntityCode = #sourceEntityCode# 
+			tr.sourceEntityCode = #{sourceEntityCode} 
 			AND 
-			tr.sourceEntityCodeNamespace = #sourceEntityCodeNamespace# 
+			tr.sourceEntityCodeNamespace = #{sourceEntityCodeNamespace} 
 			AND
-			tr.targetEntityCode = #targetEntityCode# 
+			tr.targetEntityCode = #{targetEntityCode} 
 			AND
-			tr.targetEntityCodeNamespace = #targetEntityCodeNamespace#
-			<isNotNull property="associationPredicateUId">
+			tr.targetEntityCodeNamespace = #{targetEntityCodeNamespace}
+			<if test="associationPredicateUId != null">
 			AND
-			tr.associationPredicateGuid = #associationPredicateUId# 
-			</isNotNull>
+			tr.associationPredicateGuid = #{associationPredicateUId} 
+			</if>
 	</select>
 	
 	
-	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		remapResults="true" resultMap="Association.associatedConceptResult">
+	<select id="getAssociatedConcpetFromEntityAssnsToEntityUid" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="Association.associatedConceptResult">
 		SELECT
 			eate.entityAssnsGuid,
 			entity.entityGuid,
 			entity.description,
 			
-			<isEqual property="param1" compareValue="SUBJECT">
+			<if test="param1 == &quot;SUBJECT&quot;">
 				eate.sourceEntityCode as entityCode,
 				eate.sourceEntityCodeNamespace as entityCodeNamespace,
-			</isEqual>
-			<isEqual property="param1" compareValue="OBJECT">
+			</if>
+			<if test="param1 == &quot;OBJECT&quot;">
 				eate.targetEntityCode as entityCode,
 				eate.targetEntityCodeNamespace as entityCodeNamespace,
-			</isEqual>
+			</if>
 			quals.qualifierName,
 			quals.qualifierValue
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 			
 		LEFT JOIN
-			$prefix$entityAssnQuals quals
+			${prefix}entityAssnQuals quals
 		ON (eate.entityAssnsGuid = quals.referenceGuid)
 		
 		LEFT JOIN
-			$prefix$entity entity
+			${prefix}entity entity
 		ON (
-			<isEqual property="param1" compareValue="SUBJECT">
+			<if test="param1 == &quot;SUBJECT&quot;">
 				eate.sourceEntityCode = entity.entityCode
 				AND
 				eate.sourceEntityCodeNamespace = entity.entityCodeNamespace
-			</isEqual>
-			<isEqual property="param1" compareValue="OBJECT">
+			</if>
+			<if test="param1 == &quot;OBJECT&quot;">
 				eate.targetEntityCode = entity.entityCode
 				AND
 				eate.targetEntityCodeNamespace = entity.entityCodeNamespace
-			</isEqual>
+			</if>
 				AND
-				entity.codingSchemeGuid = #param4#
+				entity.codingSchemeGuid = #{param4}
 			)
 		
 		WHERE
-			eate.entityAssnsGuid IN ( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
+			eate.entityAssnsGuid IN (  <foreach collection="param2" item="item" separator=",">#{param2[],handler=variablePrimaryKeyTypeHandler}</foreach> )
 			
-		<isNotEmpty property="param3">
+		<if test="param3 != null and param3 != ''">
 			ORDER BY
-			<iterate property="param3" conjunction=",">
-				<isEqual property="param1" compareValue="SUBJECT">
-					$param3[].columnSortType.objectColumn$
-				</isEqual>
-				<isEqual property="param1" compareValue="OBJECT">
-					$param3[].columnSortType.subjectColumn$
-				</isEqual>
-				$param3[].order$
-			</iterate>
-		</isNotEmpty>
+			 <foreach collection="param3" item="item" separator=",">
+				<if test="param1 == &quot;SUBJECT&quot;">
+					${param3[].columnSortType.objectColumn}
+				</if>
+				<if test="param1 == &quot;OBJECT&quot;">
+					${param3[].columnSortType.subjectColumn}
+				</if>
+				${param3[].order}
+			</foreach>
+		</if>
 	</select>
 
-	<select id="getAccociationInstanceKey" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		remapResults="true" 
-		resultMap="Common.uidResult">
+	<select id="getAccociationInstanceKey" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
 		SELECT
 			eae.entityAssnsGuid AS uidKey
 		FROM 
-			$prefix$entityAssnsToEntity eae
+			${prefix}entityAssnsToEntity eae
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			eae.associationPredicateGuid =
 			ap.associationPredicateGuid
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON
 			ap.relationGuid =
 			rel.relationGuid
 		WHERE
 			rel.codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
+			#{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
 			eae.associationInstanceId = 
-			#param2#
+			#{param2}
 	</select>
 	
-	<select id="getAssociationInstanceUIDFromInstanceIdOnly" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" 
-		resultMap="Common.uidResult">
+	<select id="getAssociationInstanceUIDFromInstanceIdOnly" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
 		
 		SELECT
 			eae.entityAssnsGuid AS uidKey
 		FROM 
-			$prefix$entityAssnsToEntity eae
+			${prefix}entityAssnsToEntity eae
 		WHERE
-			eae.associationInstanceId = #param1#
+			eae.associationInstanceId = #{param1}
 	</select>	
 	
-	<select id="getAllTriplesOfCodingScheme" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.tripleResult">
+	<select id="getAllTriplesOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.tripleResult">
 		SELECT
 			eae.sourceEntityCode,
 			eae.sourceEntityCodeNamespace,
@@ -384,29 +359,28 @@
 			eae.targetEntityCodeNamespace,
 			eae.associationPredicateGuid
 		FROM 
-			$prefix$entityAssnsToEntity eae
+			${prefix}entityAssnsToEntity eae
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			eae.associationPredicateGuid =
 			ap.associationPredicateGuid
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON
 			ap.relationGuid =
 			rel.relationGuid
 		WHERE
 			rel.codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
-		<isNotNull property="param2">
+			#{param1,handler=variablePrimaryKeyTypeHandler}
+		<if test="param2 != null">
 		AND
 			eae.associationPredicateGuid =
-			#param2,handler=variablePrimaryKeyTypeHandler#	
-		</isNotNull>
+			#{param2,handler=variablePrimaryKeyTypeHandler}	
+		</if>
 	</select>
 	
-	<select id="getAllTriplesOfCodingSchemeForGraphDbLoad" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.graphdbTripleResult">
+	<select id="getAllTriplesOfCodingSchemeForGraphDbLoad" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Association.graphdbTripleResult">
 		SELECT
 			eae.sourceEntityCode,
 			eae.sourceEntityCodeNamespace,
@@ -421,42 +395,42 @@
  			source.description as sd,
  			target.description as td
  		FROM
-			$prefix$entityAssnsToEntity eae
+			${prefix}entityAssnsToEntity eae
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			eae.associationPredicateGuid =
 			ap.associationPredicateGuid
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON
 			ap.relationGuid =
 			rel.relationGuid
 		LEFT JOIN
-			$prefix$entity source
+			${prefix}entity source
 		ON
 			source.entityCode = eae.sourceEntityCode 
 		LEFT JOIN
-			$prefix$entity target
+			${prefix}entity target
 		ON 
 			target.entityCode = eae.targetEntityCode
 <!--  		LEFT JOIN 
-			$prefix$entityassnquals aq 
+			${prefix}entityassnquals aq 
 		ON 
 			aq.referenceGuid =
 			eae.entityAssnsGuid -->
 		WHERE
 			rel.codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
-		<isNotNull property="param2">
+			#{param1,handler=variablePrimaryKeyTypeHandler}
+		<if test="param2 != null">
 		AND
 			eae.associationPredicateGuid =
-			#param2,handler=variablePrimaryKeyTypeHandler#	
-		</isNotNull>
+			#{param2,handler=variablePrimaryKeyTypeHandler}	
+		</if>
 	</select>
 	
-     <insert id="insertEntityAssnsToEntity" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
-		INSERT INTO $prefix$entityAssnsToEntity (
+     <insert id="insertEntityAssnsToEntity" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
+		INSERT INTO ${prefix}entityAssnsToEntity (
 			entityAssnsGuid,
 			associationPredicateGuid,
 			sourceEntityCode,
@@ -473,68 +447,66 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#associationPredicateUId,handler=variablePrimaryKeyTypeHandler#,
-			#associationSource.sourceEntityCode#, 
-			#associationSource.sourceEntityCodeNamespace#, 
-			#associationTarget.targetEntityCode#, 
-			#associationTarget.targetEntityCodeNamespace#, 
-			#associationTarget.associationInstanceId:VARCHAR#, 
-			#associationTarget.isDefining,handler=numericBooleanTypeHandler#,
-			#associationTarget.isInferred,handler=numericBooleanTypeHandler#,
-			#associationTarget.isActive,handler=numericBooleanTypeHandler#,
-			#associationTarget.owner:VARCHAR#,
-			#associationTarget.status:VARCHAR#,
-			#associationTarget.effectiveDate:TIMESTAMP#,
-			#associationTarget.expirationDate:TIMESTAMP#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+			#{uid,handler=variablePrimaryKeyTypeHandler}, 
+			#{associationPredicateUId,handler=variablePrimaryKeyTypeHandler},
+			#{associationSource.sourceEntityCode}, 
+			#{associationSource.sourceEntityCodeNamespace}, 
+			#{associationTarget.targetEntityCode}, 
+			#{associationTarget.targetEntityCodeNamespace}, 
+			#{associationTarget.associationInstanceId,jdbcType=VARCHAR}, 
+			#{associationTarget.isDefining,handler=numericBooleanTypeHandler},
+			#{associationTarget.isInferred,handler=numericBooleanTypeHandler},
+			#{associationTarget.isActive,handler=numericBooleanTypeHandler},
+			#{associationTarget.owner,jdbcType=VARCHAR},
+			#{associationTarget.status,jdbcType=VARCHAR},
+			#{associationTarget.effectiveDate,jdbcType=TIMESTAMP},
+			#{associationTarget.expirationDate,jdbcType=TIMESTAMP},
+			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
 		)
   </insert>
   
-  <select id="getTransitiveTableCount" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="int">
+  <select id="getTransitiveTableCount" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="int">
 		SELECT
 			COUNT(*)
 		FROM 
-			$prefix$entityAssnsToEntityTr eaetr
+			${prefix}entityAssnsToEntityTr eaetr
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			eaetr.associationPredicateGuid =
 			ap.associationPredicateGuid
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON
 			ap.relationGuid =
 			rel.relationGuid
 		WHERE
 			rel.codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
+			#{param1,handler=variablePrimaryKeyTypeHandler}
   </select>
   
-   <delete id="deleteFromTransitiveTableByCodingSchemeUid"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+   <delete id="deleteFromTransitiveTableByCodingSchemeUid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE
-			$prefix$entityAssnsToEntityTr
+			${prefix}entityAssnsToEntityTr
 		FROM 
-			$prefix$entityAssnsToEntityTr
+			${prefix}entityAssnsToEntityTr
 		INNER JOIN
-			$prefix$associationPredicate
+			${prefix}associationPredicate
 		ON 
-			$prefix$entityAssnsToEntityTr.associationPredicateGuid =
-			$prefix$associationPredicate.associationPredicateGuid
+			${prefix}entityAssnsToEntityTr.associationPredicateGuid =
+			${prefix}associationPredicate.associationPredicateGuid
 		INNER JOIN
-			$prefix$relation
+			${prefix}relation
 		ON
-			$prefix$associationPredicate.relationGuid =
-			$prefix$relation.relationGuid
+			${prefix}associationPredicate.relationGuid =
+			${prefix}relation.relationGuid
 		WHERE
-			$prefix$relation.codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
+			${prefix}relation.codingSchemeGuid = 
+			#{param1,handler=variablePrimaryKeyTypeHandler}
   </delete>
   
-   <insert id="insertTransitiveClosure" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean">
-		INSERT INTO $prefix$entityAssnsToEntityTr (
+   <insert id="insertTransitiveClosure" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean">
+		INSERT INTO ${prefix}entityAssnsToEntityTr (
 			entityAssnsTrGuid,
 			associationPredicateGuid,
 			sourceEntityCode,
@@ -543,210 +515,207 @@
 			targetEntityCodeNamespace,
 			path
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#associationPredicateUId,handler=variablePrimaryKeyTypeHandler#,
-			#sourceEntityCode#, 
-			#sourceEntityCodeNamespace#, 
-			#targetEntityCode#, 
-			#targetEntityCodeNamespace#,
-			#path#
+			#{uid,handler=variablePrimaryKeyTypeHandler}, 
+			#{associationPredicateUId,handler=variablePrimaryKeyTypeHandler},
+			#{sourceEntityCode}, 
+			#{sourceEntityCodeNamespace}, 
+			#{targetEntityCode}, 
+			#{targetEntityCodeNamespace},
+			#{path}
 		)
   </insert>
 
 	<sql id="getEntityAssnsToEntityUidsFragment">
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON
 			(ap.associationPredicateGuid = eate.associationPredicateGuid)
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON
 			(rel.relationGuid = ap.relationGuid)
 		LEFT JOIN
-			$prefix$entityAssnQuals quals
+			${prefix}entityAssnQuals quals
 		ON
 			(eate.entityAssnsGuid = quals.referenceGuid)
 			
-		<isEqual property="needsEntityJoin" compareValue="true">
+		<if test="needsEntityJoin == &quot;true&quot;">
 		LEFT JOIN
-			$prefix$entity entity
+			${prefix}entity entity
 		ON
 			(
-			<isEqual property="tripleNode" compareValue="SUBJECT">
+			<if test="tripleNode == &quot;SUBJECT&quot;">
 				eate.targetEntityCode = entity.entityCode
 				AND
 				eate.targetEntityCodeNamespace = entity.entityCodeNamespace
-			</isEqual>
-			<isEqual property="tripleNode" compareValue="OBJECT">
+			</if>
+			<if test="tripleNode == &quot;OBJECT&quot;">
 				eate.sourceEntityCode = entity.entityCode
 				AND
 				eate.sourceEntityCodeNamespace = entity.entityCodeNamespace
-			</isEqual>
+			</if>
 			)
 		LEFT JOIN
-			$prefix$entityType entityType
+			${prefix}entityType entityType
 		ON
 			(entity.entityGuid = entityType.entityGuid)
-		</isEqual>
+		</if>
 			
 		WHERE
-			rel.codingSchemeGuid = #codingSchemeUid,handler=variablePrimaryKeyTypeHandler#
+			rel.codingSchemeGuid = #{codingSchemeUid,handler=variablePrimaryKeyTypeHandler}
 			
-		<isPropertyAvailable property="relationsContainerName" prepend="AND">
-			<isNotNull property="relationsContainerName">
-			rel.containerName = #relationsContainerName#
-			</isNotNull>
-		</isPropertyAvailable>
 
-		<isPropertyAvailable property="associationPredicateUid">
-			<isNotNull property="associationPredicateUid" prepend="AND">
-			ap.associationPredicateGuid = #associationPredicateUid,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</isPropertyAvailable>
+		<if test="relationsContainerName != null">AND
+			rel.containerName = #{relationsContainerName}
+		</if>
+		<if test="associationPredicateUid != null">AND
+			ap.associationPredicateGuid = #{associationPredicateUid,handler=variablePrimaryKeyTypeHandler}
+		</if>
 
-		<isNotEmpty property="associationQualifiers" prepend="AND">
+
+		<if test="associationQualifiers != null and associationQualifiers != ''">AND
 			(
-			<iterate property="associationQualifiers" conjunction="AND">
+			 <foreach collection="associationQualifiers" item="item" separator="AND">
 				(
-				quals.qualifierName = #associationQualifiers[].qualifierName#
-				<isNotEmpty property="associationQualifiers[].qualifierValue">
+				quals.qualifierName = #{item.qualifierName}
+				<if test="item != null and item.qualifierValue != null and item.qualifierValue != ''">
 					AND
-					quals.qualifierValue = #associationQualifiers[].qualifierValue#
-			</isNotEmpty>
+					quals.qualifierValue = #{item.qualifierValue}
+			</if>
 				)
-			</iterate>
+			</foreach>
 			)
-		</isNotEmpty>
+		</if>
 
-		<isNotEmpty property="associations" prepend="AND">
+		<if test="associations != null and associations != ''">AND
 			(
-			<iterate property="associations" conjunction="OR">
-				ap.associationName = #associations[]#
-			</iterate>
+			 <foreach collection="associations" item="item" separator="OR">
+				ap.associationName = #{item}
+			</foreach>
 			)
-		</isNotEmpty>
+		</if>
 
-		<isNotEmpty property="mustHaveCodes" prepend="AND">
+		<if test="mustHaveCodes != null and mustHaveCodes != ''">AND
 			(
-			<iterate property="mustHaveCodes" conjunction="OR">
-				<isEqual property="tripleNode" compareValue="SUBJECT">
+			 <foreach collection="mustHaveCodes" item="item" separator="OR">
+				<if test="tripleNode == &quot;SUBJECT&quot;">
 					(
-					eate.targetEntityCode = #mustHaveCodes[].code#
-					<isNotNull property="mustHaveCodes[].namespace" prepend="AND">
-						eate.targetEntityCodeNamespace = #mustHaveCodes[].namespace#
-					</isNotNull>
+					eate.targetEntityCode = #{item.code}
+					<if test="item != null and item.namespace != null">AND
+						eate.targetEntityCodeNamespace = #{item.namespace}
+					</if>
 					)
-				</isEqual>
-				<isEqual property="tripleNode" compareValue="OBJECT">
+				</if>
+				<if test="tripleNode == &quot;OBJECT&quot;">
 					(
-					eate.sourceEntityCode = #mustHaveCodes[].code#
-					<isNotNull property="mustHaveCodes[].namespace" prepend="AND">
-						eate.sourceEntityCodeNamespace = #mustHaveCodes[].namespace#
-					</isNotNull>
+					eate.sourceEntityCode = #{item.code}
+					<if test="item != null and item.namespace != null">AND
+						eate.sourceEntityCodeNamespace = #{item.namespace}
+					</if>
 					)
-				</isEqual>
-			</iterate>
+				</if>
+			</foreach>
 			)
-		</isNotEmpty>
-		<isNotEmpty property="mustHaveNamespaces" prepend="AND">
+		</if>
+		<if test="mustHaveNamespaces != null and mustHaveNamespaces != ''">AND
 			(
-			<iterate property="mustHaveNamespaces" conjunction="OR">
-				<isEqual property="tripleNode" compareValue="SUBJECT">
+			 <foreach collection="mustHaveNamespaces" item="item" separator="OR">
+				<if test="tripleNode == &quot;SUBJECT&quot;">
 					(
-					eate.targetEntityCodeNamespace = #mustHaveNamespaces[]#
+					eate.targetEntityCodeNamespace = #{item}
 					)
-				</isEqual>
-				<isEqual property="tripleNode" compareValue="OBJECT">
+				</if>
+				<if test="tripleNode == &quot;OBJECT&quot;">
 					(
-					eate.sourceEntityCodeNamespace = #mustHaveNamespaces[]#
+					eate.sourceEntityCodeNamespace = #{item}
 					)
-				</isEqual>
-			</iterate>
+				</if>
+			</foreach>
 			)
-		</isNotEmpty>
-		<isNotEmpty property="mustHaveEntityTypes" prepend="AND">
+		</if>
+		<if test="mustHaveEntityTypes != null and mustHaveEntityTypes != ''">AND
 		(
 			(
-			<iterate property="mustHaveEntityTypes" conjunction="OR">
-				entityType.entityType = #mustHaveEntityTypes[]#
-			</iterate>
+			 <foreach collection="mustHaveEntityTypes" item="item" separator="OR">
+				entityType.entityType = #{item}
+			</foreach>
 			)
 			OR
 			(
 				entityType.entityType IS NULL
 			)
 		)
-		</isNotEmpty>
-		<isNotNull property="restrictToAnonymous" prepend="AND">
+		</if>
+		<if test="restrictToAnonymous != null">AND
 		(
-			entity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
+			entity.isAnonymous = #{restrictToAnonymous,handler=numericBooleanTypeHandler}
 			OR
 			entity.isAnonymous IS NULL
 		)
-		</isNotNull>
+		</if>
 	</sql>
 	
 	<sql id="restrictEntityAssnsToEntityUidsBySingleCodeFragment">
 		
-		<isEqual property="tripleNode" compareValue="SUBJECT" prepend="AND">
-			eate.sourceEntityCode = #entityCode#
-			<isNotNull property="entityCodeNamespace" prepend="AND">
-				eate.sourceEntityCodeNamespace = #entityCodeNamespace#
-			</isNotNull>
-		</isEqual>
-		<isEqual property="tripleNode" compareValue="OBJECT" prepend="AND">
-			eate.targetEntityCode = #entityCode#
-			<isNotNull property="entityCodeNamespace" prepend="AND">
-				eate.targetEntityCodeNamespace = #entityCodeNamespace#
-			</isNotNull>
-		</isEqual>
+		<if test="tripleNode == &quot;SUBJECT&quot;">AND
+			eate.sourceEntityCode = #{entityCode}
+			<if test="entityCodeNamespace != null">AND
+				eate.sourceEntityCodeNamespace = #{entityCodeNamespace}
+			</if>
+		</if>
+		<if test="tripleNode == &quot;OBJECT&quot;">AND
+			eate.targetEntityCode = #{entityCode}
+			<if test="entityCodeNamespace != null">AND
+				eate.targetEntityCodeNamespace = #{entityCodeNamespace}
+			</if>
+		</if>
 		
 	</sql>
 	
 	<sql id="restrictEntityAssnsToEntityUidsByMultipleCodesFragment">
 	
-		<isEqual property="tripleNode" compareValue="SUBJECT" prepend="AND">
+		<if test="tripleNode == &quot;SUBJECT&quot;">AND
 			(
-			<iterate property="conceptReferences" conjunction="OR">
+			 <foreach collection="conceptReferences" item="item" separator="OR">
 				(	
-				eate.sourceEntityCode = #conceptReferences[].code#
-				<isNotNull property="conceptReferences[].codeNamespace" prepend="AND">
-					eate.sourceEntityCodeNamespace = #conceptReferences[].codeNamespace#
-				</isNotNull>
+				eate.sourceEntityCode = #{item.code}
+				<if test="item != null and item.codeNamespace != null">AND
+					eate.sourceEntityCodeNamespace = #{item.codeNamespace}
+				</if>
 				)
-			</iterate>
+			</foreach>
 			)
-		</isEqual>
-		<isEqual property="tripleNode" compareValue="OBJECT" prepend="AND">
+		</if>
+		<if test="tripleNode == &quot;OBJECT&quot;">AND
 			(
-			<iterate property="conceptReferences" conjunction="OR">
+			 <foreach collection="conceptReferences" item="item" separator="OR">
 				(
-				eate.targetEntityCode = #conceptReferences[].code#
-				<isNotNull property="conceptReferences[].codeNamespace" prepend="AND">
-					eate.targetEntityCodeNamespace = #conceptReferences[].codeNamespace#
-				</isNotNull>
+				eate.targetEntityCode = #{item.code}
+				<if test="item != null and item.codeNamespace != null">AND
+					eate.targetEntityCodeNamespace = #{item.codeNamespace}
+				</if>
 				)
-			</iterate>
+			</foreach>
 			)
-		</isEqual>
+		</if>
 	
 	</sql>
 	
 	<sql id="getRelationshipsFragment">
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON
 			(ap.associationPredicateGuid = eate.associationPredicateGuid)
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON
 			(rel.relationGuid = ap.relationGuid)
 			
-		<isEqual property="needsEntityJoin" compareValue="true">
+		<if test="needsEntityJoin == &quot;true&quot;">
 		LEFT JOIN
-			$prefix$entity sourceEntity
+			${prefix}entity sourceEntity
 		ON
 			(
 				eate.sourceEntityCode = sourceEntity.entityCode
@@ -754,12 +723,12 @@
 				eate.sourceEntityCodeNamespace = sourceEntity.entityCodeNamespace
 			)
 		LEFT JOIN
-			$prefix$entityType sourceEntityType
+			${prefix}entityType sourceEntityType
 		ON
 			(sourceEntity.entityGuid = sourceEntityType.entityGuid)
 
 		LEFT JOIN
-			$prefix$entity targetEntity
+			${prefix}entity targetEntity
 		ON
 			(
 				eate.targetEntityCode = targetEntity.entityCode
@@ -767,90 +736,90 @@
 				eate.targetEntityCodeNamespace = targetEntity.entityCodeNamespace
 			)
 		LEFT JOIN
-			$prefix$entityType targetEntityType
+			${prefix}entityType targetEntityType
 		ON
 			(targetEntity.entityGuid = targetEntityType.entityGuid)
-		</isEqual>
+		</if>
 		
 		WHERE
-			rel.codingSchemeGuid = #codingSchemeUid,handler=variablePrimaryKeyTypeHandler#
+			rel.codingSchemeGuid = #{codingSchemeUid,handler=variablePrimaryKeyTypeHandler}
 
-		<isNotNull property="relationsContainerName" prepend="AND">
-			rel.containerName = #relationsContainerName#
-		</isNotNull>
+		<if test="relationsContainerName != null">AND
+			rel.containerName = #{relationsContainerName}
+		</if>
 		
-		<isNotEmpty property="associations" prepend="AND">
+		<if test="associations != null and associations != ''">AND
 			(
-			<iterate property="associations" conjunction="OR">
-				ap.associationName = #associations[]#
-			</iterate>
+			 <foreach collection="associations" item="item" separator="OR">
+				ap.associationName = #{item}
+			</foreach>
 			)
-		</isNotEmpty>
+		</if>
 
-		<isNotNull property="sourceCode" prepend="AND">
-			eate.sourceEntityCode = #sourceCode#
-		</isNotNull>
-		<isNotNull property="sourceNamespace" prepend="AND">
-			eate.sourceEntityCodeNamespace = #sourceNamespace#
-		</isNotNull>
-		<isNotNull property="targetCode" prepend="AND">
-			eate.targetEntityCode = #targetCode#
-		</isNotNull>
-		<isNotNull property="targetNamespace" prepend="AND">
-			eate.targetEntityCodeNamespace = #targetNamespace#
-		</isNotNull>
+		<if test="sourceCode != null">AND
+			eate.sourceEntityCode = #{sourceCode}
+		</if>
+		<if test="sourceNamespace != null">AND
+			eate.sourceEntityCodeNamespace = #{sourceNamespace}
+		</if>
+		<if test="targetCode != null">AND
+			eate.targetEntityCode = #{targetCode}
+		</if>
+		<if test="targetNamespace != null">AND
+			eate.targetEntityCodeNamespace = #{targetNamespace}
+		</if>
 		
-		<isNotEmpty property="mustHaveSourceCodes" prepend="AND">
+		<if test="mustHaveSourceCodes != null and mustHaveSourceCodes != ''">AND
 			(
-			<iterate property="mustHaveSourceCodes" conjunction="OR">
+			 <foreach collection="mustHaveSourceCodes" item="item" separator="OR">
 				(
-					eate.sourceEntityCode = #mustHaveSourceCodes[].code#
-					<isNotEmpty property="mustHaveSourceCodes[].namespace" prepend="AND">
-						eate.sourceEntityCodeNamespace = #mustHaveSourceCodes[].namespace#
-					</isNotEmpty>
+					eate.sourceEntityCode = #{item.code}
+					<if test="item != null and item.namespace != null and item.namespace != ''">AND
+						eate.sourceEntityCodeNamespace = #{item.namespace}
+					</if>
 				)
-			</iterate>
+			</foreach>
 			)
-		</isNotEmpty>
+		</if>
 		
-		<isNotEmpty property="mustHaveTargetCodes" prepend="AND">
+		<if test="mustHaveTargetCodes != null and mustHaveTargetCodes != ''">AND
 			(
-			<iterate property="mustHaveTargetCodes" conjunction="OR">
+			 <foreach collection="mustHaveTargetCodes" item="item" separator="OR">
 				(
-					eate.targetEntityCode = #mustHaveTargetCodes[].code#
-					<isNotEmpty property="mustHaveTargetCodes[].namespace" prepend="AND">
-						eate.targetEntityCodeNamespace = #mustHaveTargetCodes[].namespace#
-					</isNotEmpty>
+					eate.targetEntityCode = #{item.code}
+					<if test="item != null and item.namespace != null and item.namespace != ''">AND
+						eate.targetEntityCodeNamespace = #{item.namespace}
+					</if>
 				)
-			</iterate>
+			</foreach>
 			)
-		</isNotEmpty>
-		<isNotEmpty property="mustHaveSourceNamespaces" prepend="AND">
+		</if>
+		<if test="mustHaveSourceNamespaces != null and mustHaveSourceNamespaces != ''">AND
 			(
-			<iterate property="mustHaveSourceNamespaces" conjunction="OR">
+			 <foreach collection="mustHaveSourceNamespaces" item="item" separator="OR">
 					(
-					eate.sourceEntityCodeNamespace = #mustHaveSourceNamespaces[]#
+					eate.sourceEntityCodeNamespace = #{item}
 					)
-			</iterate>
+			</foreach>
 			)
-		</isNotEmpty>
-		<isNotEmpty property="mustHaveTargetNamespaces" prepend="AND">
+		</if>
+		<if test="mustHaveTargetNamespaces != null and mustHaveTargetNamespaces != ''">AND
 			(
-			<iterate property="mustHaveTargetNamespaces" conjunction="OR">
+			 <foreach collection="mustHaveTargetNamespaces" item="item" separator="OR">
 					(
-					eate.targetEntityCodeNamespace = #mustHaveTargetNamespaces[]#
+					eate.targetEntityCodeNamespace = #{item}
 					)
-			</iterate>
+			</foreach>
 			)
-		</isNotEmpty>
+		</if>
 		
-		<isNotEmpty property="mustHaveEntityTypes" prepend="AND">
+		<if test="mustHaveEntityTypes != null and mustHaveEntityTypes != ''">AND
 			(
 				(
 					(
-					<iterate property="mustHaveEntityTypes" conjunction="OR">
-						sourceEntityType.entityType = #mustHaveEntityTypes[]#
-					</iterate>
+					 <foreach collection="mustHaveEntityTypes" item="item" separator="OR">
+						sourceEntityType.entityType = #{item}
+					</foreach>
 					)
 					OR
 					(
@@ -860,9 +829,9 @@
 				AND
 				(
 					(
-					<iterate property="mustHaveEntityTypes" conjunction="OR">
-						targetEntityType.entityType = #mustHaveEntityTypes[]#
-					</iterate>
+					 <foreach collection="mustHaveEntityTypes" item="item" separator="OR">
+						targetEntityType.entityType = #{item}
+					</foreach>
 					)
 					OR
 					(
@@ -870,49 +839,49 @@
 					)
 				)	
 			)
-		</isNotEmpty>
+		</if>
 	
-		<isNotNull property="restrictToAnonymous" prepend="AND">
+		<if test="restrictToAnonymous != null">AND
 			(
 				(
-				sourceEntity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
+				sourceEntity.isAnonymous = #{restrictToAnonymous,handler=numericBooleanTypeHandler}
 				OR
 				sourceEntity.isAnonymous IS NULL
 				)
 			AND
 				(
-				targetEntity.isAnonymous = #restrictToAnonymous,handler=numericBooleanTypeHandler#
+				targetEntity.isAnonymous = #{restrictToAnonymous,handler=numericBooleanTypeHandler}
 				OR
 				targetEntity.isAnonymous IS NULL
 				)
 			)
-		</isNotNull>
+		</if>
 	</sql>
 	
 	<sql id="getEntityAssnsToEntityRelationships">
 		SELECT DISTINCT
 			eate.associationPredicateGuid
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 		LEFT JOIN
-			$prefix$entityAssnQuals quals
+			${prefix}entityAssnQuals quals
 		ON
 			(eate.entityAssnsGuid = quals.referenceGuid)
 		<include refid="getRelationshipsFragment"/>
 	
-		<isNotEmpty property="associationQualifiers" prepend="AND">
+		<if test="associationQualifiers != null and associationQualifiers != ''">AND
 			(
-			<iterate property="associationQualifiers" conjunction="AND">
+			 <foreach collection="associationQualifiers" item="item" separator="AND">
 				(
-				quals.qualifierName = #associationQualifiers[].qualifierName#
-				<isNotEmpty property="associationQualifiers[].qualifierValue">
+				quals.qualifierName = #{item.qualifierName}
+				<if test="item != null and item.qualifierValue != null and item.qualifierValue != ''">
 					AND
-					quals.qualifierValue = #associationQualifiers[].qualifierValue#
-			</isNotEmpty>
+					quals.qualifierValue = #{item.qualifierValue}
+			</if>
 				)
-			</iterate>
+			</foreach>
 			)
-		</isNotEmpty>
+		</if>
 
 	</sql>
 	
@@ -920,376 +889,356 @@
 		SELECT DISTINCT
 			eate.associationPredicateGuid
 		FROM
-			$prefix$entityAssnsToEntityTr eate
+			${prefix}entityAssnsToEntityTr eate
 		<include refid="getRelationshipsFragment"/>
 	</sql>
 	
-	<select id="getCodeRelationships"
-				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetCodeRelationshipsBean"
-				remapResults="true"
-				resultClass="string">
+	<select id="getCodeRelationships" parameterType="org.lexevs.dao.database.ibatis.association.parameter.GetCodeRelationshipsBean" resultType="string">
 		<include refid="getEntityAssnsToEntityRelationships"/>
 	
-		<isEqual property="useTransitive" compareValue="true">
+		<if test="useTransitive == &quot;true&quot;">
 			UNION
 			<include refid="getEntityAssnsToEntityTrRelationships"/>
-		</isEqual>
+		</if>
 	</select>
 	
-	<select id="getAssociationPredicateNameForAssociationInstanceId"
-				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-				remapResults="true"
-				resultClass="string">
+	<select id="getAssociationPredicateNameForAssociationInstanceId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 			SELECT 
 				ap.associationName
 			FROM
-				$prefix$entityAssnsToEntity eate
+				${prefix}entityAssnsToEntity eate
 			INNER JOIN
-				$prefix$associationPredicate ap
+				${prefix}associationPredicate ap
 			ON
 				eate.associationPredicateGuid = ap.associationPredicateGuid
 			WHERE
-				eate.associationInstanceId = #param1#
+				eate.associationInstanceId = #{param1}
 				
 			UNION 
 			
 			SELECT 
 				ap.associationName
 			FROM
-				$prefix$entityAssnsToData eatd
+				${prefix}entityAssnsToData eatd
 			INNER JOIN
-				$prefix$associationPredicate ap
+				${prefix}associationPredicate ap
 			ON
 				eatd.associationPredicateGuid = ap.associationPredicateGuid
 			WHERE
-				eatd.associationInstanceId = #param1#
+				eatd.associationInstanceId = #{param1}
 	</select>
 	
-	<select id="getRelationContainerNameForAssociationInstanceId"
-				parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-				remapResults="true"
-				resultClass="string">
+	<select id="getRelationContainerNameForAssociationInstanceId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 			SELECT 
 				rel.containerName
 			FROM
-				$prefix$entityAssnsToEntity eate
+				${prefix}entityAssnsToEntity eate
 			INNER JOIN
-				$prefix$associationPredicate ap
+				${prefix}associationPredicate ap
 			ON
 				eate.associationPredicateGuid = ap.associationPredicateGuid
 			INNER JOIN 
-				$prefix$relation rel
+				${prefix}relation rel
 			ON
 				ap.relationGuid = rel.relationGuid
 			WHERE
-				eate.associationInstanceId = #param1#
+				eate.associationInstanceId = #{param1}
 				
 			UNION 
 			
 			SELECT 
 				rel.containerName
 			FROM
-				$prefix$entityAssnsToData eatd
+				${prefix}entityAssnsToData eatd
 			INNER JOIN
-				$prefix$associationPredicate ap
+				${prefix}associationPredicate ap
 			ON
 				eatd.associationPredicateGuid = ap.associationPredicateGuid
 			INNER JOIN 
-				$prefix$relation rel
+				${prefix}relation rel
 			ON
 				ap.relationGuid = rel.relationGuid
 			WHERE
-				eatd.associationInstanceId = #param1#
+				eatd.associationInstanceId = #{param1}
 	</select>
 	
-	<select id="getRootEntityAssnsToEntityUids"
-				parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-				remapResults="true"
-				resultMap="Entity.noEntityTypeConceptReferenceResult">
+	<select id="getRootEntityAssnsToEntityUids" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="Entity.noEntityTypeConceptReferenceResult">
 		SELECT DISTINCT
 			eate1.sourceEntityCode AS entityCode,
 			eate1.sourceEntityCodeNamespace AS entityCodeNamespace
 			
-		<isNotEmpty property="param6" prepend=",">
-			<iterate property="param6" conjunction=",">
-				$param6[].columnSortType.rootColumn$
-				$param6[].order$
-			</iterate>
-		</isNotEmpty>
+		<if test="param6 != null and param6 != ''">,
+			 <foreach collection="param6" item="item" separator=",">
+				${param6[].columnSortType.rootColumn}
+				${param6[].order}
+			</foreach>
+		</if>
 		FROM
-			$prefix$entityAssnsToEntity eate1
+			${prefix}entityAssnsToEntity eate1
 
 		LEFT JOIN
-			<isNotEmpty property="param3">
+			<if test="param3 != null and param3 != ''">
 			(
-			</isNotEmpty>
-			$prefix$entityAssnsToEntity eate2
-			<isNotEmpty property="param3">
+			</if>
+			${prefix}entityAssnsToEntity eate2
+			<if test="param3 != null and param3 != ''">
 			LEFT JOIN 
-				$prefix$entityAssnQuals eaq2
+				${prefix}entityAssnQuals eaq2
 			ON
 				(eaq2.referenceGuid = eate2.entityAssnsGuid)
 			)
-			</isNotEmpty>
+			</if>
 		ON (
 			eate1.sourceEntityCode = eate2.targetEntityCode
 
 			AND
 			eate1.sourceEntityCodeNamespace = eate2.targetEntityCodeNamespace
 
-			<isEqual property="param1" compareValue="INDIVIDUALLY">
+			<if test="param1 == &quot;INDIVIDUALLY&quot;">
 			AND
 			eate1.associationPredicateGuid = eate2.associationPredicateGuid
-			</isEqual>
+			</if>
 			
-			<isEqual property="param1" compareValue="TOGETHER">
+			<if test="param1 == &quot;TOGETHER&quot;">
 			
-				<isNotEmpty property="param2" prepend="AND">
+				<if test="param2 != null and param2 != ''">AND
 				(
-					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
+					  <foreach collection="param2" item="item" separator="OR"> eate1.associationPredicateGuid = #{param2[],handler=variablePrimaryKeyTypeHandler} </foreach>
 				)
 				AND
 				(
-					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
+					  <foreach collection="param2" item="item" separator="OR"> eate2.associationPredicateGuid = #{param2[],handler=variablePrimaryKeyTypeHandler} </foreach>
 				)
-				</isNotEmpty>		
+				</if>		
 			
-			</isEqual>
+			</if>
 			
-			<isNotEmpty property="param3" prepend="AND">
+			<if test="param3 != null and param3 != ''">AND
 			(
-			<iterate property="param3" conjunction="OR"> 
-				eaq2.qualifierName = #param3[].qualifierName#
+			 <foreach collection="param3" item="item" separator="OR"> 
+				eaq2.qualifierName = #{param3[].qualifierName}
 				
-				<isNotEmpty property="param3[].qualifierValue" prepend="AND">
-					eaq2.qualifierValue = #param3[].qualifierValue#
-				</isNotEmpty>
-			</iterate>
+				<if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
+					eaq2.qualifierValue = #{param3[].qualifierValue}
+				</if>
+			</foreach>
 			)
-			</isNotEmpty>
+			</if>
 			
 <!--			<isNotEmpty property="param4" prepend="AND">-->
 <!--			(-->
 <!--				<iterate property="param4" conjunction="AND"> -->
-<!--					eate1.sourceEntityCodeNamespace != #param4[]#-->
+<!--					eate1.sourceEntityCodeNamespace != #{param4[]}-->
 <!--				</iterate>-->
 <!--			)-->
 <!--			</isNotEmpty>-->
 			
 			)	
-		<isNotEmpty property="param3">
+		<if test="param3 != null and param3 != ''">
 			LEFT JOIN
-				$prefix$entityAssnQuals eaq1
+				${prefix}entityAssnQuals eaq1
 			ON
 				eate1.entityAssnsGuid = eaq1.referenceGuid
-		</isNotEmpty>
+		</if>
 		
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
 			
-			<isNotEmpty property="param3" prepend="AND">
+			<if test="param3 != null and param3 != ''">AND
 			(
-			<iterate property="param3" conjunction="OR"> 
-				eaq1.qualifierName = #param3[].qualifierName#
+			 <foreach collection="param3" item="item" separator="OR"> 
+				eaq1.qualifierName = #{param3[].qualifierName}
 				
-				<isNotEmpty property="param3[].qualifierValue" prepend="AND">
-					eaq1.qualifierValue = #param3[].qualifierValue#
-				</isNotEmpty>
-			</iterate>
+				<if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
+					eaq1.qualifierValue = #{param3[].qualifierValue}
+				</if>
+			</foreach>
 			)
-			</isNotEmpty>
+			</if>
 
-			<isNotEmpty property="param2" prepend="AND">
-				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
-			</isNotEmpty>	
+			<if test="param2 != null and param2 != ''">AND
+				eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">#{param2[],handler=variablePrimaryKeyTypeHandler}</foreach> )
+			</if>	
 			
-			<isNotEmpty property="param4" prepend="AND">
+			<if test="param4 != null and param4 != ''">AND
 			(
-				<iterate property="param4" conjunction="OR"> 
-					eate1.sourceEntityCodeNamespace = #param4[]#
-				</iterate>
+				 <foreach collection="param4" item="item" separator="OR"> 
+					eate1.sourceEntityCodeNamespace = #{param4[]}
+				</foreach>
 			)
-			</isNotEmpty>
+			</if>
 			
-			<isNotEmpty property="param5" prepend="AND">
+			<if test="param5 != null and param5 != ''">AND
 			(
-				<iterate property="param5" conjunction="OR"> 
-					eate1.targetEntityCodeNamespace = #param5[]#
-				</iterate>
+				 <foreach collection="param5" item="item" separator="OR"> 
+					eate1.targetEntityCodeNamespace = #{param5[]}
+				</foreach>
 			)
-			</isNotEmpty>
+			</if>
 
-		<isNotEmpty property="param6">
+		<if test="param6 != null and param6 != ''">
 			ORDER BY
-			<iterate property="param6" conjunction=",">
-				$param6[].columnSortType.rootColumn$
-				$param6[].order$
-			</iterate>
-		</isNotEmpty>
+			 <foreach collection="param6" item="item" separator=",">
+				${param6[].columnSortType.rootColumn}
+				${param6[].order}
+			</foreach>
+		</if>
 	</select>
 	
-	<select id="getTailEntityAssnsToEntityUids"
-				parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-				remapResults="true"
-				resultMap="Entity.noEntityTypeConceptReferenceResult">
+	<select id="getTailEntityAssnsToEntityUids" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="Entity.noEntityTypeConceptReferenceResult">
 		SELECT DISTINCT
 			eate1.targetEntityCode AS entityCode,
 			eate1.targetEntityCodeNamespace AS entityCodeNamespace
-		<isNotEmpty property="param6" prepend=",">
-			<iterate property="param6" conjunction=",">
-				$param6[].columnSortType.tailColumn$
-				$param6[].order$
-			</iterate>
-		</isNotEmpty>
+		<if test="param6 != null and param6 != ''">,
+			 <foreach collection="param6" item="item" separator=",">
+				${param6[].columnSortType.tailColumn}
+				${param6[].order}
+			</foreach>
+		</if>
 		FROM
-			$prefix$entityAssnsToEntity eate1
+			${prefix}entityAssnsToEntity eate1
 		
 		LEFT JOIN
-			<isNotEmpty property="param3">
+			<if test="param3 != null and param3 != ''">
 			(
-			</isNotEmpty>
-			$prefix$entityAssnsToEntity eate2
-			<isNotEmpty property="param3">
+			</if>
+			${prefix}entityAssnsToEntity eate2
+			<if test="param3 != null and param3 != ''">
 			LEFT JOIN 
-				$prefix$entityAssnQuals eaq2
+				${prefix}entityAssnQuals eaq2
 			ON
 				(eaq2.referenceGuid = eate2.entityAssnsGuid)
 			)
-			</isNotEmpty>
+			</if>
 		ON (
 			eate1.targetEntityCode = eate2.sourceEntityCode
 		
 			AND
 			eate1.targetEntityCodeNamespace = eate2.sourceEntityCodeNamespace
 			
-			<isEqual property="param1" compareValue="INDIVIDUALLY">
+			<if test="param1 == &quot;INDIVIDUALLY&quot;">
 			AND
 			eate1.associationPredicateGuid = eate2.associationPredicateGuid
-			</isEqual>
+			</if>
 			
-			<isEqual property="param1" compareValue="TOGETHER">
+			<if test="param1 == &quot;TOGETHER&quot;">
 		
-				<isNotEmpty property="param2" prepend="AND">
+				<if test="param2 != null and param2 != ''">AND
 				(
-					 <iterate property="param2" conjunction="OR"> eate1.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
+					  <foreach collection="param2" item="item" separator="OR"> eate1.associationPredicateGuid = #{param2[],handler=variablePrimaryKeyTypeHandler} </foreach>
 				)
 				AND
 				(
-					 <iterate property="param2" conjunction="OR"> eate2.associationPredicateGuid = #param2[],handler=variablePrimaryKeyTypeHandler# </iterate>
+					  <foreach collection="param2" item="item" separator="OR"> eate2.associationPredicateGuid = #{param2[],handler=variablePrimaryKeyTypeHandler} </foreach>
 				)
-				</isNotEmpty>		
+				</if>		
 			
-			</isEqual>
+			</if>
 			
-			<isNotEmpty property="param3" prepend="AND">
+			<if test="param3 != null and param3 != ''">AND
 			(
-			<iterate property="param3" conjunction="OR"> 
-				eaq2.qualifierName = #param3[].qualifierName#
+			 <foreach collection="param3" item="item" separator="OR"> 
+				eaq2.qualifierName = #{param3[].qualifierName}
 				
-				<isNotEmpty property="param3[].qualifierValue" prepend="AND">
-					eaq2.qualifierValue = #param3[].qualifierValue#
-				</isNotEmpty>
-			</iterate>
+				<if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
+					eaq2.qualifierValue = #{param3[].qualifierValue}
+				</if>
+			</foreach>
 			)
-			</isNotEmpty>
+			</if>
 			
 <!--			<isNotEmpty property="param4" prepend="AND">-->
 <!--			(-->
 <!--				<iterate property="param4" conjunction="AND"> -->
-<!--					eate1.sourceEntityCodeNamespace != #param4[]#-->
+<!--					eate1.sourceEntityCodeNamespace != #{param4[]}-->
 <!--				</iterate>-->
 <!--			)-->
 <!--			</isNotEmpty>-->
 			)
 			
-		<isNotEmpty property="param3">
+		<if test="param3 != null and param3 != ''">
 			LEFT JOIN
-				$prefix$entityAssnQuals eaq1
+				${prefix}entityAssnQuals eaq1
 			ON
 				eate1.entityAssnsGuid = eaq1.referenceGuid
-		</isNotEmpty>
+		</if>
 		WHERE
 			eate2.entityAssnsGuid IS NULL	
 			
-			<isNotEmpty property="param3" prepend="AND">
+			<if test="param3 != null and param3 != ''">AND
 			(
-			<iterate property="param3" conjunction="OR"> 
-				eaq1.qualifierName = #param3[].qualifierName#
+			 <foreach collection="param3" item="item" separator="OR"> 
+				eaq1.qualifierName = #{param3[].qualifierName}
 				
-				<isNotEmpty property="param3[].qualifierValue" prepend="AND">
-					eaq1.qualifierValue = #param3[].qualifierValue#
-				</isNotEmpty>
-			</iterate>
+				<if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
+					eaq1.qualifierValue = #{param3[].qualifierValue}
+				</if>
+			</foreach>
 			)
-			</isNotEmpty>
+			</if>
 
-			<isNotEmpty property="param2" prepend="AND">
-				eate1.associationPredicateGuid IN ( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
-			</isNotEmpty>	
+			<if test="param2 != null and param2 != ''">AND
+				eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">#{param2[],handler=variablePrimaryKeyTypeHandler}</foreach> )
+			</if>	
 			
-			<isNotEmpty property="param4" prepend="AND">
+			<if test="param4 != null and param4 != ''">AND
 			(
-				<iterate property="param4" conjunction="OR"> 
-					eate1.sourceEntityCodeNamespace = #param4[]#
-				</iterate>
+				 <foreach collection="param4" item="item" separator="OR"> 
+					eate1.sourceEntityCodeNamespace = #{param4[]}
+				</foreach>
 			)
-			</isNotEmpty>
+			</if>
 			
-			<isNotEmpty property="param5" prepend="AND">
+			<if test="param5 != null and param5 != ''">AND
 			(
-				<iterate property="param5" conjunction="OR"> 
-					eate1.targetEntityCodeNamespace = #param5[]#
-				</iterate>
+				 <foreach collection="param5" item="item" separator="OR"> 
+					eate1.targetEntityCodeNamespace = #{param5[]}
+				</foreach>
 			)
-		</isNotEmpty>
-			<isNotEmpty property="param6">
+		</if>
+			<if test="param6 != null and param6 != ''">
 			ORDER BY
-			<iterate property="param6" conjunction=",">
-				$param6[].columnSortType.tailColumn$
-				$param6[].order$
-			</iterate>
-		</isNotEmpty>
+			 <foreach collection="param6" item="item" separator=",">
+				${param6[].columnSortType.tailColumn}
+				${param6[].order}
+			</foreach>
+		</if>
 			
 	</select>
   
-  	<select id="getEntityAssnsToEntityUids"
-				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean"
-				remapResults="true"
-				resultMap="Common.uidResult">
+  	<select id="getEntityAssnsToEntityUids" parameterType="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsBean" resultMap="Common.uidResult">
 		SELECT DISTINCT 
 			(eate.entityAssnsGuid) AS uidKey
 			
-		<isNotEmpty property="sorts" prepend=",">
-			<iterate property="sorts" conjunction=",">
-				<isEqual property="tripleNode" compareValue="SUBJECT">
-					$sorts[].columnSortType.subjectColumn$
-				</isEqual>
-				<isEqual property="tripleNode" compareValue="OBJECT">
-					$sorts[].columnSortType.objectColumn$
-				</isEqual>
-			</iterate>
-		</isNotEmpty>
+		<if test="sorts != null and sorts != ''">,
+			 <foreach collection="sorts" item="item" separator=",">
+				<if test="tripleNode == &quot;SUBJECT&quot;">
+					${item.columnSortType.subjectColumn}
+				</if>
+				<if test="tripleNode == &quot;OBJECT&quot;">
+					${item.columnSortType.objectColumn}
+				</if>
+			</foreach>
+		</if>
 		
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
 		<include refid="restrictEntityAssnsToEntityUidsBySingleCodeFragment"/>
 		
-		<isNotEmpty property="sorts">
+		<if test="sorts != null and sorts != ''">
 			ORDER BY
-			<iterate property="sorts" conjunction=",">
-				<isEqual property="tripleNode" compareValue="SUBJECT">
-					$sorts[].columnSortType.subjectColumn$
-				</isEqual>
-				<isEqual property="tripleNode" compareValue="OBJECT">
-					$sorts[].columnSortType.objectColumn$
-				</isEqual>
-				$sorts[].order$
-			</iterate>
-		</isNotEmpty>
+			 <foreach collection="sorts" item="item" separator=",">
+				<if test="tripleNode == &quot;SUBJECT&quot;">
+					${item.columnSortType.subjectColumn}
+				</if>
+				<if test="tripleNode == &quot;OBJECT&quot;">
+					${item.columnSortType.objectColumn}
+				</if>
+				${item.order}
+			</foreach>
+		</if>
 	</select>
 	
-	<select id="getEntityAssnsToEntityUidsCount"
-				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
-				resultMap="countResult">
+	<select id="getEntityAssnsToEntityUidsCount" parameterType="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean" resultMap="countResult">
 		SELECT 
 			COUNT( DISTINCT eate.entityAssnsGuid ) AS relationshipsCount,
 			ap.associationName AS associationName
@@ -1299,19 +1248,17 @@
 			associationName
 	</select>
 	
-	<select id="getCountConceptReferences"
-				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
-				resultMap="countConceptReferenceResult">
+	<select id="getCountConceptReferences" parameterType="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean" resultMap="countConceptReferenceResult">
 		SELECT 
 			COUNT( DISTINCT eate.entityAssnsGuid ) AS relationshipsCount,
-			<isEqual property="tripleNode" compareValue="SUBJECT">
+			<if test="tripleNode == &quot;SUBJECT&quot;">
 				eate.sourceEntityCode AS entityCode,
 				eate.sourceEntityCodeNamespace AS entityCodeNamespace
-			</isEqual>
-			<isEqual property="tripleNode" compareValue="OBJECT">
+			</if>
+			<if test="tripleNode == &quot;OBJECT&quot;">
 				eate.targetEntityCode AS entityCode,
 				eate.targetEntityCodeNamespace AS entityCodeNamespace
-			</isEqual>
+			</if>
 			
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
 		<include refid="restrictEntityAssnsToEntityUidsByMultipleCodesFragment"/>
@@ -1322,28 +1269,26 @@
 			eate.targetEntityCode NOT IN ('@' , '@@')
 		
 		GROUP BY
-			<isEqual property="tripleNode" compareValue="SUBJECT">
+			<if test="tripleNode == &quot;SUBJECT&quot;">
 				eate.sourceEntityCode,
 				eate.sourceEntityCodeNamespace
-			</isEqual>
-			<isEqual property="tripleNode" compareValue="OBJECT">
+			</if>
+			<if test="tripleNode == &quot;OBJECT&quot;">
 				eate.targetEntityCode,
 				eate.targetEntityCodeNamespace
-			</isEqual>
+			</if>
 	</select>
 	
-	<select id="getConceptReferences"
-				parameterClass="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
-				resultMap="Entity.noEntityTypeConceptReferenceResult">
+	<select id="getConceptReferences" parameterType="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean" resultMap="Entity.noEntityTypeConceptReferenceResult">
 		SELECT 
-			<isEqual property="tripleNode" compareValue="SUBJECT">
+			<if test="tripleNode == &quot;SUBJECT&quot;">
 				eate.targetEntityCode AS entityCode,
 				eate.targetEntityCodeNamespace AS entityCodeNamespace
-			</isEqual>
-			<isEqual property="tripleNode" compareValue="OBJECT">
+			</if>
+			<if test="tripleNode == &quot;OBJECT&quot;">
 				eate.sourceEntityCode AS entityCode,
 				eate.sourceEntityCodeNamespace AS entityCodeNamespace
-			</isEqual>
+			</if>
 			
 		<include refid="getEntityAssnsToEntityUidsFragment"/>
 		<include refid="restrictEntityAssnsToEntityUidsByMultipleCodesFragment"/>
@@ -1354,132 +1299,115 @@
 			eate.targetEntityCode NOT IN ('@' , '@@')
 		
 		GROUP BY
-			<isEqual property="tripleNode" compareValue="SUBJECT">
+			<if test="tripleNode == &quot;SUBJECT&quot;">
 				eate.targetEntityCode,
 				eate.targetEntityCodeNamespace
-			</isEqual>
-			<isEqual property="tripleNode" compareValue="OBJECT">
+			</if>
+			<if test="tripleNode == &quot;OBJECT&quot;">
 				eate.sourceEntityCode,
 				eate.sourceEntityCodeNamespace
-			</isEqual>
-		<isNotEmpty property="sorts">
+			</if>
+		<if test="sorts != null and sorts != ''">
 		ORDER BY
-			<iterate property="sorts" conjunction=",">
-				<isEqual property="tripleNode" compareValue="SUBJECT">
-					$sorts[].columnSortType.subjectColumn$
-				</isEqual>
-				<isEqual property="tripleNode" compareValue="OBJECT">
-					$sorts[].columnSortType.objectColumn$
-				</isEqual>
-				$sorts[].order$
-			</iterate>
-		</isNotEmpty>
+			 <foreach collection="sorts" item="item" separator=",">
+				<if test="tripleNode == &quot;SUBJECT&quot;">
+					${item.columnSortType.subjectColumn}
+				</if>
+				<if test="tripleNode == &quot;OBJECT&quot;">
+					${item.columnSortType.objectColumn}
+				</if>
+				${item.order}
+			</foreach>
+		</if>
 	</select>
 	
-	<select id="getDistinctSources" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" 
-		resultMap="nodeResult">
+	<select id="getDistinctSources" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="nodeResult">
 		SELECT DISTINCT
 			sourceEntityCode AS entityCode,
 			sourceEntityCodeNamespace AS entityCodeNamespace
 		FROM 
-			$prefix$entityAssnsToEntity
+			${prefix}entityAssnsToEntity
 		WHERE
-			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</select>
 	
-	<select id="getDistinctTargets" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" 
-		resultMap="nodeResult">
+	<select id="getDistinctTargets" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="nodeResult">
 		SELECT DISTINCT
 			targetEntityCode AS entityCode,
 			targetEntityCodeNamespace AS entityCodeNamespace
 		FROM 
-			$prefix$entityAssnsToEntity
+			${prefix}entityAssnsToEntity
 		WHERE
-			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</select>
 	
-	<select id="getTargetsOfSource" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
-		remapResults="true" 
-		resultMap="nodeResult">
+	<select id="getTargetsOfSource" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="nodeResult">
 		SELECT
 			targetEntityCode AS entityCode,
 			targetEntityCodeNamespace AS entityCodeNamespace
 		FROM 
-			$prefix$entityAssnsToEntity
+			${prefix}entityAssnsToEntity
 		WHERE
-			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			sourceEntityCode = #param2#
+			sourceEntityCode = #{param2}
 		AND
-			sourceEntityCodeNamespace = #param3#		
+			sourceEntityCodeNamespace = #{param3}		
 	</select>
 	
 	
-	<select id="getSourcesOfTarget" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
-		remapResults="true" 
-		resultMap="nodeResult">
+	<select id="getSourcesOfTarget" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="nodeResult">
 		SELECT
 			sourceEntityCode AS entityCode,
 			sourceEntityCodeNamespace AS entityCodeNamespace
 		FROM 
-			$prefix$entityAssnsToEntity
+			${prefix}entityAssnsToEntity
 		WHERE
-			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			targetEntityCode = #param2#
+			targetEntityCode = #{param2}
 		AND
-			targetEntityCodeNamespace = #param3#		
+			targetEntityCodeNamespace = #{param3}		
 	</select>
 	
-	<select id="getValueSetHierarchySourcesOfTargets" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint"
-		remapResults="true" 
-		resultMap="valueSetHierarchyRootNodeResolution">
+	<select id="getValueSetHierarchySourcesOfTargets" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint" resultMap="valueSetHierarchyRootNodeResolution">
 		SELECT
 			assns.sourceEntityCode AS entityCode,
 			assns.sourceEntityCodeNamespace AS namespace,
 			ent.description AS description,
 			CASE prop.propertyName
-			WHEN  #param3# THEN prop.propertyValue
+			WHEN  #{param3} THEN prop.propertyValue
 			END AS source,
 			CASE prop2.propertyName
-			WHEN #param4# THEN prop2.propertyValue
+			WHEN #{param4} THEN prop2.propertyValue
 			END AS publish
 		FROM 
-			$prefix$entityAssnsToEntity assns
+			${prefix}entityAssnsToEntity assns
 		LEFT JOIN
-			$prefix$entity ent
+			${prefix}entity ent
 		ON
 			ent.entityCode = sourceEntityCode
 		LEFT JOIN 
-			$prefix$property prop 
+			${prefix}property prop 
 		ON
 			ent.entityGuid = prop.referenceGuid
 		LEFT JOIN
-			$prefix$property prop2
+			${prefix}property prop2
 		ON
 			prop2.referenceGuid = prop.referenceGuid
 		WHERE
-			associationPredicateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			targetEntityCode = #param2#
+			targetEntityCode = #{param2}
 		AND (
-			prop.propertyName = #param3#
+			prop.propertyName = #{param3}
 		OR
-			prop2.propertyName = #param4# )
+			prop2.propertyName = #{param4} )
 		GROUP BY
-			description, publish, source having publish = #param5#
+			description, publish, source having publish = #{param5}
 	</select>
 	
-	<select id="getValueSetEntitiesFromCode"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		remapResults="true" resultMap="vsEntityResult">
+	<select id="getValueSetEntitiesFromCode" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="vsEntityResult">
 		SELECT
 			ent.entityGuid, 
 			ent.entityCode, 
@@ -1493,20 +1421,18 @@
 			 ent.effectiveDate, 
 			 ent.expirationDate
 		FROM
-		 	$prefix$entityAssnsToEntity  assns 
+		 	${prefix}entityAssnsToEntity  assns 
 		JOIN 
-			$prefix$entity ent 
+			${prefix}entity ent 
 		ON 
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
-			assns.associationPredicateGuid = #param1#
+			assns.associationPredicateGuid = #{param1}
 		AND
-		 	assns.targetEntityCode = #param2#
+		 	assns.targetEntityCode = #{param2}
 	</select>
 	
-	<select id="getValueSetTopNodesFromMemberCode"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		remapResults="true" resultMap="vsEntityResult">
+	<select id="getValueSetTopNodesFromMemberCode" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="vsEntityResult">
 		SELECT
 			ent.entityGuid, 
 			ent.entityCode, 
@@ -1520,57 +1446,50 @@
 			 ent.effectiveDate, 
 			 ent.expirationDate
 		FROM
-		 	$prefix$entityAssnsToEntity  assns 
+		 	${prefix}entityAssnsToEntity  assns 
 		JOIN 
-			$prefix$entity ent 
+			${prefix}entity ent 
 		ON 
 			assns.targetEntityCode = ent.entityCode
 		WHERE
-			assns.associationPredicateGuid = #param1#
+			assns.associationPredicateGuid = #{param1}
 		AND
-		 	assns.sourceEntityCode = #param2#
+		 	assns.sourceEntityCode = #{param2}
 	</select>
 	
-	<select id="getVSEntityUids"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" resultMap="Common.uidResult">
+	<select id="getVSEntityUids" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
 		SELECT
 			ent.entityGuid AS uidKey
 		FROM
-		 	$prefix$entityAssnsToEntity  assns 
+		 	${prefix}entityAssnsToEntity  assns 
 		JOIN 
-			$prefix$entity ent 
+			${prefix}entity ent 
 		ON 
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
-			assns.associationPredicateGuid  = #param1#
+			assns.associationPredicateGuid  = #{param1}
 		GROUP BY
 			ent.entityGuid
 	</select>
 	
-	<select id="getVSEntityUidsForTopNodeCode"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		remapResults="true" resultMap="Common.uidResult">
+	<select id="getVSEntityUidsForTopNodeCode" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
 		SELECT
 			ent.entityGuid AS uidKey
 		FROM
-		 	$prefix$entityAssnsToEntity  assns 
+		 	${prefix}entityAssnsToEntity  assns 
 		JOIN 
-			$prefix$entity ent 
+			${prefix}entity ent 
 		ON 
 			assns.sourceEntityCode = ent.entityCode
 		WHERE
-			assns.associationPredicateGuid  = #param1#
+			assns.associationPredicateGuid  = #{param1}
 		AND
-			assns.targetEntityCode = #param2#
+			assns.targetEntityCode = #{param2}
 		GROUP BY
 			ent.entityGuid
 	</select>
 	
-	<select id="getVSTopNodeEntityByCode"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-		resultMap="vsEntityResultWithProperties"
-		remapResults="true">
+	<select id="getVSTopNodeEntityByCode" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="vsEntityResultWithProperties">
 		SELECT 
 			 ent.entityGuid, 
 			 ent.entityCode, 
@@ -1586,21 +1505,18 @@
 			 prop.propertyName, 
 			 prop.propertyValue  
 		FROM 
-			$prefix$entity ent 
+			${prefix}entity ent 
 		JOIN 
-			$prefix$property prop 
+			${prefix}property prop 
 		ON 
 			entityGuid = referenceGuid 
 		WHERE
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			entityCode = #param2#
+			entityCode = #{param2}
    </select>
    
-   <select id="getVSTopNodeEntityByDescription"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-		resultMap="vsEntityResultWithProperties"
-		remapResults="true">
+   <select id="getVSTopNodeEntityByDescription" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="vsEntityResultWithProperties">
 		SELECT 
 			 ent.entityGuid, 
 			 ent.entityCode, 
@@ -1616,74 +1532,66 @@
 			 prop.propertyName, 
 			 prop.propertyValue  
 		FROM 
-			$prefix$entity ent 
+			${prefix}entity ent 
 		JOIN 
-			$prefix$property prop 
+			${prefix}property prop 
 		ON 
 			entityGuid = referenceGuid 
 		WHERE
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			description = #param2#
+			description = #{param2}
    </select>
    
-   <select id="getVSEntityCount"
-   		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-		resultMap="vsEntityCount"
-		remapResults="true">
+   <select id="getVSEntityCount" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="vsEntityCount">
 		SELECT 
 			 count(*) AS vsEntityCount
 			FROM
-		 	$prefix$entityAssnsToEntity  assns 
+		 	${prefix}entityAssnsToEntity  assns 
 		WHERE
-			assns.associationPredicateGuid  = #param1#
+			assns.associationPredicateGuid  = #{param1}
 		AND
-			assns.targetEntityCode = #param2#
+			assns.targetEntityCode = #{param2}
    </select>
    
    
-   <select id="getAllValidValueSetTopNodes" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
-		remapResults="true" resultMap="definedNodeResolution">
+   <select id="getAllValidValueSetTopNodes" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="definedNodeResolution">
 		SELECT
 			assns.targetEntityCode AS entityCode,
 			assns.targetEntityCodeNamespace AS namespace,
 			ent.description AS description
 		FROM 
-			$prefix$entityAssnsToEntity assns
+			${prefix}entityAssnsToEntity assns
 		LEFT JOIN
-			$prefix$entity ent
+			${prefix}entity ent
 		ON
 			ent.entityCode = assns.targetEntityCode
 		LEFT JOIN 
-			$prefix$property prop 
+			${prefix}property prop 
 		ON
 			ent.entityGuid = prop.referenceGuid
 		WHERE
-			associationPredicateGuid = #param1#
+			associationPredicateGuid = #{param1}
  		AND
-			prop.propertyName = #param2#
+			prop.propertyName = #{param2}
 		AND 
-			prop.propertyValue = #param3#
+			prop.propertyValue = #{param3}
 		GROUP BY
 			assns.targetEntityCode,
 			assns.targetEntityCodeNamespace,
 			ent.description
    </select>
 	
-	<select id="getEntryStateUidByAssociationTarget"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" resultMap="Common.uidResult">
+	<select id="getEntryStateUidByAssociationTarget" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
 		SELECT 
 			eate.entryStateGuid AS uidKey
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 		WHERE
-			eate.entityAssnsGuid = #param1,handler=variablePrimaryKeyTypeHandler# 
+			eate.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler} 
 	</select>
     
-	<select id="getAssnTargetAttributesByUId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" resultMap="associationTargetEntry">
+	<select id="getAssnTargetAttributesByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="associationTargetEntry">
 		SELECT 
 			entAssn.entityAssnsGuid,
 			entAssn.associationPredicateGuid,
@@ -1706,13 +1614,13 @@
 			quals.qualifierValue,
 			quals.entryStateGuid esGuid
 		FROM
-			$prefix$entityAssnsToEntity entAssn
+			${prefix}entityAssnsToEntity entAssn
 		LEFT JOIN
-			$prefix$entityAssnQuals quals
+			${prefix}entityAssnQuals quals
 		ON
 			entAssn.entityAssnsGuid = quals.referenceGuid
 		WHERE
-			entAssn.entityAssnsGuid = #param1,handler=variablePrimaryKeyTypeHandler# 
+			entAssn.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler} 
 			
 	</select>
 	
@@ -1738,10 +1646,10 @@
   			previousRevision.revisionId AS previousRevisionId
 
 		FROM
-			$prefix$entityAssnsToEntity entAssn
+			${prefix}entityAssnsToEntity entAssn
 			
 		LEFT JOIN
-			$actualTableSetPrefix$entryState entryState
+			${actualTableSetPrefix}entryState entryState
 		ON
 			entAssn.entryStateGuid =
 			entryState.entryStateGuid	
@@ -1757,106 +1665,99 @@
 			entryState.prevRevisionGuid = previousRevision.revisionGuid	
 	</sql>
 	
-	<select id="getTripleByUid"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		remapResults="true" resultMap="associationSourceTripleEntry">
+	<select id="getTripleByUid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="associationSourceTripleEntry">
 		<include refid="getTripleFragment"/>
 		WHERE
-			entAssn.entityAssnsGuid = #param1,handler=variablePrimaryKeyTypeHandler# 	
+			entAssn.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler} 	
 	</select>
 	
-	<select id="getHistoryTripleByUidAndRevisionId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		remapResults="true" resultMap="associationSourceTripleEntry">
+	<select id="getHistoryTripleByUidAndRevisionId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="associationSourceTripleEntry">
 		<include refid="getTripleFragment"/>
 		WHERE
-			entAssn.entityAssnsGuid = #param1,handler=variablePrimaryKeyTypeHandler# 	
+			entAssn.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler} 	
 		AND
-			currentRevision.revisionId = #param2#		
+			currentRevision.revisionId = #{param2}		
 	</select>
 
-	<update id="updateEntityAssnToEntityByUId"
-		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
+	<update id="updateEntityAssnToEntityByUId" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
 		UPDATE
-			$prefix$entityAssnsToEntity
-		SET
-		<dynamic prepend=" ">
-			<isNotNull prepend="," property="associationSource.sourceEntityCode">
-				sourceEntityCode = #associationSource.sourceEntityCode#
-			</isNotNull>
-			<isNotNull prepend="," property="associationSource.sourceEntityCodeNamespace">
-				sourceEntityCodeNamespace = #associationSource.sourceEntityCodeNamespace#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.targetEntityCode">
-				targetEntityCode = #associationTarget.targetEntityCode#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.targetEntityCodeNamespace">
-				targetEntityCodeNamespace = #associationTarget.targetEntityCodeNamespace#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.isDefining">
-				isDefining = #associationTarget.isDefining,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.isInferred">
-				isInferred = #associationTarget.isInferred,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}entityAssnsToEntity
+
+		<set>
+			<if test="associationSource.sourceEntityCode != null">
+				sourceEntityCode = #{associationSource.sourceEntityCode},
+			</if>
+			<if test="associationSource.sourceEntityCodeNamespace != null">
+				sourceEntityCodeNamespace = #{associationSource.sourceEntityCodeNamespace},
+			</if>
+			<if test="associationSource.targetEntityCode != null">
+				targetEntityCode = #{associationTarget.targetEntityCode},
+			</if>
+			<if test="associationSource.targetEntityCodeNamespace != null">
+				targetEntityCodeNamespace = #{associationTarget.targetEntityCodeNamespace},
+			</if>
+			<if test="associationSource.isDefining != null">
+				isDefining = #{associationTarget.isDefining,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="associationSource.isInferred != null">
+				isInferred = #{associationTarget.isInferred,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="entryStateUId != null">
+				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			</if>
+		</set>
+
 		WHERE
-			entityAssnsGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			entityAssnsGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
 	</update>
 	
-	<update id="updateEntityAssnToEntityVerAttribByUId"
-		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
+	<update id="updateEntityAssnToEntityVerAttribByUId" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean">
 		UPDATE
-			$prefix$entityAssnsToEntity
-		SET
-		<dynamic prepend=" ">
-			<isNotNull prepend="," property="associationTarget.isActive">
+			${prefix}entityAssnsToEntity
+		<set>
+			<if test="associationTarget.isActive != null">
 				isActive =
-				#associationTarget.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.owner">
-				owner = #associationTarget.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.status">
-				status = #associationTarget.status#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.effectiveDate">
+				#{associationTarget.isActive,handler=numericBooleanTypeHandler},
+			</if>
+		    <if test="associationTarget.owner != null">
+				owner = #{associationTarget.owner},
+			</if>
+			<if test="associationTarget.status != null">
+				status = #{associationTarget.status},
+			</if>
+			<if test="associationTarget.effectiveDate != null">
 				effectiveDate =
-				#associationTarget.effectiveDate#
-			</isNotNull>
-			<isNotNull prepend="," property="associationTarget.expirationDate">
+				#{associationTarget.effectiveDate},
+			</if>
+			<if test="associationTarget.expirationDate != null">
 				expirationDate =
-				#associationTarget.expirationDate#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+				#{associationTarget.expirationDate},
+			</if>
+			<if test="entryStateUId != null">
+				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler
+			</if>
+		</set>
+
 		WHERE
-			entityAssnsGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			entityAssnsGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
 	</update>	
 	
-	<delete id="deleteAssocTargetByAssnUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAssocTargetByAssnUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$entityAssnsToEntity
+			${prefix}entityAssnsToEntity
 		WHERE
-			entityAssnsGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</delete>
 	
-	<select id="getAssociationTargetLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getAssociationTargetLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$entityAssnsToEntity entAssnEnt,
-			$prefix$entryState es,
+			${prefix}entityAssnsToEntity entAssnEnt,
+			${prefix}entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			entAssnEnt.entityAssnsGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			entAssnEnt.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
 		AND
 			entAssnEnt.entryStateGuid = es.entryStateGuid	
 		AND
@@ -1867,21 +1768,21 @@
 			SELECT
 			eate.entityAssnsGuid AS uidKey
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 			
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			eate.associationPredicateGuid = ap.associationPredicateGuid
 			
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON 
 			ap.relationGuid = rel.relationGuid
 			
-		<isNotNull property="sourceCodingSchemeUid">
+		<if test="sourceCodingSchemeUid != null">
 			LEFT JOIN
-				$sourceSchemePrefix$entity sourceEntity
+				${sourceSchemePrefix}entity sourceEntity
 			ON (
 				sourceEntity.entityCode = eate.sourceEntityCode
 				
@@ -1892,12 +1793,12 @@
 				sourceEntity.entityCodeNamespace = eate.sourceEntityCodeNamespace
 				-->
 				AND
-				sourceEntity.codingSchemeGuid = #sourceCodingSchemeUid#
+				sourceEntity.codingSchemeGuid = #{sourceCodingSchemeUid}
 				)
-		</isNotNull>
-		<isNotNull property="targetCodingSchemeUid">
+		</if>
+		<if test="targetCodingSchemeUid != null">
 			LEFT JOIN
-				$targetSchemePrefix$entity targetEntity
+				${targetSchemePrefix}entity targetEntity
 			ON (
 				targetEntity.entityCode = eate.targetEntityCode
 				
@@ -1908,191 +1809,159 @@
 				targetEntity.entityCodeNamespace = eate.targetEntityCodeNamespace
 				-->
 				AND
-				targetEntity.codingSchemeGuid = #targetCodingSchemeUid#
+				targetEntity.codingSchemeGuid = #{targetCodingSchemeUid}
 				)
-		</isNotNull>
+		</if>
 		
-		<isNotEmpty property="sortList">
-			<iterate property="sortList">
-				<isPropertyAvailable property="sortList[].qualifierName">
-				LEFT JOIN
-					$prefix$entityAssnQuals $sortList[].tableAlias$
-				ON (
-					eate.entityAssnsGuid = $sortList[].tableAlias$.referenceGuid
-					AND
-					$sortList[].tableAlias$.qualifierName = #sortList[].qualifierName#
-					AND
-					$sortList[].tableAlias$.qualifierValue =
-						(SELECT 
-							<isEqual property="sortList[].order" compareValue="ASC">
-							MAX(
-							</isEqual>
-							<isEqual property="sortList[].order" compareValue="DESC">
-							MIN(
-							</isEqual>
-								maxQual.qualifierValue)
-						FROM
-							$prefix$entityAssnQuals maxQual
-						WHERE
-							maxQual.referenceGuid = eate.entityAssnsGuid
-						AND
-							maxQual.qualifierName = #sortList[].qualifierName#
-						)
-					)
-				</isPropertyAvailable>
-			</iterate>
-		</isNotEmpty>
+		<if test="sortList != null and sortList != ''">
+			 <foreach collection="sortList" item="item">
+				<!--
+		Sorry, I can`t migrate	item.qualifierName
+		See console output for further details 
+	-->
+			</foreach>
+		</if>
 
 		WHERE
-			rel.codingSchemeGuid = #mappingCodingSchemeUid#
+			rel.codingSchemeGuid = #{mappingCodingSchemeUid}
 		AND
-			rel.containerName = #relationsContainerName#
+			rel.containerName = #{relationsContainerName}
 	</sql>
 	
 	<sql id="getTripleUidsForMappingContainerPost">
-		<isNotEmpty property="sortList">
+		<if test="sortList != null and sortList != ''">
 			ORDER BY
-				<iterate property="sortList" conjunction=",">
-					<isNotPropertyAvailable property="sortList[].qualifierName">
-						$sortList[].columnSortType.mappingColumn$
-						$sortList[].order$
-					</isNotPropertyAvailable>
-					<isPropertyAvailable property="sortList[].qualifierName">
-						$sortList[].tableAlias$.$sortList[].columnSortType.mappingColumn$
-						$sortList[].order$
-					</isPropertyAvailable>
-				</iterate>
-			</isNotEmpty>
+				 <foreach collection="sortList" item="item" separator=",">
+					<!--
+		Sorry, I can`t migrate	item.qualifierName
+		See console output for further details 
+	-->
+					<!--
+		Sorry, I can`t migrate	item.qualifierName
+		See console output for further details 
+	-->
+				</foreach>
+			</if>
 	</sql>
 	
-	<select id="getTripleUidsForMappingContainer" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$MappingTripleParameterBean"
-		resultMap="Common.uidResult">
+	<select id="getTripleUidsForMappingContainer" parameterType="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$MappingTripleParameterBean" resultMap="Common.uidResult">
 		<include refid="getTripleUidsForMappingContainerPre"/>
 		<include refid="getTripleUidsForMappingContainerPost"/>	
 	</select>
 	
-	<select id="getCompleteInstanceToGuidMap" remapResults="true"
-	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean" 
-	resultMap="instanceToGuidMapResult" >
+	<select id="getCompleteInstanceToGuidMap" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean" resultMap="instanceToGuidMapResult">
 		SELECT
 			eae.associationInstanceId as instance,
 			eae.entityAssnsGuid as value
 		FROM
-			$prefix$entityAssnsToEntity eae
+			${prefix}entityAssnsToEntity eae
 	</select>
 	
-	<select id="getTripleUidsForMappingContainerAndCodesWithSort" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$RestrictingMappingTripleParameterBean"
-		resultMap="Common.uidResult">
+	<select id="getTripleUidsForMappingContainerAndCodesWithSort" parameterType="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$RestrictingMappingTripleParameterBean" resultMap="Common.uidResult">
 		<include refid="getTripleUidsForMappingContainerPre"/>
-			<isNotEmpty property="sourceConceptReferences" prepend="AND">
-			eate.sourceEntityCode IN ( <iterate property="sourceConceptReferences" conjunction=",">#sourceConceptReferences[].code#</iterate> )
-			</isNotEmpty>
+			<if test="sourceConceptReferences != null and sourceConceptReferences != ''">AND
+			eate.sourceEntityCode IN (  <foreach collection="sourceConceptReferences" item="item" separator=",">#{item.code}</foreach> )
+			</if>
 	
-			<isNotEmpty property="targetConceptReferences" prepend="AND">
-			eate.targetEntityCode IN ( <iterate property="targetConceptReferences" conjunction=",">#targetConceptReferences[].code#</iterate> )
-			</isNotEmpty>
+			<if test="targetConceptReferences != null and targetConceptReferences != ''">AND
+			eate.targetEntityCode IN (  <foreach collection="targetConceptReferences" item="item" separator=",">#{item.code}</foreach> )
+			</if>
 			
-			<isNotEmpty property="sourceOrTargetConceptReferences" prepend="AND">
+			<if test="sourceOrTargetConceptReferences != null and sourceOrTargetConceptReferences != ''">AND
 			(
-				eate.sourceEntityCode IN ( <iterate property="sourceOrTargetConceptReferences" conjunction=",">#sourceOrTargetConceptReferences[].code#</iterate> )
+				eate.sourceEntityCode IN (  <foreach collection="sourceOrTargetConceptReferences" item="item" separator=",">#{item.code}</foreach> )
 				
 				OR
 				
-				eate.targetEntityCode IN ( <iterate property="sourceOrTargetConceptReferences" conjunction=",">#sourceOrTargetConceptReferences[].code#</iterate> )
+				eate.targetEntityCode IN (  <foreach collection="sourceOrTargetConceptReferences" item="item" separator=",">#{item.code}</foreach> )
 			)
-			</isNotEmpty>
+			</if>
 		<include refid="getTripleUidsForMappingContainerPost"/>	
 	</select>
 	
-	<select id="getTripleUidsForMappingContainerAndCodesNoSort" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="Common.uidResult">
+	<select id="getTripleUidsForMappingContainerAndCodesNoSort" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="Common.uidResult">
 		
 		SELECT
 			eate.entityAssnsGuid AS uidKey
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 			
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			(eate.associationPredicateGuid = ap.associationPredicateGuid)
 			
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON 
 			(ap.relationGuid = rel.relationGuid)
 		
 		WHERE
-			rel.codingSchemeGuid = #param1#
+			rel.codingSchemeGuid = #{param1}
 		AND
-			rel.containerName = #param2#
+			rel.containerName = #{param2}
 
-			<isNotEmpty property="param3" prepend="AND">
-			eate.sourceEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
-			</isNotEmpty>
+			<if test="param3 != null and param3 != ''">AND
+			eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{param3[].code}</foreach> )
+			</if>
 	
-			<isNotEmpty property="param4" prepend="AND">
-			eate.targetEntityCode IN ( <iterate property="param4" conjunction=",">#param4[].code#</iterate> )
-			</isNotEmpty>
+			<if test="param4 != null and param4 != ''">AND
+			eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{param4[].code}</foreach> )
+			</if>
 			
-			<isNotEmpty property="param5" prepend="AND">
+			<if test="param5 != null and param5 != ''">AND
 			(
-				eate.sourceEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+				eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}</foreach> )
 				
 				OR
 				
-				eate.targetEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+				eate.targetEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}</foreach> )
 			)
-			</isNotEmpty>	
+			</if>	
 	</select>
 	
-	<select id="getTriplesForMappingContainer" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="mappingTripleSubjectResult">
+	<select id="getTriplesForMappingContainer" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="mappingTripleSubjectResult">
 		SELECT
 			eate.entityAssnsGuid AS tripleUid,
 
 			eate.sourceEntityCode AS sourceEntityCode,
 			sourceEntity.entityCodeNamespace AS sourceEntityCodeNamespace,
-			<isNotNull property="param2">
+			<if test="param2 != null">
 				sourceEntity.description AS sourceEntityDescription,
-			</isNotNull>
-			<isNull property="param2">
+			</if>
+			<if test="param2 == null">
 				NULL AS sourceEntityDescription,
-			</isNull>
+			</if>
 			
 			eate.targetEntityCode AS targetEntityCode,
 			targetEntity.entityCodeNamespace AS targetEntityCodeNamespace,
-			<isNotNull property="param4">
+			<if test="param4 != null">
 				targetEntity.description AS targetEntityDescription,
-			</isNotNull>
-			<isNull property="param4">
+			</if>
+			<if test="param4 == null">
 				NULL AS targetEntityDescription,
-			</isNull>
+			</if>
 			
 			ap.associationName AS associationName,
 			
 			quals.qualifierName,
 			quals.qualifierValue
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 			
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			eate.associationPredicateGuid = ap.associationPredicateGuid
 			
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON 
 			ap.relationGuid = rel.relationGuid
 			
-		<isNotNull property="param2">
+		<if test="param2 != null">
 		LEFT JOIN
-			$param3$entity sourceEntity
+			${param3}entity sourceEntity
 			ON (
 				sourceEntity.entityCode = eate.sourceEntityCode
 				<!-- We can't count on namespaces being the same across coding schemes.
@@ -2102,12 +1971,12 @@
 				sourceEntity.entityCodeNamespace = eate.sourceEntityCodeNamespace
 				-->
 				AND
-				sourceEntity.codingSchemeGuid = #param2#
+				sourceEntity.codingSchemeGuid = #{param2}
 				)
-		</isNotNull>
-		<isNotNull property="param4">
+		</if>
+		<if test="param4 != null">
 		LEFT JOIN
-			$param5$entity targetEntity
+			${param5}entity targetEntity
 			ON (
 				targetEntity.entityCode = eate.targetEntityCode
 				<!-- We can't count on namespaces being the same across coding schemes.
@@ -2117,158 +1986,148 @@
 				targetEntity.entityCodeNamespace = eate.targetEntityCodeNamespace
 				-->
 				AND
-				targetEntity.codingSchemeGuid = #param4#
+				targetEntity.codingSchemeGuid = #{param4}
 				)
-		</isNotNull>
+		</if>
 		
 		LEFT JOIN
-			$prefix$entityAssnQuals quals
+			${prefix}entityAssnQuals quals
 		ON (eate.entityAssnsGuid = quals.referenceGuid)
 		
 		WHERE
-			eate.entityAssnsGuid IN ( <iterate property="param7" conjunction=",">#param7[],handler=variablePrimaryKeyTypeHandler#</iterate> )
+			eate.entityAssnsGuid IN (  <foreach collection="param7" item="item" separator=",">#{param7[],handler=variablePrimaryKeyTypeHandler}</foreach> )
 		AND
-			rel.codingSchemeGuid = #param1#
+			rel.codingSchemeGuid = #{param1}
 		AND
-			rel.containerName = #param6#
+			rel.containerName = #{param6}
 	</select>
 	
 	<sql id="getTriplesForMappingContainerCountFragment">
 		SELECT
 			COUNT(eate.entityAssnsGuid)
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 			
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			(eate.associationPredicateGuid = ap.associationPredicateGuid)
 			
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON 
 			(ap.relationGuid = rel.relationGuid)
 	</sql>
 	
-	<select id="getTriplesForMappingContainerCount" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="int">
+	<select id="getTriplesForMappingContainerCount" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultType="int">
 		<include refid="getTriplesForMappingContainerCountFragment"/>
 		WHERE
-			rel.codingSchemeGuid = #param1#
+			rel.codingSchemeGuid = #{param1}
 		AND
-			rel.containerName = #param2#	
+			rel.containerName = #{param2}	
 	</select>
 	
-	<select id="getTriplesForMappingContainerAndCodesCount" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="int">
+	<select id="getTriplesForMappingContainerAndCodesCount" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultType="int">
 		<include refid="getTriplesForMappingContainerCountFragment"/>
 		
 		WHERE
-			rel.codingSchemeGuid = #param1#
+			rel.codingSchemeGuid = #{param1}
 		AND
-			rel.containerName = #param2#
+			rel.containerName = #{param2}
 
-			<isNotEmpty property="param3" prepend="AND">
-			eate.sourceEntityCode IN ( <iterate property="param3" conjunction=",">#param3[].code#</iterate> )
-			</isNotEmpty>
+			<if test="param3 != null and param3 != ''">AND
+			eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{param3[].code}</foreach> )
+			</if>
 	
-			<isNotEmpty property="param4" prepend="AND">
-			eate.targetEntityCode IN ( <iterate property="param4" conjunction=",">#param4[].code#</iterate> )
-			</isNotEmpty>
+			<if test="param4 != null and param4 != ''">AND
+			eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{param4[].code}</foreach> )
+			</if>
 			
-			<isNotEmpty property="param5" prepend="AND">
+			<if test="param5 != null and param5 != ''">AND
 			(
-				eate.sourceEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+				eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}</foreach> )
 				
 				OR
 				
-				eate.targetEntityCode IN ( <iterate property="param5" conjunction=",">#param5[].code#</iterate> )
+				eate.targetEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}</foreach> )
 			)
-			</isNotEmpty>
+			</if>
 	</select>
 	
-	<select id="getCodeMappingParticipationCount" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="int">
+	<select id="getCodeMappingParticipationCount" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultType="int">
 		SELECT
 			COUNT(*)
 		FROM
-			$prefix$entityAssnsToEntity eate
+			${prefix}entityAssnsToEntity eate
 		
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON 
 			eate.associationPredicateGuid = ap.associationPredicateGuid
 			
 		INNER JOIN
-			$prefix$relation rel
+			${prefix}relation rel
 		ON 
 			ap.relationGuid = rel.relationGuid
 			
 		WHERE
-			rel.codingSchemeGuid = #param1#
+			rel.codingSchemeGuid = #{param1}
 		AND 
 		(
 			(
 
 
 
-			<isNotNull property="param3">
-				eate.sourceEntityCode = #param3#
-			</isNotNull>
-			<isNotEmpty property="param5" prepend="AND">
-				eate.sourceEntityCodeNamespace = #param2#
-			</isNotEmpty>
+			<if test="param3 != null">
+				eate.sourceEntityCode = #{param3}
+			</if>
+			<if test="param5 != null and param5 != ''">AND
+				eate.sourceEntityCodeNamespace = #{param2}
+			</if>
 			)
 		OR
 			(
 
-			<isNotNull property="param3">
-				eate.targetEntityCode = #param3#
-			</isNotNull>
-			<isNotEmpty property="param5" prepend="AND">
-				eate.targetEntityCodeNamespace = #param2#
-			</isNotEmpty>
+			<if test="param3 != null">
+				eate.targetEntityCode = #{param3}
+			</if>
+			<if test="param5 != null and param5 != ''">AND
+				eate.targetEntityCodeNamespace = #{param2}
+			</if>
 			)
 		)	
 	</select>
 	
-	<select id="getAnonDesignationForPredicateId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultClass="string">
+	<select id="getAnonDesignationForPredicateId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="string">
 		SELECT
 			en.isAnonymous
 		FROM 
-			$prefix$entity en
+			${prefix}entity en
 		INNER JOIN
-			$prefix$csSupportedAttrib sa
+			${prefix}csSupportedAttrib sa
 		ON 
 			en.entityCode = sa.assnEntityCode
 		INNER JOIN
-			$prefix$associationPredicate ap
+			${prefix}associationPredicate ap
 		ON
 			ap.associationName = sa.id
 		WHERE
-			<isNotNull property="param1">
+			<if test="param1 != null">
 			ap.associationPredicateGuid =
-			#param1,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
+			#{param1,handler=variablePrimaryKeyTypeHandler}
+			</if>
 		AND
-			sa.supportedAttributeTag = #param2#
+			sa.supportedAttributeTag = #{param2}
 	</select>
 	
-	<select id="getAllEntityAssocEntityGuids" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="java.lang.String">
+	<select id="getAllEntityAssocEntityGuids" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="java.lang.String">
 		SELECT 
 			eae.entityAssnsGuid as guid
 		FROM
-			$prefix$entityAssnsToEntity as eae
+			${prefix}entityAssnsToEntity as eae
 	</select>
 	
-	<select id="getGraphDbTriples" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection" 
-		resultMap="Association.graphdbTripleResult">
+	<select id="getGraphDbTriples" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection" resultMap="Association.graphdbTripleResult">
 		SELECT
 				eae.sourceEntityCode,
 				eae.sourceEntityCodeNamespace,
@@ -2281,38 +2140,36 @@
 	 			source.description as sd,
 	 			target.description as td
 	 		FROM
-				$prefix$entityAssnsToEntity eae
+				${prefix}entityAssnsToEntity eae
 			INNER JOIN
-				$prefix$associationPredicate ap
+				${prefix}associationPredicate ap
 			ON 
 				eae.associationPredicateGuid =
 				ap.associationPredicateGuid
 			INNER JOIN
-				$prefix$relation rel
+				${prefix}relation rel
 			ON
 				ap.relationGuid =
 				rel.relationGuid
 			LEFT JOIN
-				$prefix$entity source
+				${prefix}entity source
 			ON
 				source.entityCode = eae.sourceEntityCode 
 			LEFT JOIN
-				$prefix$entity target
+				${prefix}entity target
 			ON 
 				target.entityCode = eae.targetEntityCode
 	
 			WHERE
 				rel.codingSchemeGuid = 
-				#param1,handler=variablePrimaryKeyTypeHandler#
+				#{param1,handler=variablePrimaryKeyTypeHandler}
 			AND
 				eae.entityAssnsGuid 
 			IN
-				( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
+				(  <foreach collection="param2" item="item" separator=",">#{param2[],handler=variablePrimaryKeyTypeHandler}</foreach> )
 	</select>
 	
-<select id="getGraphDbTriplesAncestorsTr" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
-		resultMap="Association.graphdbTripleTrResult">
+<select id="getGraphDbTriplesAncestorsTr" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Association.graphdbTripleTrResult">
 	
 			SELECT
 				eae.sourceEntityCode,
@@ -2325,39 +2182,37 @@
 	 			source.description as sd,
 	 			target.description as td
 	 		FROM
-				$prefix$entityAssnsToEntityTr eae
+				${prefix}entityAssnsToEntityTr eae
 			INNER JOIN
-				$prefix$associationPredicate ap
+				${prefix}associationPredicate ap
 			ON 
 				eae.associationPredicateGuid =
 				ap.associationPredicateGuid
 			INNER JOIN
-				$prefix$relation rel
+				${prefix}relation rel
 			ON
 				ap.relationGuid =
 				rel.relationGuid
 			LEFT JOIN
-				$prefix$entity source
+				${prefix}entity source
 			ON
 				source.entityCode = eae.sourceEntityCode 
 			LEFT JOIN
-				$prefix$entity target
+				${prefix}entity target
 			ON 
 				target.entityCode = eae.targetEntityCode
 	
 			WHERE
 				rel.codingSchemeGuid = 
-				#param1,handler=variablePrimaryKeyTypeHandler#
+				#{param1,handler=variablePrimaryKeyTypeHandler}
 			AND
-				eae.sourceEntityCode = #param2#
+				eae.sourceEntityCode = #{param2}
 
 			AND 
-				ap.associationName = #param3#
+				ap.associationName = #{param3}
 </select>
 	
-<select id="getGraphDbTriplesDecendentsTr" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
-		resultMap="Association.graphdbTripleTrResult">
+<select id="getGraphDbTriplesDecendentsTr" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Association.graphdbTripleTrResult">
 	
 			SELECT
 				eae.sourceEntityCode,
@@ -2370,40 +2225,38 @@
 	 			source.description as sd,
 	 			target.description as td
 	 		FROM
-				$prefix$entityAssnsToEntityTr eae
+				${prefix}entityAssnsToEntityTr eae
 			INNER JOIN
-				$prefix$associationPredicate ap
+				${prefix}associationPredicate ap
 			ON 
 				eae.associationPredicateGuid =
 				ap.associationPredicateGuid
 			INNER JOIN
-				$prefix$relation rel
+				${prefix}relation rel
 			ON
 				ap.relationGuid =
 				rel.relationGuid
 			LEFT JOIN
-				$prefix$entity source
+				${prefix}entity source
 			ON
 				source.entityCode = eae.sourceEntityCode 
 			LEFT JOIN
-				$prefix$entity target
+				${prefix}entity target
 			ON 
 				target.entityCode = eae.targetEntityCode
 	
 			WHERE
 				rel.codingSchemeGuid = 
-				#param1,handler=variablePrimaryKeyTypeHandler#
+				#{param1,handler=variablePrimaryKeyTypeHandler}
 			AND
-			  	eae.targetEntityCode = #param2#
+			  	eae.targetEntityCode = #{param2}
 			AND 
-				ap.associationName = #param3#
+				ap.associationName = #{param3}
 			AND 
 				(source.isAnonymous != 1 OR source.isAnonymous IS NULL)
 	</select>
 	
-	<select id="getFullMapOfTerminologyWithEntityNames" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SourceAndTargetMappingPrefixedParameter" 
-		resultMap="Association.mapGraphSuperTriplesAndMetaData">
+	<select id="getFullMapOfTerminologyWithEntityNames" parameterType="org.lexevs.dao.database.ibatis.parameter.SourceAndTargetMappingPrefixedParameter" resultMap="Association.mapGraphSuperTriplesAndMetaData">
 		SELECT 
 			sourceEntityCodeNameSpace AS source,
 			sourceEntityCode AS sourceCode,
@@ -2414,30 +2267,28 @@
 			targetEntityCode AS targetCode, 
 			tent.description AS targetName 
 		FROM
-			$prefix$entityAssnsToEntity AS assns 
+			${prefix}entityAssnsToEntity AS assns 
 		JOIN
-			$sourcePrefix$entity AS sourceEnt 
+			${sourcePrefix}entity AS sourceEnt 
 		ON
 			sourceEntityCode=sourceEnt.entityCode 
 		JOIN 
-			$targetPrefix$entity AS tent 
+			${targetPrefix}entity AS tent 
 		ON
 			targetEntityCode=tent.entityCode 
 		JOIN
-			$prefix$associationPredicate AS pred 
+			${prefix}associationPredicate AS pred 
 		ON 
 			pred.associationPredicateGuid= assns.associationPredicateGuid 
 		LEFT OUTER JOIN
-			$prefix$entityAssnQuals AS quals 
+			${prefix}entityAssnQuals AS quals 
 		ON
 			quals.referenceGuid = assns.entityAssnsGuid 
 		AND
-			quals.qualifierName = #param1#
+			quals.qualifierName = #{param1}
 	</select>
 		
-	<select id="getMinimalTriplesForMappingContainer" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		resultMap="Association.tripleResult">
+	<select id="getMinimalTriplesForMappingContainer" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Association.tripleResult">
 		SELECT 
 			pred.associationPredicateGuid, 
 			assn.sourceEntityCode, 
@@ -2445,32 +2296,30 @@
 			assn.targetEntityCode, 
 			assn.targetEntityCodeNamespace
 		FROM 
-			$prefix$entityAssnsToEntity assn 
+			${prefix}entityAssnsToEntity assn 
 		JOIN 
-			$prefix$associationPredicate pred 
+			${prefix}associationPredicate pred 
 		ON 
 			assn.associationPredicateGuid = pred.associationPredicateGuid 
 		JOIN 
-			$prefix$relation rel 
+			${prefix}relation rel 
 		ON 
 			pred.relationGuid = rel.relationGuid 
 		WHERE 
-			rel.containerName = #param1#
+			rel.containerName = #{param1}
 	</select>
 	
-	<select id="getNaturualRootsForAssociationUid" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		 resultClass="java.lang.String">
+	<select id="getNaturualRootsForAssociationUid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="java.lang.String">
 		SELECT 
 			distinct(targetEntityCode) 
 		FROM 
-			$prefix$entityAssnsToEntity assn 
+			${prefix}entityAssnsToEntity assn 
 		JOIN 
-			$prefix$entity ent 
+			${prefix}entity ent 
 		ON 
 			assn.targetEntityCode = ent.entityCode 
 		WHERE 
-			assn.associationPredicateGuid = #param1# 
+			assn.associationPredicateGuid = #{param1} 
 		AND 
 			ent.isAnonymous = '0' 
 		AND 
@@ -2479,14 +2328,12 @@
 			(SELECT 
 				sourceEntityCode 
 			 FROM 
-				$prefix$entityAssnsToEntity 
+				${prefix}entityAssnsToEntity 
 			 WHERE 
-			 	associationPredicateGuid = #param1#)
+			 	associationPredicateGuid = #{param1})
 	</select>
 	
-	<select id="getValidTriplesForAssociationPredicateGuid" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		 resultMap="Association.tripleResult">
+	<select id="getValidTriplesForAssociationPredicateGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Association.tripleResult">
 			SELECT 			
 				eae.sourceEntityCode,
 				eae.sourceEntityCodeNamespace,
@@ -2494,26 +2341,24 @@
 				eae.targetEntityCodeNamespace,
 				eae.associationPredicateGuid 
 			FROM 
-				$prefix$entityAssnsToEntity eae 
+				${prefix}entityAssnsToEntity eae 
 			RIGHT JOIN 
-				$prefix$entity ent1 
+				${prefix}entity ent1 
 			ON 
 				eae.sourceEntityCode = ent1.entityCode 
 			RIGHT JOIN 
-				$prefix$entity ent2 
+				${prefix}entity ent2 
 			ON 
 				eae.targetEntityCode = ent2.entityCode 
 			WHERE 
-				eae.associationPredicateGuid = #param1# 
+				eae.associationPredicateGuid = #{param1} 
 			AND 
 				(ent1.isAnonymous = '0' OR ent1.isAnonymous is null)
 			AND 
 				(ent2.isAnonymous = '0' OR ent2.isAnonymous is null)
 		</select>
 		
-		<select id="getValidSextuplesForAssociationPredicateGuid" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		 resultMap="Association.sextupleResult">
+		<select id="getValidSextuplesForAssociationPredicateGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Association.sextupleResult">
 			SELECT 			
 				eae.sourceEntityCode,
 				eae.sourceEntityCodeNamespace,
@@ -2523,56 +2368,52 @@
 				ent2.description AS targetEntityDescription,
 				eae.associationPredicateGuid 
 			FROM 
-				$prefix$entityAssnsToEntity eae 
+				${prefix}entityAssnsToEntity eae 
 			RIGHT JOIN 
-				$prefix$entity ent1 
+				${prefix}entity ent1 
 			ON 
 				eae.sourceEntityCode = ent1.entityCode 
 			RIGHT JOIN 
-				$prefix$entity ent2 
+				${prefix}entity ent2 
 			ON 
 				eae.targetEntityCode = ent2.entityCode 
 			WHERE 
-				eae.associationPredicateGuid = #param1# 
+				eae.associationPredicateGuid = #{param1} 
 			AND 
 				(ent1.isAnonymous = '0' OR ent1.isAnonymous is null)
 			AND 
 				(ent2.isAnonymous = '0' OR ent2.isAnonymous is null)
 		</select>
 		
-		<select id="validateNodeInAssociation"  remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="java.lang.Integer" >
+		<select id="validateNodeInAssociation" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="java.lang.Integer">
 			SELECT 
 				count(entityAssnsGuid) 
 			FROM 
-				$prefix$entityAssnsToEntity
+				${prefix}entityAssnsToEntity
 			WHERE 
-				associationPredicateGuid=#param1#
+				associationPredicateGuid=#{param1}
 			AND 
-				(sourceEntityCode = #param2# OR targetEntityCode = #param2# )
+				(sourceEntityCode = #{param2} OR targetEntityCode = #{param2} )
 			AND
 				(targetEntityCode not like "@%" OR sourceEntityCode not like "@%")		
 		</select>
 		
-		<select id="getValidAssociationPredicatesForTargetOrSourceOf" remapResults="true" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="java.lang.String" >
+		<select id="getValidAssociationPredicatesForTargetOrSourceOf" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="java.lang.String">
 			SELECT
 			DISTINCT(pred.associationName) 
 			FROM
-		  		$prefix$associationPredicate 
+		  		${prefix}associationPredicate 
 			AS
 		  		pred 
 			JOIN 
-				$prefix$entityAssnsToEntity 
+				${prefix}entityAssnsToEntity 
 			AS
 				assn 
 			ON 
 				pred.associationPredicateGuid = assn.associationPredicateGuid
 	 		WHERE
-	 			(assn.sourceEntityCode = #param1#  OR assn.targetEntityCode = #param1#)
+	 			(assn.sourceEntityCode = #{param1}  OR assn.targetEntityCode = #{param1})
 	 		AND 
 	 			(assn.`sourceEntityCode` not like "@%" OR assn.`targetEntityCode` not like "@%")
 		</select>
- </sqlMap>
+ </mapper>
