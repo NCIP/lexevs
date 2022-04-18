@@ -4,10 +4,87 @@
 <configuration><settings>
 		</settings>
 	<typeAliases>
+		<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept"/>
+		<typeAlias alias="associationData" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean"/>
+		<typeAlias alias="associationEntity" type="org.lexevs.dao.database.ibatis.entity.model.IdableAssociationEntity" />
+		<typeAlias alias="associationPredicate" type="org.LexGrid.relations.AssociationPredicate" />
+		<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
+		<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
+		<typeAlias alias="changeTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NCIHistoryChangeTypeTypeHandler"/>
+		<typeAlias alias="codingScheme" type="org.LexGrid.codingSchemes.CodingScheme" />
+		<typeAlias alias="codingSchemeBean" type="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean" />
+		<typeAlias alias="codingSchemeReference" type="org.LexGrid.valueSets.CodingSchemeReference" />
+		<typeAlias alias="codingSchemeSummary" type="org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary" />
+		<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
+		<typeAlias alias="conceptReference" type="org.LexGrid.LexBIG.DataModel.Core.ConceptReference"/>
+		<typeAlias alias="countConceptReference" type="org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference"/>
+		<typeAlias alias="csVersionReference" type="org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference"/>
+		<typeAlias alias="dateTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.DateTypeHandler"/>
+		<typeAlias alias="definition" type="org.LexGrid.concepts.Definition"/>
+		<typeAlias alias="definitionEntry" type="org.LexGrid.valueSets.DefinitionEntry" />
+		<typeAlias alias="entity" type="org.lexevs.dao.database.ibatis.entity.model.IdableEntity" />
+		<typeAlias alias="entityDescription" type="org.LexGrid.commonTypes.EntityDescription" />
+		<typeAlias alias="entityReference" type="org.LexGrid.valueSets.EntityReference" />
+		<typeAlias alias="graphdbTriple" type="org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple"/>
+		<typeAlias alias="InsertOrUpdateAssociationEntityBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean" />
+		<typeAlias alias="insertOrUpdateDefinitionEntryBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateDefinitionEntryBean" />
+		<typeAlias alias="insertOrUpdateEntityBean" type="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean" />
+		<typeAlias alias="insertOrUpdatePickListEntryNodeBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean" />
+		<typeAlias alias="insertOrUpdatePropertyBean" type="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean"/>
+		<typeAlias alias="insertOrUpdateRelationBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean" />
+		<typeAlias alias="insertPickListDefinitionBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean"/>
+		<typeAlias alias="mappingTriple" type="org.lexevs.dao.database.ibatis.codednodegraph.model.TripleUidReferencingResolvedConceptReference"/>
+		<typeAlias alias="nciChangeEvent" type="org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent" />
+		<typeAlias alias="node" type="org.lexevs.dao.database.access.association.model.Node"/>
 		<typeAlias alias="numericBooleanTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NumericBooleanTypeHandler"/>
-			<typeAlias alias="variablePrimaryKeyTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.VariablePrimaryKeyTypeHandler"/>
-			<typeAlias alias="dateTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.DateTypeHandler"/>
-			</typeAliases>
+		<typeAlias alias="pickListDefinition" type="org.LexGrid.valueSets.PickListDefinition" />
+		<typeAlias alias="pickListEntry" type="org.LexGrid.valueSets.PickListEntry" />
+		<typeAlias alias="pickListEntryExclusion" type="org.LexGrid.valueSets.PickListEntryExclusion" />
+		<typeAlias alias="pickListEntryNodeBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.PickListEntryNodeBean" />
+		<typeAlias alias="presentation" type="org.LexGrid.concepts.Presentation"/>
+		<typeAlias alias="property" type="org.LexGrid.commonTypes.Property" />
+		<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
+		<typeAlias alias="propertyMatchValue" type="org.LexGrid.valueSets.PropertyMatchValue" />
+		<typeAlias alias="propertyReference" type="org.LexGrid.valueSets.PropertyReference" />
+		<typeAlias alias="propertyTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.PropertyTypeHandler"/>
+		<typeAlias alias="propertyTypes" type="org.LexGrid.commonTypes.types.PropertyTypes"/>
+		<typeAlias alias="relations" type="org.LexGrid.relations.Relations" />
+		<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
+		<typeAlias alias="sextuple" type="org.lexevs.dao.database.access.association.model.Sextuple"/>
+		<typeAlias alias="StringArrayTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.StringArrayTypeHandler"/>
+		<typeAlias alias="supportedAssociation" type="org.LexGrid.naming.SupportedAssociation" />
+		<typeAlias alias="supportedAssociationQualifier" type="org.LexGrid.naming.SupportedAssociationQualifier" />
+		<typeAlias alias="supportedCodingScheme" type="org.LexGrid.naming.SupportedCodingScheme" />
+		<typeAlias alias="supportedConceptDomain" type="org.LexGrid.naming.SupportedConceptDomain" />
+		<typeAlias alias="supportedContainerName" type="org.LexGrid.naming.SupportedContainerName" />
+		<typeAlias alias="supportedContext" type="org.LexGrid.naming.SupportedContext" />
+		<typeAlias alias="supportedDataType" type="org.LexGrid.naming.SupportedDataType" />
+		<typeAlias alias="supportedDegreeOfFidelity" type="org.LexGrid.naming.SupportedDegreeOfFidelity" />
+		<typeAlias alias="supportedEntityType" type="org.LexGrid.naming.SupportedEntityType" />
+		<typeAlias alias="supportedHierarchy" type="org.LexGrid.naming.SupportedHierarchy" />
+		<typeAlias alias="supportedLanguage" type="org.LexGrid.naming.SupportedLanguage" />
+		<typeAlias alias="supportedNamespace" type="org.LexGrid.naming.SupportedNamespace" />
+		<typeAlias alias="supportedProperty" type="org.LexGrid.naming.SupportedProperty" />
+		<typeAlias alias="supportedPropertyLink" type="org.LexGrid.naming.SupportedPropertyLink" />
+		<typeAlias alias="supportedPropertyQualifier" type="org.LexGrid.naming.SupportedPropertyQualifier" />
+		<typeAlias alias="supportedPropertyQualifierType" type="org.LexGrid.naming.SupportedPropertyQualifierType" />
+		<typeAlias alias="supportedPropertyType" type="org.LexGrid.naming.SupportedPropertyType" />
+		<typeAlias alias="supportedRepresentationalForm" type="org.LexGrid.naming.SupportedRepresentationalForm" />
+		<typeAlias alias="supportedSortOrder" type="org.LexGrid.naming.SupportedSortOrder" />
+		<typeAlias alias="supportedSource" type="org.LexGrid.naming.SupportedSource" />
+		<typeAlias alias="supportedSourceRole" type="org.LexGrid.naming.SupportedSourceRole" />
+		<typeAlias alias="supportedStatus" type="org.LexGrid.naming.SupportedStatus" />
+		<typeAlias alias="systemRelease" type="org.LexGrid.versions.SystemRelease" />
+		<typeAlias alias="triple" type="org.lexevs.dao.database.access.association.model.Triple"/>
+		<typeAlias alias="uriMap" type="org.LexGrid.naming.URIMap" />
+		<typeAlias alias="valueSetDefinition" type="org.LexGrid.valueSets.ValueSetDefinition" />
+		<typeAlias alias="valueSetDefinitionBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean"/>
+		<typeAlias alias="valueSetDefinitionMapHelper" type="org.lexevs.dao.database.ibatis.valuesets.helper.ValueSetDefinitionMapHelper" />
+		<typeAlias alias="valueSetDefinitionReference" type="org.LexGrid.valueSets.ValueSetDefinitionReference" />
+		<typeAlias alias="variablePrimaryKeyTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.VariablePrimaryKeyTypeHandler"/>
+		<typeAlias alias="vsEntity" type="org.lexevs.dao.database.ibatis.entity.model.IdableEntity"/>
+		<typeAlias alias="vsProperty" type="org.LexGrid.commonTypes.Property"/>
+	</typeAliases>
 	
 	<typeHandlers>
 		</typeHandlers>

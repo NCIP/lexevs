@@ -1,103 +1,93 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="ValueSetDefinition">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:17 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ValueSetDefinition">
 
-	<typeAlias alias="valueSetDefinition" type="org.LexGrid.valueSets.ValueSetDefinition" />
-	<typeAlias alias="definitionEntry" type="org.LexGrid.valueSets.DefinitionEntry" />
-	<typeAlias alias="entityReference" type="org.LexGrid.valueSets.EntityReference" />	
-	<typeAlias alias="codingSchemeReference" type="org.LexGrid.valueSets.CodingSchemeReference" />
-	<typeAlias alias="csVersionReference" type="org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference"/>
-	<typeAlias alias="valueSetDefinitionReference" type="org.LexGrid.valueSets.ValueSetDefinitionReference" />
-	<typeAlias alias="propertyReference" type="org.LexGrid.valueSets.PropertyReference" />
-	<typeAlias alias="propertyMatchValue" type="org.LexGrid.valueSets.PropertyMatchValue" />
-	<typeAlias alias="valueSetDefinitionBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean"/>
-	<typeAlias alias="valueSetDefinitionMapHelper" type="org.lexevs.dao.database.ibatis.valuesets.helper.ValueSetDefinitionMapHelper" />	
 	
-	<resultMap id="valueSetDefinitionResult" class="valueSetDefinition">
-		<result property="valueSetDefinitionURI" column="valueSetDefURI" />
-		<result property="valueSetDefinitionName" column="valueSetDefName" />
-		<result property="defaultCodingScheme" column="defaultCodingScheme" />
-		<result property="conceptDomain" column="conceptDomain" />
-		<result property="entityDescription.content" column="description" />
+	<resultMap id="valueSetDefinitionResult" type="valueSetDefinition">
+		<result property="valueSetDefinitionURI" column="valueSetDefURI"/>
+		<result property="valueSetDefinitionName" column="valueSetDefName"/>
+		<result property="defaultCodingScheme" column="defaultCodingScheme"/>
+		<result property="conceptDomain" column="conceptDomain"/>
+		<result property="entityDescription.content" column="description"/>
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
 	</resultMap>
 	
-	<resultMap id="valueSetDefinitionMetaDataResult" class="valueSetDefinitionBean" groupBy="uid">
+	<resultMap id="valueSetDefinitionMetaDataResult" type="valueSetDefinitionBean">
 		<result property="uid" column="valueSetDefGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
-		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
-		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
-		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
-		<result property="valueSetDefinition.entityDescription.content" column="description" />
+		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI"/>
+		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName"/>
+		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme"/>
+		<result property="valueSetDefinition.conceptDomain" column="conceptDomain"/>
+		<result property="valueSetDefinition.entityDescription.content" column="description"/>
 		<result property="systemReleaseUId" column="releaseGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="valueSetDefinition.isActive" column="isActive" />
-		<result property="valueSetDefinition.owner" column="owner" />
-		<result property="valueSetDefinition.status" column="status" />
-		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
-		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
+		<result property="valueSetDefinition.isActive" column="isActive"/>
+		<result property="valueSetDefinition.owner" column="owner"/>
+		<result property="valueSetDefinition.status" column="status"/>
+		<result property="valueSetDefinition.effectiveDate" column="effectiveDate"/>
+		<result property="valueSetDefinition.expirationDate" column="expirationDate"/>
 		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
-	<resultMap id="valueSetDefinitionMetaDataWithMultiAttrib" class="valueSetDefinitionBean" groupBy="uid">
+	<resultMap id="valueSetDefinitionMetaDataWithMultiAttrib" type="valueSetDefinitionBean">
 		<result property="uid" column="valueSetDefGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
-		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
-		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
-		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
-		<result property="valueSetDefinition.entityDescription.content" column="description" />
+		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI"/>
+		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName"/>
+		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme"/>
+		<result property="valueSetDefinition.conceptDomain" column="conceptDomain"/>
+		<result property="valueSetDefinition.entityDescription.content" column="description"/>
 		<result property="systemReleaseUId" column="releaseGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="valueSetDefinition.isActive" column="isActive" />
-		<result property="valueSetDefinition.owner" column="owner" />
-		<result property="valueSetDefinition.status" column="status" />
-		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
-		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
+		<result property="valueSetDefinition.isActive" column="isActive"/>
+		<result property="valueSetDefinition.owner" column="owner"/>
+		<result property="valueSetDefinition.status" column="status"/>
+		<result property="valueSetDefinition.effectiveDate" column="effectiveDate"/>
+		<result property="valueSetDefinition.expirationDate" column="expirationDate"/>
 		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
+		<collection property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 	
-	<resultMap id="valueSetDefinitionMap" class="valueSetDefinitionMapHelper">
-		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI" />
-		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName" />
-		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme" />
-		<result property="valueSetDefinition.conceptDomain" column="conceptDomain" />
-		<result property="valueSetDefinition.entityDescription.content" column="description" />
-		<result property="valueSetDefinition.isActive" column="isActive" />
-		<result property="valueSetDefinition.owner" column="owner" />
-		<result property="valueSetDefinition.status" column="status" />
-		<result property="valueSetDefinition.effectiveDate" column="effectiveDate" />
-		<result property="valueSetDefinition.expirationDate" column="expirationDate" />
-		<result property="valueSetDefinitionGuid" column="vskey" />
+	<resultMap id="valueSetDefinitionMap" type="valueSetDefinitionMapHelper">
+		<result property="valueSetDefinition.valueSetDefinitionURI" column="valueSetDefURI"/>
+		<result property="valueSetDefinition.valueSetDefinitionName" column="valueSetDefName"/>
+		<result property="valueSetDefinition.defaultCodingScheme" column="defaultCodingScheme"/>
+		<result property="valueSetDefinition.conceptDomain" column="conceptDomain"/>
+		<result property="valueSetDefinition.entityDescription.content" column="description"/>
+		<result property="valueSetDefinition.isActive" column="isActive"/>
+		<result property="valueSetDefinition.owner" column="owner"/>
+		<result property="valueSetDefinition.status" column="status"/>
+		<result property="valueSetDefinition.effectiveDate" column="effectiveDate"/>
+		<result property="valueSetDefinition.expirationDate" column="expirationDate"/>
+		<result property="valueSetDefinitionGuid" column="vskey"/>
 	</resultMap>
 	
-	<resultMap  id="definitionEntryResult" class="definitionEntry">
+	<resultMap id="definitionEntryResult" type="definitionEntry">
 		<result property="ruleOrder" column="ruleOrder"/>
 		<result property="operator" column="operator"/>
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="codingSchemeReference" resultMap="ValueSetDefinition.codingSchemeReferenceResult" />
-		<result property="valueSetDefinitionReference" resultMap="ValueSetDefinition.valueSetDefinitionReferenceResult" />
-		<result property="entityReference" resultMap="ValueSetDefinition.entityReferenceResult" />
-		<result property="propertyReference" resultMap="ValueSetDefinition.propertyReferenceResult" />
-		<result property="entryState" resultMap="Versions.entryStateResult" />
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
+		<collection property="codingSchemeReference" resultMap="ValueSetDefinition.codingSchemeReferenceResult"/>
+		<collection property="valueSetDefinitionReference" resultMap="ValueSetDefinition.valueSetDefinitionReferenceResult"/>
+		<collection property="entityReference" resultMap="ValueSetDefinition.entityReferenceResult"/>
+		<collection property="propertyReference" resultMap="ValueSetDefinition.propertyReferenceResult"/>
+		<collection property="entryState" resultMap="Versions.entryStateResult"/>
 	</resultMap>
 	
-	<resultMap  id="codingSchemeReferenceResult" class="codingSchemeReference">
+	<resultMap id="codingSchemeReferenceResult" type="codingSchemeReference">
 		<result property="codingScheme" column="codingSchemeReference"/>
 	</resultMap>
 	
-	<resultMap  id="valueSetDefinitionReferenceResult" class="valueSetDefinitionReference">
+	<resultMap id="valueSetDefinitionReferenceResult" type="valueSetDefinitionReference">
 		<result property="valueSetDefinitionURI" column="valueSetDefReference"/>
 	</resultMap>
 	
-	<resultMap  id="entityReferenceResult" class="entityReference">
+	<resultMap id="entityReferenceResult" type="entityReference">
 		<result property="entityCode" column="entityCode"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 		<result property="leafOnly" column="leafOnly" typeHandler="numericBooleanTypeHandler"/>
@@ -106,45 +96,40 @@
 		<result property="transitiveClosure" column="transitiveClosure" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	
-	<resultMap  id="propertyReferenceResult" class="propertyReference">
+	<resultMap id="propertyReferenceResult" type="propertyReference">
 		<result property="codingScheme" column="propertyRefCodingScheme"/>
 		<result property="propertyName" column="propertyName"/>
-		<result property="propertyMatchValue" resultMap="ValueSetDefinition.propertyMatchValueResult"/>
+		<collection property="propertyMatchValue" resultMap="ValueSetDefinition.propertyMatchValueResult"/>
 	</resultMap>
 	
-	<resultMap  id="propertyMatchValueResult" class="propertyMatchValue">
+	<resultMap id="propertyMatchValueResult" type="propertyMatchValue">
 		<result property="matchAlgorithm" column="matchAlgorithm"/>		
-		<result property="content" column="propertyMatchValue" />
-		<result property="dataType" column="format" />
+		<result property="content" column="propertyMatchValue"/>
+		<result property="dataType" column="format"/>
 	</resultMap>
 	
-	<resultMap id="csVersionReferenceResult" class="csVersionReference">
-		<result property="codingSchemeURN" column="valueSetDefUri" />
-		<result property="codingSchemeVersion" column="resourceVersion" />
+	<resultMap id="csVersionReferenceResult" type="csVersionReference">
+		<result property="codingSchemeURN" column="valueSetDefUri"/>
+		<result property="codingSchemeVersion" column="resourceVersion"/>
 	</resultMap>
 	
-	<select id="getValueSetDefinitionURIs" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+	<select id="getValueSetDefinitionURIs" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			valueSetDefURI
 		FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 	</select>
 	
-	<select id="getValueSetDefinitionGuidByValueSetDefinitionURI" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		resultMap="Common.uidResult">
+	<select id="getValueSetDefinitionGuidByValueSetDefinitionURI" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
 		SELECT
 			valueSetDefGuid AS uidKey
 		FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		WHERE
-			valueSetDefURI = #param1#
+			valueSetDefURI = #{param1}
 	</select>
 	
-	<select id="getValueSetDefinitionByValueSetURI" 
-		resultMap="valueSetDefinitionResult" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getValueSetDefinitionByValueSetURI" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="valueSetDefinitionResult">
 		SELECT
 			valueSetDefURI,
 			valueSetDefName,
@@ -157,53 +142,45 @@
 			effectiveDate,
 			expirationDate
 		FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		WHERE
-			valueSetDefURI = #param1#
+			valueSetDefURI = #{param1}
 	</select>
 	
-	<select id="getValueSetDefinitionMetaDataByValueSetURI" 
-		resultMap="valueSetDefinitionMetaDataResult" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getValueSetDefinitionMetaDataByValueSetURI" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="valueSetDefinitionMetaDataResult">
 		SELECT *
 		FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		WHERE
-			valueSetDefURI = #param1#
+			valueSetDefURI = #{param1}
 	</select>
 	
-	<select id="getValueSetURIsByContext" 
-		resultClass="string"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getValueSetURIsByContext" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			vsdef.valueSetDefURI
 					valueSetDefURI
 		FROM
-			$prefix$valueSetDefinition AS vsdef
+			${prefix}valueSetDefinition AS vsdef
 		JOIN
-			$prefix$vsSupportedAttrib AS vssa
+			${prefix}vsSupportedAttrib AS vssa
 		ON
 			vsdef.valueSetDefGuid = vssa.referenceGuid 
 		WHERE
 			vssa.supportedAttributeTag = "Context"
 		AND
-			vssa.uri = #param1#
+			vssa.uri = #{param1}
 	</select>
 	
-	<select id="getValueSetDefinitionURIForValueSetName" 
-		resultClass="string" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getValueSetDefinitionURIForValueSetName" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			valueSetDefURI
 		FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		WHERE
-			valueSetDefName = #param1#
+			valueSetDefName = #{param1}
 	</select>
 	
-	<select id="getDefinitionEntryByValueSetGuid" 
-		resultMap="definitionEntryResult" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getDefinitionEntryByValueSetGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="definitionEntryResult">
 		SELECT
 			vsdEntry.ruleOrder,
 			vsdEntry.operator,
@@ -233,9 +210,9 @@
   			currentRevision.revisionId AS currentRevisionId,
   			previousRevision.revisionId AS previousRevisionId
 		FROM
-			$prefix$vsdEntry vsdEntry
+			${prefix}vsdEntry vsdEntry
 		LEFT JOIN
-  			$prefix$vsEntryState entryState
+  			${prefix}vsEntryState entryState
   		ON
   			vsdEntry.entryStateGuid =
   			entryState.entryStateGuid	
@@ -250,14 +227,13 @@
   			entryState.prevRevisionGuid =
   			previousRevision.revisionGuid	
 		WHERE
-			vsdEntry.valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			vsdEntry.valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		ORDER BY
 			ruleOrder
 	</select>
 	
-	<insert id="insertValueSetDefinition" 
-		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
-		INSERT INTO $prefix$valueSetDefinition
+	<insert id="insertValueSetDefinition" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
+		INSERT INTO ${prefix}valueSetDefinition
 		(
 				valueSetDefGuid,
 				valueSetDefURI,
@@ -273,103 +249,100 @@
 				expirationDate,
 				entryStateGuid
 			) VALUES (
-				#uid,handler=variablePrimaryKeyTypeHandler#,
-				#valueSetDefinition.valueSetDefinitionURI#,
-				#valueSetDefinition.valueSetDefinitionName#,
-				#valueSetDefinition.defaultCodingScheme#,
-				#valueSetDefinition.conceptDomain#,
-				#valueSetDefinition.entityDescription.content#,
-				#systemReleaseUId,handler=variablePrimaryKeyTypeHandler#,
-				#valueSetDefinition.isActive,handler=numericBooleanTypeHandler#,
-				#valueSetDefinition.owner#,
-				#valueSetDefinition.status#,
-				#valueSetDefinition.effectiveDate#,
-				#valueSetDefinition.expirationDate#,
-				#entryStateUId,handler=variablePrimaryKeyTypeHandler#	
+				#{uid,handler=variablePrimaryKeyTypeHandler},
+				#{valueSetDefinition.valueSetDefinitionURI},
+				#{valueSetDefinition.valueSetDefinitionName},
+				#{valueSetDefinition.defaultCodingScheme},
+				#{valueSetDefinition.conceptDomain},
+				#{valueSetDefinition.entityDescription.content},
+				#{systemReleaseUId,handler=variablePrimaryKeyTypeHandler},
+				#{valueSetDefinition.isActive,handler=numericBooleanTypeHandler},
+				#{valueSetDefinition.owner},
+				#{valueSetDefinition.status},
+				#{valueSetDefinition.effectiveDate},
+				#{valueSetDefinition.expirationDate},
+				#{entryStateUId,handler=variablePrimaryKeyTypeHandler}	
 			)
      </insert>
 
-	<update id="updateValueSetDefinitionByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
+	<update id="updateValueSetDefinitionByUId" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
 		UPDATE 
-			$prefix$valueSetDefinition
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="valueSetDefinition.valueSetDefinitionName">
-				valueSetDefName = #valueSetDefinition.valueSetDefinitionName#
-			</isNotNull>
-			<isNotNull prepend="," property="valueSetDefinition.defaultCodingScheme">
-				defaultCodingScheme = #valueSetDefinition.defaultCodingScheme#
-			</isNotNull>
-			<isNotNull prepend="," property="valueSetDefinition.conceptDomain">
-				conceptDomain = #valueSetDefinition.conceptDomain#
-			</isNotNull>
-			<isNotNull prepend="," property="valueSetDefinition.entityDescription">
-				description = #valueSetDefinition.entityDescription.content#
-			</isNotNull>			
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}valueSetDefinition
+		<set>
+			<if test="valueSetDefinition.valueSetDefinitionName !=null">
+				valueSetDefName = #{valueSetDefinition.valueSetDefinitionName},
+			</if>
+			<if test="valueSetDefinition.defaultCodingScheme !=null">
+				defaultCodingScheme = #{valueSetDefinition.defaultCodingScheme},
+			</if>
+			<if test="valueSetDefinition.conceptDomain !=null">
+				conceptDomain = #{valueSetDefinition.conceptDomain},
+			</if>
+			<if test="valueSetDefinition.entityDescription !=null">
+				entityDescription = #{valueSetDefinition.entityDescription},
+			</if>
+			<if test="valueSetDefinition.entryStateUId !=null">
+				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			</if>
+		</set>
+
 
 		WHERE 
-			valueSetDefGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
  	</update>	
 
-	<update id="updateValueSetDefVersionableChangesByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
+	<update id="updateValueSetDefVersionableChangesByUId" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertValueSetDefinitionBean">
 		UPDATE 
-			$prefix$valueSetDefinition
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="valueSetDefinition.isActive">
-				isActive = #valueSetDefinition.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="valueSetDefinition.owner">
-				owner = #valueSetDefinition.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="valueSetDefinition.status">
-				status = #valueSetDefinition.status#
-			</isNotNull>
-			<isNotNull prepend="," property="valueSetDefinition.effectiveDate">
-				effectiveDate = #valueSetDefinition.effectiveDate#
-			</isNotNull>		
-			<isNotNull prepend="," property="valueSetDefinition.expirationDate">
-				expirationDate = #valueSetDefinition.expirationDate#
-			</isNotNull>				
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}valueSetDefinition
+		<set>
+			<if test="valueSetDefinition.isActive !=null">
+				isActive = #{valueSetDefinition.isActive,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="valueSetDefinition.owner !=null">
+				owner = #{valueSetDefinition.owner},
+			</if>
+			<if test="valueSetDefinition.status !=null">
+				status = #{valueSetDefinition.status},
+			</if>
+			<if test="valueSetDefinition.effectiveDate !=null">
+				effectiveDate = #{valueSetDefinition.effectiveDate},
+			</if>
+			<if test="valueSetDefinition.expirationDate !=null">
+				expirationDate = #{valueSetDefinition.expirationDate},
+			</if>
+			<if test="entryStateUId !=null">
+				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			</if>
+		</set>
 
 		WHERE 
-			valueSetDefGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
  	</update> 	
  	
-	<update id="updateValueSetDefinitinEntryStateUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<update id="updateValueSetDefinitinEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE 
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		SET 
-			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 		WHERE 
-			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
  	</update> 	
  	
-	<delete id="removevalueSetDefinitionByValueSetDefinitionURI" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="removevalueSetDefinitionByValueSetDefinitionURI" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		WHERE
-			valueSetDefURI = #param1#
+			valueSetDefURI = #{param1}
 	</delete>
 	
-	<delete id="removeDefinitionEntryByValueSetDefinitionGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="removeDefinitionEntryByValueSetDefinitionGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$vsdEntry
+			${prefix}vsdEntry
 		WHERE
-			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</delete>
 	
-	<select id="getValueSetDefinitionMetadataByUId" 		
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="ValueSetDefinition.valueSetDefinitionMetaDataWithMultiAttrib">
+	<select id="getValueSetDefinitionMetadataByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="ValueSetDefinition.valueSetDefinitionMetaDataWithMultiAttrib">
 		SELECT
 			vs.valueSetDefGuid,
 			vs.valueSetDefURI,
@@ -393,18 +366,16 @@
 			vsMulti.role,
 			vsMulti.entryStateGuid AS esGuid				
 		FROM
-			$prefix$valueSetDefinition vs
+			${prefix}valueSetDefinition vs
 		LEFT JOIN
-			$prefix$vsMultiAttrib vsMulti
+			${prefix}vsMultiAttrib vsMulti
 		ON
 			vsMulti.referenceGuid = vs.valueSetDefGuid
 		WHERE
-			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</select>
 	
-		<select id="getValueSetDefinitionMetadataHashMapByRegistryDesignation" 		
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="ValueSetDefinition.valueSetDefinitionMap">
+		<select id="getValueSetDefinitionMetadataHashMapByRegistryDesignation" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="ValueSetDefinition.valueSetDefinitionMap">
 		SELECT
 			vs.valueSetDefURI,
 			vs.valueSetDefName,
@@ -419,64 +390,58 @@
 			vs.expirationDate,
 			vs.valueSetDefGuid AS vskey
 		FROM
-			$prefix$registry as reg
+			${prefix}registry as reg
 		JOIN
-			$prefix$valueSetDefinition as vs
+			${prefix}valueSetDefinition as vs
 		ON
 			reg.resourceURI=vs.valueSetDefURI
 		WHERE
-			reg.resourceType = #param1#
+			reg.resourceType = #{param1}
 	</select>
 
-	<select id="getEntryStateUIdByValuesetDefUId" 
-		resultMap="Common.uidResult"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getEntryStateUIdByValuesetDefUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
 		SELECT
 			entryStateGuid AS uidKey
 		FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		WHERE
-			valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</select>
 	
-	<select id="getValueSetDefinitionLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getValueSetDefinitionLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$valueSetDefinition vsDef,
-			$prefix$vsEntryState es,
+			${prefix}valueSetDefinition vsDef,
+			${prefix}vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			vsDef.valueSetDefGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			vsDef.valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
 		AND
 			vsDef.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
 	</select>
 
-	<select id="getPrevRevisionIdFromGivenRevIdForValueSetDefinition" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="java.util.TreeMap">
-		<![CDATA[
+	<select id="getPrevRevisionIdFromGivenRevIdForValueSetDefinition" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="java.util.TreeMap">
+		
 			SELECT DISTINCT
 				r1.revisionId AS revId,
 				r1.revAppliedDate AS revAppliedDate
 			FROM
-				$prefix$valueSetDefinition vs,
-				$prefix$vsEntryState es,
+				${prefix}valueSetDefinition vs,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1, 
 				${defaultPrefix}revision r2			
 			WHERE
-				vs.valueSetDefURI = #param1# AND
+				vs.valueSetDefURI = #{param1} AND
 				(
 					NOT EXISTS 
 					(
 						SELECT 
 							es1.entryStateGuid 
 						FROM 
-							$prefix$vsEntryState es1 
+							${prefix}vsEntryState es1 
 						WHERE 
 							vs.entryStateGuid = es1.entryStateGuid
 					)
@@ -484,19 +449,17 @@
 					(
 						vs.valueSetDefGuid = es.entryGuid AND 
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
+						r1.revAppliedDate &lt;= r2.revAppliedDate AND
+						r2.revisionID = #{param2}
 					)
 				)
 			ORDER BY
 				revAppliedDate DESC			
-		]]>			
+					
 	</select>
 
-	<select id="getValueSetDefinitionMetaDataByRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="valueSetDefinitionMetaDataResult">
-		<![CDATA[
+	<select id="getValueSetDefinitionMetaDataByRevision" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="valueSetDefinitionMetaDataResult">
+		
 			SELECT 
 				vs.valueSetDefGuid,
 				vs.valueSetDefURI,
@@ -513,18 +476,18 @@
 				vs.entryStateGuid,
 				r1.revAppliedDate as revAppliedDate
 			FROM
-				$prefix$valueSetDefinition vs,
-				$prefix$vsEntryState es,
+				${prefix}valueSetDefinition vs,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1,			
 				${defaultPrefix}revision r2		
 			WHERE
-				vs.valueSetDefURI = #param1# AND
+				vs.valueSetDefURI = #{param1} AND
 				vs.entryStateGuid = es.entryStateGuid AND
 				(
 					(						
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
+						r1.revAppliedDate &lt;= r2.revAppliedDate AND
+						r2.revisionID = #{param2}
 					)
 					OR
 					(
@@ -533,13 +496,11 @@
 				)
 			Order BY
 				revAppliedDate DESC		
-		]]>			
+					
 	</select>
 	
-	<select id="getValueSetDefinitionMetaDataHistoryByRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="valueSetDefinitionMetaDataResult">
-		<![CDATA[
+	<select id="getValueSetDefinitionMetaDataHistoryByRevision" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="valueSetDefinitionMetaDataResult">
+		
 			SELECT 
 				vs.valueSetDefGuid,
 				vs.valueSetDefURI,
@@ -556,18 +517,18 @@
 				vs.entryStateGuid,
 				r1.revAppliedDate as revAppliedDate
 			FROM
-				$prefix$h_valueSetDefinition vs,
-				$prefix$vsEntryState es,
+				${prefix}h_valueSetDefinition vs,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1,			
 				${defaultPrefix}revision r2		
 			WHERE
-				vs.valueSetDefURI = #param1# AND
+				vs.valueSetDefURI = #{param1} AND
 				vs.entryStateGuid = es.entryStateGuid AND
 				(
 					(						
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
+						r1.revAppliedDate &lt;= r2.revAppliedDate AND
+						r2.revisionID = #{param2}
 					)
 					OR
 					(
@@ -576,54 +537,48 @@
 				)
 			Order BY
 				revAppliedDate DESC		
-		]]>			
+					
 	</select>
 
-	<select id="getDefinitionEntryListByValSetDefURI" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getDefinitionEntryListByValSetDefURI" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 			SELECT 
 				defEntry.ruleOrder
 			FROM
-				$prefix$valueSetDefinition vs,
-				$prefix$vsdEntry defEntry
+				${prefix}valueSetDefinition vs,
+				${prefix}vsdEntry defEntry
 			WHERE
-				vs.valueSetDefURI = #param1# AND
+				vs.valueSetDefURI = #{param1} AND
 				vs.valueSetDefGuid = defEntry.valueSetDefGuid
 	</select>	
 	
-	<select id="getValueSetDefPropertyListByValSetDefURI" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getValueSetDefPropertyListByValSetDefURI" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 			SELECT 
 				vsProp.propertyId
 			FROM
-				$prefix$valueSetDefinition vs,
-				$prefix$vsProperty vsProp
+				${prefix}valueSetDefinition vs,
+				${prefix}vsProperty vsProp
 			WHERE
-				vs.valueSetDefURI = #param1# AND
+				vs.valueSetDefURI = #{param1} AND
 				vs.valueSetDefGuid = vsProp.referenceGuid
 	</select>	
 	
-	<select id="getValueSetSchemeRefForTopNodeSourceCode" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="csVersionReferenceResult">
+	<select id="getValueSetSchemeRefForTopNodeSourceCode" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="csVersionReferenceResult">
 		SELECT 
 			vsd.valueSetDefURI,
 			reg.resourceVersion
 		FROM 
-			$prefix$valueSetDefinition vsd
+			${prefix}valueSetDefinition vsd
 		JOIN	
-			$prefix$vsdEntry ent
+			${prefix}vsdEntry ent
 		ON
 			vsd.valueSetDefGuid = ent.valueSetDefGuid
 		JOIN
-		    $prefix$registry reg
+		    ${prefix}registry reg
 		ON
 			vsd.valueSetDefUri = reg.resourceUri 
 		WHERE 
-			ent.entityCode = #param1#	
+			ent.entityCode = #{param1}	
 		AND 
-			reg.resourceType = #param2#	
+			reg.resourceType = #{param2}	
 	 </select>
-</sqlMap>
+</mapper>

@@ -1,19 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="NciHistory">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:17 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="NciHistory">
 
-	<typeAlias alias="nciChangeEvent" type="org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent" />
-	<typeAlias alias="systemRelease" type="org.LexGrid.versions.SystemRelease" />
-	<typeAlias alias="changeTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NCIHistoryChangeTypeTypeHandler"/>
-	<typeAlias alias="conceptReference" type="org.LexGrid.LexBIG.DataModel.Core.ConceptReference"/>
 	
-	<resultMap id="conceptReferenceResult" class="conceptReference">
+	<resultMap id="conceptReferenceResult" type="conceptReference">
 		<result property="code" column="entityCode"/>
-		<result property="codeNamespace" column="entityNamespace" />
+		<result property="codeNamespace" column="entityNamespace"/>
 	</resultMap>
 
-	<resultMap id="nciChangeEventResult" class="nciChangeEvent">
+	<resultMap id="nciChangeEventResult" type="nciChangeEvent">
 		<result property="editaction" column="editAction" typeHandler="changeTypeHandler"/>
 		<result property="conceptcode" column="entityCode"/>
 		<result property="conceptName" column="conceptName"/>
@@ -22,34 +18,33 @@
 		<result property="referencename" column="referenceName"/>
 	</resultMap>
 
-	<resultMap id="systemReleaseResult" class="systemRelease">
+	<resultMap id="systemReleaseResult" type="systemRelease">
 		<result property="entityDescription.content" column="description"/>
-		<result property="releaseId" column="releaseId" />
-		<result property="releaseURI" column="releaseURI" />
+		<result property="releaseId" column="releaseId"/>
+		<result property="releaseURI" column="releaseURI"/>
 		<result property="releaseDate" column="releaseDate"/>
-		<result property="releaseAgency" column="releaseAgency" />
-		<result property="basedOnRelease" column="basedOnRelease" />
+		<result property="releaseAgency" column="releaseAgency"/>
+		<result property="basedOnRelease" column="basedOnRelease"/>
 	</resultMap>
 	
-	<resultMap id="entityCodeResult" class="string">
-		<result property="java.lang.String" column="entityCode" />
+	<resultMap id="entityCodeResult" type="string">
+		<result property="java.lang.String" column="entityCode"/>
 	</resultMap>
 	
-	<resultMap id="dateResult" class="date">
-		<result property="java.util.Date" column="releaseDate" />
+	<resultMap id="dateResult" type="date">
+		<result property="java.util.Date" column="releaseDate"/>
 	</resultMap>
 	
-	<resultMap id="versionsResult" class="string">
-		<result property="java.util.String" column="releaseId" />
+	<resultMap id="versionsResult" type="string">
+		<result property="java.util.String" column="releaseId"/>
 	</resultMap>
 	
-	<delete id="deleteSystemRelease"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
+	<delete id="deleteSystemRelease" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
 		DELETE 
 		FROM
 			${defaultPrefix}nciHistSystemRelease
 		WHERE
-			codingSchemeUri = #param1#
+			codingSchemeUri = #{param1}
 	</delete>
 	
 	<sql id="getBaseLineFragment">
@@ -63,19 +58,17 @@
 		FROM
 			${defaultPrefix}nciHistSystemRelease systemRelease
 		WHERE
-			systemRelease.codingSchemeUri = #param1#
+			systemRelease.codingSchemeUri = #{param1}
 		
 	</sql>
 	
-	<select id="getSystemReleaseUidForDate"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="Common.uidResult">
+	<select id="getSystemReleaseUidForDate" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="Common.uidResult">
 		SELECT 
 			releaseGuid AS uidKey
 		FROM
 			${defaultPrefix}nciHistSystemRelease systemRelease
 		WHERE
-			systemRelease.codingSchemeUri = #param1#
+			systemRelease.codingSchemeUri = #{param1}
 		AND 
 				releaseDate = 
 					(
@@ -84,15 +77,13 @@
 		    		FROM
 		        		${defaultPrefix}nciHistSystemRelease sysReleaseDate
 		        	WHERE
-						sysReleaseDate.codingSchemeUri = #param1#
+						sysReleaseDate.codingSchemeUri = #{param1}
 					AND
-						sysReleaseDate.releaseDate >= #param2#
+						sysReleaseDate.releaseDate &gt;= #{param2}
 					)    	
 	</select>
 	
- 	<select id="getReferencesForVersion"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="entityCodeResult">
+ 	<select id="getReferencesForVersion" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="entityCodeResult">
 		SELECT
 		 	entityCode 
 		FROM 
@@ -102,25 +93,21 @@
 		ON 
 		 	hist.releaseGuid = sysr.releaseGuid 
 		WHERE 
-		 	sysr.releaseId = #param1# 
+		 	sysr.releaseId = #{param1} 
 		GROUP BY 
 		 	hist.entityCode
 	</select>
 	
-	 <select id="getDateForVersion"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="dateResult">
+	 <select id="getDateForVersion" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="dateResult">
 		SELECT
 			releasedate 
 		FROM
 			${defaultPrefix}nciHistSystemRelease 
 		WHERE 
-			releaseid = #param1#
+			releaseid = #{param1}
 	</select>
 	
-	<select id="getVersionsForDateRange"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="versionsResult">
+	<select id="getVersionsForDateRange" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="versionsResult">
 		SELECT
 			releaseid
 		FROM
@@ -128,9 +115,9 @@
 		WHERE
 			releaseDate 
 		BETWEEN 
-			#param1#
+			#{param1}
 		AND 
-			#param2#
+			#{param2}
 	</select>
 		
 	<sql id="getChangeEventFragment">
@@ -149,112 +136,100 @@
 		ON
 			nciHist.releaseGuid = systemRelease.releaseGuid
 		WHERE
-			systemRelease.codingSchemeUri = #param1#
+			systemRelease.codingSchemeUri = #{param1}
 	</sql>
 	
-	<select id="getChangeEvent"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="nciChangeEventResult">
+	<select id="getChangeEvent" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
 		
 		<include refid="getChangeEventFragment"/>
 		
-		<isNotNull property="param2">
+		<if test="param2 != null">
 		AND (
-				nciHist.entityCode = #param2#
+				nciHist.entityCode = #{param2}
 				
 				OR
 				
-				nciHist.referenceCode = #param2#
+				nciHist.referenceCode = #{param2}
 			)
-		</isNotNull>
+		</if>
 		
-		<isNotNull property="param3">
+		<if test="param3 != null">
 		AND
-			editDate >= #param3#
-		</isNotNull>
+			editDate &gt;= #{param3}
+		</if>
 		
-		<isNotNull property="param4">
+		<if test="param4 != null">
 		AND
-			#param4# >= editDate
-		</isNotNull>
+			#{param4} &gt;= editDate
+		</if>
 	</select> 
 	
-	<select id="getChangeEventForDate"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="nciChangeEventResult">
+	<select id="getChangeEventForDate" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
 		
 		<include refid="getChangeEventFragment"/>
 		
-		<isNotNull property="param2">
+		<if test="param2 != null">
 		AND (
-				nciHist.entityCode = #param2#
+				nciHist.entityCode = #{param2}
 				OR
-				nciHist.referenceCode = #param2#
+				nciHist.referenceCode = #{param2}
 			)
-		</isNotNull>
+		</if>
 		
-		<isNotNull property="param3">
+		<if test="param3 != null">
 		AND
-			editDate = #param3#
-		</isNotNull>
+			editDate = #{param3}
+		</if>
 	</select> 
 	
-	<select id="getConceptCreationVersion"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="nciChangeEventResult">
+	<select id="getConceptCreationVersion" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
 		
 		<include refid="getChangeEventFragment"/>
 		AND
-			nciHist.entityCode = #param2#
+			nciHist.entityCode = #{param2}
 
 		AND
 			editAction = 'create'
 	</select> 
 	
-	<select id="getConceptChangeVersions"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="nciChangeEventResult">
+	<select id="getConceptChangeVersions" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
 		
 		<include refid="getChangeEventFragment"/>
 		AND
-			nciHist.entityCode = #param2#
+			nciHist.entityCode = #{param2}
 			
-		<isNotNull property="param3">
+		<if test="param3 != null">
 		AND
-			editDate >= #param3#
-		</isNotNull>
+			editDate &gt;= #{param3}
+		</if>
 		
-		<isNotNull property="param4">
+		<if test="param4 != null">
 		AND
-			#param4# >= editDate
-		</isNotNull>
+			#{param4} &gt;= editDate
+		</if>
 	</select> 
 	
-	<select id="getChangeEventForSystemReleaseUri"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="nciChangeEventResult">
+	<select id="getChangeEventForSystemReleaseUri" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
 		
 		<include refid="getChangeEventFragment"/>
 		
-		<isNotNull property="param2">
+		<if test="param2 != null">
 		AND (
-				nciHist.entityCode = #param2#
+				nciHist.entityCode = #{param2}
 				OR
-				nciHist.referenceCode = #param2#
+				nciHist.referenceCode = #{param2}
 			)
-		</isNotNull>
+		</if>
 		
 		AND
-			systemRelease.releaseUri = #param3#
+			systemRelease.releaseUri = #{param3}
 	</select> 
 	
-	<select id="getDecendants"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="nciChangeEventResult">
+	<select id="getDecendants" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
 		
 		<include refid="getChangeEventFragment"/>
 		AND
-			nciHist.entityCode = #param2#
+			nciHist.entityCode = #{param2}
 		AND
 			(
 				nciHist.editAction = 'split'
@@ -263,13 +238,11 @@
 			)
 	</select> 
 	
-	<select id="getAncestors"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="nciChangeEventResult">
+	<select id="getAncestors" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
 		
 		<include refid="getChangeEventFragment"/>
 		AND
-			nciHist.referenceCode = #param2#
+			nciHist.referenceCode = #{param2}
 		AND
 			(
 				nciHist.editAction = 'split'
@@ -278,25 +251,21 @@
 			)
 	</select> 
 
-	<select id="getBaseLines"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="systemReleaseResult">
+	<select id="getBaseLines" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="systemReleaseResult">
 		
 		<include refid="getBaseLineFragment"/>
 		
-		<isNotNull property="param2">
+		<if test="param2 != null">
 		AND
-			releaseDate >= #param2#
-		</isNotNull>
-		<isNotNull property="param3">
+			releaseDate &gt;= #{param2}
+		</if>
+		<if test="param3 != null">
 		AND
-			#param3# >= releaseDate
-		</isNotNull>
+			#{param3} &gt;= releaseDate
+		</if>
 	</select> 
 	
-	<select id="getEarliestBaseLine"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="systemReleaseResult">
+	<select id="getEarliestBaseLine" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="systemReleaseResult">
 		
 		<include refid="getBaseLineFragment"/>
 		
@@ -307,13 +276,11 @@
     		FROM
         		${defaultPrefix}nciHistSystemRelease sysReleaseDate
         	WHERE
-				sysReleaseDate.codingSchemeUri = #param1#
+				sysReleaseDate.codingSchemeUri = #{param1}
 			)    	
 	</select> 
 	
-	<select id="getLatestBaseLine"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="systemReleaseResult">
+	<select id="getLatestBaseLine" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="systemReleaseResult">
 		
 		<include refid="getBaseLineFragment"/>
 		
@@ -324,31 +291,27 @@
     		FROM
         		${defaultPrefix}nciHistSystemRelease sysReleaseDate
         	WHERE
-				sysReleaseDate.codingSchemeUri = #param1#
+				sysReleaseDate.codingSchemeUri = #{param1}
 			)    	
 	</select> 
 	
 
-	<select id="getSystemReleaseForUri"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="systemReleaseResult">
+	<select id="getSystemReleaseForUri" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="systemReleaseResult">
 	
-		<include refid="getBaseLineFragment" />
+		<include refid="getBaseLineFragment"/>
 	
 			AND
-			releaseUri = #param2#
+			releaseUri = #{param2}
 	</select> 
 	
-	<select id="getSystemReleaseForUid"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="systemReleaseResult">
+	<select id="getSystemReleaseForUid" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="systemReleaseResult">
 	
-		<include refid="getBaseLineFragment" />
+		<include refid="getBaseLineFragment"/>
 			AND
-			systemRelease.releaseGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			systemRelease.releaseGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 	</select> 
 	
-	<insert id="insertSystemRelease" parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
+	<insert id="insertSystemRelease" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
 		INSERT INTO ${defaultPrefix}nciHistSystemRelease (
 			releaseGuid,
 			codingSchemeUri,
@@ -360,18 +323,18 @@
 			description
 			)
 		VALUES (
-			#param1,handler=variablePrimaryKeyTypeHandler#,
-			#param2#,
-			#param3.releaseURI#,
-			#param3.releaseId#,
-			#param3.releaseDate#,
-			#param3.basedOnRelease#,
-			#param3.releaseAgency#,
-			#param3.entityDescription.content#
+			#{param1,handler=variablePrimaryKeyTypeHandler},
+			#{param2},
+			#{param3.releaseURI},
+			#{param3.releaseId},
+			#{param3.releaseDate},
+			#{param3.basedOnRelease},
+			#{param3.releaseAgency},
+			#{param3.entityDescription.content}
 			)
  	</insert>
  	
- 	<insert id="insertNciChangeEvent" parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
+ 	<insert id="insertNciChangeEvent" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
 		INSERT INTO ${defaultPrefix}nciHist (
 			ncitHistGuid,
 			releaseGuid,
@@ -383,15 +346,15 @@
 			referenceName
 			)
 		VALUES (
-			#param1,handler=variablePrimaryKeyTypeHandler#,
-			#param2,handler=variablePrimaryKeyTypeHandler#,
-			#param3.conceptcode#,
-			#param3.conceptName#,
-			#param3.editaction#,
-			#param3.editDate#,
-			#param3.referencecode#,
-			#param3.referencename#
+			#{param1,handler=variablePrimaryKeyTypeHandler},
+			#{param2,handler=variablePrimaryKeyTypeHandler},
+			#{param3.conceptcode},
+			#{param3.conceptName},
+			#{param3.editaction},
+			#{param3.editDate},
+			#{param3.referencecode},
+			#{param3.referencename}
 			)
  	</insert>
 		
-</sqlMap>
+</mapper>

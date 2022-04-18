@@ -1,11 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Association">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:16 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Association">
 	
-     <insert id="insertAssociationEntity" 
-     	parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean">
-		INSERT INTO $prefix$associationEntity (
+     <insert id="insertAssociationEntity" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean">
+		INSERT INTO ${prefix}associationEntity (
 			associationEntityGuid,
 			entityGuid,
 			forwardName,
@@ -13,37 +12,35 @@
 			isNavigable,
 			isTransitive
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#entityUId,handler=variablePrimaryKeyTypeHandler#,
-			#associationEntity.forwardName#,
-			#associationEntity.reverseName#,
-			#associationEntity.isNavigable,handler=numericBooleanTypeHandler#,
-			#associationEntity.isTransitive,handler=numericBooleanTypeHandler#
+			#{uid,handler=variablePrimaryKeyTypeHandler}, 
+			#{entityUId,handler=variablePrimaryKeyTypeHandler},
+			#{associationEntity.forwardName},
+			#{associationEntity.reverseName},
+			#{associationEntity.isNavigable,handler=numericBooleanTypeHandler},
+			#{associationEntity.isTransitive,handler=numericBooleanTypeHandler}
 		)
   </insert>
   
-  <update id="updateAssociationEntityForEntityId"
-  		parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean">
+  <update id="updateAssociationEntityForEntityId" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean">
   		UPDATE 
-			$prefix$associationEntity associationEntity
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="associationEntity.forwardName">
-				associationEntity.forwardName = #associationEntity.forwardName#
-			</isNotNull>
-			<isNotNull prepend="," property="associationEntity.reverseName">
-				associationEntity.reverseName = #associationEntity.reverseName#
-			</isNotNull>
-			<isNotNull prepend="," property="associationEntity.isNavigable">
-				associationEntity.isNavigable = #associationEntity.isNavigable,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="associationEntity.isTransitive">
-				associationEntity.isTransitive = #associationEntity.isTransitive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}associationEntity associationEntity
+		    <set>
+				<if test="associationEntity.forwardName != null">
+					associationEntity.forwardName=#{associationEntity.forwardName},
+				</if>
+		    	<if test="associationEntity.reverseName !=null">
+					associationEntity.reverseName=#{associationEntity.reverseName},
+				</if>
+		    	<if test="associationEntity.isNavigable 1= null">
+					associationEntity.isNavigable=#{associationEntity.isNavigable},
+				</if>
+		    	<if test="associationEntity.isTransitive != null">
+					associationEntity.isTransitive=#{associationEntity.isTransitive}
+				</if>
+			</set>
 
 		WHERE 
-			associationEntity.entityGuid = #entityId,handler=variablePrimaryKeyTypeHandler#
+			associationEntity.entityGuid = #{entityId,handler=variablePrimaryKeyTypeHandler}
   </update>
 
-</sqlMap>
+</mapper>
