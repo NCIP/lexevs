@@ -53,7 +53,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	
 
 	public EntryState getEntryStateByUId(String entryStateUId) {
-		return (EntryState) this.getSqlMapClientTemplate().queryForObject(GET_ENTRY_STATE_BY_ID_SQL, 
+		return (EntryState) this.getSqlSessionTemplate().selectOne(GET_ENTRY_STATE_BY_ID_SQL, 
 			new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), entryStateUId));
 	}
 	
@@ -132,7 +132,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_VSPROPERTIES_ENTRYSTATE_BY_PARENTUID,
 				new PrefixedParameterTuple(prefix, parentUId, parentType));
 	}
@@ -213,7 +213,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				ReferenceType.VALUESETDEFINITION.name());
 		
 		/* 2. Delete all vsEntry entry states of value set definition.*/
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_DEFINITIONENTRY_ENTRYSTATE_OF_VALUESET_DEFINITION,
 				new PrefixedParameter(prefix, valueSetDefGuid));
 		
@@ -227,7 +227,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ENTRYSTATE_BY_ENTRYGUID_AND_TYPE,
 				new PrefixedParameterTuple(prefix, valueSetDefGuid, entryType));
 	}
@@ -236,7 +236,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ENTRYSTATE_ENTRIES_BY_ENTRY_UID,
 				new PrefixedParameter(prefix, entryUId));
 	}
@@ -252,16 +252,16 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				ReferenceType.PICKLISTDEFINITION.name());
 		
 		/* 2. Delete all PL Entry properties entry states of the PL definition. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_PLENTRY_PROPERTY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION,
 				new PrefixedParameter(prefix, pickListUId));
 		
 		/* 3. Delete all PL Entry entry states of the PL Definition.*/
-		this.getSqlMapClientTemplate().delete(DELETE_ALL_PLENTRY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION,
+		this.getSqlSessionTemplate().delete(DELETE_ALL_PLENTRY_ENTRYSTATE_ENTRIES_OF_PL_DEFINITION,
 				new PrefixedParameter(prefix, pickListUId));
 		
 		/* 4. Delete all entry states of PL definition.*/
-		this.getSqlMapClientTemplate().delete(DELETE_ALL_PL_DEFINITION_ENTRYSTATES,
+		this.getSqlSessionTemplate().delete(DELETE_ALL_PL_DEFINITION_ENTRYSTATES,
 				new PrefixedParameter(prefix, pickListUId));
 	}
 

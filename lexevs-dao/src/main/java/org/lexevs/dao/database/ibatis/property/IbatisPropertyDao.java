@@ -35,8 +35,7 @@ import org.lexevs.dao.database.inserter.BatchInserter;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.springframework.batch.classify.Classifier;
-import org.springframework.orm.ibatis.SqlMapClientCallback;
+import org.springframework.classify.Classifier;
 import org.springframework.util.Assert;
 
 import com.ibatis.sqlmap.client.SqlMapExecutor;
@@ -125,7 +124,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTRYSTATE_UID_BY_PROPERTY_UID_SQL,
 				new PrefixedParameter(prefix, propertyUId));
 	}
@@ -139,7 +138,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			final PropertyType type,
 			final List<PropertyBatchInsertItem> batch) {
 
-		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
@@ -231,7 +230,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 			List<String> propertyNames, 
 			List<String> propertyTypes,
 			List<String> parentUids) {
-		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTIES_OF_PARENT_UIDS_SQL, 
+		return this.getSqlSessionTemplate().selectList(GET_PROPERTIES_OF_PARENT_UIDS_SQL, 
 				new PrefixedParameterCollectionTriple(
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						this.propertyTypeClassifier.classify(PropertyType.ENTITY),
@@ -243,7 +242,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public Property getPropertyByUid(
 			String codingSchemeId, 
 			String propertyUid) {
-		return (Property)this.getSqlMapClientTemplate().queryForObject(GET_PROPERTY_BY_UID_SQL, 
+		return (Property)this.getSqlSessionTemplate().selectOne(GET_PROPERTY_BY_UID_SQL, 
 				new PrefixedParameter(
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						propertyUid));
@@ -261,7 +260,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	@SuppressWarnings("unchecked")
 	public List<Property> getAllPropertiesOfParent(String codingSchemeId,
 			String parentId, PropertyType type) {
-		return this.getSqlMapClientTemplate().queryForList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
+		return this.getSqlSessionTemplate().selectList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
 				new PrefixedParameterTuple(
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						this.propertyTypeClassifier.classify(type),
@@ -279,7 +278,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 				parentId,
 				revisionId);
 		
-		return this.getSqlMapClientTemplate().queryForList(GET_ALL_HISTORY_PROPERTY_UIDS_OF_PARENT_SQL, 
+		return this.getSqlSessionTemplate().selectList(GET_ALL_HISTORY_PROPERTY_UIDS_OF_PARENT_SQL, 
 				param);
 	}
 	
@@ -296,15 +295,15 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 		param.setActualTableSetPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid));
 		
-		return (Property)this.getSqlMapClientTemplate().
-			queryForObject(
+		return (Property)this.getSqlSessionTemplate().
+			selectOne(
 					GET_PROPERY_BY_PROPERTY_UID_AND_REVISION_ID_SQL, 
 					param);
 	}
 
 	@SuppressWarnings("unchecked")
 	protected <T> List<T> doGetPropertyMultiAttrib(String prefix, String propertyId, Class<T> multiAttrib){
-		return this.getSqlMapClientTemplate().queryForList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
+		return this.getSqlSessionTemplate().selectList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
 				new PrefixedParameterTuple(prefix, propertyId, this.propertyMultiAttributeClassifier.classify(multiAttrib)));
 	}
 	
@@ -400,8 +399,8 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		
-		InsertOrUpdatePropertyBean propertyData = (InsertOrUpdatePropertyBean) this.getSqlMapClientTemplate()
-				.queryForObject(GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
+		InsertOrUpdatePropertyBean propertyData = (InsertOrUpdatePropertyBean) this.getSqlSessionTemplate()
+				.selectOne(GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, propertyUId));
 
 		propertyData.setPrefix(historyPrefix);
@@ -438,7 +437,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_PROPERTY_BY_UID_SQL, 
 				this.buildInsertPropertyBean(
 						prefix, 
@@ -446,8 +445,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						propertyUId, 
 						entryStateUId, 
 						type, 
-						property),
-						1);	
+						property));	
 
 		if(property.getSourceCount() > 0) {
 			String multiAttributeType = this.propertyMultiAttributeClassifier.classify(Source.class);
@@ -481,7 +479,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
 				new PrefixedParameterTuple(prefix,propertyUId,multiAttributeType));
 	}
@@ -496,7 +494,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		
 		String entryStateUId = this.createUniqueId();
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_PROPERTY_VERSIONABLE_ATTRIB_BY_UID_SQL, 
 				this.buildInsertPropertyBean(
 						prefix, 
@@ -504,8 +502,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 						propertyUId, 
 						entryStateUId, 
 						null, 
-						property),
-						1);	
+						property));	
 		
 		return entryStateUId;
 	}
@@ -687,7 +684,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_CODINGSCHEME_PROPERTIES_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix, this.propertyTypeClassifier
 						.classify(PropertyType.CODINGSCHEME), codingSchemeUId));
@@ -701,7 +698,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public void deleteAllEntityPropertiesOfCodingScheme(String codingSchemeUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().delete(DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL, 
+		this.getSqlSessionTemplate().delete(DELETE_ALL_ENTITY_PROPERTIES_OF_CODINGSCHEME_SQL, 
 				new PrefixedParameterTuple(prefix, 
 						this.propertyTypeClassifier.classify(PropertyType.ENTITY), codingSchemeUId));
 	}
@@ -710,7 +707,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public void deleteAllRelationPropertiesOfCodingScheme(String codingSchemeUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(DELETE_ALL_RELATION_PROPERTIES_OF_CODINGSCHEME_SQL, 
+		this.getSqlSessionTemplate().delete(DELETE_ALL_RELATION_PROPERTIES_OF_CODINGSCHEME_SQL, 
 				new PrefixedParameterTuple(prefix, 
 						this.propertyTypeClassifier.classify(PropertyType.RELATION), codingSchemeUId));
 	}
@@ -722,7 +719,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().delete(DELETE_ALL_PROPERTIES_OF_PARENT_SQL, 
+		this.getSqlSessionTemplate().delete(DELETE_ALL_PROPERTIES_OF_PARENT_SQL, 
 				new PrefixedParameterTuple(prefix, 
 						this.propertyTypeClassifier.classify(parentType), parentUId));
 	}
@@ -739,7 +736,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	protected String getPropertyUIdFromParentUIdAndPropId(String codingSchemeId, String parentId, String propId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_PROPERTY_ID_SQL, 
+		return (String) this.getSqlSessionTemplate().selectOne(GET_PROPERTY_ID_SQL, 
 				new PrefixedParameterTuple(prefix, parentId, propId));
 	}
 
@@ -878,7 +875,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_PROPERTY_UID_BY_ID_AND_NAME,
 				new PrefixedParameterTriple(prefix, referenceUId, propertyId,
 						propertyName));
@@ -890,7 +887,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String prefix = 
 			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().
+		this.getSqlSessionTemplate().
 			delete(DELETE_PROPERTY_BY_UID_SQL, new PrefixedParameter(prefix, propertyUId));
 	}
 
@@ -899,7 +896,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
 		
-		String revId = (String) this.getSqlMapClientTemplate().queryForObject(
+		String revId = (String) this.getSqlSessionTemplate().selectOne(
 				GET_PROPERTY_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, propertyUId));
 		
@@ -929,7 +926,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		InsertOrUpdatePropertyBean propertyBean = (InsertOrUpdatePropertyBean) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_PROPERTY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, vsPropertyUId));
 		

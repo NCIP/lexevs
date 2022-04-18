@@ -3,6 +3,7 @@ package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.util.List;
 
+import org.apache.ibatis.session.RowBounds;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.association.model.VSHierarchyNode;
 import org.lexevs.dao.database.access.valuesets.ValueSetHierarchyDao;
@@ -30,9 +31,9 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		if(pagesize < 0) {
 			pagesize = Integer.MAX_VALUE;
 		}
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().<VSHierarchyNode>selectList(
 				GET_VS_TRIPLES_OF_VSNODE_SQL, 
-				new PrefixedParameterQuint(prefix, associationGuid, code, sourceDesignation, publishName, canPublish), start, pagesize);
+				new PrefixedParameterQuint(prefix, associationGuid, code, sourceDesignation, publishName, canPublish), new RowBounds(start, pagesize));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -44,9 +45,9 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		if(pagesize < 0) {
 			pagesize = Integer.MAX_VALUE;
 		}
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().<DefinedNode>selectList(
 				GET_VS_TRIPLES_OF_VS_SQL, 
-				new PrefixedParameterTriple(prefix, associationGuid, publishName, canPublish), start, pagesize);
+				new PrefixedParameterTriple(prefix, associationGuid, publishName, canPublish), new RowBounds(start, pagesize));
 	}
 
 	

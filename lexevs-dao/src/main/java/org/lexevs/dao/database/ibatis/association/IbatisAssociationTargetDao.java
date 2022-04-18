@@ -105,7 +105,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		return 
-			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+			(AssociationSource) this.getSqlSessionTemplate().selectOne(
 					GET_TRIPLE_BY_UID, 
 					new PrefixedParameter(prefix, tripleUid));
 	}
@@ -123,7 +123,7 @@ private VersionsDao versionsDao;
 		bean.setParam2(revisionId);
 		
 		return 
-			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+			(AssociationSource) this.getSqlSessionTemplate().selectOne(
 					GET_HISTORY_TRIPLE_BY_UID_AND_REVISION_ID, 
 					bean);
 	}
@@ -133,7 +133,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTRYSTATE_UID_BY_ASSOCIATION_TARGET_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUid));
 	}
@@ -181,14 +181,14 @@ private VersionsDao versionsDao;
 		bean.setUId(associationTargetUId);
 		bean.setEntryStateUId(entryStateUId);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_ENTITY_BY_UID_SQL, bean);
 		
 		AssociationQualification[] assocQual = target.getAssociationQualification();
 		
 		if (assocQual.length != 0) {
 			
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL,
 					new PrefixedParameter(prefix, associationTargetUId));
 			
@@ -205,10 +205,10 @@ private VersionsDao versionsDao;
 				}
 				qualBean.setEntryStateUId(entryStateUId);
 				
-				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				this.getSqlSessionTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
 		} else {
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
 					new PrefixedParameterTuple(prefix, associationTargetUId,
 							entryStateUId));
@@ -218,7 +218,7 @@ private VersionsDao versionsDao;
 		
 		if (usageContext.length != 0) {
 			
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ASSOC_USAGE_CONTEXT_BY_ASSOC_UID_SQL,
 					new PrefixedParameter(prefix, associationTargetUId));
 			
@@ -235,10 +235,10 @@ private VersionsDao versionsDao;
 				}
 				qualBean.setEntryStateUId(entryStateUId);
 				
-				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				this.getSqlSessionTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
 		} else {
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_ASSN_USAGECONTEXT_ENTRYSTATE_UID_BY_ID_SQL,
 					new PrefixedParameterTuple(prefix, associationTargetUId,
 							entryStateUId));
@@ -360,7 +360,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_ASSN_TO_ENTITY_UID_BY_INSTANCE_ID_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUId,
 						associationInstanceId));
@@ -377,7 +377,7 @@ private VersionsDao versionsDao;
 				codingSchemeUId);
 
 		InsertOrUpdateAssociationTargetBean assnTargetBean = (InsertOrUpdateAssociationTargetBean) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_ASSN_TARGET_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, associationTargetUId));
 
@@ -394,7 +394,7 @@ private VersionsDao versionsDao;
 
 				assocMultiAttrib.setPrefix(historyPrefix);
 
-				this.getSqlMapClientTemplate().insert(
+				this.getSqlSessionTemplate().insert(
 						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL,
 						assocMultiAttrib);
 			}
@@ -426,7 +426,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(DELETE_ASSOC_TARGET_BY_UID_SQL,
+		this.getSqlSessionTemplate().delete(DELETE_ASSOC_TARGET_BY_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUId));
 	}
 
@@ -446,15 +446,15 @@ private VersionsDao versionsDao;
 		bean.setUId(associationTargetUId);
 		bean.setEntryStateUId(entryStateUId);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_ENTITY_VER_ATTRIB_BY_UID_SQL, bean);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
 				new PrefixedParameterTuple(prefix, associationTargetUId,
 						entryStateUId));
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ASSN_USAGECONTEXT_ENTRYSTATE_UID_BY_ID_SQL,
 				new PrefixedParameterTuple(prefix, associationTargetUId,
 						entryStateUId));
@@ -467,7 +467,7 @@ private VersionsDao versionsDao;
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ASSOC_TARGET_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, targetUId));	
 	}
@@ -481,11 +481,11 @@ private VersionsDao versionsDao;
 		
 		String histPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUId));
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(histPrefix, associationTargetUId));
 	}

@@ -14,6 +14,7 @@ import org.LexGrid.concepts.Entity;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
+import org.apache.ibatis.session.RowBounds;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
@@ -185,7 +186,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		Map<String,Entity> entities = (Map<String,Entity>) this.getSqlMapClientTemplate().queryForMap(GET_ENTITIES_BY_UIDS_SQL, 
+		Map<String,Entity> entities = (Map<String,Entity>) this.getSqlSessionTemplate().<String,Entity>selectMap(GET_ENTITIES_BY_UIDS_SQL, 
 				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids), "id");
 		
 		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(
@@ -216,7 +217,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		String entityId = this.getEntityUId(codingSchemeId, entityCode, entityCodeNamespace);
 		
-		AssociationEntity entity = (AssociationEntity) this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_ENTITY_BY_CODE_AND_NAMESPACE_SQL, 
+		AssociationEntity entity = (AssociationEntity) this.getSqlSessionTemplate().selectOne(GET_ASSOCIATION_ENTITY_BY_CODE_AND_NAMESPACE_SQL, 
 				new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace));
 
 		return addEntityAttributes(
@@ -234,7 +235,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace);
 		
 		List<ResolvedConceptReference> ref = 
-		this.getSqlMapClientTemplate().queryForList(GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL, triple);
+		this.getSqlSessionTemplate().selectList(GET_RESOLVED_CODED_NODE_REFERENCE_BY_CODE_AND_NAMESPACE_SQL, triple);
 		if(!ref.isEmpty()){
 		return
 			ref.get(0);}
@@ -252,7 +253,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			new SequentialMappedParameterBean(entityUid, entryStateUid);
 		bean.setPrefix(this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid));
 		
-		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
+		return (Entity) this.getSqlSessionTemplate().selectOne(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
 				bean);
 	}
 	
@@ -297,7 +298,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 		bean.setPrefix(prefix);
 		
-		return (Entity) this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
+		return (Entity) this.getSqlSessionTemplate().selectOne(GET_ENTITY_BY_ID_AND_REVISION_ID_SQL, 
 				bean);
 	}
 	
@@ -319,8 +320,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	@SuppressWarnings("unchecked")
 	@Deprecated
 	protected List<PropertyLink> doGetPropertyLinks(String prefix, String codingSchemeId, List<String> entityUids){
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_PROPERTY_LINKS_BY_ENTITY_UIDS_SQL, 
+		return this.getSqlSessionTemplate().
+			selectList(GET_PROPERTY_LINKS_BY_ENTITY_UIDS_SQL, 
 				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids));
 	}
 
@@ -332,7 +333,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
 		return (Integer) 
-			this.getSqlMapClientTemplate().queryForObject(GET_ENTITY_COUNT_SQL, new PrefixedParameter(prefix, codingSchemeId));
+			this.getSqlSessionTemplate().selectOne(GET_ENTITY_COUNT_SQL, new PrefixedParameter(prefix, codingSchemeId));
 	}
 
 	/* (non-Javadoc)
@@ -360,7 +361,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		bean.setUId(entityUId);
 		bean.setEntryStateUId(entryStateUId);
 		
-		this.getSqlMapClientTemplate().update(UPDATE_ENTITY_VER_ATTRIB_BY_ID_SQL, bean);
+		this.getSqlSessionTemplate().update(UPDATE_ENTITY_VER_ATTRIB_BY_ID_SQL, bean);
 		
 		return entryStateUId;
 	}
@@ -388,7 +389,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			bean.setIsTransitive(assocEntity.getIsTransitive());
 		}
 		
-		this.getSqlMapClientTemplate().update(UPDATE_ENTITY_BY_UID_SQL, bean);
+		this.getSqlSessionTemplate().update(UPDATE_ENTITY_BY_UID_SQL, bean);
 		
 		return entryStateUId;
 	}
@@ -508,8 +509,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 
-		InsertOrUpdateEntityBean entityData = (InsertOrUpdateEntityBean) this.getSqlMapClientTemplate()
-				.queryForObject(GET_ENTITY_ATTRIBUTES_BY_UID_SQL,
+		InsertOrUpdateEntityBean entityData = (InsertOrUpdateEntityBean) this.getSqlSessionTemplate()
+				.selectOne(GET_ENTITY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, entityUId));
 		
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
@@ -549,9 +550,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		}
 		
 		List<String> entityUids = 
-			this.getSqlMapClientTemplate().queryForList(GET_ENTITY_UIDS_OF_CODING_SCHEME_SQL, 
+			this.getSqlSessionTemplate().selectList(GET_ENTITY_UIDS_OF_CODING_SCHEME_SQL, 
 					new PrefixedParameter(prefix, codingSchemeId),
-					start, pageSize);
+					new RowBounds(start, pageSize));
 		
 		return this.getEntities(codingSchemeId, entityUids);
 	}
@@ -565,7 +566,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			final boolean cascade) {
 		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 
-		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
 
 			public Object doInSqlMapClient(SqlMapExecutor executor)
 					throws SQLException {
@@ -597,7 +598,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	public String getEntityUId(String codingSchemeId, String entityCode,
 			String entityCodeNamespace) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		List<String> result = this.getSqlMapClientTemplate().queryForList(
+		List<String> result = this.getSqlSessionTemplate().selectList(
 				GET_ENTITY_UID_BY_CODE_AND_NAMESPACE, 
 				new PrefixedParameterTriple(prefix, codingSchemeId, entityCode, entityCodeNamespace));
 		if(!result.isEmpty()){
@@ -698,7 +699,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		String prefix = 
 			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().
+		this.getSqlSessionTemplate().
 			delete(DELETE_ENTIYT_BY_UID_SQL, new PrefixedParameter(prefix, entityUId));	
 	}
 
@@ -707,7 +708,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
 		
-		String revId = (String) this.getSqlMapClientTemplate().queryForObject(
+		String revId = (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, entityUId));
 		
@@ -722,8 +723,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		List<String> assocUIdList = this.getSqlMapClientTemplate()
-				.queryForList(
+		List<String> assocUIdList = this.getSqlSessionTemplate()
+				.selectList(
 						CHECK_ENTITY_USAGE,
 						new PrefixedParameterTuple(prefix, entityCode,
 								entityCodeNamespace));
@@ -754,7 +755,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTRYSTATE_UID_BY_ENTITY_UID_SQL,
 				new PrefixedParameter(prefix, entityUId));
 	}
@@ -764,9 +765,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String entryStateUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ENTITY_ENTRYSTATE_UID, 
-				new PrefixedParameterTuple(prefix, entityUId, entryStateUId),1);
+				new PrefixedParameterTuple(prefix, entityUId, entryStateUId));
 		
 	}
 	
@@ -778,7 +779,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String entityCode) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_DISTINCT_ENTITY_NAMESPACES_SQL, 
 				new PrefixedParameterTuple(prefix, codingSchemeUId, entityCode));
 	}
@@ -788,7 +789,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String entityGuid, 
 			String revisionGuid) {
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTRY_STATE,
 				new PrefixedParameterTuple(prefix, entityGuid, revisionGuid));
 	}
@@ -819,7 +820,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		bean.setPrefix(prefix);
 		
-		return (EntityDescription) this.getSqlMapClientTemplate().queryForObject(
+		return (EntityDescription) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_DESCRIPTION_SQL,
 				bean);
 	}
@@ -838,7 +839,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		bean.setPrefix(prefix);
 		
-		return  (String) this.getSqlMapClientTemplate().queryForObject(
+		return  (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_DESCRIPTION_STRING,
 				bean);
 	}

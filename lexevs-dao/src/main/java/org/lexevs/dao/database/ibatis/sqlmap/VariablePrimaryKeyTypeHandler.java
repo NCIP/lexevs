@@ -7,7 +7,6 @@ import java.sql.Types;
 import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer;
 import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementerFactory;
 import org.lexevs.dao.database.key.incrementer.PrimaryKeyIncrementer.KeyType;
-import org.springframework.batch.classify.Classifier;
 
 import com.ibatis.sqlmap.client.extensions.ParameterSetter;
 import com.ibatis.sqlmap.client.extensions.ResultGetter;
@@ -57,7 +56,7 @@ public Object getResult(ResultGetter getter) throws SQLException {
     	return getPrimaryKeyIncrementer().stringValue(result);
     }
     
-    private class SqlTypeClassifier implements Classifier<KeyType,Integer>{
+    private class SqlTypeClassifier implements org.springframework.classify.Classifier<KeyType,Integer>{
 
 		@Override
 		public Integer classify(KeyType type) {

@@ -69,8 +69,8 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 		
 		String revisionGuid = null;
 		
-		revisionGuid = (String) this.getSqlMapClientTemplate()
-				.queryForObject(SELECT_REVISION_GUID_BY_ID, revisionId);
+		revisionGuid = (String) this.getSqlSessionTemplate()
+				.selectOne(SELECT_REVISION_GUID_BY_ID, revisionId);
 		
 		return revisionGuid;
 	}
@@ -102,7 +102,7 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 					.currentTimeMillis()));
 			insertRevisionBean.setRevision(revision);
 
-			this.getSqlMapClientTemplate().insert(INSERT_INTO_REVISION,
+			this.getSqlSessionTemplate().insert(INSERT_INTO_REVISION,
 					insertRevisionBean);
 		} else {
 			throw new LBRevisionException("Revision '"
@@ -114,8 +114,8 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 
 	@Transactional
 	public String getRevisionIdForDate(Timestamp dateTime) {
-		return (String) this.getSqlMapClientTemplate()
-				.queryForObject(GET_REVISION_ID_BY_DATE, dateTime);		
+		return (String) this.getSqlSessionTemplate()
+				.selectOne(GET_REVISION_ID_BY_DATE, dateTime);		
 	}
 
 	@Override
@@ -156,8 +156,8 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 		String count = null;
 		if (sysSrv.getSystemVariables().isSingleTableMode())
 		{
-			count = (String) this.getSqlMapClientTemplate()
-				.queryForObject(CHECK_REVISION_EXISTS_IN_ENTRYSTATE, 
+			count = (String) this.getSqlSessionTemplate()
+				.selectOne(CHECK_REVISION_EXISTS_IN_ENTRYSTATE, 
 					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionGuid));
 	
 			if (!count.equals("0"))
@@ -171,8 +171,8 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 			for (RegistryEntry re : reList)
 			{				
 				String prefix = this.getPrefixResolver().resolveDefaultPrefix() + re.getPrefix();
-				count = (String) this.getSqlMapClientTemplate()
-					.queryForObject(CHECK_REVISION_EXISTS_IN_ENTRYSTATE, 
+				count = (String) this.getSqlSessionTemplate()
+					.selectOne(CHECK_REVISION_EXISTS_IN_ENTRYSTATE, 
 							new PrefixedParameter(prefix, revisionGuid));
 			
 				if (!count.equals("0"))
@@ -182,15 +182,15 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 		}
 		
 		// now check vs entry state table
-		count = (String) this.getSqlMapClientTemplate()
-			.queryForObject(CHECK_REVISION_EXISTS_IN_VS_ENTRYSTATE, 
+		count = (String) this.getSqlSessionTemplate()
+			.selectOne(CHECK_REVISION_EXISTS_IN_VS_ENTRYSTATE, 
 					new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionGuid));
 		
 		if (!count.equals("0"))
 			throw new LBException("Revision ID " + revisionId + " can not be removed as it is being referenced by other loaded entries.");
 		
 		// if not used, delete it
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_REVISION_BY_ID,
 				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), revisionId));
 		
