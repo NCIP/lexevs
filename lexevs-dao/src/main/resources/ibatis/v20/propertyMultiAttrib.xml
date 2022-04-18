@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Property">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:23 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Property">
 
 <!--	<resultMap id="multiAttribResult" class="string">-->
 <!--		<discriminator javaType="string" column="attributeType">-->
@@ -11,47 +11,45 @@
 <!--		</discriminator>-->
 <!--	</resultMap>-->
 	
-	<resultMap id="usageContextResult" class="string">
-		<result property="java.lang.String" column="usageContextAttributeValue" />
+	<resultMap id="usageContextResult" type="string">
+		<result property="java.lang.String" column="usageContextAttributeValue"/>
 	</resultMap>
 	
-	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source" groupBy="content,subRef,role">
+	<resultMap id="sourceResult" type="org.LexGrid.commonTypes.Source">
 		<result property="content" column="sourceAttributeValue"/>
-		<result property="subRef" column="sourceSubRef" />
-		<result property="role" column="sourceRole" />
+		<result property="subRef" column="sourceSubRef"/>
+		<result property="role" column="sourceRole"/>
 	</resultMap>
 	
-	<resultMap id="qualifierResult" class="org.LexGrid.commonTypes.PropertyQualifier" groupBy="propertyQualifierName,propertyQualifierType,value.content">
-		<result property="propertyQualifierName" column="qualifierAttributeId" />
-		<result property="propertyQualifierType" column="qualifierType" />
-		<result property="value.content" column="qualifierAttributeValue" />
+	<resultMap id="qualifierResult" type="org.LexGrid.commonTypes.PropertyQualifier">
+		<result property="propertyQualifierName" column="qualifierAttributeId"/>
+		<result property="propertyQualifierType" column="qualifierType"/>
+		<result property="value.content" column="qualifierAttributeValue"/>
 	</resultMap>
 	
-	<resultMap id="propertyMultiAttribResultBean"
-		class="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean" groupBy="uid">
+	<resultMap id="propertyMultiAttribResultBean" type="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
 		<result property="uid" column="propMultiAttribGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="propertyUId" column="propertyGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="attributeType" column="attributeType" />
-		<result property="attributeId" column="attributeId" />
-		<result property="attributeValue" column="attributeValue" />
-		<result property="subRef" column="subRef" />
-		<result property="role" column="role" />
-		<result property="qualifierType" column="qualifierType" />
+		<result property="attributeType" column="attributeType"/>
+		<result property="attributeId" column="attributeId"/>
+		<result property="attributeValue" column="attributeValue"/>
+		<result property="subRef" column="subRef"/>
+		<result property="role" column="role"/>
+		<result property="qualifierType" column="qualifierType"/>
 		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
-	<delete id="deletePropertyMultiAttribByPropertyId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletePropertyMultiAttribByPropertyId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM 
-			$prefix$propertyMultiAttrib
+			${prefix}propertyMultiAttrib
 		WHERE
-			propertyGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			propertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
 		AND
-			attributeType = #param2#	
+			attributeType = #{param2}	
 	</delete>
 
-	<insert id="insertPropertyMultiAttrib" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
-		INSERT INTO $prefix$propertyMultiAttrib (
+	<insert id="insertPropertyMultiAttrib" parameterType="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
+		INSERT INTO ${prefix}propertyMultiAttrib (
 			propMultiAttribGuid,
 			propertyGuid,
 			attributeType,
@@ -62,21 +60,19 @@
 			qualifierType,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#,
-			#propertyUId,handler=variablePrimaryKeyTypeHandler#,
-			#attributeType#,
-			#attributeId:VARCHAR#,
-			#attributeValue:VARCHAR#,
-			#subRef:VARCHAR#,
-			#role:VARCHAR#,
-			#qualifierType:VARCHAR#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+			#{uid,handler=variablePrimaryKeyTypeHandler},
+			#{propertyUId,handler=variablePrimaryKeyTypeHandler},
+			#{attributeType},
+			#{attributeId,jdbcType=VARCHAR},
+			#{attributeValue,jdbcType=VARCHAR},
+			#{subRef,jdbcType=VARCHAR},
+			#{role,jdbcType=VARCHAR},
+			#{qualifierType,jdbcType=VARCHAR},
+			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
 		)
 	</insert>
 	
-	<select id="getPropertyMultiAttribFromHistoryByEntryStateUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="propertyMultiAttribResultBean">
+	<select id="getPropertyMultiAttribFromHistoryByEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="propertyMultiAttribResultBean">
 			SELECT 
 				multiAttrib.propMultiAttribGuid,
 				multiAttrib.propertyGuid,
@@ -88,9 +84,9 @@
 				multiAttrib.qualifierType,
 				multiAttrib.entryStateGuid esGuid
 			FROM 
-				$prefix$h_propertyMultiAttrib multiAttrib
+				${prefix}h_propertyMultiAttrib multiAttrib
 			WHERE
-				multiAttrib.entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+				multiAttrib.entryStateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 			
 	</select>
-</sqlMap>
+</mapper>
