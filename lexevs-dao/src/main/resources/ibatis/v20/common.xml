@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Common">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:21 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Common">
 
-	<resultMap id="uidResult" class="string">
+	<resultMap id="uidResult" type="string">
 		<result property="java.lang.String" column="uidKey" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
-</sqlMap>
+</mapper>

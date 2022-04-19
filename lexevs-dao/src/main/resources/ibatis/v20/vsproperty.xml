@@ -1,129 +1,123 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="VSProperty">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:17 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VSProperty">
 
-	<typeAlias alias="property" type="org.LexGrid.commonTypes.Property" />
-	<typeAlias alias="presentation" type="org.LexGrid.concepts.Presentation"/>
-	<typeAlias alias="definition" type="org.LexGrid.concepts.Definition"/>
-	<typeAlias alias="comment" type="org.LexGrid.concepts.Comment"/>
-	<typeAlias alias="insertOrUpdatePropertyBean" type="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean"/>
 
-	<resultMap id="vsPropertyBean" class="org.lexevs.dao.database.ibatis.valuesets.parameter.VSPropertyBean" >
+	<resultMap id="vsPropertyBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.VSPropertyBean">
 		<result property="vsPropertyGuid" column="vsPropertyGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="property" resultMap="VSProperty.propertyResult"/>
+		<collection property="property" resultMap="VSProperty.propertyResult"/>
 	</resultMap>
 	
-	<resultMap id="propertyResult" class="property" groupBy="propertyId">
-		<result property="propertyName" column="propertyName" />	
-		<result property="propertyId" column="propertyId" />
-		<result property="propertyType" column="propertyType" />
-		<result property="language" column="language" />
-		<result property="value.content" column="propertyValue" />
-		<result property="value.dataType" column="format" />
+	<resultMap id="propertyResult" type="property">
+		<result property="propertyName" column="propertyName"/>	
+		<result property="propertyId" column="propertyId"/>
+		<result property="propertyType" column="propertyType"/>
+		<result property="language" column="language"/>
+		<result property="value.content" column="propertyValue"/>
+		<result property="value.dataType" column="format"/>
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="entryState" resultMap="Versions.entryStateResult" />
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
+		<collection property="entryState" resultMap="Versions.entryStateResult"/>
 		<discriminator javaType="string" column="propertyType">
-			<subMap value="presentation" resultMap="presentationResult" />
-			<subMap value="definition" resultMap="definitionResult" />
-			<subMap value="comment" resultMap="commentResult" />
+			<case value="presentation" resultMap="presentationResult"/>
+			<case value="definition" resultMap="definitionResult"/>
+			<case value="comment" resultMap="commentResult"/>
 		</discriminator>	
 	</resultMap>
 	
-	<resultMap id="assertedValueSetPropertyResult" class="property" groupBy="propertyId">
-		<result property="propertyType" column="propertyType" />
-		<result property="propertyName" column="propertyName" />
-		<result property="value.content" column="propertyValue" />
+	<resultMap id="assertedValueSetPropertyResult" type="property">
+		<result property="propertyType" column="propertyType"/>
+		<result property="propertyName" column="propertyName"/>
+		<result property="value.content" column="propertyValue"/>
 		<discriminator javaType="string" column="propertyType">
-			<subMap value="presentation" resultMap="assertedVSPresentationResult" />
-			<subMap value="definition" resultMap="assertedVSDefinitionResult" />
-			<subMap value="comment" resultMap="assertedVSCommentResult" />
+			<case value="presentation" resultMap="assertedVSPresentationResult"/>
+			<case value="definition" resultMap="assertedVSDefinitionResult"/>
+			<case value="comment" resultMap="assertedVSCommentResult"/>
 		</discriminator>	
 	</resultMap>
 	
-	<resultMap id="propertyAttributeResult" class="insertOrUpdatePropertyBean" groupBy="uid">
+	<resultMap id="propertyAttributeResult" type="insertOrUpdatePropertyBean">
 		<result property="uid" column="vsPropertyGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="parentUId" column="referenceGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="parentType" column="referenceType" />	
-		<result property="property.propertyId" column="propertyId" />
-		<result property="property.propertyType" column="propertyType" />
-		<result property="property.propertyName" column="propertyName" />	
-		<result property="property.language" column="language" />
-		<result property="property.value.dataType" column="format" />
-		<result property="isPreferred" column="isPreferred" />
+		<result property="parentType" column="referenceType"/>	
+		<result property="property.propertyId" column="propertyId"/>
+		<result property="property.propertyType" column="propertyType"/>
+		<result property="property.propertyName" column="propertyName"/>	
+		<result property="property.language" column="language"/>
+		<result property="property.value.dataType" column="format"/>
+		<result property="isPreferred" column="isPreferred"/>
 		<result property="matchIfNoContext" column="matchIfNoContext" typeHandler="numericBooleanTypeHandler"/>
-		<result property="degreeOfFidelity" column="degreeOfFidelity" />
-		<result property="representationalForm" column="representationalForm" />		
-		<result property="property.value.content" column="propertyValue" />		
+		<result property="degreeOfFidelity" column="degreeOfFidelity"/>
+		<result property="representationalForm" column="representationalForm"/>		
+		<result property="property.value.content" column="propertyValue"/>		
 		<result property="property.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="property.owner" column="owner" />
-		<result property="property.status" column="status" />
-		<result property="property.effectiveDate" column="effectiveDate" />
-		<result property="property.expirationDate" column="expirationDate" />
+		<result property="property.owner" column="owner"/>
+		<result property="property.status" column="status"/>
+		<result property="property.effectiveDate" column="effectiveDate"/>
+		<result property="property.expirationDate" column="expirationDate"/>
 		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="propertyMultiAttribList" resultMap="VSProperty.propertyMultiAttribResultBean"/>
+		<collection property="propertyMultiAttribList" resultMap="VSProperty.propertyMultiAttribResultBean"/>
 	</resultMap>
 	
-	<resultMap id="propertyAttributeResultWithNoMultiAttrib" class="insertOrUpdatePropertyBean" groupBy="uid">
+	<resultMap id="propertyAttributeResultWithNoMultiAttrib" type="insertOrUpdatePropertyBean">
 		<result property="uid" column="vsPropertyGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="parentUId" column="referenceGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="parentType" column="referenceType" />	
-		<result property="property.propertyId" column="propertyId" />
-		<result property="property.propertyType" column="propertyType" />
-		<result property="property.propertyName" column="propertyName" />	
-		<result property="property.language" column="language" />
-		<result property="property.value.dataType" column="format" />
+		<result property="parentType" column="referenceType"/>	
+		<result property="property.propertyId" column="propertyId"/>
+		<result property="property.propertyType" column="propertyType"/>
+		<result property="property.propertyName" column="propertyName"/>	
+		<result property="property.language" column="language"/>
+		<result property="property.value.dataType" column="format"/>
 		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
 		<result property="matchIfNoContext" column="matchIfNoContext" typeHandler="numericBooleanTypeHandler"/>
-		<result property="degreeOfFidelity" column="degreeOfFidelity" />
-		<result property="representationalForm" column="representationalForm" />		
-		<result property="property.value.content" column="propertyValue" />		
+		<result property="degreeOfFidelity" column="degreeOfFidelity"/>
+		<result property="representationalForm" column="representationalForm"/>		
+		<result property="property.value.content" column="propertyValue"/>		
 		<result property="property.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="property.owner" column="owner" />
-		<result property="property.status" column="status" />
-		<result property="property.effectiveDate" column="effectiveDate" />
-		<result property="property.expirationDate" column="expirationDate" />
+		<result property="property.owner" column="owner"/>
+		<result property="property.status" column="status"/>
+		<result property="property.effectiveDate" column="effectiveDate"/>
+		<result property="property.expirationDate" column="expirationDate"/>
 		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
-	<resultMap id="presentationResult" class="presentation" extends="propertyResult" >
+	<resultMap id="presentationResult" type="presentation" extends="propertyResult">
 		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
 		<result property="degreeOfFidelity" column="degreeOfFidelity"/>
 		<result property="matchIfNoContext" column="matchIfNoContext" typeHandler="numericBooleanTypeHandler"/>
 		<result property="representationalForm" column="representationalForm"/>
 	</resultMap>
 	
-		<resultMap id="assertedVSPresentationResult" class="presentation" extends="assertedValueSetPropertyResult" >
+		<resultMap id="assertedVSPresentationResult" type="presentation" extends="assertedValueSetPropertyResult">
 		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	
-	<resultMap id="definitionResult" class="definition" extends="propertyResult" >
+	<resultMap id="definitionResult" type="definition" extends="propertyResult">
 		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	
-	<resultMap id="assertedVSDefinitionResult" class="definition" extends="assertedValueSetPropertyResult" >
+	<resultMap id="assertedVSDefinitionResult" type="definition" extends="assertedValueSetPropertyResult">
 		<result property="isPreferred" column="isPreferred" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
 	
-	<resultMap id="commentResult" class="comment" extends="propertyResult" />
+	<resultMap id="commentResult" type="comment" extends="propertyResult"/>
 		
-	<resultMap id="assertedVSCommentResult" class="comment" extends="assertedValueSetPropertyResult" />
+	<resultMap id="assertedVSCommentResult" type="comment" extends="assertedValueSetPropertyResult"/>
 
 	
-	<select id="getPropertyGuid" resultMap="Common.uidResult" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<select id="getPropertyGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
   		SELECT
   			vsPropertyGuid AS uidKey
   		FROM
-  			$prefix$vsProperty
+  			${prefix}vsProperty
   		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			propertyId = #param2#
+			propertyId = #{param2}
   	</select>
   	
   	<sql id="selectPropertyFragment">
@@ -152,9 +146,9 @@
   			currentRevision.revisionId AS currentRevisionId,
   			previousRevision.revisionId AS previousRevisionId  			
   		FROM
-  			$prefix$vsProperty property
+  			${prefix}vsProperty property
   		LEFT JOIN
-  			$prefix$vsEntryState entryState
+  			${prefix}vsEntryState entryState
   		ON
   			property.entryStateGuid =
   			entryState.entryStateGuid	
@@ -174,7 +168,7 @@
   	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
-  			$prefix$vsPropertyMultiAttrib qualifier
+  			${prefix}vsPropertyMultiAttrib qualifier
   		ON
   		(
   			property.vspropertyGuid = qualifier.vspropertyGuid	
@@ -185,7 +179,7 @@
   		)
   			
   		LEFT JOIN
-  			$prefix$vsPropertyMultiAttrib usageContext
+  			${prefix}vsPropertyMultiAttrib usageContext
   		ON
   		(
   			property.vspropertyGuid = usageContext.vspropertyGuid	
@@ -196,7 +190,7 @@
   		)
   			
   		LEFT JOIN
-  			$prefix$vsPropertyMultiAttrib source
+  			${prefix}vsPropertyMultiAttrib source
   		ON
   		(
   			property.vspropertyGuid = source.vspropertyGuid		
@@ -211,95 +205,93 @@
   	  	<include refid="selectPropertyFragment"/>
   				
   		LEFT JOIN
-  			$prefix$vsPropertyMultiAttrib multiAttrib
+  			${prefix}vsPropertyMultiAttrib multiAttrib
   		ON
 	  		property.vspropertyGuid = multiAttrib.vspropertyGuid
   	</sql>
 
-  	<select id="getPropertiesByParent" remapResults="true"
-  		resultMap="vsPropertyBean" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  	<select id="getPropertiesByParent" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="vsPropertyBean">
 		<include refid="selectPropertyFragment"/>
   		WHERE
-			property.referenceType = #param1#
+			property.referenceType = #{param1}
 		AND 
-			property.referenceGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			property.referenceGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
   	</select>
   	  	
-  	<select id="getPropertiesByParentAndRevisionId" remapResults="true"
-  		resultMap="propertyResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+  	<select id="getPropertiesByParentAndRevisionId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="propertyResult">
 		<include refid="getHistoryPropertyFragment"/>
   		WHERE
-			property.referenceType = #param1#
+			property.referenceType = #{param1}
 		AND 
-			property.referenceGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			property.referenceGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 		AND 
-			entryState.revisionGuid = #param3,handler=variablePrimaryKeyTypeHandler#
+			entryState.revisionGuid = #{param3,handler=variablePrimaryKeyTypeHandler}
   	</select>
 
-	<delete id="deletePickListDefinitionPropertiesByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletePickListDefinitionPropertiesByPickListGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsProperty
+			${prefix}vsProperty
 		WHERE
-			referenceType = #param1#
+			referenceType = #{param1}
 		AND 
-			referenceGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 	</delete>
 	
-	<delete id="deletePickListEntryPropertiesByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletePickListEntryPropertiesByPickListGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsProperty
+			${prefix}vsProperty
 		WHERE
-			referenceType = #param1#
+			referenceType = #{param1}
 		AND 
 			referenceGuid 
 		IN	(
 			SELECT 
 				vsPLEntryGuid
 			FROM
-				$prefix$vsPLEntry
+				${prefix}vsPLEntry
 			WHERE
-				vsPickListGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				vsPickListGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 			)
 	</delete>
 	
-	<delete id="deleteValueSetDefinitionPropertiesByValueSetGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deleteValueSetDefinitionPropertiesByValueSetGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsProperty
+			${prefix}vsProperty
 		WHERE
-			referenceType = #param1#
+			referenceType = #{param1}
 		AND 
-			referenceGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 	</delete>
 
-	<delete id="deletePickListEntryPropertiesByPlEntryGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletePickListEntryPropertiesByPlEntryGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsProperty
+			${prefix}vsProperty
 		WHERE
-			referenceType = #param1#
+			referenceType = #{param1}
 		AND 
-			referenceGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 	</delete>
 		
-	<delete id="deleteDefinitionEntryPropertiesByValueSetGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deleteDefinitionEntryPropertiesByValueSetGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsProperty
+			${prefix}vsProperty
 		WHERE
-			referenceType = #param1#
+			referenceType = #{param1}
 		AND 
 			referenceGuid 
 		IN	(
 			SELECT 
 				vsdEntryGuid
 			FROM
-				$prefix$vsdEntry
+				${prefix}vsdEntry
 			WHERE
-				valueSetDefGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				valueSetDefGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 			)
 	</delete>
 	
 	
-     <insert id="insertProperty" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
-		INSERT INTO $prefix$vsProperty (
+     <insert id="insertProperty" parameterType="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
+		INSERT INTO ${prefix}vsProperty (
 			vsPropertyGuid,
 			referenceGuid,
 			referenceType,
@@ -320,162 +312,145 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#parentUId,handler=variablePrimaryKeyTypeHandler#,
-			#parentType#, 
-			#property.propertyId#, 
-			#property.propertyType#,
-			#property.propertyName#,
-			#property.language#,
-			#property.value.dataType#,
+			#{uid,handler=variablePrimaryKeyTypeHandler}, 
+			#{parentUId,handler=variablePrimaryKeyTypeHandler},
+			#{parentType}, 
+			#{property.propertyId}, 
+			#{property.propertyType},
+			#{property.propertyName},
+			#{property.language},
+			#{property.value.dataType},
+
+		    <if test="property.isPreferred !=null">
+				#{property.isPreferred,handler=numericBooleanTypeHandler},
+			</if>
+		 <if test="property.isPreferred ==null">
+			 null,
+		 </if>
+
+		 <if test="property.matchIfNoContext !=null">
+			 #{property.matchIfNoContext,handler=numericBooleanTypeHandler},
+		 </if>
+		 <if test="property.matchIfNoContext ==null">
+			 null,
+		 </if>
+
+		 <if test="property.degreeOfFidelity !=null">
+			 #{property.degreeOfFidelity},
+		 </if>
+		 <if test="property.degreeOfFidelity ==null">
+			 null,
+		 </if>
+
+		 <if test="property.representationalForm !=null">
+			 #{property.representationalForm},
+		 </if>
+		 <if test="property.representationalForm ==null">
+			 null,
+		 </if>
 			
-			<isPropertyAvailable property="property.isPreferred">
-				#property.isPreferred,handler=numericBooleanTypeHandler#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.isPreferred">
-				null,
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable property="property.matchIfNoContext">
-				#property.matchIfNoContext,handler=numericBooleanTypeHandler#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.matchIfNoContext">
-				null,
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable property="property.degreeOfFidelity">
-				#property.degreeOfFidelity#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.degreeOfFidelity">
-				null,
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable property="property.representationalForm">
-				#property.representationalForm#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="property.representationalForm">
-				null,
-			</isNotPropertyAvailable>
-			
-			#property.value.content#,	
-			#property.isActive,handler=numericBooleanTypeHandler#,
-			#property.owner#,
-			#property.status#,
-			#property.effectiveDate#,
-			#property.expirationDate#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+
+			#{property.value.content},	
+			#{property.isActive,handler=numericBooleanTypeHandler},
+			#{property.owner},
+			#{property.status},
+			#{property.effectiveDate},
+			#{property.expirationDate},
+			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
 		)
   </insert>
   
-  <update id="updatePropertyByUId"
-  	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
+  <update id="updatePropertyByUId" parameterType="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			$prefix$vsProperty
-		SET 
-   		  <dynamic prepend=" ">
-   		  	<isNotNull prepend="," property="property.propertyType">
-				propertyType = #property.propertyType#
-			</isNotNull>
-			<isNotNull prepend="," property="property.propertyName">
-				propertyName = #property.propertyName#
-			</isNotNull>
-			<isNotNull prepend="," property="property.language">
-				language = #property.language#
-			</isNotNull>
-			<isNotNull prepend="," property="property.value.dataType">
-				format = #property.value.dataType#
-			</isNotNull>
+			${prefix}vsProperty
+		<set>
+			<if test="property.propertyType !=null">
+				propertyType = #{property.propertyType},
+			</if>
+			<if test="property.propertyName !=null">
+				propertyName = #{property.propertyName},
+			</if>
+			<if test="property.language !=null">
+				language = #{property.language},
+			</if>
+			<if test="property.value.dataType !=null">
+				format = #{property.value.dataType},
+			</if>
+			<if test="property.isPreferred !=null">
+				isPreferred = #{property.isPreferred,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="property.matchIfNoContext !=null">
+				matchIfNoContext = #{property.matchIfNoContext,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="property.degreeOfFidelity !=null">
+				degreeOfFidelity = #{property.degreeOfFidelity},
+			</if>
+			<if test="property.representationalForm !=null">
+				representationalForm = #{property.representationalForm},
+			</if>
+			<if test="property.value.content !=null">
+				propertyValue = #{property.value.content},
+			</if>
+			<if test="property.isActive !=null">
+				isActive = #{property.isActive,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="property.owner !=null">
+				owner = #{property.owner},
+			</if>
+			<if test="property.status !=null">
+				status = #{property.status},
+			</if>
+			<if test="property.effectiveDate !=null">
+				effectiveDate = #{property.effectiveDate},
+			</if>
+			<if test="property.expirationDate !=null">
+				expirationDate = #{property.expirationDate},
+			</if>
+			<if test="entryStateUId !=null">
+				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			</if>
+		</set>
 
-			<isPropertyAvailable property="property.isPreferred">
-				<isNotNull prepend="," property="property.isPreferred">
-					isPreferred = #property.isPreferred,handler=numericBooleanTypeHandler#
-				</isNotNull>
-			</isPropertyAvailable>
-
-			<isPropertyAvailable property="property.matchIfNoContext">
-				<isNotNull prepend="," property="property.matchIfNoContext">
-					matchIfNoContext = #property.matchIfNoContext,handler=numericBooleanTypeHandler#
-				</isNotNull>
-			</isPropertyAvailable>
-
-			<isPropertyAvailable property="property.degreeOfFidelity">
-				<isNotNull prepend="," property="property.degreeOfFidelity">
-					degreeOfFidelity = #property.degreeOfFidelity#
-				</isNotNull>
-			</isPropertyAvailable>
-
-			<isPropertyAvailable property="property.representationalForm">
-				<isNotNull prepend="," property="property.representationalForm">
-					representationalForm = #property.representationalForm#
-				</isNotNull>
-			</isPropertyAvailable>
-
-			<isNotNull prepend="," property="property.value.content">
-				propertyValue = #property.value.content#
-			</isNotNull>
-			
-			<isNotNull prepend="," property="property.isActive">
-				isActive = #property.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="property.owner">
-				owner = #property.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="property.status">
-				status = #property.status#
-			</isNotNull>
-			<isNotNull prepend="," property="property.effectiveDate">
-				effectiveDate = #property.effectiveDate#
-			</isNotNull>
-			<isNotNull prepend="," property="property.expirationDate">
-				expirationDate = #property.expirationDate#
-			</isNotNull>
-			
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		  </dynamic>
 		 WHERE
-		 	vsPropertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+		 	vsPropertyGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
   </update>
     
-  <update id="updatePropertyVerAttribByUId"
-  	parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
+  <update id="updatePropertyVerAttribByUId" parameterType="org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyBean">
   		UPDATE 
-			$prefix$vsProperty
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="property.isActive">
-				isActive = #property.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="property.owner">
-				owner = #property.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="property.status">
-				status = #property.status#
-			</isNotNull>
-			<isNotNull prepend="," property="property.effectiveDate">
-				effectiveDate = #property.effectiveDate#
-			</isNotNull>
-			<isNotNull prepend="," property="property.expirationDate">
-				expirationDate = #property.expirationDate#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		  </dynamic>
+			${prefix}vsProperty
+		<set>
+			<if test="property.isActive !=null">
+				isActive = #{property.isActive,handler=numericBooleanTypeHandler},
+			</if>
+  		    <if test="property.owner !=null">
+				owner = #{property.owner},
+			</if>
+			<if test="property.status !=null">
+				status = #{property.status},
+			</if>
+			<if test="property.effectiveDate !=null">
+				effectiveDate = #{property.effectiveDate},
+			</if>
+			<if test="property.expirationDate !=null">
+				expirationDate = #{property.expirationDate},
+			</if>
+			<if test="entryStateUId !=null">
+				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			</if>
+		</set>
+
 		 WHERE
-		 	vsPropertyGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+		 	vsPropertyGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
   </update>
 	
-	<delete id="deletePropertyByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deletePropertyByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$vsProperty
+			${prefix}vsProperty
 		WHERE
-			vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			vsPropertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</delete>
 	
-	<select id="getPropertyAttributesByUId" remapResults="true"
-  		resultMap="propertyAttributeResult" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getPropertyAttributesByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="propertyAttributeResult">
 		SELECT 
 			prop.vsPropertyGuid,
 			prop.referenceGuid,
@@ -506,53 +481,49 @@
 			multiAttrib.qualifierType,
 			multiAttrib.entryStateGuid AS esGuid
 		FROM 
-			$prefix$vsProperty	prop		
+			${prefix}vsProperty	prop		
 		LEFT JOIN
-			$prefix$vsPropertyMultiAttrib multiAttrib
+			${prefix}vsPropertyMultiAttrib multiAttrib
 		ON 
 			multiAttrib.vsPropertyGuid = prop.vsPropertyGuid			
   		WHERE
-			prop.vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			prop.vsPropertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
   	</select>
 
-	<select id="getVSPropertyLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getVSPropertyLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$vsProperty prop,
-			$prefix$vsEntryState es,
+			${prefix}vsProperty prop,
+			${prefix}vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			prop.vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			prop.vsPropertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
 		AND
 			prop.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
 	</select>   
 	    	
-	<select id="getPrevRevIdFromGivenRevIdForVSProperty" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="java.util.TreeMap">
-		<![CDATA[
+	<select id="getPrevRevIdFromGivenRevIdForVSProperty" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="java.util.TreeMap">
+		
 			SELECT DISTINCT
 				r1.revisionId AS revId,
 				r1.revAppliedDate AS revAppliedDate
 			FROM
-				$prefix$vsProperty property,
-				$prefix$vsEntryState es,
+				${prefix}vsProperty property,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1, 
 				${defaultPrefix}revision r2			
 			WHERE
-				property.vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler# AND
+				property.vsPropertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler} AND
 				(
 					NOT EXISTS 
 					(
 						SELECT 
 							es1.entryStateGuid 
 						FROM 
-							$prefix$vsEntryState es1 
+							${prefix}vsEntryState es1 
 						WHERE 
 							property.entryStateGuid = es1.entryStateGuid
 					)
@@ -560,19 +531,17 @@
 					(
 						property.vsPropertyGuid = es.entryGuid AND 
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
+						r1.revAppliedDate &lt;= r2.revAppliedDate AND
+						r2.revisionID = #{param2}
 					)
 				)
 			ORDER BY
 				revAppliedDate DESC			
-		]]>			
+					
 	</select>	
 	
-	<select id="getVSPropertyFromBaseByRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="propertyAttributeResultWithNoMultiAttrib">
-		<![CDATA[
+	<select id="getVSPropertyFromBaseByRevision" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="propertyAttributeResultWithNoMultiAttrib">
+		
 			SELECT 
 				prop.vsPropertyGuid,
 				prop.referenceGuid,
@@ -595,18 +564,18 @@
 				prop.entryStateGuid,
 				r1.revAppliedDate AS revAppliedDate
 			FROM 
-				$prefix$vsProperty prop,
-				$prefix$vsEntryState es,
+				${prefix}vsProperty prop,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1, 
 				${defaultPrefix}revision r2		
 			WHERE
-				prop.vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler# AND
+				prop.vsPropertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler} AND
 				prop.entryStateGuid = es.entryStateGuid AND
 				(
 					(
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
+						r1.revAppliedDate &lt;= r2.revAppliedDate AND
+						r2.revisionID = #{param2}
 					)
 					OR
         			(
@@ -615,13 +584,11 @@
 				)
 			ORDER BY
 				revAppliedDate DESC		
-		]]>			
+					
 	</select>	
 	
-	<select id="getVSPropertyFromHistoryByRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="propertyAttributeResultWithNoMultiAttrib">
-		<![CDATA[
+	<select id="getVSPropertyFromHistoryByRevision" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="propertyAttributeResultWithNoMultiAttrib">
+		
 			SELECT 
 				prop.vsPropertyGuid,
 				prop.referenceGuid,
@@ -644,18 +611,18 @@
 				prop.entryStateGuid,
 				rev.revAppliedDate AS revAppliedDate
 			FROM 
-				$prefix$h_vsProperty prop,
-				$prefix$vsEntryState es,
+				${prefix}h_vsProperty prop,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision rev,
 				${defaultPrefix}revision rev2	
 			WHERE
-				prop.vsPropertyGuid = #param1,handler=variablePrimaryKeyTypeHandler# AND
+				prop.vsPropertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler} AND
 				prop.entryStateGuid = es.entryStateGuid AND
 				(
 					(
 						es.revisionGuid = rev.revisionGuid AND
-						rev.revAppliedDate <= rev2.revAppliedDate AND
-						rev2.revisionID = #param2#
+						rev.revAppliedDate &lt;= rev2.revAppliedDate AND
+						rev2.revisionID = #{param2}
 					)
 					OR
 					(
@@ -664,27 +631,25 @@
 				)
 			ORDER BY
 				revAppliedDate DESC		
-		]]>			
+					
 	</select>
 		
-	<select id="getAssertedValueSetPropertyByCode" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="assertedValueSetPropertyResult">
+	<select id="getAssertedValueSetPropertyByCode" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="assertedValueSetPropertyResult">
 		SELECT
   			property.propertyType,
   			property.propertyName,
 			property.isPreferred,
   			property.propertyValue
   		FROM
-  			$prefix$property property
+  			${prefix}property property
   		LEFT JOIN
-  			$prefix$entity ent
+  			${prefix}entity ent
   		ON
   			property.referenceGuid =
   			ent.entityGuid
   		WHERE
-  			ent.entityCode = #param1#
+  			ent.entityCode = #{param1}
 	
 	</select>
 	
-</sqlMap>
+</mapper>

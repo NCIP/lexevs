@@ -1,139 +1,92 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="CodingScheme">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:17 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CodingScheme">
 
-	<typeAlias alias="uriMap" type="org.LexGrid.naming.URIMap" />
-	<typeAlias alias="supportedAssociation" type="org.LexGrid.naming.SupportedAssociation" />
-	<typeAlias alias="supportedAssociationQualifier" type="org.LexGrid.naming.SupportedAssociationQualifier" />
-	<typeAlias alias="supportedCodingScheme" type="org.LexGrid.naming.SupportedCodingScheme" />
-	<typeAlias alias="supportedConceptDomain" type="org.LexGrid.naming.SupportedConceptDomain" />
-	<typeAlias alias="supportedContainerName" type="org.LexGrid.naming.SupportedContainerName" />
-	<typeAlias alias="supportedContext" type="org.LexGrid.naming.SupportedContext" />
-	<typeAlias alias="supportedDataType" type="org.LexGrid.naming.SupportedDataType" />
-	<typeAlias alias="supportedDegreeOfFidelity" type="org.LexGrid.naming.SupportedDegreeOfFidelity" />
-	<typeAlias alias="supportedEntityType" type="org.LexGrid.naming.SupportedEntityType" />
-	<typeAlias alias="supportedHierarchy" type="org.LexGrid.naming.SupportedHierarchy" />
-	<typeAlias alias="supportedLanguage" type="org.LexGrid.naming.SupportedLanguage" />
-	<typeAlias alias="supportedNamespace" type="org.LexGrid.naming.SupportedNamespace" />
-	<typeAlias alias="supportedProperty" type="org.LexGrid.naming.SupportedProperty" />
-	<typeAlias alias="supportedPropertyLink" type="org.LexGrid.naming.SupportedPropertyLink" />
-	<typeAlias alias="supportedPropertyQualifier" type="org.LexGrid.naming.SupportedPropertyQualifier" />
-	<typeAlias alias="supportedPropertyQualifierType" type="org.LexGrid.naming.SupportedPropertyQualifierType" />
-	<typeAlias alias="supportedPropertyType" type="org.LexGrid.naming.SupportedPropertyType" />
-	<typeAlias alias="supportedRepresentationalForm" type="org.LexGrid.naming.SupportedRepresentationalForm" />
-	<typeAlias alias="supportedSortOrder" type="org.LexGrid.naming.SupportedSortOrder" />
-	<typeAlias alias="supportedSource" type="org.LexGrid.naming.SupportedSource" />
-	<typeAlias alias="supportedSourceRole" type="org.LexGrid.naming.SupportedSourceRole" />
-	<typeAlias alias="supportedStatus" type="org.LexGrid.naming.SupportedStatus" />
-	<typeAlias alias="StringArrayTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.StringArrayTypeHandler"/>
-	<typeAlias alias="propertyTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.PropertyTypeHandler"/>
-	<typeAlias alias="propertyTypes" type="org.LexGrid.commonTypes.types.PropertyTypes"/>
 
-	<resultMap id="uriMapResult" class="uriMap">
-		<result property="localId" column="id" />
-		<result property="uri" column="uri" />
-		<result property="content" column="idValue" />
+	<resultMap id="uriMapResult" type="uriMap">
+		<result property="localId" column="id"/>
+		<result property="uri" column="uri"/>
+		<result property="content" column="idValue"/>
 		<discriminator javaType="string" column="supportedAttributeTag">
-			<subMap value="Association" resultMap="supportedAssociationResult" />
-			<subMap value="AssociationQualifier" resultMap="supportedAssociationQualifierResult" />
-			<subMap value="CodingScheme" resultMap="supportedCodingSchemeResult" />
-			<subMap value="ConceptDomain" resultMap="supportedConceptDomainResult" />
-			<subMap value="ContainerName" resultMap="supportedContainerNameResult" />
-			<subMap value="Context" resultMap="supportedContextResult" />
-			<subMap value="DataType" resultMap="supportedDataTypeResult" />
-			<subMap value="DegreeOfFidelity" resultMap="supportedDegreeOfFidelityResult" />
-			<subMap value="EntityType" resultMap="supportedEntityTypeResult" />
-			<subMap value="Hierarchy" resultMap="supportedHierarchyResult" />
-			<subMap value="Language" resultMap="supportedLanguageResult" />
-			<subMap value="Namespace" resultMap="supportedNamespaceResult" />
-			<subMap value="Property" resultMap="supportedPropertyResult" />
-			<subMap value="PropertyLink" resultMap="supportedPropertyLinkResult" />
-			<subMap value="PropertyQualifier" resultMap="supportedPropertyQualifierResult" />
-			<subMap value="PropertyQualifierType" resultMap="supportedPropertyQualifierTypeResult" />
-			<subMap value="PropertyType" resultMap="supportedPropertyTypeResult" />
-			<subMap value="RepresentationalForm" resultMap="supportedRepresentationalFormResult" />
-			<subMap value="SortOrder" resultMap="supportedSortOrderResult" />
-			<subMap value="Source" resultMap="supportedSourceResult" />
-			<subMap value="SourceRole" resultMap="supportedSourceRoleResult" />
-			<subMap value="Status" resultMap="supportedStatusResult" />
+			<case value="Association" resultMap="supportedAssociationResult"/>
+			<case value="AssociationQualifier" resultMap="supportedAssociationQualifierResult"/>
+			<case value="CodingScheme" resultMap="supportedCodingSchemeResult"/>
+			<case value="ConceptDomain" resultMap="supportedConceptDomainResult"/>
+			<case value="ContainerName" resultMap="supportedContainerNameResult"/>
+			<case value="Context" resultMap="supportedContextResult"/>
+			<case value="DataType" resultMap="supportedDataTypeResult"/>
+			<case value="DegreeOfFidelity" resultMap="supportedDegreeOfFidelityResult"/>
+			<case value="EntityType" resultMap="supportedEntityTypeResult"/>
+			<case value="Hierarchy" resultMap="supportedHierarchyResult"/>
+			<case value="Language" resultMap="supportedLanguageResult"/>
+			<case value="Namespace" resultMap="supportedNamespaceResult"/>
+			<case value="Property" resultMap="supportedPropertyResult"/>
+			<case value="PropertyLink" resultMap="supportedPropertyLinkResult"/>
+			<case value="PropertyQualifier" resultMap="supportedPropertyQualifierResult"/>
+			<case value="PropertyQualifierType" resultMap="supportedPropertyQualifierTypeResult"/>
+			<case value="PropertyType" resultMap="supportedPropertyTypeResult"/>
+			<case value="RepresentationalForm" resultMap="supportedRepresentationalFormResult"/>
+			<case value="SortOrder" resultMap="supportedSortOrderResult"/>
+			<case value="Source" resultMap="supportedSourceResult"/>
+			<case value="SourceRole" resultMap="supportedSourceRoleResult"/>
+			<case value="Status" resultMap="supportedStatusResult"/>
 		</discriminator>
 	</resultMap>
 	
-	<resultMap id="supportedAssociationResult" class="supportedAssociation"
-		extends="uriMapResult">
-		<result property="codingScheme" column="assnCodingScheme" />
-		<result property="entityCodeNamespace" column="assnNamespace" />
-		<result property="entityCode" column="assnEntityCode" />
+	<resultMap id="supportedAssociationResult" type="supportedAssociation" extends="uriMapResult">
+		<result property="codingScheme" column="assnCodingScheme"/>
+		<result property="entityCodeNamespace" column="assnNamespace"/>
+		<result property="entityCode" column="assnEntityCode"/>
 	</resultMap>
-	<resultMap id="supportedAssociationQualifierResult" class="supportedAssociationQualifier"
-		extends="uriMapResult">
+	<resultMap id="supportedAssociationQualifierResult" type="supportedAssociationQualifier" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedCodingSchemeResult" class="supportedCodingScheme" extends="uriMapResult">
+	<resultMap id="supportedCodingSchemeResult" type="supportedCodingScheme" extends="uriMapResult">
 		<result property="isImported" column="isImported" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
-	<resultMap id="supportedConceptDomainResult" class="supportedConceptDomain"
-		extends="uriMapResult">
+	<resultMap id="supportedConceptDomainResult" type="supportedConceptDomain" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedContainerNameResult" class="supportedContainerName"
-		extends="uriMapResult">
+	<resultMap id="supportedContainerNameResult" type="supportedContainerName" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedContextResult" class="supportedContext"
-		extends="uriMapResult">
+	<resultMap id="supportedContextResult" type="supportedContext" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedDataTypeResult" class="supportedDataType"
-		extends="uriMapResult">
+	<resultMap id="supportedDataTypeResult" type="supportedDataType" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedDegreeOfFidelityResult" class="supportedDegreeOfFidelity"
-		extends="uriMapResult">
+	<resultMap id="supportedDegreeOfFidelityResult" type="supportedDegreeOfFidelity" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedEntityTypeResult" class="supportedEntityType"
-		extends="uriMapResult">
+	<resultMap id="supportedEntityTypeResult" type="supportedEntityType" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedHierarchyResult" class="supportedHierarchy"
-		extends="uriMapResult">
+	<resultMap id="supportedHierarchyResult" type="supportedHierarchy" extends="uriMapResult">
 		<result property="associationNames" column="associationNames" typeHandler="StringArrayTypeHandler"/>
-		<result property="rootCode" column="rootCode" />
+		<result property="rootCode" column="rootCode"/>
 		<result property="isForwardNavigable" column="isForwardNavigable" typeHandler="numericBooleanTypeHandler"/>
 	</resultMap>
-	<resultMap id="supportedLanguageResult" class="supportedLanguage"
-		extends="uriMapResult">
+	<resultMap id="supportedLanguageResult" type="supportedLanguage" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedNamespaceResult" class="supportedNamespace"
-		extends="uriMapResult">
-		<result property="equivalentCodingScheme" column="equivalentCodingScheme" />
+	<resultMap id="supportedNamespaceResult" type="supportedNamespace" extends="uriMapResult">
+		<result property="equivalentCodingScheme" column="equivalentCodingScheme"/>
 	</resultMap>
-	<resultMap id="supportedPropertyResult" class="supportedProperty"
-		extends="uriMapResult">
+	<resultMap id="supportedPropertyResult" type="supportedProperty" extends="uriMapResult">
 		<result property="propertyType" column="propertyType" typeHandler="propertyTypeHandler"/>
 	</resultMap>
-	<resultMap id="supportedPropertyLinkResult" class="supportedPropertyLink"
-		extends="uriMapResult">
+	<resultMap id="supportedPropertyLinkResult" type="supportedPropertyLink" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedPropertyQualifierResult" class="supportedPropertyQualifier"
-		extends="uriMapResult">
+	<resultMap id="supportedPropertyQualifierResult" type="supportedPropertyQualifier" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedPropertyQualifierTypeResult" class="supportedPropertyQualifierType"
-		extends="uriMapResult">
+	<resultMap id="supportedPropertyQualifierTypeResult" type="supportedPropertyQualifierType" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedPropertyTypeResult" class="supportedPropertyType"
-		extends="uriMapResult">
+	<resultMap id="supportedPropertyTypeResult" type="supportedPropertyType" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedRepresentationalFormResult" class="supportedRepresentationalForm"
-		extends="uriMapResult">
+	<resultMap id="supportedRepresentationalFormResult" type="supportedRepresentationalForm" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedSortOrderResult" class="supportedSortOrder"
-		extends="uriMapResult">
+	<resultMap id="supportedSortOrderResult" type="supportedSortOrder" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedSourceResult" class="supportedSource"
-		extends="uriMapResult">
+	<resultMap id="supportedSourceResult" type="supportedSource" extends="uriMapResult">
 		<result property="assemblyRule" column="assemblyRule"/>
 	</resultMap>
-	<resultMap id="supportedSourceRoleResult" class="supportedSourceRole"
-		extends="uriMapResult">
+	<resultMap id="supportedSourceRoleResult" type="supportedSourceRole" extends="uriMapResult">
 	</resultMap>
-	<resultMap id="supportedStatusResult" class="supportedStatus"
-		extends="uriMapResult">
+	<resultMap id="supportedStatusResult" type="supportedStatus" extends="uriMapResult">
 	</resultMap>
 	
 	<sql id="getUriMapFragment">
@@ -153,51 +106,50 @@
 	 		assnEntityCode,
 	 		propertyType
 	 	FROM
-	 		$prefix$csSupportedAttrib urimap
+	 		${prefix}csSupportedAttrib urimap
 	</sql>
 	
-	 <select id="getURIMaps" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
+	 <select id="getURIMaps" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	 </select>
 	 
-	 <select id="getURIMapByLocalNameAndType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
+	 <select id="getURIMapByLocalNameAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	 	AND
-	 		urimap.supportedAttributeTag = #param3#
+	 		urimap.supportedAttributeTag = #{param3}
 	 	AND
-	 		urimap.id = #param2#
+	 		urimap.id = #{param2}
 	 </select>
 	 
-	 <select id="getPropertyURIMapByPropertyType" remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
+	 <select id="getPropertyURIMapByPropertyType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	 	AND
-	 		urimap.supportedAttributeTag = #param2#
+	 		urimap.supportedAttributeTag = #{param2}
 	 	AND
-	 		urimap.propertyType = #param3#
+	 		urimap.propertyType = #{param3}
 	 </select>
 	 
-	 <select id="getURIMapCountByLocalNameAndType" remapResults="true"
-	 	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultClass="int">
+	 <select id="getURIMapCountByLocalNameAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultType="int">
 	 	SELECT
 	 		COUNT(*)
 	 	FROM
-	 		$prefix$csSupportedAttrib urimap
+	 		${prefix}csSupportedAttrib urimap
 	 	WHERE
-	 		urimap.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	 	AND
-	 		urimap.id = #param2#
+	 		urimap.id = #{param2}
 	 	AND
-	 		urimap.supportedAttributeTag = #param3#
+	 		urimap.supportedAttributeTag = #{param3}
 	 </select>
 
-     <insert id="insertURIMap" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
-		INSERT INTO $prefix$csSupportedAttrib (
+     <insert id="insertURIMap" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
+		INSERT INTO ${prefix}csSupportedAttrib (
 			csSuppAttribGuid,
 			codingSchemeGuid,
 			supportedAttributeTag,
@@ -215,170 +167,138 @@
 	 		assnEntityCode,
 	 		propertyType
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
-			#supportedAttributeTag#, 
-			#uriMap.localId#, 
-			#uriMap.uri:VARCHAR#,
-			#uriMap.content:VARCHAR#,
-			#associationNames:VARCHAR#
-			
-			<isPropertyAvailable prepend="," property="uriMap.rootCode">
-				#uriMap.rootCode:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.rootCode">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
-				#uriMap.isForwardNavigable,handler=numericBooleanTypeHandler#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.isForwardNavigable">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.isImported">
-				#uriMap.isImported,handler=numericBooleanTypeHandler#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.isImported">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
-				#uriMap.equivalentCodingScheme:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.equivalentCodingScheme">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.assemblyRule">
-				#uriMap.assemblyRule:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.assemblyRule">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.codingScheme">
-				#uriMap.codingScheme:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.codingScheme">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.entityCodeNamespace">
-				#uriMap.entityCodeNamespace:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.entityCodeNamespace">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.entityCode">
-				#uriMap.entityCode:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.entityCode">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="uriMap.propertyType">
-				#uriMap.propertyType.name:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="uriMap.propertyType">
-				null
-			</isNotPropertyAvailable>
+			#{uid,handler=variablePrimaryKeyTypeHandler}, 
+			#{codingSchemeUId,handler=variablePrimaryKeyTypeHandler},
+			#{supportedAttributeTag}, 
+			#{uriMap.localId}, 
+			#{uriMap.uri,jdbcType=VARCHAR},
+			#{uriMap.content,jdbcType=VARCHAR},
+			#{associationNames,jdbcType=VARCHAR}
+
+			<if test="uriMap.rootCode !=null">
+				#{uriMap.rootCode:VARCHAR},
+			</if>
+			 <if test="uriMap.rootCode ==null">
+				 null,
+		 	</if>
+
+		 <if test="uriMap.isForwardNavigable !=null">
+			 #{uriMap.isForwardNavigable,handler=numericBooleanTypeHandler},
+		 </if>
+		 <if test="uriMap.isForwardNavigable ==null">
+			 null,
+		 </if>
+
+		 <if test="uriMap.isImported !=null">
+			 #{uriMap.isImported,handler=numericBooleanTypeHandler},
+		 </if>
+		 <if test="uriMap.isImported ==null">
+			 null,
+		 </if>
+
+		 <if test="uriMap.equivalentCodingScheme !=null">
+			 #{uriMap.equivalentCodingScheme:VARCHAR},
+		 </if>
+		 <if test="uriMap.equivalentCodingScheme ==null">
+			 null,
+		 </if>
+
+		 <if test="uriMap.assemblyRule !=null">
+			 #{uriMap.assemblyRule:VARCHAR},
+		 </if>
+		 <if test="uriMap.assemblyRule ==null">
+			 null,
+		 </if>
+
+		 <if test="uriMap.codingScheme !=null">
+			 #{uriMap.codingScheme:VARCHAR},
+		 </if>
+		 <if test="uriMap.codingScheme ==null">
+			 null,
+		 </if>
+
+		 <if test="uriMap.entityCodeNamespace !=null">
+			 #{uriMap.entityCodeNamespace:VARCHAR},
+		 </if>
+		 <if test="uriMap.entityCodeNamespace ==null">
+			 null,
+		 </if>
+
+		 <if test="uriMap.entityCode !=null">
+			 #{uriMap.entityCode:VARCHAR},
+		 </if>
+		 <if test="uriMap.entityCode ==null">
+			 null,
+		 </if>
+
+		 <if test="uriMap.propertyType !=null">
+			 #{uriMap.propertyType:VARCHAR}
+		 </if>
+		 <if test="uriMap.propertyType ==null">
+			 null
+		 </if>
+
 		)
   </insert>
 
-	<update id="updateUriMapByLocalId"
-		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
+	<update id="updateUriMapByLocalId" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateURIMapBean">
 		UPDATE
-			$prefix$csSupportedAttrib
-		SET
-		
-		<dynamic prepend=" ">
-			<isNotNull prepend="," property="uriMap.uri">
-				uri = #uriMap.uri#
-			</isNotNull>
-			
-			<isNotNull prepend="," property="uriMap.localId">
-				id = #uriMap.localId#
-			</isNotNull>
-			
-			<isPropertyAvailable property="associationNames">
-				<isNotNull prepend="," property="associationNames">
-					associationNames = #associationNames#
-				</isNotNull>
-			</isPropertyAvailable>
-			
-			<isPropertyAvailable property="uriMap.rootCode">
-				<isNotNull prepend="," property="uriMap.rootCode">
-					rootCode = #uriMap.rootCode#
-				</isNotNull>
-			</isPropertyAvailable>	
-			
-			<isPropertyAvailable property="uriMap.isForwardNavigable">
-				<isNotNull prepend="," property="uriMap.isForwardNavigable">
-					isForwardNavigable = #uriMap.isForwardNavigable,handler=numericBooleanTypeHandler#
-				</isNotNull>
-			</isPropertyAvailable>
-			
-			<isPropertyAvailable property="uriMap.isImported">
-				<isNotNull prepend="," property="uriMap.isImported">
-					isImported = #uriMap.isImported,handler=numericBooleanTypeHandler#
-				</isNotNull>
-			</isPropertyAvailable>
-			
-			<isPropertyAvailable property="uriMap.equivalentCodingScheme">
-				<isNotNull prepend="," property="uriMap.equivalentCodingScheme">
-					equivalentCodingScheme = #uriMap.equivalentCodingScheme#
-				</isNotNull>
-			</isPropertyAvailable>	
-			
-			<isPropertyAvailable property="uriMap.assemblyRule">
-				<isNotNull prepend="," property="uriMap.assemblyRule">
-					assemblyRule = #uriMap.assemblyRule#
-				</isNotNull>
-			</isPropertyAvailable>
-			
-			<isPropertyAvailable property="uriMap.codingScheme">
-				<isNotNull prepend="," property="uriMap.codingScheme">
-					assnCodingScheme =#uriMap.codingScheme#
-				</isNotNull>
-			</isPropertyAvailable>
-			
-			<isPropertyAvailable property="uriMap.entityCodeNamespace">
-				<isNotNull prepend="," property="uriMap.entityCodeNamespace">
-					assnNamespace =#uriMap.entityCodeNamespace#
-				</isNotNull>
-			</isPropertyAvailable>
-			
-			<isPropertyAvailable property="uriMap.entityCode">
-				<isNotNull prepend="," property="uriMap.entityCode">
-					assnEntityCode =#uriMap.entityCode#
-				</isNotNull>
-			</isPropertyAvailable>
-			
-			<isPropertyAvailable property="uriMap.propertyType">
-				<isNotNull prepend="," property="uriMap.propertyType">
-					propertyType =#uriMap.propertyType.name#
-				</isNotNull>
-			</isPropertyAvailable>
-		</dynamic>
-		
+			${prefix}csSupportedAttrib
+
+
+		<set>
+			<if test="uriMap.uri !=null">
+				uri = #{uriMap.uri},
+			</if>
+			<if test="uriMap.localId !=null">
+				id = #{uriMap.localId},
+			</if>
+			<if test="uriMap.associationNames !=null">
+				associationNames = #{uriMap.associationNames},
+			</if>
+			<if test="uriMap.rootCode !=null">
+				rootCode = #{uriMap.rootCode},
+			</if>
+			<if test="uriMap.isForwardNavigable !=null">
+				isForwardNavigable = #{uriMap.isForwardNavigable,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="uriMap.isImported !=null">
+				isImported = #{uriMap.isImported,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="uriMap.equivalentCodingScheme !=null">
+				equivalentCodingScheme = #uriMap.equivalentCodingScheme,
+			</if>
+			<if test="uriMap.assemblyRule !=null">
+				assemblyRule = #uriMap.assemblyRule,
+			</if>
+			<if test="uriMap.codingScheme !=null">
+				codingScheme = #uriMap.codingScheme,
+			</if>
+			<if test="uriMap.entityCodeNamespace !=null">
+				entityCodeNamespace = #uriMap.entityCodeNamespace,
+			</if>
+			<if test="uriMap.entityCode !=null">
+				entityCode = #uriMap.entityCode,
+			</if>
+			<if test="uriMap.propertyType !=null">
+				propertyType = #{uriMap.propertyType.name}
+			</if>
+		</set>
+
 		WHERE
-			codingSchemeGuid = #codingSchemeUId#
+			codingSchemeGuid = #{codingSchemeUId}
 		AND
-			supportedAttributeTag = #supportedAttributeTag#
+			supportedAttributeTag = #{supportedAttributeTag}
 		AND
-			id = #uriMap.localId#	
+			id = #{uriMap.localId}	
 	</update>
 	
 	
-	<delete id="deleteMappingsByCodingSchemeId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteMappingsByCodingSchemeId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$csSupportedAttrib
+			${prefix}csSupportedAttrib
 		WHERE
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</delete>
     
-</sqlMap>
+</mapper>

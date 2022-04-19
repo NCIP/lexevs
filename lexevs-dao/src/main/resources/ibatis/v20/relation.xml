@@ -1,64 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Association">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:17 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Association">
 
-	<typeAlias alias="associationPredicate" type="org.LexGrid.relations.AssociationPredicate" />
-	<typeAlias alias="relations" type="org.LexGrid.relations.Relations" />
-	<typeAlias alias="insertOrUpdateRelationBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean" />
 	
-	<resultMap id="associationPredicateResult" class="associationPredicate">
-		<result property="associationName" column="associationName" />
+	<resultMap id="associationPredicateResult" type="associationPredicate">
+		<result property="associationName" column="associationName"/>
 	</resultMap>
 	
-	<resultMap id="relationsResult" class="relations">
-		<result property="containerName" column="containerName" />
+	<resultMap id="relationsResult" type="relations">
+		<result property="containerName" column="containerName"/>
 		<result property="isMapping" column="isMapping" typeHandler="numericBooleanTypeHandler"/>
-		<result property="representsVersion" column="representsVersion" />
-		<result property="sourceCodingScheme" column="sourceCodingScheme" />
-		<result property="sourceCodingSchemeVersion" column="sourceCodingSchemeVersion" />
-		<result property="targetCodingScheme" column="targetCodingScheme" />
+		<result property="representsVersion" column="representsVersion"/>
+		<result property="sourceCodingScheme" column="sourceCodingScheme"/>
+		<result property="sourceCodingSchemeVersion" column="sourceCodingSchemeVersion"/>
+		<result property="targetCodingScheme" column="targetCodingScheme"/>
 		<result property="targetCodingSchemeVersion" column="targetCodingSchemeVersion"/>
 		<result property="entityDescription.content" column="description"/>
 		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="entryState" resultMap="Versions.entryStateResult" />
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
+		<collection property="entryState" resultMap="Versions.entryStateResult"/>
 	</resultMap>
 	
-	<resultMap id="relationAttributes" class="insertOrUpdateRelationBean">
+	<resultMap id="relationAttributes" type="insertOrUpdateRelationBean">
 		<result property="uid" column="relationGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 		<result property="codingSchemeUId" column="codingSchemeGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="relations.containerName" column="containerName" />
+		<result property="relations.containerName" column="containerName"/>
 		<result property="relations.isMapping" column="isMapping" typeHandler="numericBooleanTypeHandler"/>
-		<result property="relations.representsVersion" column="representsVersion" />
-		<result property="relations.sourceCodingScheme" column="sourceCodingScheme" />
-		<result property="relations.sourceCodingSchemeVersion" column="sourceCodingSchemeVersion" />
-		<result property="relations.targetCodingScheme" column="targetCodingScheme" />
+		<result property="relations.representsVersion" column="representsVersion"/>
+		<result property="relations.sourceCodingScheme" column="sourceCodingScheme"/>
+		<result property="relations.sourceCodingSchemeVersion" column="sourceCodingSchemeVersion"/>
+		<result property="relations.targetCodingScheme" column="targetCodingScheme"/>
 		<result property="relations.targetCodingSchemeVersion" column="targetCodingSchemeVersion"/>
 		<result property="relations.entityDescription.content" column="description"/>
 		<result property="relations.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="relations.owner" column="owner" />
-		<result property="relations.status" column="status" />
-		<result property="relations.effectiveDate" column="effectiveDate" />
-		<result property="relations.expirationDate" column="expirationDate" />
+		<result property="relations.owner" column="owner"/>
+		<result property="relations.status" column="status"/>
+		<result property="relations.effectiveDate" column="effectiveDate"/>
+		<result property="relations.expirationDate" column="expirationDate"/>
 		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
 	</resultMap>
 	
-	<select id="getRelationAttributeForRelationUId" 
-    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-    	resultMap="relationAttributes"
-    	remapResults="true">
+	<select id="getRelationAttributeForRelationUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="relationAttributes">
 		SELECT * FROM
-			$prefix$relation
+			${prefix}relation
 		WHERE
-			relationGuid = #param1,handler=variablePrimaryKeyTypeHandler#		
+			relationGuid = #{param1,handler=variablePrimaryKeyTypeHandler}		
      </select>
      
-     <insert id="insertRelations" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">
-		INSERT INTO $prefix$relation (
+     <insert id="insertRelations" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">
+		INSERT INTO ${prefix}relation (
 			relationGuid,
 			codingSchemeGuid,
 			containerName,
@@ -75,143 +69,133 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
-			#relations.containerName#, 
-			#relations.isMapping,handler=numericBooleanTypeHandler#,
-			#relations.sourceCodingScheme:VARCHAR#, 
-			#relations.sourceCodingSchemeVersion:VARCHAR#, 
-			#relations.targetCodingScheme:VARCHAR#, 
-			#relations.targetCodingSchemeVersion:VARCHAR#, 
-			#relations.entityDescription.content:VARCHAR#,			
-			#relations.isActive,handler=numericBooleanTypeHandler#,
-			#relations.owner:VARCHAR#,
-			#relations.status:VARCHAR#,
-			#relations.effectiveDate:TIMESTAMP#,
-			#relations.expirationDate:TIMESTAMP#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+			#{uid,handler=variablePrimaryKeyTypeHandler}, 
+			#{codingSchemeUId,handler=variablePrimaryKeyTypeHandler},
+			#{relations.containerName}, 
+			#{relations.isMapping,handler=numericBooleanTypeHandler},
+			#{relations.sourceCodingScheme,jdbcType=VARCHAR}, 
+			#{relations.sourceCodingSchemeVersion,jdbcType=VARCHAR}, 
+			#{relations.targetCodingScheme,jdbcType=VARCHAR}, 
+			#{relations.targetCodingSchemeVersion,jdbcType=VARCHAR}, 
+			#{relations.entityDescription.content,jdbcType=VARCHAR},			
+			#{relations.isActive,handler=numericBooleanTypeHandler},
+			#{relations.owner,jdbcType=VARCHAR},
+			#{relations.status,jdbcType=VARCHAR},
+			#{relations.effectiveDate,jdbcType=TIMESTAMP},
+			#{relations.expirationDate,jdbcType=TIMESTAMP},
+			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
 		)
   </insert>
   
-   <insert id="insertAssociationPredicate" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean">
-   		INSERT INTO $prefix$associationPredicate (
+   <insert id="insertAssociationPredicate" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean">
+   		INSERT INTO ${prefix}associationPredicate (
    			associationPredicateGuid,
    			relationGuid,
    			associationName
    		) VALUES (
-   			#uid,handler=variablePrimaryKeyTypeHandler#,
-   			#relationUId,handler=variablePrimaryKeyTypeHandler#,
-   			#associationPredicate.associationName:VARCHAR#
+   			#{uid,handler=variablePrimaryKeyTypeHandler},
+   			#{relationUId,handler=variablePrimaryKeyTypeHandler},
+   			#{associationPredicate.associationName,jdbcType=VARCHAR}
    		)
    </insert>
 
-   <select id="getAssociationPredicateUidsForName" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Common.uidResult">
+   <select id="getAssociationPredicateUidsForName" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Common.uidResult">
    		SELECT
    			associationPredicateGuid AS uidKey
    		FROM
-   			$prefix$associationPredicate associationPredicate
+   			${prefix}associationPredicate associationPredicate
    		INNER JOIN
-			$prefix$relation relation
+			${prefix}relation relation
 		ON 
 			(relation.relationGuid = associationPredicate.relationGuid)
 		WHERE
-			relation.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		<isNotNull property="param2">
+			relation.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		<if test="param2 != null">
 		AND
-			relation.containerName = #param2#
-		</isNotNull>
+			relation.containerName = #{param2}
+		</if>
 		AND
-			associationPredicate.associationName = #param3#
+			associationPredicate.associationName = #{param3}
    </select>
    
-   	<select id="getAssociationPredicatNamesFromCodingSchemeUid"
-		remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-		resultClass="String">
+   	<select id="getAssociationPredicatNamesFromCodingSchemeUid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="String">
 		SELECT DISTINCT
 			associationPredicate.associationName
 		FROM
-			$prefix$associationPredicate associationPredicate
+			${prefix}associationPredicate associationPredicate
 		INNER JOIN
-			$prefix$relation relation
+			${prefix}relation relation
 		ON 
 			(relation.relationGuid = associationPredicate.relationGuid)
 		WHERE
-			relation.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		<isNotNull property="param2">
+			relation.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		<if test="param2 != null">
 		AND
-			relation.containerName = #param2#
-		</isNotNull>
+			relation.containerName = #{param2}
+		</if>
 	</select>
    
-  	<select id="getAssociationPredicateKeysForRelationsId" remapResults="true"
-  		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
+  	<select id="getAssociationPredicateKeysForRelationsId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
    		SELECT
    			associationPredicateGuid AS uidKey
    		FROM
-   			$prefix$associationPredicate
+   			${prefix}associationPredicate
 		WHERE
 			relationGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
+			#{param1,handler=variablePrimaryKeyTypeHandler}
    </select>
    
-   <select id="getRelationsKey" 
-    	remapResults="true" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
+   <select id="getRelationsKey" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
    		SELECT
    			relationGuid AS uidKey
    		FROM
-   			$prefix$relation
+   			${prefix}relation
 		WHERE
 			codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
+			#{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
 			containerName = 
-			#param2#		
+			#{param2}		
    </select>
    
-    <select id="getRelationsKeysForCodingSchemeId" remapResults="true"
-    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
+    <select id="getRelationsKeysForCodingSchemeId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
    		SELECT
    			relationGuid AS uidKey
    		FROM
-   			$prefix$relation
+   			${prefix}relation
 		WHERE
 			codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#	
+			#{param1,handler=variablePrimaryKeyTypeHandler}	
    </select>
    
-   <select id="getRelationsNamesForCodingSchemeId" remapResults="true"
-    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   <select id="getRelationsNamesForCodingSchemeId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
    		SELECT
    			containerName
    		FROM
-   			$prefix$relation
+   			${prefix}relation
 		WHERE
 			codingSchemeGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#	
+			#{param1,handler=variablePrimaryKeyTypeHandler}	
    </select>
    
-   <select id="getAssociationPredicateNameForId" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+   <select id="getAssociationPredicateNameForId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
    		SELECT
    			associationName
    		FROM
-   			$prefix$associationPredicate
+   			${prefix}associationPredicate
    		WHERE
 			associationPredicateGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
+			#{param1,handler=variablePrimaryKeyTypeHandler}
    </select> 
    
-   <select id="getAssociationPredicateForId" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-   	resultMap="associationPredicateResult">
+   <select id="getAssociationPredicateForId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="associationPredicateResult">
    		SELECT
    			associationName
    		FROM
-   			$prefix$associationPredicate
+   			${prefix}associationPredicate
    		WHERE
 			associationPredicateGuid = 
-			#param1,handler=variablePrimaryKeyTypeHandler#
+			#{param1,handler=variablePrimaryKeyTypeHandler}
    </select> 
    
    <sql id="getRelationsFragment">
@@ -238,10 +222,10 @@
   			previousRevision.revisionId AS previousRevisionId
   		
   		FROM
-  			$prefix$relation relation
+  			${prefix}relation relation
   			
   		LEFT JOIN
-			$actualTableSetPrefix$entryState entryState
+			${actualTableSetPrefix}entryState entryState
 		ON
 			relation.entryStateGuid =
 			entryState.entryStateGuid	
@@ -257,179 +241,164 @@
 			entryState.prevRevisionGuid = previousRevision.revisionGuid
    </sql>
    
-   <select id="getRelationsForUid" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-   	resultMap="relationsResult">
+   <select id="getRelationsForUid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="relationsResult">
    		<include refid="getRelationsFragment"/>
    		WHERE
-			relation.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			relation.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			relation.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			relation.relationGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
    </select>
  
-   <select id="getRelationsForUidAndRevisionId" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
-   	resultMap="relationsResult">
+   <select id="getRelationsForUidAndRevisionId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="relationsResult">
    		<include refid="getRelationsFragment"/>
    		WHERE
-			relation.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			relation.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			relation.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			relation.relationGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 		AND
-			currentRevision.revisionId = #param3#
+			currentRevision.revisionId = #{param3}
    </select>
    
-   <select id="getAssociationPredicateUIdByContainerName" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Common.uidResult">
+   <select id="getAssociationPredicateUIdByContainerName" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="Common.uidResult">
    		SELECT
    			assoc.associationPredicateGuid AS uidKey
    		FROM
-   			$prefix$associationPredicate assoc
+   			${prefix}associationPredicate assoc
    		INNER JOIN
-   			$prefix$relation rel
+   			${prefix}relation rel
    		ON
    			rel.relationGuid = assoc.relationGuid
 		WHERE
-			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			rel.containerName = #param2#
+			rel.containerName = #{param2}
 		AND
-			assoc.associationName = #param3#
+			assoc.associationName = #{param3}
    </select> 
      
-	<select id="getAssociationPredicateUIdByContainerUId" remapResults="true"
-   	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
+	<select id="getAssociationPredicateUIdByContainerUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
    		SELECT
    			assoc.associationPredicateGuid AS uidKey
    		FROM
-   			$prefix$associationPredicate assoc   			
+   			${prefix}associationPredicate assoc   			
 		WHERE
-			assoc.relationGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			assoc.relationGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 		AND
-			assoc.associationName = #param2#
+			assoc.associationName = #{param2}
    </select> 
      
-   <update id="updateRelationByUId" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">
+   <update id="updateRelationByUId" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">
 		UPDATE 
-			$prefix$relation relation
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="relations.isMapping">
-				isMapping = #relations.isMapping,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.representsVersion">
-				representsVersion = #relations.representsVersion#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.sourceCodingScheme">
-				sourceCodingScheme = #relations.sourceCodingScheme#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.sourceCodingSchemeVersion">
-				sourceCodingSchemeVersion = #relations.sourceCodingSchemeVersion#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.targetCodingScheme">
-				targetCodingScheme = #relations.targetCodingScheme#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.targetCodingSchemeVersion">
-				targetCodingSchemeVersion = #relations.targetCodingSchemeVersion#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.entityDescription.content">
-				description = #relations.entityDescription.content#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}relation relation
+		<set>
+			<if test="relations.isMapping !=null">
+				isMapping = #{relations.isMapping,handler=numericBooleanTypeHandler},
+			</if>
+		    <if test="relations.representsVersion !=null">
+				representsVersion = #{relations.representsVersion},
+			</if>
+			<if test="relations.sourceCodingScheme !=null">
+				sourceCodingScheme = #{relations.sourceCodingScheme},
+			</if>
+			<if test="relations.sourceCodingSchemeVersion !=null">
+				sourceCodingSchemeVersion = #{relations.sourceCodingSchemeVersion},
+			</if>
+			<if test="relations.targetCodingScheme !=null">
+				targetCodingScheme = #{relations.targetCodingScheme},
+			</if>
+			<if test="relations.targetCodingSchemeVersion !=null">
+				targetCodingSchemeVersion = #{relations.targetCodingSchemeVersion},
+			</if>
+			<if test="relations.entityDescription.content !=null">
+				description = #{relations.entityDescription.content},
+			</if>
+			<if test="relations.entryStateUId !=null">
+				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			</if>
+		</set>
 
 		WHERE 
-			relation.relationGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			relation.relationGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
 		AND
-			relation.codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
+			relation.codingSchemeGuid = #{codingSchemeUId,handler=variablePrimaryKeyTypeHandler}
  	</update>
  	
-   <update id="updateRelationVersionableChangesByUId" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">
+   <update id="updateRelationVersionableChangesByUId" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean">
 		UPDATE 
-			$prefix$relation rel
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="relations.isActive">
-				isActive = #relations.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.owner">
-				owner = #relations.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.status">
-				status = #relations.status#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.effectiveDate">
-				effectiveDate = #relations.effectiveDate#
-			</isNotNull>
-			<isNotNull prepend="," property="relations.expirationDate">
-				expirationDate = #relations.expirationDate#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}relation rel
+		<set>
+			<if test="relations.isActive !=null">
+				isActive = #{relations.isActive,handler=numericBooleanTypeHandler},
+			</if>
+			<if test="relations.owner !=null">
+				owner = #{relations.owner},
+			</if>
+			<if test="relations.status !=null">
+				status = #{relations.status},
+			</if>
+			<if test="relations.effectiveDate !=null">
+				effectiveDate = #{relations.effectiveDate},
+			</if>
+			<if test="relations.expirationDate !=null">
+				expirationDate = #{relations.expirationDate},
+			</if>
+			<if test="entryStateUId !=null">
+				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			</if>
+		</set>
 
 		WHERE 
-			rel.relationGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			rel.relationGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
 		AND
-			rel.codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
+			rel.codingSchemeGuid = #{codingSchemeUId,handler=variablePrimaryKeyTypeHandler}
  	</update> 	
  	
-    <delete id="deleteRelationByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+    <delete id="deleteRelationByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$relation
+			${prefix}relation
 		WHERE
-			relationGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			relationGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
 	</delete>
 	
-	<select id="getEntryStateUIdByRelationUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="Common.uidResult">
+	<select id="getEntryStateUIdByRelationUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
 		SELECT 
 			entryStateGuid AS uidKey
 		FROM
-			$prefix$relation rel
+			${prefix}relation rel
 		WHERE
-			rel.relationGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			rel.relationGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
 	</select>	 
 
-	<select id="checkIfAssociationPredicateExists" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="checkIfAssociationPredicateExists" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			count(1)			
 		FROM
-			$prefix$associationPredicate assn
+			${prefix}associationPredicate assn
 		WHERE
-			assn.associationPredicateGuid = #param1#	
+			assn.associationPredicateGuid = #{param1}	
 	</select>	 
 
- 	<update id="updateRelationEntryStateUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+ 	<update id="updateRelationEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
-			$prefix$relation
+			${prefix}relation
 		SET
-			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
 		WHERE 
-			relationGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			relationGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
  	</update>
  	
-	<select id="getRelationLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getRelationLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$relation rel,
-			$prefix$entryState es,
+			${prefix}relation rel,
+			${prefix}entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			rel.relationGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			rel.relationGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
 		AND
 			rel.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
 	</select> 
-</sqlMap>
+</mapper>

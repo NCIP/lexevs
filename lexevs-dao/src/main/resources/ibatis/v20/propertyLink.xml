@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Property">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:23 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Property">
 
      
-     <insert id="insertPropertyLink" parameterClass="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean">
-     	INSERT INTO $prefix$propertyLinks (
+     <insert id="insertPropertyLink" parameterType="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean">
+     	INSERT INTO ${prefix}propertyLinks (
      		propertyLinksGuid,
      		entityGuid,
      		sourcePropertyGuid,
@@ -13,13 +13,13 @@
      		targetPropertyGuid,
      		entryStateGuid
      	) VALUES (
-     		#uid,handler=variablePrimaryKeyTypeHandler#,
-     		#entityUId,handler=variablePrimaryKeyTypeHandler#,
-     		#sourcePropertyUId,handler=variablePrimaryKeyTypeHandler#,
-     		#link#,
-     		#targetPropertyUId,handler=variablePrimaryKeyTypeHandler#,
-     		#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+     		#{uid,handler=variablePrimaryKeyTypeHandler},
+     		#{entityUId,handler=variablePrimaryKeyTypeHandler},
+     		#{sourcePropertyUId,handler=variablePrimaryKeyTypeHandler},
+     		#{link},
+     		#{targetPropertyUId,handler=variablePrimaryKeyTypeHandler},
+     		#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
      	)
      </insert>
 
-</sqlMap>
+</mapper>
