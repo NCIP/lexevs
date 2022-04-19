@@ -22,10 +22,9 @@ import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.jdbc.UncategorizedSQLException;
 
-
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistoryDao {
 	
@@ -243,9 +242,9 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 						changeEvent));	
 	}
 	
-	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent, Inserter inserter) {
+	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent, SqlSessionTemplate session) {
 
-		inserter.insert(INSERT_NCI_CHANGEEVENT_SQL, 
+		session.insert(INSERT_NCI_CHANGEEVENT_SQL, 
 				new SequentialMappedParameterBean(
 						this.createUniqueId(),
 						releaseUid,
@@ -256,15 +255,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ClearCache 
 	@Override
-	public void insertNciChangeEventBatch(String codingSchemeUri, List<NCIChangeEvent> changeEvents) {
+	public void insertNciChangeEventBatch(String codingSchemeUri, List<NCIChangeEvent> changeEvents){
 				
-				this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
-				
-					public Object doInSqlMapClient(SqlMapExecutor executor)
-							throws SQLException {
-						BatchInserter batchInserter = getBatchTemplateInserter(executor);
+				SqlSessionTemplate session = this.getSqlSessionBatchTemplate();
 						String systemReleaseUid = null;
-						batchInserter.startBatch();
+
 						
 						for(NCIChangeEvent item : changeEvents){
 							Assert.assertNotNull(item);
@@ -285,19 +280,17 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 						+ item.getEditDate();
 							System.out.println(sqlError);
 							//e.printStackTrace();
-							throw new SQLException(sqlError, e);}
+							}
 
 							insertNciChangeEvent(
 									systemReleaseUid,
 									item,
-									batchInserter);
+									session);
 						}
 						
-						batchInserter.executeBatch();
-						
-						return null;
-					}	
-				});
+						session.commit();
+						session.clearCache();
+
 	}
 
 

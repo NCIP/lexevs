@@ -1,7 +1,6 @@
 
 package org.lexevs.dao.database.ibatis.entity;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,15 +31,13 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
-import org.lexevs.dao.database.inserter.BatchInserter;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.springframework.orm.ibatis.SqlMapClientCallback;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class IbatisEntityDao.
@@ -415,7 +412,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				prefix, 
 				codingSchemeId, 
 				entity, 
-				this.getNonBatchTemplateInserter(), 
+				this.getSqlSessionTemplate(), 
 				cascade);
 	}
 	
@@ -424,7 +421,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	 * 
 	 * @param codingSchemeUId the coding scheme id
 	 * @param entity the entity
-	 * @param inserter the inserter
+	 * @param session the inserter
 	 * 
 	 * @return the string
 	 */
@@ -432,7 +429,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String prefix, 
 			String codingSchemeUId, 
 			Entity entity, 
-			Inserter inserter,
+			SqlSessionTemplate session,
 			boolean cascade) {
 		Map<String,String> propertyIdToGuidMap = new HashMap<String,String>();
 		
@@ -447,7 +444,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				null, 
 				entity.getEntryState());
 		
-		inserter.insert(INSERT_ENTITY_SQL, 
+		session.insert(INSERT_ENTITY_SQL, 
 				buildInsertEntityParamaterBean(
 						prefix,
 						prefix,
@@ -468,7 +465,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		}
 		
 		for(String entityType : entity.getEntityType()){
-			inserter.insert(INSERT_ENTITY_TYPE_SQL, 
+			session.insert(INSERT_ENTITY_TYPE_SQL, 
 					new PrefixedParameterTuple(prefix, entityUId, entityType));
 		}
 			
@@ -481,7 +478,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 						propertyId, 
 						PropertyType.ENTITY, 
 						prop, 
-						inserter);
+						session);
 				propertyIdToGuidMap.put(prop.getPropertyId(), propertyId);
 			}
 		}
@@ -493,7 +490,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			
 			this.ibatisPropertyDao.doInsertPropertyLink(prefix, entityUId, 
 					propertyLinkId, link.getPropertyLink(), 
-					sourcePropertyId, targetPropertyId, inserter);
+					sourcePropertyId, targetPropertyId, session);
 		}
 
 		return entityUId;
@@ -503,7 +500,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			String codingSchemeUId, 
 			String entityUId,
 			Entity entity, 
-			Inserter inserter,
+			SqlSessionTemplate sqlSessionTemplate,
 			boolean cascade) {
 		Assert.notNull(entityUId);
 
@@ -521,7 +518,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		entityData.setPrefix(historyPrefix);
 		
-		inserter.insert(INSERT_ENTITY_SQL, entityData);
+		sqlSessionTemplate.insert(INSERT_ENTITY_SQL, entityData);
 		
 		return entityData.getEntryStateUId();
 	}
@@ -534,7 +531,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				codingSchemeId, 
 				entityId, 
 				entity, 
-				this.getNonBatchTemplateInserter(),
+				this.getSqlSessionTemplate(),
 				true);
 	}
 	
@@ -566,28 +563,23 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			final boolean cascade) {
 		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 
-		this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
+		SqlSessionTemplate session = this.getSqlSessionBatchTemplate();
 
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				BatchInserter batchInserter = getBatchTemplateInserter(executor);
-				
-				batchInserter.startBatch();
+
 				
 				for(Entity entity : entities){
 					doInsertEntity(
 							prefix, 
 							codingSchemeId, 
 							entity, 
-							batchInserter,
+							session,
 							cascade);
 				}
 				
-				batchInserter.executeBatch();
+				session.commit();
+				session.clearCache();
+				
 
-				return null;
-			}
-		});
 	}
 	
 

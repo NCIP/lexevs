@@ -2,18 +2,15 @@
 package org.lexevs.dao.database.ibatis;
 
 import org.lexevs.dao.database.access.AbstractBaseDao;
-import org.lexevs.dao.database.ibatis.batch.InOrderOrderingBatchInserterDecorator;
 import org.lexevs.dao.database.ibatis.batch.SqlMapClientTemplateInserter;
-import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
-import org.lexevs.dao.database.inserter.BatchInserter;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.InitializingBean;
 //import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
+//import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class AbstractIbatisDao.
@@ -29,7 +26,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	private SqlSessionTemplate sqlSessionBatchTemplate;
 	
 	/** The non batch template inserter. */
-	private Inserter nonBatchTemplateInserter;
+	//private Inserter nonBatchTemplateInserter;
 	
 	/** The VERSION s_ namespace. */
 	public static String VERSIONS_NAMESPACE = "Versions.";
@@ -46,7 +43,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
-		setNonBatchTemplateInserter(new SqlMapClientTemplateInserter(this.getSqlSessionTemplate()));
+		//setNonBatchTemplateInserter(new SqlMapClientTemplateInserter(this.getSqlSessionTemplate()));
 	}
 	
 	
@@ -88,28 +85,28 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	}
 
 
-	public BatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
-		return new InOrderOrderingBatchInserterDecorator(
-					new SqlMapExecutorBatchInserter(executor));
-	}
+//	public BatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
+//		return new InOrderOrderingBatchInserterDecorator(
+//					new SqlMapExecutorBatchInserter(executor));
+//	}
 
-	/**
-	 * Sets the non batch template inserter.
-	 * 
-	 * @param nonBatchTemplateInserter the new non batch template inserter
-	 */
-	public void setNonBatchTemplateInserter(Inserter nonBatchTemplateInserter) {
-		this.nonBatchTemplateInserter = nonBatchTemplateInserter;
-	}
-
-	/**
-	 * Gets the non batch template inserter.
-	 * 
-	 * @return the non batch template inserter
-	 */
-	public Inserter getNonBatchTemplateInserter() {
-		return nonBatchTemplateInserter;
-	}
+//	/**
+//	 * Sets the non batch template inserter.
+//	 * 
+//	 * @param nonBatchTemplateInserter the new non batch template inserter
+//	 */
+//	public void setNonBatchTemplateInserter(Inserter nonBatchTemplateInserter) {
+//		this.nonBatchTemplateInserter = nonBatchTemplateInserter;
+//	}
+//
+//	/**
+//	 * Gets the non batch template inserter.
+//	 * 
+//	 * @return the non batch template inserter
+//	 */
+//	public Inserter getNonBatchTemplateInserter() {
+//		return nonBatchTemplateInserter;
+//	}
 	
 	/**
 	 * Method finds if the given entryState already exists. 

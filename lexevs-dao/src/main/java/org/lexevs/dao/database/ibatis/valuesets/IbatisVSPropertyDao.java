@@ -29,9 +29,9 @@ import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.util.Assert;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class IbatisVSPropertyDao.
@@ -112,7 +112,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				propertyGuid, 
 				type, 
 				property, 
-				this.getNonBatchTemplateInserter());	
+				this.getSqlSessionTemplate());	
 	}
 	
 	public String insertHistoryProperty(String parentGuid, String propertyGuid, ReferenceType type, Property property) {
@@ -126,7 +126,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		
 		propertyData.setPrefix(histPrefix);
 		
-		this.getNonBatchTemplateInserter().insert(INSERT_PROPERTY_SQL, propertyData);
+		this.getSqlSessionTemplate().insert(INSERT_PROPERTY_SQL, propertyData);
 		
 		for (InsertPropertyMultiAttribBean propMultiAttrib : propertyData.getPropertyMultiAttribList())
 		{
@@ -221,7 +221,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 * @param parentGuid the parentGUID
 	 * @param type the type
 	 * @param property the property
-	 * @param inserter the inserter
+	 * @param sqlSessionTemplate the inserter
 	 * 
 	 * @return the string
 	 */
@@ -231,7 +231,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 			String propertyGuid,
 			ReferenceType type, 
 			Property property, 
-			Inserter inserter) {
+			SqlSessionTemplate sqlSessionTemplate) {
 		
 		String entryStateId = this.createUniqueId();
 		
@@ -253,7 +253,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 					ReferenceType.VSPROPERTY.name(), null, entryState);
 		}
 		
-		inserter.insert(INSERT_PROPERTY_SQL,
+		sqlSessionTemplate.insert(INSERT_PROPERTY_SQL,
 				buildInsertPropertyBean(
 						prefix,
 						parentGuid,
@@ -265,17 +265,17 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 		
 		for(Source source : property.getSource()) {
 			String propertySourceGuid = this.createUniqueId();
-			this.doInsertPropertySource(propertyGuid, propertySourceGuid, entryStateId, source, inserter);
+			this.doInsertPropertySource(propertyGuid, propertySourceGuid, entryStateId, source, sqlSessionTemplate);
 		}
 		
 		for(String context : property.getUsageContext()) {
 			String propertyUsageContextId = this.createUniqueId();
-			this.doInsertPropertyUsageContext(propertyGuid, propertyUsageContextId, entryStateId, context, inserter);
+			this.doInsertPropertyUsageContext(propertyGuid, propertyUsageContextId, entryStateId, context, sqlSessionTemplate);
 		}
 		
 		for(PropertyQualifier qual : property.getPropertyQualifier()) {
 			String propertyQualifierId = this.createUniqueId();
-			this.doInsertPropertyQualifier(propertyGuid, propertyQualifierId, entryStateId, qual, inserter);
+			this.doInsertPropertyQualifier(propertyGuid, propertyQualifierId, entryStateId, qual, sqlSessionTemplate);
 		}
 		
 		return propertyGuid;
@@ -319,7 +319,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				String propertySourceGuid = this.createUniqueId();
 				this.doInsertPropertySource(propertyGuid, propertySourceGuid,
 						entryStateUId, source, this
-								.getNonBatchTemplateInserter());
+								.getSqlSessionTemplate());
 			}
 
 		} else {
@@ -342,7 +342,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				this
 						.doInsertPropertyUsageContext(propertyGuid,
 								propertyUsageContextId, entryStateUId, context,
-								this.getNonBatchTemplateInserter());
+								this.getSqlSessionTemplate());
 			}
 		} else {
 			this.getSqlSessionTemplate().update(
@@ -363,7 +363,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				String propertyQualifierId = this.createUniqueId();
 				this.doInsertPropertyQualifier(propertyGuid,
 						propertyQualifierId, entryStateUId, qual, this
-								.getNonBatchTemplateInserter());
+								.getSqlSessionTemplate());
 			}
 		} else {
 			this.getSqlSessionTemplate().update(
@@ -383,7 +383,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				propertyQualifierGuid, 
 				null,
 				propertyQualifier, 
-				this.getNonBatchTemplateInserter());	
+				this.getSqlSessionTemplate());	
 	}
 	
 	/**
@@ -391,29 +391,24 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 * 
 	 * @param propertyGuid the property GUID
 	 * @param propertyQualifier the property qualifier
-	 * @param inserter the inserter
+	 * @param sqlSessionTemplate the inserter
 	 */
 	protected void doInsertPropertyQualifier(
 			final String propertyGuid, 
 			final String propertyQualifierGuid, 
 			final String entryStateGuid,
 			final PropertyQualifier propertyQualifier, 
-			final Inserter inserter) {
+			final SqlSessionTemplate sqlSessionTemplate) {
 
-		this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
 
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-			throws SQLException {
 
-				inserter.insert(INSERT_PROPERTY_QUALIFIER_SQL, 
+				sqlSessionTemplate.insert(INSERT_PROPERTY_QUALIFIER_SQL, 
 						buildInsertPropertyQualifierBean(
 								propertyGuid, 
 								propertyQualifierGuid, 
 								entryStateGuid,
 								propertyQualifier));
-				return null;
-			}
-		});
+
 	}
 	
 	
@@ -428,7 +423,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				propertySourceGuid, 
 				null,
 				source,
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 
 	/**
@@ -436,30 +431,24 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 * 
 	 * @param propertyGuid the property Guid
 	 * @param source the source
-	 * @param inserter the inserter
+	 * @param sqlSessionTemplate the inserter
 	 */
 	protected void doInsertPropertySource(
 			final String propertyGuid, 
 			final String propertySourceGuid, 
 			final String entryStateId,
 			final Source source, 
-			final Inserter inserter) {
+			final SqlSessionTemplate sqlSessionTemplate) {
 		final String sourceId = this.createUniqueId();	
 
-		this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
 
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-			throws SQLException {
-
-				inserter.insert(INSERT_PROPERTY_SOURCE_SQL, 
+				sqlSessionTemplate.insert(INSERT_PROPERTY_SOURCE_SQL, 
 						buildInsertPropertySourceBean(
 								propertyGuid, 
 								sourceId, 
 								entryStateId, 
 								source));
-				return null;
-			}
-		});
+
 	}
 	
 	/**
@@ -467,30 +456,25 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 	 * 
 	 * @param propertyGuid the property GUID
 	 * @param usageContext the usage context
-	 * @param inserter the inserter
+	 * @param sqlSessionTemplate the inserter
 	 */
 	protected void doInsertPropertyUsageContext(
 			final String propertyGuid,
 			final String propertyUsageContextGuid, 
 			final String entryStateGuid,
 			final String usageContext, 
-			final Inserter inserter) {
+			final SqlSessionTemplate sqlSessionTemplate) {
 		
-		this.getSqlSessionTemplate().execute(new SqlMapClientCallback(){
 
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-			throws SQLException {
 
-				inserter.insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
+				sqlSessionTemplate.insert(INSERT_PROPERTY_USAGECONTEXT_SQL, 
 						buildInsertPropertyUsageContextBean(
 								propertyGuid, 
 								propertyUsageContextGuid, 
 								entryStateGuid, 
 								usageContext));
 
-				return null;
-			}
-		});
+
 	}
 	
 	@Override
@@ -503,7 +487,7 @@ public class IbatisVSPropertyDao extends AbstractIbatisDao implements VSProperty
 				usageContextId,
 				null, 
 				usageContext,
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 	
 	public void deleteAllDefinitionEntityPropertiesOfValueSetDefinition(

@@ -18,6 +18,7 @@ import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.classify.Classifier;
 import org.springframework.util.Assert;
 
@@ -158,7 +159,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			EntryStateType entryType, 
 			String previousEntryStateUId,
 			EntryState entryState, 
-			Inserter inserter) {
+			SqlSessionTemplate session) {
 		if (entryState == null) {
 			return;
 		}
@@ -185,7 +186,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				previousEntryStateUId, 
 				entryState);
 
-		inserter.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
+		session.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
 	}
 
 	/*
@@ -251,7 +252,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				entryType, 
 				previousEntryStateUId,
 				entryState,
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 
 		return entryStateUId;
 	}
@@ -282,7 +283,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				entryType, 
 				previousEntryStateUId, 
 				entryState, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 
 	/**

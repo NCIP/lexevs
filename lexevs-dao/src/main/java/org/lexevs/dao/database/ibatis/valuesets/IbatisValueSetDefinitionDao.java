@@ -55,9 +55,8 @@ import org.lexevs.dao.database.ibatis.valuesets.helper.ValueSetDefinitionMapHelp
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.mybatis.spring.SqlSessionTemplate;
 
-
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class IbatisValueSetDefinitionDao.
@@ -664,11 +663,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	public void insertURIMap(final String referenceGuid,
 			final List<URIMap> urimapList) {
 		final String prefix  = this.getPrefixResolver().resolveDefaultPrefix();
-		this.getSqlSessionBatchTemplate().execute(new SqlMapClientCallback(){
-	
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-			throws SQLException {
-				executor.startBatch();
+		SqlSessionTemplate session = this.getSqlSessionBatchTemplate();
 				for(URIMap uriMap : urimapList){
 					if (uriMap instanceof SupportedConceptDomain)
 					{
@@ -677,7 +672,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 					
 					String uriMapId = createUniqueId();
 					
-					executor.insert(INSERT_URIMAPS_SQL, 
+					session.insert(INSERT_URIMAPS_SQL, 
 							buildInsertOrUpdateURIMapBean(
 									prefix,
 									uriMapId, 
@@ -685,9 +680,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 									classToStringMappingClassifier.classify(uriMap.getClass()),
 									uriMap));
 				}
-				return executor.executeBatch();
-			}	
-		});		
+				session.commit();
+				session.clearCache();
+		
 	}
 	
 	public void insertURIMap(String referenceGuid, URIMap uriMap) {

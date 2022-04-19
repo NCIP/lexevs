@@ -6,6 +6,7 @@ import org.LexGrid.versions.Revision;
 import org.LexGrid.versions.SystemRelease;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.inserter.Inserter;
+import org.mybatis.spring.SqlSessionTemplate;
 
 /**
  * The Interface VersionsDao.
@@ -69,7 +70,7 @@ public interface VersionsDao extends LexGridSchemaVersionAwareDao {
 			EntryStateType entryType, 
 			String previousEntryStateUId,
 			EntryState entryState,
-			Inserter inserter);
+			SqlSessionTemplate session);
 	
 	public void updatePreviousEntryStateUIds(String codingSchemeUId,
 			String entityUId, String prevEntryStateUId, String newEntryStateUId);

@@ -14,6 +14,7 @@ import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 
 /**
  * The Class IbatisVSEntryStateDao manages entrystate data to/fro database.
@@ -70,11 +71,11 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	 * @param entryType the entry type
 	 * @param previousEntryStateId the previous entry state id
 	 * @param entryState the entry state
-	 * @param inserter the ibatis inserter
+	 * @param sqlSessionTemplate the ibatis inserter
 	 */
 	public void insertEntryState(String prefix, String entryStateId,
 			String entryId, String entryType, String previousEntryStateId,
-			EntryState entryState, Inserter inserter){
+			EntryState entryState, SqlSessionTemplate sqlSessionTemplate){
 		
 		if(entryState == null){
 			return;
@@ -91,7 +92,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 		if (esBean == null)
 			return;
 		
-		inserter.insert(INSERT_ENTRY_STATE_SQL, esBean);	
+		sqlSessionTemplate.insert(INSERT_ENTRY_STATE_SQL, esBean);	
 		
 	}
 	
@@ -108,7 +109,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				entryType, 
 				previousEntryStateUId, 
 				entryState, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 		
 		return entryStateUId;
 	}
@@ -123,7 +124,7 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 				entryType, 
 				previousEntryStateUId, 
 				entryState, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 	
 	@Override

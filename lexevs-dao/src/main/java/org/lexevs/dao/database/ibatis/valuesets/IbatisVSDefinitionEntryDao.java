@@ -159,7 +159,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		definitionEntryData.setPrefix(historyPrefix);
 		
-		this.getNonBatchTemplateInserter().insert(INSERT_DEFINITION_ENTRY_SQL, definitionEntryData);
+		this.getSqlSessionTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, definitionEntryData);
 		
 		if (!vsEntryStateExists(prefix, definitionEntryData.getEntryStateUId())) {
 

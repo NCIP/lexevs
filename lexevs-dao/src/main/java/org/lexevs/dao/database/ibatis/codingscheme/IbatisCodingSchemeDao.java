@@ -52,7 +52,6 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class IbatisCodingSchemeDao.

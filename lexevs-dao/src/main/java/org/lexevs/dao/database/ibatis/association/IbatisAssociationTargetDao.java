@@ -21,6 +21,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 
 public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 		AssociationTargetDao {
@@ -44,7 +45,7 @@ private VersionsDao versionsDao;
 			+ "getAssnQualsByReferenceUId";
 
 	/** The INSER t_ associatio n_ qua l_ o r_ contex t_ sql. */
-	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE
+	protected static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE
 			+ "insertAssociationQualificationOrUsageContext";
 
 	private static String UPDATE_ENTITY_ASSN_TO_ENTITY_BY_UID_SQL = ASSOCIATION_NAMESPACE
@@ -147,7 +148,7 @@ private VersionsDao versionsDao;
 				associationPredicateUId, 
 				source, 
 				target, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	} 
 
 	@Override
@@ -250,7 +251,7 @@ private VersionsDao versionsDao;
 	@Override
 	public String insertAssociationTarget(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
-			AssociationTarget target, Inserter inserter) {
+			AssociationTarget target, SqlSessionTemplate session) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
@@ -263,7 +264,7 @@ private VersionsDao versionsDao;
 				associationTargetUId, 
 				source, 
 				target,
-				inserter);
+				session);
 
 		this.versionsDao.insertEntryState(
 				codingSchemeUId,
@@ -272,7 +273,7 @@ private VersionsDao versionsDao;
 				EntryStateType.ENTITYASSNSTOENTITY, 
 				null,
 				target.getEntryState(), 
-				inserter);
+				session);
 
 		return associationTargetUId;
 	}
@@ -280,7 +281,7 @@ private VersionsDao versionsDao;
 	protected String doInsertAssociationTarget(String prefix, String associationPredicateUId,
 			String associationTargetUId, 
 			AssociationSource source, AssociationTarget target,
-			Inserter inserter) {
+			SqlSessionTemplate session) {
 
 		String entryStateUId = this.createUniqueId();
 
@@ -298,7 +299,7 @@ private VersionsDao versionsDao;
 		bean.setAssociationSource(source);
 		bean.setAssociationTarget(target);
 
-		inserter.insert(INSERT_ENTITY_ASSN_ENTITY_SQL, bean);
+		session.insert(INSERT_ENTITY_ASSN_ENTITY_SQL, bean);
 
 		for (AssociationQualification qual : target
 				.getAssociationQualification()) {
@@ -316,7 +317,7 @@ private VersionsDao versionsDao;
 						.setQualifierValue(qual.getQualifierText().getContent());
 			}
 
-			inserter.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			session.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 		}
 
 		for (String context : target.getUsageContext()) {
@@ -331,7 +332,7 @@ private VersionsDao versionsDao;
 			contextBean.setQualifierValue(context);
 			contextBean.setEntryStateUId(entryStateUId);
 
-			inserter
+			session
 					.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, contextBean);
 		}
 		
@@ -383,7 +384,7 @@ private VersionsDao versionsDao;
 
 		assnTargetBean.setPrefix(historyPrefix);
 
-		this.getNonBatchTemplateInserter().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_ENTITY_ASSN_ENTITY_SQL, assnTargetBean);
 
 		if (assnTargetBean.getAssnQualsAndUsageContext() != null) {

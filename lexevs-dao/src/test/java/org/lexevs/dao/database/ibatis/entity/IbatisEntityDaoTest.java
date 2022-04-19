@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+//import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@TransactionConfiguration(transactionManager="transactionManager", defaultRollback=false)
+//@TransactionConfiguration(transactionManager="transactionManager", defaultRollback=false)
 @Transactional
 public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 
@@ -284,7 +284,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		ibatisEntityDao.insertHistoryEntity(csId, entityUId, entity);
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		assertEquals(1, template.queryForInt("select count(*) from h_entity"));
+		assertEquals(1, template.queryForObject("select count(*) from h_entity",Integer.class).intValue());
 	}
 	
 	/*
@@ -501,7 +501,7 @@ public class IbatisEntityDaoTest extends LexEvsDbUnitTestBase {
 		}
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
-		assertEquals(1, template.queryForInt("select count(*) from entity"));
+		assertEquals(1, template.queryForObject("select count(*) from entity",Integer.class).intValue());
 
 	}
 	

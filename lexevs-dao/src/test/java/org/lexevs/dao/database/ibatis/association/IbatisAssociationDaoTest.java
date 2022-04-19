@@ -22,7 +22,7 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+//
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@TransactionConfiguration
+//@TransactionConfiguration
 public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 
 	/** The ibatis association dao. */
@@ -571,13 +571,13 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 				+ "'qualValue'," + "'1' )");
 
 		assertEquals(2, template
-				.queryForInt("select count(*) from entityassnquals"));
+				.queryForObject("select count(*) from entityassnquals",Integer.class).intValue());
 
 		ibatisAssociationDao
 				.deleteAssociationQualificationsByCodingSchemeUId("1");
 
 		assertEquals(0, template
-				.queryForInt("select count(*) from entityassnquals"));
+				.queryForObject("select count(*) from entityassnquals",Integer.class).intValue());
 	}
 
 	@Test

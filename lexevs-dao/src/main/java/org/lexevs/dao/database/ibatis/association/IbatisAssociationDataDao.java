@@ -19,6 +19,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 
 public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 		AssociationDataDao {
@@ -106,7 +107,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 				associationPredicateUId, 
 				source, 
 				data, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 	
 	@Override
@@ -129,7 +130,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 			String associationPredicateUId, 
 			AssociationSource source,
 			AssociationData data, 
-			Inserter inserter) {
+			SqlSessionTemplate session) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
@@ -142,7 +143,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 				associationDataUId, 
 				source, 
 				data,
-				inserter);
+				session);
 
 		this.versionsDao
 				.insertEntryState(
@@ -167,7 +168,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 	}
 
 	protected String doInsertAssociationData(String prefix, String associationPredicateUId,
-			String associationDataUId, AssociationSource source, AssociationData data, Inserter inserter) {
+			String associationDataUId, AssociationSource source, AssociationData data, SqlSessionTemplate session) {
 
 		String entryStateUId = this.createUniqueId();
 
@@ -185,7 +186,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		bean.setAssociationSource(source);
 		bean.setAssociationData(data);
 
-		inserter.insert(INSERT_ENTITY_ASSN_DATA_SQL, bean);
+		session.insert(INSERT_ENTITY_ASSN_DATA_SQL, bean);
 
 		for (AssociationQualification qual : data.getAssociationQualification()) {
 			String qualUId = this.createUniqueId();
@@ -202,7 +203,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 						.setQualifierValue(qual.getQualifierText().getContent());
 			}
 
-			inserter.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			session.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 		}
 
 		for (String context : data.getUsageContext()) {
@@ -217,7 +218,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 					.setQualifierName(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 			contextBean.setQualifierValue(context);
 
-			inserter
+			session
 					.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, contextBean);
 		}
 		
@@ -306,7 +307,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 
 		assnDataBean.setPrefix(historyPrefix);
 
-		this.getNonBatchTemplateInserter().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_ENTITY_ASSN_DATA_SQL, assnDataBean);
 
 		if (assnDataBean.getAssnQualsAndUsageContext() != null) {

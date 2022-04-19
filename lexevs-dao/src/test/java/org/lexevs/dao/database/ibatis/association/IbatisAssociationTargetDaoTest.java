@@ -10,15 +10,15 @@ import org.LexGrid.relations.AssociationTarget;
 import org.junit.Test;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
+//import org.springframework.test.context.transaction.
+//import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class IbatisAssociationDaoTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@TransactionConfiguration
+//@TransactionConfiguration
 public class IbatisAssociationTargetDaoTest extends LexEvsDbUnitTestBase {
 	
 	/** The ibatis association dao. */
@@ -27,7 +27,7 @@ public class IbatisAssociationTargetDaoTest extends LexEvsDbUnitTestBase {
 	
 
 	@Test
-	@Transactional
+//	@Transactional
 	public void getTriple() throws SQLException {
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		template.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) " +
