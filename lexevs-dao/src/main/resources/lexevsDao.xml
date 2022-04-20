@@ -468,8 +468,8 @@
  	</bean>
 
 	<bean id="sqlSessionBatchTemplate" class="org.mybatis.spring.SqlSessionTemplate">
-   		<constructor-arg ref="sqlSessionFactory" />
-		<constructor-arg ref="executorType" value="BATCH" />
+   		  <constructor-arg index="0" ref="sqlSessionFactory" />
+  		  <constructor-arg index="1" value="BATCH" />
  	</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
@@ -485,9 +485,9 @@
      	<property name="bean" ref="resourceManager"/>
      </bean>
     
-     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">  
+     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">  
    		<property name="sessionFactory">
-    		<ref local="registrySessionFactory"/>
+    		<ref bean="registrySessionFactory"/>
  		 </property>
 	</bean>
 	
@@ -715,13 +715,13 @@
 		<property name="xmlRegistry" ref="xmlRegistry"/>
 	</bean>
 	
-	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
 		<property name="entityInterceptor" ref="prefixInterceptor"/>
 		<property name="configLocations" value="classpath:hibernate/registry/hibernate.cfg.xml"/>
-		<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>	
+		<!--<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>-->
 	</bean>
 
 	<bean id="prefixInterceptor" class="org.lexevs.dao.database.hibernate.prefix.PrefixInterceptor">

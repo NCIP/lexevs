@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:23 EDT 2022-->
 <!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL Map Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration><settings>
-		</settings>
+<configuration>
 	<typeAliases>
 		<typeAlias alias="associatedConcept" type="org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept"/>
 		<typeAlias alias="associationData" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean"/>

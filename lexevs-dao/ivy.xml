@@ -22,10 +22,11 @@
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
-		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.0.1" conf="default">
+		<dependency org="net.sf.ehcache" name="ehcache" rev="2.10.9.2" conf="default">
 			<exclude org="log4j" name="log4j"/>
    			<exclude org="slf4j" name="slf4j-lg4j12"/>
 		</dependency>
+		<dependency org="org.ehcache.modules" name="ehcache-107" rev="3.10.0" conf="default"/>
 		<dependency org="org.codehaus.castor" name="castor-core" rev="1.3.1" conf="default"/>
 		<dependency org="org.codehaus.castor" name="castor-xml" rev="1.3.1" conf="default"/>
 		<dependency org="org.easymock" name="easymock" rev="2.4" conf="default"/> 
@@ -47,7 +48,7 @@
 		<dependency org="org.springframework" name="spring-orm" rev="5.3.19" conf="default" />
 		<dependency org="org.springframework.retry" name="spring-retry" rev="1.3.2" conf="default" />
 		<dependency org="org.springframework" name="spring-tx" rev="5.3.19" conf="default" />
-		<dependency org="org.springframework" name="spring-asm" rev="3.1.0.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-asm" rev="3.1.4.RELEASE" conf="default" />
 		<dependency org="org.springframework" name="spring-expression" rev="5.3.19" conf="default" />
 		<dependency org="org.springframework" name="spring-context-support" rev="5.3.19" conf="default" />
 		<dependency org="org.springframework.batch" name="spring-batch-core" rev="4.3.5" conf="default" />
@@ -56,10 +57,11 @@
 		<dependency org="org.mybatis" name="mybatis-spring" rev="2.0.7" conf="default" />
 		<dependency org="org.mybatis" name="mybatis" rev="3.5.9" conf="default" />
 		<dependency org="org.mybatis.dynamic-sql" name="mybatis-dynamic-sql" rev="1.4.0" conf="default" />
-		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.10.Final" conf="default" />
+		<dependency org="org.hibernate" name="hibernate-core" rev="5.6.8.Final" conf="default" />
 		<dependency org="org.hibernate.common" name="hibernate-commons-annotations" rev="4.0.0.Final" conf="default" />
 		<dependency org="org.jboss.logging" name="jboss-logging" rev="3.1.2.GA" conf="default" />
-		<dependency org="org.hibernate.javax.persistence" name="hibernate-jpa-2.0-api" rev="1.0.1.Final" conf="default" />
+		<dependency org="org.hibernate.javax.persistence" name="hibernate-jpa-2.1-api" rev="1.0.2.Final" conf="default" />
+		<dependency org="org.hibernate" name="hibernate-ehcache" rev="5.6.8.Final" conf="default" />
 		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" conf="default" />
 		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.17.1" conf="default" />
   		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.17.1" conf="default" />  
