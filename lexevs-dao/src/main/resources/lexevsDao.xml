@@ -9,20 +9,7 @@
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	
-	<import resource="classpath:lexevsCache.xml"/>
-
-	 <bean id="sqlMap"
-          class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-       		 <property name="configLocation" value="classpath:ibatis/v20/v20SqlMaps.xml"/>
-        <property name="dataSource" ref="dataSource" />
-        <property name="sqlMapClientProperties">
-        	<map>
-        		<entry key="defaultPrefix">
-        			<ref bean="dbPrefix"/>
-        		</entry>
-        	</map>
-        </property>
-    </bean>   
+	<import resource="classpath:lexevsCache.xml"/> 
 
 	<bean id="defaultRootBuilder" class="org.lexevs.dao.database.operation.root.DefaultRootBuilder">
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
