@@ -38,7 +38,8 @@
 	</bean>
     
     <bean id="abstractIbatisDao" abstract="true">
-    	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
+    	<property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+		<property name="sqlSessionBatchTemplate" ref="sqlSessionBatchTemplate"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="primaryKeyIncrementer" ref="primaryKeyIncrementer"/>
     </bean>
@@ -457,11 +458,6 @@
 			<ref bean="dataSource" />
 		</property>
 	</bean>
-	
-	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
-		<property name="dataSource" ref="dataSource"/>
-		<property name="sqlMapClient" ref="sqlMap"/>
-	</bean>
 
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
    		<constructor-arg ref="sqlSessionFactory" />
@@ -477,8 +473,6 @@
 		<property name="mapperLocations" value="classpath*:resources/ibatis.v20/**/*.xml" />
 	</bean>
 
-	<bean id="executorType" class="org.apache.ibatis.session.ExecutorType"/>
-    
     <bean id="abstractResourceManagerVariableFactory" 
      	class="org.lexevs.system.constants.IndividualVariableFactory"
      	abstract="true">
@@ -498,6 +492,10 @@
 	</bean>
 	
 	<bean id="hibernateRegistryDao" class="org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao">
+		<property name="hibernateTemplate" ref="hibernateTemplate"/>
+	</bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
 		<property name="sessionFactory" ref="registrySessionFactory"/>
 	</bean>
 	
