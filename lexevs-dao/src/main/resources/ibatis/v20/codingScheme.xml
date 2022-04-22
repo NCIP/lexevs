@@ -14,8 +14,8 @@
 		<result property="approxNumConcepts" column="approxNumConcepts"/>
 		<result property="entityDescription.content" column="description"/>
 		<result property="copyright.content" column="copyright"/>
-		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="_effectiveDate" column="effectiveDate" typeHandler="dateTypeHandler"/>
+		<result property="isActive" column="isActive" />
+		<result property="_effectiveDate" column="effectiveDate" />
 		<collection property="entryState" resultMap="Versions.entryStateResult"/>
 		<collection property="_sourceList" resultMap="CodingScheme.sourceResult"/>
 		<collection property="_localNameList" resultMap="CodingScheme.localNameResult"/>
@@ -30,7 +30,7 @@
 	</resultMap>
 	
 	<resultMap id="codingSchemeMetaDataResult" type="codingSchemeBean">
-		<result property="uid" column="codingSchemeGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="uid" column="codingSchemeGuid"/>
 		<result property="codingScheme.codingSchemeName" column="codingSchemeName"/>
 		<result property="codingScheme.codingSchemeURI" column="codingSchemeURI"/>
 		<result property="codingScheme.representsVersion" column="representsVersion"/>
@@ -148,7 +148,7 @@
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			cs.codingSchemeGuid = #{param1}
 
      </select>
      
@@ -184,7 +184,7 @@
 		ON
 			cs.codingSchemeGuid = csMulti.codingSchemeGuid
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			cs.codingSchemeGuid = #{param1}
      </select>
      
      <select id="test" resultType="java.util.HashMap">
@@ -221,7 +221,7 @@
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getHistoryCodingSchemeMultiAttribsFragment"/>
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			cs.codingSchemeGuid = #{param1}
 		AND
 			currentRevision.revisionId = #{param2}	
      </select>
@@ -258,7 +258,7 @@
 		AND
 			representsVersion = #{representsVersion}
 		AND
-			isCurrentRelease = #{isCurrentRelease,handler=numericBooleanTypeHandler}
+			isCurrentRelease = #{isCurrentRelease}
      </select>
    
 	<update id="updateCodingSchemeByUId" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
@@ -284,12 +284,12 @@
 				copyright = #{codingScheme.copyright.content},
 			</if>
 			<if test="entryStateUId != null">
-				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+				entryStateGuid = #{entryStateUId}
 			</if>
 		</set>
 
 		WHERE 
-			codingSchemeGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+			codingSchemeGuid = #{uid}
  	</update>
  	
  	<update id="updateCodingSchemeVerAttribByUId" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
@@ -297,7 +297,7 @@
 			${prefix}codingScheme
 		<set>
 			<if test="codingScheme.copyright.isActive != null">
-				isActive = #{codingScheme.isActive,handler=numericBooleanTypeHandler},
+				isActive = #{codingScheme.isActive},
 			</if>
 			<if test="codingScheme.owner != null">
 				owner = #{codingScheme.owner,
@@ -312,21 +312,21 @@
 				expirationDate = #{codingScheme.expirationDate},
 			</if>
 			<if test="entryStateUId != null">
-				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+				entryStateGuid = #{entryStateUId}
 			</if>
 		</set>
 
 		WHERE 
-			codingSchemeGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+			codingSchemeGuid = #{uid}
  	</update>
 
  	<update id="updateCodingSchemeEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
 			${prefix}codingScheme
 		SET
-			entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+			entryStateGuid = #{param2}
 		WHERE 
-			codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			codingSchemeGuid = #{param1}
  	</update>
 
 	<insert id="insertCodingScheme" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
@@ -349,7 +349,7 @@
 			releaseGuid,
 			entryStateGuid
 		) VALUES (
-			#{uid,handler=variablePrimaryKeyTypeHandler}, 
+			#{uid}, 
 			#{codingScheme.codingSchemeName}, 
 			#{codingScheme.codingSchemeURI}, 
 			#{codingScheme.representsVersion},
@@ -358,13 +358,13 @@
 			#{codingScheme.approxNumConcepts,jdbcType=NUMERIC},
 			#{codingScheme.entityDescription.content,jdbcType=VARCHAR},
 			#{codingScheme.copyright.content,jdbcType=VARCHAR},
-			#{codingScheme.isActive,handler=numericBooleanTypeHandler},
+			#{codingScheme.isActive},
 			#{codingScheme.owner,jdbcType=VARCHAR},
 			#{codingScheme.status,jdbcType=VARCHAR},
 			#{codingScheme.effectiveDate,jdbcType=TIMESTAMP},
 			#{codingScheme.expirationDate,jdbcType=TIMESTAMP},
-			#{releaseUId,handler=variablePrimaryKeyTypeHandler},
-			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			#{releaseUId},
+			#{entryStateUId}
 		)
   </insert>
   
@@ -384,7 +384,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		cs.codingSchemeGuid = #{param1}
      </select>
      
      <select id="getDistinctPropertyNamdAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="propertyNameAndTypeResult">
@@ -401,7 +401,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		cs.codingSchemeGuid = #{param1}
      </select>
      
      	<select id="getDistinctEntityTypes" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -418,7 +418,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		cs.codingSchemeGuid = #{param1}
      </select>
      
       <select id="getDistinctNamespaces" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -427,7 +427,7 @@
      FROM
      	${prefix}entity entity
 	 WHERE
-		entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		entity.codingSchemeGuid = #{param1}
      </select>
      
       <select id="getDistinctFormats" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -444,7 +444,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		cs.codingSchemeGuid = #{param1}
 	 AND
 	 	prop.format IS NOT NULL
      </select>
@@ -463,7 +463,7 @@
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+		cs.codingSchemeGuid = #{param1}
 	 AND
 	 	prop.language IS NOT NULL
 			
@@ -474,7 +474,7 @@
 		FROM
 			${prefix}codingScheme cs
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			cs.codingSchemeGuid = #{param1}
           AND cs.defaultLanguage IS NOT NULL
      </select>
 
@@ -495,7 +495,7 @@
 		ON
 			entity.codingSchemeGuid = cs.codingSchemeGuid
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			cs.codingSchemeGuid = #{param1}
 	</sql>
 
 	<select id="getDistinctPropertyQualifierTypes" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -516,7 +516,7 @@
 		FROM
 			${prefix}codingScheme cs
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			cs.codingSchemeGuid = #{param1}	
 	</select>
 
 	<select id="getCodingSchemeLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -527,7 +527,7 @@
 			${prefix}entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			cs.codingSchemeGuid = #{param1}	
 		AND
 			cs.entryStateGuid = es.entryStateGuid	
 		AND
@@ -544,7 +544,7 @@
 		ON
 			es.revisionGuid = rev.revisionGuid
 		WHERE
-			es.entryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			es.entryGuid = #{param1}	
 		AND
 			es.changeType = 'NEW'
 	</select>
@@ -555,7 +555,7 @@
 		WHERE
 			attributeType = 'source'
 		AND
-			codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			codingSchemeGuid = #{param1}
 	</delete>
 	
 	<delete id="deleteAllCodingSchemeLocalNamesByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -564,7 +564,7 @@
 		WHERE
 			attributeType = 'localName'
 		AND
-			codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			codingSchemeGuid = #{param1}
 	</delete>
 	
 	<select id="getAllCodingSchemeRevisionsByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -575,7 +575,7 @@
 			${prefix}entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			cs.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler} 
+			cs.codingSchemeGuid = #{param1} 
 		AND
 			cs.entryStateGuid = es.entryStateGuid
 		AND

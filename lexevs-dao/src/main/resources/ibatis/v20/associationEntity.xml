@@ -12,12 +12,12 @@
 			isNavigable,
 			isTransitive
 		) VALUES (
-			#{uid,handler=variablePrimaryKeyTypeHandler}, 
-			#{entityUId,handler=variablePrimaryKeyTypeHandler},
+			#{uid}, 
+			#{entityUId},
 			#{associationEntity.forwardName},
 			#{associationEntity.reverseName},
-			#{associationEntity.isNavigable,handler=numericBooleanTypeHandler},
-			#{associationEntity.isTransitive,handler=numericBooleanTypeHandler}
+			#{associationEntity.isNavigable},
+			#{associationEntity.isTransitive}
 		)
   </insert>
   
@@ -40,7 +40,7 @@
 			</set>
 
 		WHERE 
-			associationEntity.entityGuid = #{entityId,handler=variablePrimaryKeyTypeHandler}
+			associationEntity.entityGuid = #{entityId}
   </update>
 
 </mapper>

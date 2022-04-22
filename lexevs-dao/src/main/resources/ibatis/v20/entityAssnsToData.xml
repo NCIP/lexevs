@@ -11,29 +11,29 @@
 	</resultMap>
 
 	<resultMap id="associationDataEntryResult" type="associationData">
-		<result property="uid" column="entityAssnsDataGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="associationPredicateUId" column="associationPredicateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="uid" column="entityAssnsDataGuid" />
+		<result property="associationPredicateUId" column="associationPredicateGuid" />
 		<result property="associationSource.sourceEntityCode" column="sourceEntityCode"/>
 		<result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace"/>
 		<result property="associationData.associationInstanceId" column="associationInstanceId"/>
-		<result property="associationData.isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
-		<result property="associationData.isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
+		<result property="associationData.isDefining" column="isDefining"/>
+		<result property="associationData.isInferred" column="isInferred"/>
 		<result property="associationData.associationDataText.content" column="dataValue"/>
-		<result property="associationData.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+		<result property="associationData.isActive" column="isActive"/>
 		<result property="associationData.owner" column="owner"/>
 		<result property="associationData.status" column="status"/>
 		<result property="associationData.effectiveDate" column="effectiveDate"/>
 		<result property="associationData.expirationDate" column="expirationDate"/>
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="entryStateUId" column="entryStateGuid" />
 		<collection property="assnQualsAndUsageContextList" resultMap="Association.qualContextResult"/>
 	</resultMap>
 	
 	<resultMap id="associationDataResult" type="org.LexGrid.relations.AssociationData">
 		<result property="associationInstanceId" column="associationInstanceId"/>
-		<result property="isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
-		<result property="isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isDefining" column="isDefining"/>
+		<result property="isInferred" column="isInferred"/>
 		<result property="associationDataText.content" column="dataValue"/>
-		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isActive" column="isActive"/>
 		<result property="owner" column="owner"/>
 		<result property="status" column="status"/>
 		<result property="effectiveDate" column="effectiveDate"/>
@@ -58,20 +58,20 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#{uid,handler=variablePrimaryKeyTypeHandler},
-			#{associationPredicateUId,handler=variablePrimaryKeyTypeHandler},
+			#{uid},
+			#{associationPredicateUId},
 			#{associationSource.sourceEntityCode},
 			#{associationSource.sourceEntityCodeNamespace},
 			#{associationData.associationInstanceId},
-			#{associationData.isDefining,handler=numericBooleanTypeHandler},
-			#{associationData.isInferred,handler=numericBooleanTypeHandler},
+			#{associationData.isDefining},
+			#{associationData.isInferred},
 			#{associationData.associationDataText.content},
-			#{associationData.isActive,handler=numericBooleanTypeHandler},
+			#{associationData.isActive},
 			#{associationData.owner},
 			#{associationData.status},
 			#{associationData.effectiveDate},
 			#{associationData.expirationDate},
-			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			#{entryStateUId}
 		)
   </insert>
   	
@@ -92,7 +92,7 @@
 			rel.relationGuid
 		WHERE
 			rel.codingSchemeGuid = 
-			#{param1,handler=variablePrimaryKeyTypeHandler}
+			#{param1}
 		AND
 			ead.associationInstanceId = 
 			#{param2}
@@ -143,21 +143,21 @@
 		<include refid="getEntityAssnDataFragment"/>
 		
 		WHERE
-			data.entityAssnsDataGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			data.entityAssnsDataGuid = #{param1}	
 	</select>
 	
 	<select id="getAssociationDataTripleByUid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="associationSourceDataTripleResult">		
 		<include refid="getEntityAssnDataFragment"/>
 		
 		WHERE
-			data.entityAssnsDataGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			data.entityAssnsDataGuid = #{param1}	
 	</select>
 	
 	<select id="getEntityAssnDataByUidAndRevisionId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="associationDataResult">		
 		<include refid="getEntityAssnDataFragment"/>
 		
 		WHERE
-			data.entityAssnsDataGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			data.entityAssnsDataGuid = #{param1}	
 		AND
 			currentRevision.revisionId = #{param2}
 	</select>
@@ -190,7 +190,7 @@
 		ON
 			data.entityAssnsDataGuid = quals.referenceGuid
 		WHERE
-			data.entityAssnsDataGuid = #{param1,handler=variablePrimaryKeyTypeHandler} 
+			data.entityAssnsDataGuid = #{param1} 
 	</select>
 	
 	<update id="updateEntityAssnToDataByUId" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean">
@@ -205,21 +205,21 @@
 				sourceEntityCodeNamespace=#{associationSource.sourceEntityCodeNamespace},
 			</if>
 			<if test="associationData.isDefining != null">
-				isDefining = #{associationData.isDefining,handler=numericBooleanTypeHandler},
+				isDefining = #{associationData.isDefining},
 			</if>
 		    <if test="associationData.isInferred != null">
-				isInferred = #{associationData.isInferred,handler=numericBooleanTypeHandler},
+				isInferred = #{associationData.isInferred},
 			</if>
 		    <if test="associationData.associationDataText != null" >
 				dataValue = #{associationData.associationDataText.content},
 			</if>
 		    <if test="entryStateUId != null">
-				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+				entryStateGuid = #{entryStateUId}
 			</if>
 		</set>
 
 		WHERE
-			entityAssnsDataGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+			entityAssnsDataGuid = #{uid}
 	</update>	
 
 	<update id="updateEntityAssnToDataVerAttribByUId" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean">
@@ -229,7 +229,7 @@
 		<set>
 			<if test="associationData.isActive != null">
 				isActive =
-				#{associationData.isActive,handler=numericBooleanTypeHandler},
+				#{associationData.isActive},
 			</if>
 			<if test="associationData.owner != null">
 				owner = #{associationData.owner},
@@ -246,19 +246,19 @@
 				#{associationData.expirationDate},
 			</if>
 			<if test="entryStateUId != null">
-				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+				entryStateGuid = #{entryStateUId}
 			</if>
 		</set>
 
 		WHERE
-			entityAssnsDataGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+			entityAssnsDataGuid = #{uid}
 	</update>	
 		
 	<delete id="deleteAssocDataByAssnUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			${prefix}entityAssnsToData
 		WHERE
-			entityAssnsDataGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			entityAssnsDataGuid = #{param1}
 	</delete>
 
 	<select id="getAssociationDataLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -269,7 +269,7 @@
 			${prefix}entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			entAssnData.entityAssnsDataGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			entAssnData.entityAssnsDataGuid = #{param1}	
 		AND
 			entAssnData.entryStateGuid = es.entryStateGuid
 		AND
@@ -282,6 +282,6 @@
 		FROM
 			${prefix}entityAssnsToData eatd
 		WHERE
-			eatd.entityAssnsDataGuid = #{param1,handler=variablePrimaryKeyTypeHandler} 
+			eatd.entityAssnsDataGuid = #{param1} 
 	</select>
 </mapper>

@@ -7,7 +7,7 @@
     <resultMap id="definitionEntryResult" type="definitionEntry">
         <result property="ruleOrder" column="ruleOrder"/>
         <result property="operator" column="operator"/>
-        <result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isActive" column="isActive" />
         <result property="owner" column="owner"/>
         <result property="status" column="status"/>
         <result property="effectiveDate" column="effectiveDate"/>
@@ -21,8 +21,8 @@
     </resultMap>
 
     <resultMap id="definitionEntry" type="insertOrUpdateDefinitionEntryBean">
-        <result property="uid" column="vsdEntryGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-        <result property="valueSetDefUId" column="valueSetDefGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="uid" column="vsdEntryGuid" />
+        <result property="valueSetDefUId" column="valueSetDefGuid" />
         <result property="definitionEntry.ruleOrder" column="ruleOrder"/>
         <result property="definitionEntry.operator" column="operator"/>
         <result property="definitionEntry.codingSchemeReference.codingScheme" column="codingSchemeReference"/>
@@ -34,10 +34,10 @@
         <result property="entityCode" column="entityCode"/>
         <result property="definitionEntry.entityReference.entityCodeNamespace" column="entityCodeNamespace"/>
         <result property="entityCodeNamespace" column="entityCodeNamespace"/>
-        <result property="leafOnly" column="leafOnly" typeHandler="numericBooleanTypeHandler"/>
+        <result property="leafOnly" column="leafOnly" />
         <result property="referenceAssociation" column="referenceAssociation"/>
-        <result property="targetToSource" column="targetToSource" typeHandler="numericBooleanTypeHandler"/>
-        <result property="transitiveClosure" column="transitiveClosure" typeHandler="numericBooleanTypeHandler"/>
+        <result property="targetToSource" column="targetToSource" />
+        <result property="transitiveClosure" column="transitiveClosure" />
         <result property="propertyRefCodingScheme" column="propertyRefCodingScheme"/>
         <result property="propertyName" column="propertyName"/>
         <result property="propertyMatchValue" column="propertyMatchValue"/>
@@ -48,7 +48,7 @@
         <result property="definitionEntry.status" column="status"/>
         <result property="definitionEntry.effectiveDate" column="effectiveDate"/>
         <result property="definitionEntry.expirationDate" column="expirationDate"/>
-        <result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="entryStateUId" column="entryStateGuid" />
     </resultMap>
 
     <insert id="insertDefinitionEntry"
@@ -79,8 +79,8 @@
         expirationDate,
         entryStateGuid
         ) VALUES (
-        #{uid,handler=variablePrimaryKeyTypeHandler},
-        #{valueSetDefUId,handler=variablePrimaryKeyTypeHandler},
+        #{uid},
+        #{valueSetDefUId},
         #{definitionEntry.ruleOrder},
         #{definitionEntry.operator},
         #{codingSchemeReference},
@@ -122,7 +122,7 @@
         #{definitionEntry.status,jdbcType=VARCHAR},
         #{definitionEntry.effectiveDate,jdbcType=TIMESTAMP},
         #{definitionEntry.expirationDate,jdbcType=TIMESTAMP},
-        #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+        #{entryStateUId}
         )
     </insert>
 
@@ -165,13 +165,13 @@
                 </if>
             </if>
             <if test="entryStateUId !=null">
-                entryStateGuid=#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+                entryStateGuid=#{entryStateUId}
             </if>
 
         </set>
 
         WHERE
-        vsdEntryGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+        vsdEntryGuid = #{uid}
     </update>
 
     <update id="updateDefinitionEntryVerAttribByUId"
@@ -195,18 +195,18 @@
 				expirationDate = #{definitionEntry.expirationDate},
 			</if>
 			<if test="definitionEntry.entryStateUId !=null">
-				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+				entryStateGuid = #{entryStateUId}
 			</if>
 		</set>
 
         WHERE
-        vsdEntry.vsdEntryGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+        vsdEntry.vsdEntryGuid = #{uid}
     </update>
 
     <delete id="deleteDefinitionEntryByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
         DELETE
         FROM ${prefix}vsdEntry
-        WHERE vsdEntryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE vsdEntryGuid = #{param1}
     </delete>
 
     <select id="getDefinitionEntryUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
@@ -223,7 +223,7 @@
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="definitionEntry">
         SELECT *
         FROM ${prefix}vsdEntry vsdEntry
-        WHERE vsdEntry.vsdEntryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE vsdEntry.vsdEntryGuid = #{param1}
     </select>
 
     <select id="getDefinitionEntryLatestRevisionIdByUId"
@@ -232,7 +232,7 @@
         FROM ${prefix}vsdEntry vsdEntry,
              ${prefix}vsEntryState es,
              ${defaultPrefix}revision rev
-        WHERE vsdEntry.vsdEntryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE vsdEntry.vsdEntryGuid = #{param1}
           AND vsdEntry.entryStateGuid = es.entryStateGuid
           AND es.revisionGuid = rev.revisionGuid
     </select>
@@ -282,7 +282,7 @@
              ON
                      entryState.prevRevisionGuid =
                      previousRevision.revisionGuid
-        WHERE vsdEntry.vsdEntryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE vsdEntry.vsdEntryGuid = #{param1}
     </select>
 
     <select id="getPrevRevIdFromGivenRevIdForDefinitionEntry"
@@ -295,7 +295,7 @@
              ${prefix}vsEntryState es,
              ${defaultPrefix}revision r1,
              ${defaultPrefix}revision r2
-        WHERE vsdEntry.vsdEntryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE vsdEntry.vsdEntryGuid = #{param1}
           AND (
                 NOT EXISTS
                     (
@@ -345,7 +345,7 @@
              ${prefix}vsEntryState es,
              ${defaultPrefix}revision r1,
              ${defaultPrefix}revision r2
-        WHERE vsdEntry.vsdEntryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE vsdEntry.vsdEntryGuid = #{param1}
           AND vsdEntry.entryStateGuid = es.entryStateGuid
           AND (
                 (
@@ -392,7 +392,7 @@
              ${prefix}vsEntryState es,
              ${defaultPrefix}revision r1,
              ${defaultPrefix}revision r2
-        WHERE vsdEntry.vsdEntryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE vsdEntry.vsdEntryGuid = #{param1}
           AND vsdEntry.entryStateGuid = es.entryStateGuid
           AND (
                 (

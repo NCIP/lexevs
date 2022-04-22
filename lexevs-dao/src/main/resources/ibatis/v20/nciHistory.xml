@@ -10,7 +10,7 @@
 	</resultMap>
 
 	<resultMap id="nciChangeEventResult" type="nciChangeEvent">
-		<result property="editaction" column="editAction" typeHandler="changeTypeHandler"/>
+		<result property="editaction" column="editAction"/>
 		<result property="conceptcode" column="entityCode"/>
 		<result property="conceptName" column="conceptName"/>
 		<result property="editDate" column="editDate"/>
@@ -308,7 +308,7 @@
 	
 		<include refid="getBaseLineFragment"/>
 			AND
-			systemRelease.releaseGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+			systemRelease.releaseGuid = #{param2}
 	</select> 
 	
 	<insert id="insertSystemRelease" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean">
@@ -323,7 +323,7 @@
 			description
 			)
 		VALUES (
-			#{param1,handler=variablePrimaryKeyTypeHandler},
+			#{param1},
 			#{param2},
 			#{param3.releaseURI},
 			#{param3.releaseId},
@@ -346,8 +346,8 @@
 			referenceName
 			)
 		VALUES (
-			#{param1,handler=variablePrimaryKeyTypeHandler},
-			#{param2,handler=variablePrimaryKeyTypeHandler},
+			#{param1},
+			#{param2},
 			#{param3.conceptcode},
 			#{param3.conceptName},
 			#{param3.editaction},

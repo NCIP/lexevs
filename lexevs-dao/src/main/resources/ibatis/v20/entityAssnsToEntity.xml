@@ -64,8 +64,8 @@
     </resultMap>
 
     <resultMap id="associatedConceptResult" type="associatedConcept">
-        <result property="guid" column="entityAssnsGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-        <result property="entityGuid" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="guid" column="entityAssnsGuid"/>
+        <result property="entityGuid" column="entityGuid"/>
         <result property="code" column="entityCode"/>
         <result property="codeNamespace" column="entityCodeNamespace"/>
         <result property="entityDescription.content" column="description"/>
@@ -73,7 +73,7 @@
     </resultMap>
 
     <resultMap id="mappingTripleSubjectResult" type="mappingTriple">
-        <result property="tripleUid" column="tripleUid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="tripleUid" column="tripleUid"/>
         <result property="code" column="sourceEntityCode"/>
         <result property="codeNamespace" column="sourceEntityCodeNamespace"/>
         <result property="entityDescription.content" column="sourceEntityDescription"/>
@@ -108,21 +108,21 @@
     </resultMap>
 
     <resultMap id="associationTargetEntry" type="associationTarget">
-        <result property="uid" column="entityAssnsGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="uid" column="entityAssnsGuid"/>
         <result property="associationPredicateUId" column="associationPredicateGuid"/>
         <result property="associationSource.sourceEntityCode" column="sourceEntityCode"/>
         <result property="associationSource.sourceEntityCodeNamespace" column="sourceEntityCodeNamespace"/>
         <result property="associationTarget.targetEntityCode" column="targetEntityCode"/>
         <result property="associationTarget.targetEntityCodeNamespace" column="targetEntityCodeNamespace"/>
         <result property="associationTarget.associationInstanceId" column="associationInstanceId"/>
-        <result property="associationTarget.isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
-        <result property="associationTarget.isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
-        <result property="associationTarget.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="associationTarget.isDefining" column="isDefining"/>
+        <result property="associationTarget.isInferred" column="isInferred"/>
+        <result property="associationTarget.isActive" column="isActive"/>
         <result property="associationTarget.owner" column="owner"/>
         <result property="associationTarget.status" column="status"/>
         <result property="associationTarget.effectiveDate" column="effectiveDate"/>
         <result property="associationTarget.expirationDate" column="expirationDate"/>
-        <result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="entryStateUId" column="entryStateGuid"/>
         <collection property="assnQualsAndUsageContextList" resultMap="Association.qualContextResult"/>
     </resultMap>
 
@@ -136,9 +136,9 @@
         <result property="targetEntityCode" column="targetEntityCode"/>
         <result property="targetEntityCodeNamespace" column="targetEntityCodeNamespace"/>
         <result property="associationInstanceId" column="associationInstanceId"/>
-        <result property="isDefining" column="isDefining" typeHandler="numericBooleanTypeHandler"/>
-        <result property="isInferred" column="isInferred" typeHandler="numericBooleanTypeHandler"/>
-        <result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isDefining" column="isDefining"/>
+        <result property="isInferred" column="isInferred"/>
+        <result property="isActive" column="isActive"/>
         <result property="owner" column="owner"/>
         <result property="status" column="status"/>
         <result property="effectiveDate" column="effectiveDate"/>
@@ -160,13 +160,13 @@
     </resultMap>
 
     <resultMap id="vsEntityResult" type="vsEntity">
-        <result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="id" column="entityGuid"/>
         <result property="entityCode" column="entityCode"/>
         <result property="entityCodeNamespace" column="entityCodeNamespace"/>
-        <result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
-        <result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isDefined" column="isDefined"/>
+        <result property="isAnonymous" column="isAnonymous"/>
         <result property="entityDescription.content" column="description"/>
-        <result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isActive" column="isActive"/>
         <result property="owner" column="owner"/>
         <result property="status" column="status"/>
         <result property="effectiveDate" column="effectiveDate"/>
@@ -174,13 +174,13 @@
     </resultMap>
 
     <resultMap id="vsEntityResultWithProperties" type="vsEntity">
-        <result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="id" column="entityGuid"/>
         <result property="entityCode" column="entityCode"/>
         <result property="entityCodeNamespace" column="entityCodeNamespace"/>
-        <result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
-        <result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isDefined" column="isDefined"/>
+        <result property="isAnonymous" column="isAnonymous"/>
         <result property="entityDescription.content" column="description"/>
-        <result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isActive" column="isActive"/>
         <result property="owner" column="owner"/>
         <result property="status" column="status"/>
         <result property="effectiveDate" column="effectiveDate"/>
@@ -243,7 +243,7 @@
 
         WHERE
         eate.entityAssnsGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[],handler=variablePrimaryKeyTypeHandler}
+        #{param2[]}
     </foreach> )
     </select>
 
@@ -312,7 +312,7 @@
 
         WHERE
         eate.entityAssnsGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[],handler=variablePrimaryKeyTypeHandler}
+        #{param2[]}
     </foreach> )
 
         <if test="param3 != null and param3 != ''">
@@ -345,7 +345,7 @@
                      ap.relationGuid =
                      rel.relationGuid
         WHERE rel.codingSchemeGuid =
-              #{param1,handler=variablePrimaryKeyTypeHandler}
+              #{param1}
           AND eae.associationInstanceId =
               #{param2}
     </select>
@@ -381,11 +381,11 @@
         rel.relationGuid
         WHERE
         rel.codingSchemeGuid =
-        #{param1,handler=variablePrimaryKeyTypeHandler}
+        #{param1}
         <if test="param2 != null">
             AND
             eae.associationPredicateGuid =
-            #{param2,handler=variablePrimaryKeyTypeHandler}
+            #{param2}
         </if>
     </select>
 
@@ -432,11 +432,11 @@
                     eae.entityAssnsGuid -->
         WHERE
         rel.codingSchemeGuid =
-        #{param1,handler=variablePrimaryKeyTypeHandler}
+        #{param1}
         <if test="param2 != null">
             AND
             eae.associationPredicateGuid =
-            #{param2,handler=variablePrimaryKeyTypeHandler}
+            #{param2}
         </if>
     </select>
 
@@ -457,21 +457,21 @@
                                                   effectiveDate,
                                                   expirationDate,
                                                   entryStateGuid)
-        VALUES (#{uid,handler=variablePrimaryKeyTypeHandler},
-                #{associationPredicateUId,handler=variablePrimaryKeyTypeHandler},
+        VALUES (#{uid},
+                #{associationPredicateUId},
                 #{associationSource.sourceEntityCode},
                 #{associationSource.sourceEntityCodeNamespace},
                 #{associationTarget.targetEntityCode},
                 #{associationTarget.targetEntityCodeNamespace},
                 #{associationTarget.associationInstanceId,jdbcType=VARCHAR},
-                #{associationTarget.isDefining,handler=numericBooleanTypeHandler},
-                #{associationTarget.isInferred,handler=numericBooleanTypeHandler},
-                #{associationTarget.isActive,handler=numericBooleanTypeHandler},
+                #{associationTarget.isDefining},
+                #{associationTarget.isInferred},
+                #{associationTarget.isActive},
                 #{associationTarget.owner,jdbcType=VARCHAR},
                 #{associationTarget.status,jdbcType=VARCHAR},
                 #{associationTarget.effectiveDate,jdbcType=TIMESTAMP},
                 #{associationTarget.expirationDate,jdbcType=TIMESTAMP},
-                #{entryStateUId,handler=variablePrimaryKeyTypeHandler})
+                #{entryStateUId})
     </insert>
 
     <select id="getTransitiveTableCount" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
@@ -489,7 +489,7 @@
                      ap.relationGuid =
                      rel.relationGuid
         WHERE rel.codingSchemeGuid =
-              #{param1,handler=variablePrimaryKeyTypeHandler}
+              #{param1}
     </select>
 
     <delete id="deleteFromTransitiveTableByCodingSchemeUid"
@@ -508,7 +508,7 @@
                      ${prefix}associationPredicate.relationGuid =
                      ${prefix}relation.relationGuid
         WHERE ${prefix}relation.codingSchemeGuid =
-              #{param1,handler=variablePrimaryKeyTypeHandler}
+              #{param1}
     </delete>
 
     <insert id="insertTransitiveClosure"
@@ -520,8 +520,8 @@
                                                     targetEntityCode,
                                                     targetEntityCodeNamespace,
                                                     path)
-        VALUES (#{uid,handler=variablePrimaryKeyTypeHandler},
-                #{associationPredicateUId,handler=variablePrimaryKeyTypeHandler},
+        VALUES (#{uid},
+                #{associationPredicateUId},
                 #{sourceEntityCode},
                 #{sourceEntityCodeNamespace},
                 #{targetEntityCode},
@@ -568,14 +568,14 @@
         </if>
 
         WHERE
-        rel.codingSchemeGuid = #{codingSchemeUid,handler=variablePrimaryKeyTypeHandler}
+        rel.codingSchemeGuid = #{codingSchemeUid}
 
 
         <if test="relationsContainerName != null">AND
             rel.containerName = #{relationsContainerName}
         </if>
         <if test="associationPredicateUid != null">AND
-            ap.associationPredicateGuid = #{associationPredicateUid,handler=variablePrimaryKeyTypeHandler}
+            ap.associationPredicateGuid = #{associationPredicateUid}
         </if>
 
 
@@ -654,7 +654,7 @@
         </if>
         <if test="restrictToAnonymous != null">AND
             (
-            entity.isAnonymous = #{restrictToAnonymous,handler=numericBooleanTypeHandler}
+            entity.isAnonymous = #{restrictToAnonymous}
             OR
             entity.isAnonymous IS NULL
             )
@@ -746,7 +746,7 @@
         </if>
 
         WHERE
-        rel.codingSchemeGuid = #{codingSchemeUid,handler=variablePrimaryKeyTypeHandler}
+        rel.codingSchemeGuid = #{codingSchemeUid}
 
         <if test="relationsContainerName != null">AND
             rel.containerName = #{relationsContainerName}
@@ -848,13 +848,13 @@
         <if test="restrictToAnonymous != null">AND
             (
             (
-            sourceEntity.isAnonymous = #{restrictToAnonymous,handler=numericBooleanTypeHandler}
+            sourceEntity.isAnonymous = #{restrictToAnonymous}
             OR
             sourceEntity.isAnonymous IS NULL
             )
             AND
             (
-            targetEntity.isAnonymous = #{restrictToAnonymous,handler=numericBooleanTypeHandler}
+            targetEntity.isAnonymous = #{restrictToAnonymous}
             OR
             targetEntity.isAnonymous IS NULL
             )
@@ -1002,13 +1002,13 @@
             <if test="param2 != null and param2 != ''">AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate1.associationPredicateGuid =
-                    #{param2[],handler=variablePrimaryKeyTypeHandler}
+                    #{param2[]}
                 </foreach>
                 )
                 AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate2.associationPredicateGuid =
-                    #{param2[],handler=variablePrimaryKeyTypeHandler}
+                    #{param2[]}
                 </foreach>
                 )
             </if>
@@ -1060,7 +1060,7 @@
 
         <if test="param2 != null and param2 != ''">AND
             eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">
-                #{param2[],handler=variablePrimaryKeyTypeHandler}
+                #{param2[]}
             </foreach> )
         </if>
 
@@ -1132,13 +1132,13 @@
             <if test="param2 != null and param2 != ''">AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate1.associationPredicateGuid =
-                    #{param2[],handler=variablePrimaryKeyTypeHandler}
+                    #{param2[]}
                 </foreach>
                 )
                 AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate2.associationPredicateGuid =
-                    #{param2[],handler=variablePrimaryKeyTypeHandler}
+                    #{param2[]}
                 </foreach>
                 )
             </if>
@@ -1189,7 +1189,7 @@
 
         <if test="param2 != null and param2 != ''">AND
             eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">
-                #{param2[],handler=variablePrimaryKeyTypeHandler}
+                #{param2[]}
             </foreach> )
         </if>
 
@@ -1346,7 +1346,7 @@
         SELECT DISTINCT sourceEntityCode          AS entityCode,
                         sourceEntityCodeNamespace AS entityCodeNamespace
         FROM ${prefix}entityAssnsToEntity
-        WHERE associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE associationPredicateGuid = #{param1}
     </select>
 
     <select id="getDistinctTargets" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
@@ -1354,7 +1354,7 @@
         SELECT DISTINCT targetEntityCode          AS entityCode,
                         targetEntityCodeNamespace AS entityCodeNamespace
         FROM ${prefix}entityAssnsToEntity
-        WHERE associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE associationPredicateGuid = #{param1}
     </select>
 
     <select id="getTargetsOfSource" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
@@ -1362,7 +1362,7 @@
         SELECT targetEntityCode          AS entityCode,
                targetEntityCodeNamespace AS entityCodeNamespace
         FROM ${prefix}entityAssnsToEntity
-        WHERE associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE associationPredicateGuid = #{param1}
           AND sourceEntityCode = #{param2}
           AND sourceEntityCodeNamespace = #{param3}
     </select>
@@ -1373,7 +1373,7 @@
         SELECT sourceEntityCode          AS entityCode,
                sourceEntityCodeNamespace AS entityCodeNamespace
         FROM ${prefix}entityAssnsToEntity
-        WHERE associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE associationPredicateGuid = #{param1}
           AND targetEntityCode = #{param2}
           AND targetEntityCodeNamespace = #{param3}
     </select>
@@ -1403,7 +1403,7 @@
              ${prefix}property prop2
              ON
                  prop2.referenceGuid = prop.referenceGuid
-        WHERE associationPredicateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE associationPredicateGuid = #{param1}
           AND targetEntityCode = #{param2}
           AND (
                     prop.propertyName = #{param3}
@@ -1504,7 +1504,7 @@
              ${prefix}property prop
              ON
                  entityGuid = referenceGuid
-        WHERE codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE codingSchemeGuid = #{param1}
           AND entityCode = #{param2}
     </select>
 
@@ -1529,7 +1529,7 @@
              ${prefix}property prop
              ON
                  entityGuid = referenceGuid
-        WHERE codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE codingSchemeGuid = #{param1}
           AND description = #{param2}
     </select>
 
@@ -1569,7 +1569,7 @@
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
         SELECT eate.entryStateGuid AS uidKey
         FROM ${prefix}entityAssnsToEntity eate
-        WHERE eate.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE eate.entityAssnsGuid = #{param1}
     </select>
 
     <select id="getAssnTargetAttributesByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
@@ -1599,7 +1599,7 @@
              ${prefix}entityAssnQuals quals
              ON
                  entAssn.entityAssnsGuid = quals.referenceGuid
-        WHERE entAssn.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entAssn.entityAssnsGuid = #{param1}
 
     </select>
 
@@ -1646,7 +1646,7 @@
             resultMap="associationSourceTripleEntry">
         <include refid="getTripleFragment"/>
         WHERE
-        entAssn.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entAssn.entityAssnsGuid = #{param1}
     </select>
 
     <select id="getHistoryTripleByUidAndRevisionId"
@@ -1654,7 +1654,7 @@
             resultMap="associationSourceTripleEntry">
         <include refid="getTripleFragment"/>
         WHERE
-        entAssn.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entAssn.entityAssnsGuid = #{param1}
         AND
         currentRevision.revisionId = #{param2}
     </select>
@@ -1678,18 +1678,18 @@
                 targetEntityCodeNamespace = #{associationTarget.targetEntityCodeNamespace},
             </if>
             <if test="associationSource.isDefining != null">
-                isDefining = #{associationTarget.isDefining,handler=numericBooleanTypeHandler},
+                isDefining = #{associationTarget.isDefining},
             </if>
             <if test="associationSource.isInferred != null">
-                isInferred = #{associationTarget.isInferred,handler=numericBooleanTypeHandler},
+                isInferred = #{associationTarget.isInferred},
             </if>
             <if test="entryStateUId != null">
-                entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+                entryStateGuid = #{entryStateUId}
             </if>
         </set>
 
         WHERE
-        entityAssnsGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+        entityAssnsGuid = #{uid}
     </update>
 
     <update id="updateEntityAssnToEntityVerAttribByUId"
@@ -1699,7 +1699,7 @@
         <set>
             <if test="associationTarget.isActive != null">
                 isActive =
-                #{associationTarget.isActive,handler=numericBooleanTypeHandler},
+                #{associationTarget.isActive},
             </if>
             <if test="associationTarget.owner != null">
                 owner = #{associationTarget.owner},
@@ -1716,18 +1716,18 @@
                 #{associationTarget.expirationDate},
             </if>
             <if test="entryStateUId != null">
-                entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler
+                entryStateGuid = #entryStateUId
             </if>
         </set>
 
         WHERE
-        entityAssnsGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+        entityAssnsGuid = #{uid}
     </update>
 
     <delete id="deleteAssocTargetByAssnUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
         DELETE
         FROM ${prefix}entityAssnsToEntity
-        WHERE entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entityAssnsGuid = #{param1}
     </delete>
 
     <select id="getAssociationTargetLatestRevisionIdByUId"
@@ -1736,7 +1736,7 @@
         FROM ${prefix}entityAssnsToEntity entAssnEnt,
              ${prefix}entryState es,
              ${defaultPrefix}revision rev
-        WHERE entAssnEnt.entityAssnsGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entAssnEnt.entityAssnsGuid = #{param1}
           AND entAssnEnt.entryStateGuid = es.entryStateGuid
           AND es.revisionGuid = rev.revisionGuid
     </select>
@@ -2017,7 +2017,7 @@
 
         WHERE
         eate.entityAssnsGuid IN (  <foreach collection="param7" item="item" separator=",">
-        #{param7[],handler=variablePrimaryKeyTypeHandler}
+        #{param7[]}
     </foreach> )
         AND
         rel.codingSchemeGuid = #{param1}
@@ -2142,7 +2142,7 @@
         WHERE
         <if test="param1 != null">
             ap.associationPredicateGuid =
-            #{param1,handler=variablePrimaryKeyTypeHandler}
+            #{param1}
         </if>
         AND
         sa.supportedAttributeTag = #{param2}
@@ -2190,11 +2190,11 @@
 
         WHERE
         rel.codingSchemeGuid =
-        #{param1,handler=variablePrimaryKeyTypeHandler}
+        #{param1}
         AND
         eae.entityAssnsGuid
         IN
-        (  <foreach collection="param2" item="item" separator=",">#{param2[],handler=variablePrimaryKeyTypeHandler}
+        (  <foreach collection="param2" item="item" separator=",">#{param2[]}
     </foreach> )
     </select>
 
@@ -2232,7 +2232,7 @@
                  target.entityCode = eae.targetEntityCode
 
         WHERE rel.codingSchemeGuid =
-              #{param1,handler=variablePrimaryKeyTypeHandler}
+              #{param1}
           AND eae.sourceEntityCode = #{param2}
 
           AND ap.associationName = #{param3}
@@ -2272,7 +2272,7 @@
                  target.entityCode = eae.targetEntityCode
 
         WHERE rel.codingSchemeGuid =
-              #{param1,handler=variablePrimaryKeyTypeHandler}
+              #{param1}
           AND eae.targetEntityCode = #{param2}
           AND ap.associationName = #{param3}
           AND (source.isAnonymous != 1 OR source.isAnonymous IS NULL)

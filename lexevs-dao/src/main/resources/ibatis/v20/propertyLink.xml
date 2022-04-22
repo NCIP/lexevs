@@ -13,12 +13,12 @@
      		targetPropertyGuid,
      		entryStateGuid
      	) VALUES (
-     		#{uid,handler=variablePrimaryKeyTypeHandler},
-     		#{entityUId,handler=variablePrimaryKeyTypeHandler},
-     		#{sourcePropertyUId,handler=variablePrimaryKeyTypeHandler},
+     		#{uid},
+     		#{entityUId},
+     		#{sourcePropertyUId},
      		#{link},
-     		#{targetPropertyUId,handler=variablePrimaryKeyTypeHandler},
-     		#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+     		#{targetPropertyUId},
+     		#{entryStateUId}
      	)
      </insert>
 

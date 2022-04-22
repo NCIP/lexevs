@@ -4,11 +4,11 @@
 <mapper namespace="Association">
 
 	<resultMap id="qualContextResult" type="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean">
-		<result property="uid" column="entityAssnQualsGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="referenceUId" column="referenceGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="uid" column="entityAssnQualsGuid" />
+		<result property="referenceUId" column="referenceGuid" />
 		<result property="qualifierName" column="qualifierName"/>
 		<result property="qualifierValue" column="qualifierValue"/>
-		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="entryStateUId" column="esGuid" />
 	</resultMap>
 	
      <insert id="insertAssociationQualificationOrUsageContext" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean">
@@ -19,11 +19,11 @@
 			qualifierValue,
 			entryStateGuid
 		) VALUES (
-			#{uid,handler=variablePrimaryKeyTypeHandler}, 
-			#{referenceUId,handler=variablePrimaryKeyTypeHandler},
+			#{uid, 
+			#{referenceUId,
 			#{qualifierName}, 
 			#{qualifierValue},
-			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			#{entryStateUId
 		)
   </insert>
   
@@ -53,7 +53,7 @@
   			rel.relationGuid
   			
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   		)
   </delete>  
   
@@ -80,7 +80,7 @@
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   </delete>
   
   <delete id="deleteDataAssocQualsByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -109,7 +109,7 @@
   			rel.relationGuid
   			
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   		)
   </delete>
   
@@ -136,7 +136,7 @@
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   </delete>
   
   <delete id="deleteEntityAssocQualsByRelationUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
@@ -164,9 +164,9 @@
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+  			rel.relationGuid = #{param2
   		)
   </delete>  
   
@@ -193,9 +193,9 @@
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+  			rel.relationGuid = #{param2
   </delete>
   
   <delete id="deleteDataAssocQualsByRelationUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
@@ -224,9 +224,9 @@
   			rel.relationGuid
   			
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+  			rel.relationGuid = #{param2
   		)
   </delete>
   
@@ -254,23 +254,23 @@
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+  			rel.relationGuid = #{param2
   </delete>
 
 	<delete id="deleteAllAssocMultiAttribByAssocUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			${prefix}entityAssnQuals
 		WHERE
-			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{param1
 	</delete>
 	
 	<delete id="deleteAssocQualsByAssocUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			${prefix}entityAssnQuals
 		WHERE
-			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{param1
 		AND
 			qualifierName != 'usageContext'
 	</delete>
@@ -279,7 +279,7 @@
 		DELETE FROM
 			${prefix}entityAssnQuals
 		WHERE
-			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{param1
 		AND
 			qualifierName = 'usageContext'
 	</delete>
@@ -294,16 +294,16 @@
 		FROM
 			${prefix}entityAssnQuals assnQual
 		WHERE
-			assnQual.referenceGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+			assnQual.referenceGuid = #{param2
 	</select>
 	
 	<update id="updateAssnQualsEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
 			${prefix}entityAssnQuals
 		SET
-			entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+			entryStateGuid = #{param2
 		WHERE
-			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{param1
 		AND
 			qualifierName != 'usageContext'
 	</update>
@@ -312,9 +312,9 @@
 		UPDATE
 			${prefix}entityAssnQuals
 		SET
-			entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+			entryStateGuid = #{param2
 		WHERE
-			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{param1
 		AND
 			qualifierName = 'usageContext'
 	</update>

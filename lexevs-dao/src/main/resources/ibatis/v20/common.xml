@@ -4,7 +4,7 @@
 <mapper namespace="Common">
 
 	<resultMap id="uidResult" type="string">
-		<result property="java.lang.String" column="uidKey" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="java.lang.String" column="uidKey"/>
 	</resultMap>
 	
 </mapper>

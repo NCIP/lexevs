@@ -42,7 +42,7 @@
 	<resultMap id="supportedAssociationQualifierResult" type="supportedAssociationQualifier" extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedCodingSchemeResult" type="supportedCodingScheme" extends="uriMapResult">
-		<result property="isImported" column="isImported" typeHandler="numericBooleanTypeHandler"/>	
+		<result property="isImported" column="isImported"/>	
 	</resultMap>
 	<resultMap id="supportedConceptDomainResult" type="supportedConceptDomain" extends="uriMapResult">
 	</resultMap>
@@ -57,9 +57,9 @@
 	<resultMap id="supportedEntityTypeResult" type="supportedEntityType" extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedHierarchyResult" type="supportedHierarchy" extends="uriMapResult">
-		<result property="associationNames" column="associationNames" typeHandler="StringArrayTypeHandler"/>
+		<result property="associationNames" column="associationNames"/>
 		<result property="rootCode" column="rootCode"/>
-		<result property="isForwardNavigable" column="isForwardNavigable" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isForwardNavigable" column="isForwardNavigable"/>
 	</resultMap>
 	<resultMap id="supportedLanguageResult" type="supportedLanguage" extends="uriMapResult">
 	</resultMap>
@@ -112,7 +112,7 @@
 	 <select id="getURIMaps" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+	 		urimap.referenceGuid = #{}
 	 	AND
 	 		urimap.referenceType = #{param2}
 	 </select>
@@ -120,7 +120,7 @@
 	 <select id="getURIMapByLocalNameAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+	 		urimap.referenceGuid = #{}
 	 	AND
 	 		urimap.referenceType = #{param2}
 	 	AND
@@ -135,7 +135,7 @@
 	 	FROM
 	 		${prefix}vsSupportedAttrib urimap
 	 	WHERE
-	 		urimap.referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+	 		urimap.referenceGuid = #{}
 	 	AND
 	 		urimap.id = #{param2}
 	 	AND
@@ -206,8 +206,8 @@
 	 		assnEntityCode,
 	 		propertyType
 		) VALUES (
-			#{uid,handler=variablePrimaryKeyTypeHandler}, 
-			#{codingSchemeUId,handler=variablePrimaryKeyTypeHandler},
+			#{uid, 
+			#{codingSchemeUId,
 			#{referenceType,jdbcType=VARCHAR},
 			#{supportedAttributeTag,jdbcType=VARCHAR}, 
 			#{uriMap.localId,jdbcType=VARCHAR}, 
@@ -325,7 +325,7 @@
 
 		
 		WHERE
-			referenceGuid = #{codingSchemeUId,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{codingSchemeUId
 		AND
 			referenceType = #{referenceType}
 		AND
@@ -339,7 +339,7 @@
 		DELETE FROM
 			${prefix}vsSupportedAttrib
 		WHERE
-			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{}
 		AND
 			referenceType = #{param2}
 	</delete>
@@ -348,7 +348,7 @@
 		DELETE FROM
 			${prefix}vsSupportedAttrib
 		WHERE
-			referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			referenceGuid = #{}
 		AND
 			referenceType = #{param2}
 		AND

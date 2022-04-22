@@ -5,7 +5,7 @@
 
 
     <resultMap id="entityUidResult" type="string">
-        <result property="java.lang.String" column="uid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="java.lang.String" column="uid" />
     </resultMap>
 
     <resultMap id="noEntityTypeConceptReferenceResult" type="resolvedCodedNodeReference">
@@ -26,13 +26,13 @@
     </resultMap>
 
     <resultMap id="entityResult" type="entity">
-        <result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="id" column="entityGuid" />
         <result property="entityCode" column="entityCode"/>
         <result property="entityCodeNamespace" column="entityCodeNamespace"/>
-        <result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
-        <result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isDefined" column="isDefined"/>
+        <result property="isAnonymous" column="isAnonymous"/>
         <result property="entityDescription.content" column="description"/>
-        <result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isActive" column="isActive"/>
         <result property="owner" column="owner"/>
         <result property="status" column="status"/>
         <result property="effectiveDate" column="effectiveDate"/>
@@ -46,30 +46,30 @@
     </resultMap>
 
     <resultMap id="entityAttributes" type="insertOrUpdateEntityBean">
-        <result property="uid" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-        <result property="codingSchemeUId" column="codingSchemeGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="uid" column="entityGuid" />
+        <result property="codingSchemeUId" column="codingSchemeGuid" />
         <result property="entity.entityCode" column="entityCode"/>
         <result property="entity.entityCodeNamespace" column="entityCodeNamespace"/>
-        <result property="entity.isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
-        <result property="entity.isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
+        <result property="entity.isDefined" column="isDefined"/>
+        <result property="entity.isAnonymous" column="isAnonymous"/>
         <result property="entity.entityDescription.content" column="description"/>
-        <result property="entity.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="entity.isActive" column="isActive"/>
         <result property="entity.owner" column="owner"/>
         <result property="entity.status" column="status"/>
         <result property="entity.effectiveDate" column="effectiveDate"/>
         <result property="entity.expirationDate" column="expirationDate"/>
         <result property="forwardName" column="forwardName"/>
         <result property="reverseName" column="reverseName"/>
-        <result property="isNavigable" column="isNavigable" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isNavigable" column="isNavigable"/>
         <result property="isTransitive" column="isTransitive"/>
-        <result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+        <result property="entryStateUId" column="entryStateGuid" />
     </resultMap>
 
     <resultMap id="associationEntityResult" type="associationEntity" extends="entityResult">
         <result property="forwardName" column="forwardName"/>
         <result property="reverseName" column="reverseName"/>
-        <result property="isNavigable" column="isNavigable" typeHandler="numericBooleanTypeHandler"/>
-        <result property="isTransitive" column="isTransitive" typeHandler="numericBooleanTypeHandler"/>
+        <result property="isNavigable" column="isNavigable"/>
+        <result property="isTransitive" column="isTransitive"/>
     </resultMap>
 
     <resultMap id="propertyLinkResult" type="propertyLink">
@@ -108,7 +108,7 @@
         entity.entityGuid =
         entityType.entityGuid
         WHERE
-        entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entity.codingSchemeGuid = #{param1}
         AND
         entity.entityCode = #{param2}
         <if test="param3 != null">
@@ -142,10 +142,10 @@
         targetProperty.referenceGuid = sourceProperty.referenceGuid
         )
         WHERE
-        entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entity.codingSchemeGuid = #{param1}
         AND
         entity.entityGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[],handler=variablePrimaryKeyTypeHandler}
+        #{param2[]}
     </foreach> )
     </select>
 
@@ -227,7 +227,7 @@
             resultType="int">
         SELECT COUNT(entityGuid)
         FROM ${prefix}entity entity
-        WHERE entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entity.codingSchemeGuid = #{param1}
     </select>
 
 
@@ -239,7 +239,7 @@
         FROM
         ${prefix}entity entity
         WHERE
-        codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        codingSchemeGuid = #{param1}
         AND
         entity.entityCode = #{param2}
         <if test="param3 != null">
@@ -253,10 +253,10 @@
         <include refid="getEntityFragment"/>
 
         WHERE
-        entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entity.codingSchemeGuid = #{param1}
         AND
         entity.entityGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[],handler=variablePrimaryKeyTypeHandler}
+        #{param2[]}
     </foreach> )
     </select>
 
@@ -264,9 +264,9 @@
             resultMap="Entity.entityResult">
         <include refid="getEntityFragment"/>
         WHERE
-        entity.entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entity.entityGuid = #{param1}
         AND
-        entity.codingSchemeGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+        entity.codingSchemeGuid = #{param2}
     </select>
 
     <select id="getEntityByEntryStateUid"
@@ -274,9 +274,9 @@
             resultMap="Entity.entityResult">
         <include refid="getEntityFragment"/>
         WHERE
-        entity.entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entity.entityGuid = #{param1}
         AND
-        entity.entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+        entity.entryStateGuid = #{param2}
     </select>
 
     <select id="getEntityByCodeAndNamespace"
@@ -284,7 +284,7 @@
             resultMap="Entity.entityResult">
         <include refid="getEntityFragment"/>
         WHERE
-        codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        codingSchemeGuid = #{param1}
         AND
         entityCode = #{param2}
         AND
@@ -295,7 +295,7 @@
             resultMap="Entity.entityResult">
         <include refid="getEntityFragment"/>
         WHERE
-        codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        codingSchemeGuid = #{param1}
         AND
         entityCode = #{param2}
     </select>
@@ -305,7 +305,7 @@
             resultMap="Entity.associationEntityResult">
         <include refid="getEntityFragment"/>
         WHERE
-        codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        codingSchemeGuid = #{param1}
         AND
         entityCode = #{param2}
         AND
@@ -321,7 +321,7 @@
         <include refid="getEntityFragment"/>
 
         WHERE
-        entity.entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        entity.entityGuid = #{param1}
 
         <if test="revisionId != null">
             AND
@@ -337,14 +337,14 @@
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="entityAttributes">
         SELECT *
         FROM ${prefix}entity
-        WHERE entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entityGuid = #{param1}
     </select>
 
     <select id="getAllEntityUidsOfCodingScheme"
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
         SELECT entityGuid AS uidKey
         FROM ${prefix}entity entity
-        WHERE entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entity.codingSchemeGuid = #{param1}
     </select>
 
     <insert id="insertEntity" parameterType="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
@@ -367,21 +367,21 @@
         isNavigable,
         isTransitive
         ) VALUES (
-        #{uid,handler=variablePrimaryKeyTypeHandler},
-        #{codingSchemeUId,handler=variablePrimaryKeyTypeHandler},
+        #{uid},
+        #{codingSchemeUId},
         #{entity.entityCode},
         #{entity.entityCodeNamespace},
         <if test="entity != null and entity.isDefined != null">
-            #{entity.isDefined,handler=numericBooleanTypeHandler},
+            #{entity.isDefined},
         </if>
         <if test="entity == null or entity.isDefined == null">
             '0',
         </if>
-        #{entity.isAnonymous,handler=numericBooleanTypeHandler},
+        #{entity.isAnonymous},
         #{entity.entityDescription.content,jdbcType=VARCHAR},
 
         <if test="entity != null and entity.isActive != null">
-            #{entity.isActive,handler=numericBooleanTypeHandler},
+            #{entity.isActive},
         </if>
         <if test="entity == null or entity.isActive == null">
             '1',
@@ -391,7 +391,7 @@
         #{entity.status,jdbcType=VARCHAR},
         #{entity.effectiveDate,jdbcType=TIMESTAMP},
         #{entity.expirationDate,jdbcType=TIMESTAMP},
-        #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+        #{entryStateUId}
 
         <if test="forwardName != null">
             #{forwardName:VARCHAR#},
@@ -406,13 +406,13 @@
             null
         </if>
         <if test="isNavigable != null">
-            #{isNavigable,handler=numericBooleanTypeHandler},
+            #{isNavigable},
         </if>
         <if test="isNavigable == null">
             null
         </if>
         <if test="isTransitive != null">
-            #{isTransitive,handler=numericBooleanTypeHandler}
+            #{isTransitive}
         </if>
         <if test="isTransitive == null">
             null
@@ -429,10 +429,10 @@
 
         <set>
             <if test="entity.isDefined != null">
-                isDefined = #{entity.isDefined,handler=numericBooleanTypeHandler},
+                isDefined = #{entity.isDefined},
             </if>
             <if test="entity.isAnonymous != null">
-                isAnonymous = #{entity.isAnonymous,handler=numericBooleanTypeHandler},
+                isAnonymous = #{entity.isAnonymous},
             </if>
             <if test="entity.entityDescription.content != null">
                 description = #{entity.entityDescription.content},
@@ -444,20 +444,20 @@
                 reverseName = #{reverseName},
             </if>
             <if test="isNavigable != null">
-                isNavigable = #{isNavigable,handler=numericBooleanTypeHandler},
+                isNavigable = #{isNavigable},
             </if>
             <if test="isTransitive != null">
-                isTransitive = #{isTransitive,handler=numericBooleanTypeHandler},
+                isTransitive = #{isTransitive},
             </if>
             <if test="entryStateUId != null">
-                entryStateUId = #{entryStateUId,handler=variablePrimaryKeyTypeHandler},
+                entryStateUId = #{entryStateUId},
             </if>
         </set>
 
         WHERE
-        entityGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+        entityGuid = #{uid}
         AND
-        codingSchemeGuid = #{codingSchemeUId,handler=variablePrimaryKeyTypeHandler}
+        codingSchemeGuid = #{codingSchemeUId}
     </update>
 
     <update id="updateEntityVerAttribByUId"
@@ -467,7 +467,7 @@
 
         <set>
             <if test="entity.isActive != null">
-                isActive = #{entity.isActive,handler=numericBooleanTypeHandler},
+                isActive = #{entity.isActive},
             </if>
             <if test="entity.owner != null">
                 owner = #{entity.owner},
@@ -482,20 +482,20 @@
                 expirationDate = #{entity.expirationDate},
             </if>
             <if test="entryStateUId != null">
-                entryStateUId = #{entryStateUId,handler=variablePrimaryKeyTypeHandler},
+                entryStateUId = #{entryStateUId},
             </if>
         </set>
 
         WHERE
-        entityGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+        entityGuid = #{uid}
         AND
-        codingSchemeGuid = #{codingSchemeUId,handler=variablePrimaryKeyTypeHandler}
+        codingSchemeGuid = #{codingSchemeUId}
     </update>
 
     <delete id="deleteEntityByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
         DELETE
         FROM ${prefix}entity
-        WHERE entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entityGuid = #{param1}
     </delete>
 
     <select id="getEntityLatestRevisionIdByUId"
@@ -504,7 +504,7 @@
         FROM ${prefix}entity ent,
              ${prefix}entryState es,
              ${defaultPrefix}revision rev
-        WHERE ent.entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE ent.entityGuid = #{param1}
           AND ent.entryStateGuid = es.entryStateGuid
           AND es.revisionGuid = rev.revisionGuid
     </select>
@@ -533,15 +533,15 @@
             resultMap="Common.uidResult">
         SELECT entryStateGuid AS uidKey
         FROM ${prefix}entity en
-        WHERE en.entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE en.entityGuid = #{param1}
     </select>
 
     <update id="updateEntityEntryStateUId"
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
         UPDATE
             ${prefix}entity
-        SET entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
-        WHERE entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        SET entryStateGuid = #{param2}
+        WHERE entityGuid = #{param1}
     </update>
 
     <select id="getPreviousEntryStateId"
@@ -549,7 +549,7 @@
             resultMap="Common.uidResult">
         SELECT prevEntryStateGuid AS uidKey
         FROM ${prefix}entryState es
-        WHERE es.entryStateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE es.entryStateGuid = #{param1}
     </select>
 
     <!--  MySQL Specific
@@ -582,7 +582,7 @@
                 ${defaultPrefix}revision r1,
                 ${defaultPrefix}revision r2
             WHERE
-                entity.entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler} AND
+                entity.entityGuid = #{param1} AND
                 entity.entryStateGuid = es.entryStateGuid AND
                 (
                     (
@@ -606,7 +606,7 @@
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="string">
         SELECT propertyId
         FROM ${prefix}property
-        WHERE referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE referenceGuid = #{param1}
           AND referenceType = #{param2}
     </select>
 
@@ -614,7 +614,7 @@
             resultType="string">
         SELECT entityType
         FROM ${prefix}entityType
-        WHERE entityGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entityGuid = #{param1}
     </select>
 
     <select id="getEntityDescription"
@@ -622,7 +622,7 @@
             resultMap="entityDescriptionResult">
         SELECT description
         FROM ${prefix}entity entity
-        WHERE entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entity.codingSchemeGuid = #{param1}
           AND entity.entityCode = #{param2}
           AND entity.entityCodeNamespace = #{param3}
     </select>
@@ -639,7 +639,7 @@
             resultType="string">
         SELECT DISTINCT entity.entityCodeNamespace
         FROM ${prefix}entity entity
-        WHERE entity.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+        WHERE entity.codingSchemeGuid = #{param1}
           AND entity.entityCode = #{param2}
 
         UNION

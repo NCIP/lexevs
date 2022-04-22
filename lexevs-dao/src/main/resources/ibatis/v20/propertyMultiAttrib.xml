@@ -28,22 +28,22 @@
 	</resultMap>
 	
 	<resultMap id="propertyMultiAttribResultBean" type="org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean">
-		<result property="uid" column="propMultiAttribGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="propertyUId" column="propertyGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="uid" column="propMultiAttribGuid"/>
+		<result property="propertyUId" column="propertyGuid" />
 		<result property="attributeType" column="attributeType"/>
 		<result property="attributeId" column="attributeId"/>
 		<result property="attributeValue" column="attributeValue"/>
 		<result property="subRef" column="subRef"/>
 		<result property="role" column="role"/>
 		<result property="qualifierType" column="qualifierType"/>
-		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="entryStateUId" column="esGuid" />
 	</resultMap>
 	
 	<delete id="deletePropertyMultiAttribByPropertyId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM 
 			${prefix}propertyMultiAttrib
 		WHERE
-			propertyGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			propertyGuid = #{param1}	
 		AND
 			attributeType = #{param2}	
 	</delete>
@@ -60,15 +60,15 @@
 			qualifierType,
 			entryStateGuid
 		) VALUES (
-			#{uid,handler=variablePrimaryKeyTypeHandler},
-			#{propertyUId,handler=variablePrimaryKeyTypeHandler},
+			#{uid},
+			#{propertyUId},
 			#{attributeType},
 			#{attributeId,jdbcType=VARCHAR},
 			#{attributeValue,jdbcType=VARCHAR},
 			#{subRef,jdbcType=VARCHAR},
 			#{role,jdbcType=VARCHAR},
 			#{qualifierType,jdbcType=VARCHAR},
-			#{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+			#{entryStateUId}
 		)
 	</insert>
 	
@@ -86,7 +86,7 @@
 			FROM 
 				${prefix}h_propertyMultiAttrib multiAttrib
 			WHERE
-				multiAttrib.entryStateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+				multiAttrib.entryStateGuid = #{param1}
 			
 	</select>
 </mapper>

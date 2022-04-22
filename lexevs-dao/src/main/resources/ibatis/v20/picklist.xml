@@ -10,9 +10,9 @@
 		<result property="defaultEntityCodeNamespace" column="defaultEntityCodeNamespace"/>
 		<result property="defaultLanguage" column="defaultLanguage"/>
 		<result property="defaultSortOrder" column="defaultSortOrder"/>
-		<result property="completeSet" column="completeSet" typeHandler="numericBooleanTypeHandler"/>
+		<result property="completeSet" column="completeSet" />
 		<result property="entityDescription.content" column="description"/>
-		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isActive" column="isActive" />
 		<result property="owner" column="owner"/>
 		<result property="status" column="status"/>
 		<result property="effectiveDate" column="effectiveDate"/>
@@ -20,39 +20,39 @@
 	</resultMap>
 	
 	<resultMap id="pickListDefinitionMetaData" type="insertPickListDefinitionBean">
-		<result property="uid" column="vsPickListGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="uid" column="vsPickListGuid" />
 		<result property="pickListDefinition.pickListId" column="pickListId"/>
 		<result property="pickListDefinition.representsValueSetDefinition" column="representsValueSetDefinition"/>
-		<result property="pickListDefinition.completeSet" column="completeSet" typeHandler="numericBooleanTypeHandler"/>
+		<result property="pickListDefinition.completeSet" column="completeSet" />
 		<result property="pickListDefinition.defaultEntityCodeNamespace" column="defaultEntityCodeNamespace"/>
 		<result property="pickListDefinition.defaultLanguage" column="defaultLanguage"/>
 		<result property="pickListDefinition.defaultSortOrder" column="defaultSortOrder"/>		
 		<result property="pickListDefinition.entityDescription.content" column="description"/>
-		<result property="systemReleaseUId" column="releaseGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="pickListDefinition.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+		<result property="systemReleaseUId" column="releaseGuid" />
+		<result property="pickListDefinition.isActive" column="isActive" />
 		<result property="pickListDefinition.owner" column="owner"/>
 		<result property="pickListDefinition.status" column="status"/>
 		<result property="pickListDefinition.effectiveDate" column="effectiveDate"/>
 		<result property="pickListDefinition.expirationDate" column="expirationDate"/>
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 		
 	<resultMap id="pickListDefinitionMetaDataWithMultiAttrib" type="insertPickListDefinitionBean">
-		<result property="uid" column="vsPickListGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="uid" column="vsPickListGuid" />
 		<result property="pickListDefinition.pickListId" column="pickListId"/>
 		<result property="pickListDefinition.representsValueSetDefinition" column="representsValueSetDefinition"/>
-		<result property="pickListDefinition.completeSet" column="completeSet" typeHandler="numericBooleanTypeHandler"/>
+		<result property="pickListDefinition.completeSet" column="completeSet" />
 		<result property="pickListDefinition.defaultEntityCodeNamespace" column="defaultEntityCodeNamespace"/>
 		<result property="pickListDefinition.defaultLanguage" column="defaultLanguage"/>
 		<result property="pickListDefinition.defaultSortOrder" column="defaultSortOrder"/>		
 		<result property="pickListDefinition.entityDescription.content" column="description"/>
-		<result property="systemReleaseUId" column="releaseGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="pickListDefinition.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
+		<result property="systemReleaseUId" column="releaseGuid" />
+		<result property="pickListDefinition.isActive" column="isActive" />
 		<result property="pickListDefinition.owner" column="owner"/>
 		<result property="pickListDefinition.status" column="status"/>
 		<result property="pickListDefinition.effectiveDate" column="effectiveDate"/>
 		<result property="pickListDefinition.expirationDate" column="expirationDate"/>
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="entryStateUId" column="entryStateGuid" />
 		<collection property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 	
@@ -104,7 +104,7 @@
 		ON
 			vsMulti.referenceGuid = pl.vsPickListGuid
 		WHERE
-			pl.vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			pl.vsPickListGuid = #{param1}
 	</select>
 	
 	<select id="getPickListEntryNodeGuidByPickListIdAndPLEntryId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
@@ -113,7 +113,7 @@
 		FROM
 			${prefix}vsPLEntry
 		WHERE
-			vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			vsPickListGuid = #{param1}
 		AND
 			plEntryId = #{param2}
 	</select>
@@ -196,7 +196,7 @@
 				expirationDate,
 				entryStateGuid
 			) VALUES (
-				#{uid,handler=variablePrimaryKeyTypeHandler},
+				#{uid},
 				#{pickListDefinition.pickListId},
 				#{pickListDefinition.representsValueSetDefinition},
 				#{pickListDefinition.completeSet,handler=numericBooleanTypeHandler},
@@ -204,7 +204,7 @@
 				#{pickListDefinition.defaultLanguage},
 				#{pickListDefinition.defaultSortOrder},
 				#{pickListDefinition.entityDescription.content},
-				#{systemReleaseUId,handler=variablePrimaryKeyTypeHandler},
+				#{systemReleaseUId},
 
 			    <if test="pickListDefinition.isActive != null">
 					#{pickListDefinition.isActive,handler=numericBooleanTypeHandler},
@@ -218,7 +218,7 @@
 				#{pickListDefinition.status},
 				#{pickListDefinition.effectiveDate},
 				#{pickListDefinition.expirationDate},
-				#{entryStateUId,handler=variablePrimaryKeyTypeHandler}	
+				#{entryStateUId}	
 			)
      </insert>
 
@@ -233,7 +233,7 @@
 		DELETE FROM
 			${prefix}vsPLEntry
 		WHERE
-			vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			vsPickListGuid = #{param1}
 	</delete>
 	
 	<update id="updatePickListDefinitionByUId" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean">
@@ -259,12 +259,12 @@
 				description = #{pickListDefinition.entityDescription.content},
 			</if>
 			<if test="entryStateUId != null">
-				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler}
+				entryStateGuid = #{entryStateUId}
 			</if>
 		</set>
 
 		WHERE 
-			pickListDef.vsPickListGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+			pickListDef.vsPickListGuid = #{uid}
  	</update>
 
 	<update id="updatePLVersionableAttributesByUId" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean">
@@ -288,12 +288,12 @@
 				expirationDate = #{pickListDefinition.expirationDate},
 			</if>
 			<if test="entryStateUId != null">
-				entryStateGuid = #{entryStateUId,handler=variablePrimaryKeyTypeHandler},
+				entryStateGuid = #{entryStateUId},
 			</if>
 		</set>
 
 		WHERE 
-			pickListDef.vsPickListGuid = #{uid,handler=variablePrimaryKeyTypeHandler}
+			pickListDef.vsPickListGuid = #{uid}
  	</update>
  	
 	<select id="getEntryStateUIdByPickListUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -302,16 +302,16 @@
 		FROM
 			${prefix}vsPickList pl
 		WHERE
-			pl.vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			pl.vsPickListGuid = #{param1}	
 	</select>
 	
 	<update id="updateEntryStateUIdByPickListUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
 			${prefix}vsPickList
 		SET
-			entryStateGuid = #{param2,handler=variablePrimaryKeyTypeHandler}
+			entryStateGuid = #{param2}
 		WHERE 
-			vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			vsPickListGuid = #{param1}
  	</update>
  	
 	<select id="getPickListDefinitionLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -322,7 +322,7 @@
 			${prefix}vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			picklist.vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+			picklist.vsPickListGuid = #{param1}	
 		AND
 			picklist.entryStateGuid = es.entryStateGuid	
 		AND

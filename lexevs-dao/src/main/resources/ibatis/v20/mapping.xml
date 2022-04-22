@@ -42,7 +42,7 @@
 	<resultMap id="supportedAssociationQualifierResult" type="supportedAssociationQualifier" extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedCodingSchemeResult" type="supportedCodingScheme" extends="uriMapResult">
-		<result property="isImported" column="isImported" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isImported" column="isImported"/>
 	</resultMap>
 	<resultMap id="supportedConceptDomainResult" type="supportedConceptDomain" extends="uriMapResult">
 	</resultMap>
@@ -57,9 +57,9 @@
 	<resultMap id="supportedEntityTypeResult" type="supportedEntityType" extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedHierarchyResult" type="supportedHierarchy" extends="uriMapResult">
-		<result property="associationNames" column="associationNames" typeHandler="StringArrayTypeHandler"/>
+		<result property="associationNames" column="associationNames"/>
 		<result property="rootCode" column="rootCode"/>
-		<result property="isForwardNavigable" column="isForwardNavigable" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isForwardNavigable" column="isForwardNavigable"/>
 	</resultMap>
 	<resultMap id="supportedLanguageResult" type="supportedLanguage" extends="uriMapResult">
 	</resultMap>
@@ -112,13 +112,13 @@
 	 <select id="getURIMaps" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+	 		urimap.codingSchemeGuid = #{param1}
 	 </select>
 	 
 	 <select id="getURIMapByLocalNameAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+	 		urimap.codingSchemeGuid = #{param1}
 	 	AND
 	 		urimap.supportedAttributeTag = #{param3}
 	 	AND
@@ -128,7 +128,7 @@
 	 <select id="getPropertyURIMapByPropertyType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+	 		urimap.codingSchemeGuid = #{param1}
 	 	AND
 	 		urimap.supportedAttributeTag = #{param2}
 	 	AND
@@ -141,7 +141,7 @@
 	 	FROM
 	 		${prefix}csSupportedAttrib urimap
 	 	WHERE
-	 		urimap.codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+	 		urimap.codingSchemeGuid = #{param1}
 	 	AND
 	 		urimap.id = #{param2}
 	 	AND
@@ -167,8 +167,8 @@
 	 		assnEntityCode,
 	 		propertyType
 		) VALUES (
-			#{uid,handler=variablePrimaryKeyTypeHandler}, 
-			#{codingSchemeUId,handler=variablePrimaryKeyTypeHandler},
+			#{uid}, 
+			#{codingSchemeUId},
 			#{supportedAttributeTag}, 
 			#{uriMap.localId}, 
 			#{uriMap.uri,jdbcType=VARCHAR},
@@ -183,14 +183,14 @@
 		 	</if>
 
 		 <if test="uriMap.isForwardNavigable !=null">
-			 #{uriMap.isForwardNavigable,handler=numericBooleanTypeHandler},
+			 #{uriMap.isForwardNavigable},
 		 </if>
 		 <if test="uriMap.isForwardNavigable ==null">
 			 null,
 		 </if>
 
 		 <if test="uriMap.isImported !=null">
-			 #{uriMap.isImported,handler=numericBooleanTypeHandler},
+			 #{uriMap.isImported},
 		 </if>
 		 <if test="uriMap.isImported ==null">
 			 null,
@@ -260,10 +260,10 @@
 				rootCode = #{uriMap.rootCode},
 			</if>
 			<if test="uriMap.isForwardNavigable !=null">
-				isForwardNavigable = #{uriMap.isForwardNavigable,handler=numericBooleanTypeHandler},
+				isForwardNavigable = #{uriMap.isForwardNavigable},
 			</if>
 			<if test="uriMap.isImported !=null">
-				isImported = #{uriMap.isImported,handler=numericBooleanTypeHandler},
+				isImported = #{uriMap.isImported},
 			</if>
 			<if test="uriMap.equivalentCodingScheme !=null">
 				equivalentCodingScheme = #uriMap.equivalentCodingScheme,
@@ -298,7 +298,7 @@
 		DELETE FROM
 			${prefix}csSupportedAttrib
 		WHERE
-			codingSchemeGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			codingSchemeGuid = #{param1}
 	</delete>
     
 </mapper>

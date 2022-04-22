@@ -581,7 +581,7 @@ You may obtain a copy of the License at
 		<antcall target="temp-scrub"/>
 		<antcall target="temp-compile"/>
 		
-		<jar destfile="${pkg-test}/lbTest.jar" update="true">
+		<jar destfile="${pkg-test}/lbTest.jar" update="true" zip64Mode="always">
 		    <fileset dir="${temp.bin}">
 		        <include name="**/*.class"/>
 		    </fileset>

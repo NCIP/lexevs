@@ -23,7 +23,7 @@
 		LEFT JOIN ${defaultPrefix}revision pr ON
 			es.prevRevisionGuid = pr.revisionGuid
 		WHERE
-			entryStateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}		
+			entryStateGuid = #{param1}		
      </select>
 
 	<update id="updateEntryStateByUId" parameterType="map">
@@ -46,14 +46,14 @@
 			prevEntryStateGuid
 			)
 		VALUES (
-			#{entryStateUId,handler=variablePrimaryKeyTypeHandler},
-			#{entryUId,handler=variablePrimaryKeyTypeHandler},
+			#{entryStateUId},
+			#{entryUId},
 			#{entryType,jdbcType=VARCHAR},
 			#{entryState.changeType,jdbcType=VARCHAR},
 			#{entryState.relativeOrder,jdbcType=NUMERIC},
-			#{revisionUId,handler=variablePrimaryKeyTypeHandler},
-			#{prevRevisionUId,handler=variablePrimaryKeyTypeHandler},
-			#{previousEntryStateUId,handler=variablePrimaryKeyTypeHandler}
+			#{revisionUId},
+			#{prevRevisionUId},
+			#{previousEntryStateUId}
 			)
  	</insert>
  	
@@ -63,7 +63,7 @@
 		FROM
 			${prefix}vsEntryState es
 		WHERE
-			es.entryStateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			es.entryStateGuid = #{param1}
      </select>
     
 	<select id="checkVSEntryStateExists" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
@@ -72,7 +72,7 @@
 		FROM
 			${prefix}vsEntryState es
 		WHERE
-			es.entryStateGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			es.entryStateGuid = #{param1}
      </select>
 
 	<delete id="deleteAllVSPropertiesEntryStateByParentUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
@@ -86,7 +86,7 @@
 				FROM
 					${prefix}vsProperty prop
 				WHERE
-					prop.referenceGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+					prop.referenceGuid = #{param1}
 				AND
 					prop.referenceType = #{param2}
 			)		
@@ -96,7 +96,7 @@
 		DELETE FROM
 			${prefix}vsEntryState
 		WHERE
-			entryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			entryGuid = #{param1}
 	</delete>
 		
 	<delete id="deleteAllValueSetDefEntryStatesByValueSetDefUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
@@ -109,7 +109,7 @@
 				FROM					
 					${prefix}valueSetDefinition
 				WHERE					
-					valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+					valueSetDefGuid = #{param1}
 			)					
 	</delete>
 	
@@ -117,7 +117,7 @@
 		DELETE FROM
 			${prefix}vsEntryState
 		WHERE
-			entryGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+			entryGuid = #{param1}
 		AND 
 			entryType = #{param2}			
 	</delete>
@@ -133,7 +133,7 @@
 				FROM
 					${prefix}vsdEntry entry
 				WHERE
-					entry.valueSetDefGuid = #{param1,handler=variablePrimaryKeyTypeHandler}
+					entry.valueSetDefGuid = #{param1}
 			)		
 	</delete>
 
@@ -151,7 +151,7 @@
 				WHERE
 					prop.referenceGuid = plEntry.vsPLEntryGuid
 				AND	
-					plEntry.vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+					plEntry.vsPickListGuid = #{param1}	
 			)		
 	</delete>
 
@@ -166,7 +166,7 @@
 				FROM
 					${prefix}vsPLEntry plEntry
 				WHERE
-					plEntry.vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+					plEntry.vsPickListGuid = #{param1}	
 			)		
 	</delete>	
 	
@@ -181,7 +181,7 @@
 				FROM
 					${prefix}vsPickList
 				WHERE
-					vsPickListGuid = #{param1,handler=variablePrimaryKeyTypeHandler}	
+					vsPickListGuid = #{param1}	
 			)		
 	</delete>	
 	
