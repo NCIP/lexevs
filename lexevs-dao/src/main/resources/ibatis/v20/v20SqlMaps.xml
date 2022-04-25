@@ -51,6 +51,7 @@
 		<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
 		<typeAlias alias="sextuple" type="org.lexevs.dao.database.access.association.model.Sextuple"/>
 		<!--<typeAlias alias="StringArrayTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.StringArrayTypeHandler"/>-->
+		<typeAlias alias="cSVtoStringListTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.CSVtoStringListTypeHandler"/>
 		<typeAlias alias="supportedAssociation" type="org.LexGrid.naming.SupportedAssociation" />
 		<typeAlias alias="supportedAssociationQualifier" type="org.LexGrid.naming.SupportedAssociationQualifier" />
 		<typeAlias alias="supportedCodingScheme" type="org.LexGrid.naming.SupportedCodingScheme" />

@@ -1803,12 +1803,12 @@
                     AND
                     ${sortList[].tableAlias}.qualifierValue =
                     (SELECT
-                    <isEqual property="sortList[].order" compareValue="ASC">
+                    <if test="sortList[].order == ASC">
                         MAX(
-                    </isEqual>
-                    <isEqual property="sortList[].order" compareValue="DESC">
+                    </if >
+                    <if test= "sortList[].order == DESC">
                         MIN(
-                    </isEqual>
+                    </if>
                     maxQual.qualifierValue)
                     FROM
                     ${prefix}entityAssnQuals maxQual

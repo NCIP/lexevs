@@ -17,7 +17,6 @@
                     resultMap="ValueSetDefinition.valueSetDefinitionReferenceResult"/>
         <collection property="entityReference" resultMap="ValueSetDefinition.entityReferenceResult"/>
         <collection property="propertyReference" resultMap="ValueSetDefinition.propertyReferenceResult"/>
-        <!--		<result property="entryState" resultMap="Versions.entryStateResult" />-->
     </resultMap>
 
     <resultMap id="definitionEntry" type="insertOrUpdateDefinitionEntryBean">

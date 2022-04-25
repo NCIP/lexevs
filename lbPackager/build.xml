@@ -581,7 +581,7 @@ You may obtain a copy of the License at
 		<antcall target="temp-scrub"/>
 		<antcall target="temp-compile"/>
 		
-		<jar destfile="${pkg-test}/lbTest.jar" update="true" zip64Mode="always">
+		<jar destfile="${pkg-test}/lbTest.jar" update="true" >
 		    <fileset dir="${temp.bin}">
 		        <include name="**/*.class"/>
 		    </fileset>
@@ -754,7 +754,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
 		umls-loader, meta-loader, lbGUI, lbTest">
-		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
+		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve" zip64Mode="always">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
 		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-components}/lexbig.license.txt"/>

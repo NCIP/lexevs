@@ -57,7 +57,7 @@
 	<resultMap id="supportedEntityTypeResult" type="supportedEntityType" extends="uriMapResult">
 	</resultMap>
 	<resultMap id="supportedHierarchyResult" type="supportedHierarchy" extends="uriMapResult">
-		<result property="associationNames" column="associationNames"/>
+		<result property="associationNames" column="associationNames" typeHandler="cSVtoStringListTypeHandler"/>
 		<result property="rootCode" column="rootCode"/>
 		<result property="isForwardNavigable" column="isForwardNavigable"/>
 	</resultMap>
@@ -67,7 +67,7 @@
 		<result property="equivalentCodingScheme" column="equivalentCodingScheme"/>
 	</resultMap>
 	<resultMap id="supportedPropertyResult" type="supportedProperty" extends="uriMapResult">
-		<result property="propertyType" column="propertyType" typeHandler="propertyTypeHandler"/>
+		<result property="propertyType" column="propertyType"/>
 	</resultMap>
 	<resultMap id="supportedPropertyLinkResult" type="supportedPropertyLink" extends="uriMapResult">
 	</resultMap>
