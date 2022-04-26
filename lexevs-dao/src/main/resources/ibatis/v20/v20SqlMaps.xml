@@ -87,7 +87,8 @@
 	</typeAliases>
 	
 	<typeHandlers>
-		</typeHandlers>
+		<typeHandler handler="org.lexevs.dao.database.ibatis.sqlmap.CSVtoStringListTypeHandler" />
+	</typeHandlers>
 	
 	<mappers>
 		<mapper resource="ibatis/v20/common.xml"/>

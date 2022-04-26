@@ -758,11 +758,11 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
 		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-components}/lexbig.license.txt"/>
-		<jar jarfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar" filesetmanifest="merge" duplicate="preserve">        	
+		<jar jarfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar" filesetmanifest="merge" duplicate="preserve" zip64Mode="always">        	
         	<zipgroupfileset file="${pkg-extlib}/*.jar" />		
 		</jar>
 		
-		<jar destfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar"
+		<jar destfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar" zip64Mode="always" 
 			basedir="${spring.libs.dir}"
 			includes="META-INF/*"
 			update="true"/>

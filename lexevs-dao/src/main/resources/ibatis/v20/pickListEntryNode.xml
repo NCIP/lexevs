@@ -14,9 +14,9 @@
 		<result property="status" column="status"/>
 		<result property="effectiveDate" column="effectiveDate"/>
 		<result property="expirationDate" column="expirationDate"/>
+		<result property="entryStateUId" column="entryStateGuid" />
 		<collection property="pickListEntry" resultMap="PickListEntryNode.pickListEntryResult"/>		
 		<collection property="pickListEntryExclusion" resultMap="PickListEntryNode.pickListExclusionResult"/>
-		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 	
 	<resultMap id="pickListEntryNodeMetaDataWithMultiAttrib" type="insertOrUpdatePickListEntryNodeBean">
