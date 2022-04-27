@@ -10,39 +10,39 @@ import java.util.List;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
-public class CSVtoStringListTypeHandler implements TypeHandler<List<String>> {
+public class CSVtoStringListTypeHandler implements TypeHandler<String[]> {
 	
 
 	    @Override
-	    public void setParameter(PreparedStatement ps, int i, List<String> parameter, JdbcType jdbcType) throws SQLException {
+	    public void setParameter(PreparedStatement ps, int i, String[] parameter, JdbcType jdbcType) throws SQLException {
 	        if (parameter != null) {
 	            ps.setString(i, parameter.toString());
 	        }
 	    }
 
 	    @Override
-	    public List<String> getResult(ResultSet rs, String columnName) throws SQLException {
+	    public String[] getResult(ResultSet rs, String columnName) throws SQLException {
 	        String value = rs.getString(columnName);
 	        if (value != null) {
-	            return Arrays.asList(value.split(","));
+	            return value.split(",");
 	        }
 	        return null;
 	    }
 
 	    @Override
-	    public List<String> getResult(ResultSet rs, int index) throws SQLException {
+	    public String[] getResult(ResultSet rs, int index) throws SQLException {
 	        String value = rs.getString(index);
 	        if (value != null) {
-	            return Arrays.asList(value.split(","));
+	            return value.split(",");
 	        }
 	        return null;
 	    }
 
 	    @Override
-	    public List<String> getResult(CallableStatement cs, int index) throws SQLException {
+	    public String[] getResult(CallableStatement cs, int index) throws SQLException {
 	        String value = cs.getString(index);
 	        if (value != null) {
-	            return Arrays.asList(value.split(","));
+	            return value.split(",");
 	        }
 	        return null;
 	    }

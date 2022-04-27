@@ -89,7 +89,7 @@
 			${prefix}codingScheme cs
 			
 		LEFT JOIN
-			${actualTableSetPrefix}entryState es
+			${prefix}entryState es
 		ON
 			cs.entryStateGuid = es.entryStateGuid
 			
