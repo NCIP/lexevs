@@ -1,6 +1,6 @@
 <!DOCTYPE hibernate-configuration PUBLIC
     "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+    "http://www.hibernate.org/dtd/hibernate-configuration">
 
         <hibernate-configuration>
           <session-factory>
@@ -15,7 +15,6 @@
 			<property name="hibernate.jdbc.batch_versioned_data">true</property>
 			<property name="hibernate.show_sql">false</property>
 			<property name="hibernate.format_sql">false</property>
-			
             <mapping class="org.lexevs.registry.model.Registry"/>
             <mapping class="org.lexevs.registry.model.RegistryEntry"/>
           </session-factory>
