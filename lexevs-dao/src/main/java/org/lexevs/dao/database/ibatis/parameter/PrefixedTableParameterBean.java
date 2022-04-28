@@ -23,6 +23,7 @@ public class PrefixedTableParameterBean {
 	 */
 	public PrefixedTableParameterBean() {
 		super();
+		defaultPrefix = getDefaultPrefix();
 	}
 
 	/**

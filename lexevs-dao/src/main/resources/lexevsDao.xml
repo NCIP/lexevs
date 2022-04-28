@@ -797,7 +797,7 @@
 		<property name="registry" ref="registry"/>
 		<property name="indexServiceManager" ref="indexServiceManager"/>
 		<property name="indexDaoManager" ref="indexDaoManager"/>
-		<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>
+		<!--<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>-->
 		<property name="lexEvsIndexOperations" ref="defaultLexEvsIndexOperations"/>
 	</bean>
 	

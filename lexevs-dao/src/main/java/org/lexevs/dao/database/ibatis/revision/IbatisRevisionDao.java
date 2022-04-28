@@ -13,6 +13,7 @@ import org.lexevs.dao.database.access.revision.RevisionDao;
 import org.lexevs.dao.database.access.systemRelease.SystemReleaseDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
 import org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.locator.LexEvsServiceLocator;
@@ -70,7 +71,7 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 		String revisionGuid = null;
 		
 		revisionGuid = (String) this.getSqlSessionTemplate()
-				.selectOne(SELECT_REVISION_GUID_BY_ID, revisionId);
+				.selectOne(SELECT_REVISION_GUID_BY_ID, new PrefixedParameter(null, revisionId));
 		
 		return revisionGuid;
 	}

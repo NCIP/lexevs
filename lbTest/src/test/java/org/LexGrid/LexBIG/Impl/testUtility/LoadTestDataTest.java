@@ -49,6 +49,7 @@ import org.junit.runner.RunWith;
 import org.lexgrid.valuesets.impl.LexEVSValueSetDefinitionServicesImpl;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.UncategorizedSQLException;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.mayo.informatics.lexgrid.convert.directConversions.mrmap.MappingRelationsUtil;
 
@@ -71,6 +72,7 @@ import java.util.Map;
  * @version subversion $Revision: $ checked in on $Date: $
  */
 @RunWith(OrderingTestRunner.class)
+@Transactional(readOnly=false)
 public class LoadTestDataTest extends LexBIGServiceTestCase {
     
     @Override

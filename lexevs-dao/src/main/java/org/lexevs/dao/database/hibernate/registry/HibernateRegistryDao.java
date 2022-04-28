@@ -13,6 +13,7 @@ import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 /**
@@ -20,6 +21,7 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
+@Transactional(readOnly=false)
 public class HibernateRegistryDao extends org.springframework.orm.hibernate5.support.HibernateDaoSupport implements RegistryDao {
 	
 	/** The Constant REGISTRY_ID. */

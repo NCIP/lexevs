@@ -15,6 +15,7 @@
 			<property name="hibernate.jdbc.batch_versioned_data">true</property>
 			<property name="hibernate.show_sql">false</property>
 			<property name="hibernate.format_sql">false</property>
+			<property name="org.hibernate.flushMode">COMMIT</property>
             <mapping class="org.lexevs.registry.model.Registry"/>
             <mapping class="org.lexevs.registry.model.RegistryEntry"/>
           </session-factory>

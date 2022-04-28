@@ -10,7 +10,7 @@
    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring
    http://ehcache-spring-annotations.googlecode.com/svn/schema/ehcache-spring/ehcache-spring-1.1.xsd">
 	
-	<aop:aspectj-autoproxy proxy-target-class="true"/>
+	<!--<aop:aspectj-autoproxy proxy-target-class="true"/>
 
 	<bean id="cacheConfigLocationFactory" class="org.lexevs.cache.CacheConfigLocationFactory"/>
 	
@@ -35,6 +35,6 @@
 	
 	<bean id="cacheRegistry" class="org.lexevs.cache.CacheRegistry">
 		<property name="cacheManager" ref="ehCacheManager"/>
-	</bean>
+	</bean>-->
 	
 </beans>

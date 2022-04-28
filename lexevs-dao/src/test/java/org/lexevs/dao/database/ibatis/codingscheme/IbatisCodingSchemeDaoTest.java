@@ -33,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@Transactional
+@Transactional(readOnly=false)
 public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 
 	/** The ibatis coding scheme dao. */
@@ -41,7 +41,7 @@ public class IbatisCodingSchemeDaoTest extends LexEvsDbUnitTestBase {
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 
 	@Test
-	@Transactional
+	@Transactional(readOnly=false)
 	public void testInsertSupportedHierarchy() throws SQLException{
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
