@@ -80,14 +80,16 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	        assertEquals(cs.getRepresentsVersion(),"1.0");
 	    }
 	    
-//	    @Test
-//	    public void testGetHistoryCodingSchemeByRevision() {
-//	        System.out.println("test cs");
-//	        CodingScheme cs = csdao.getHistoryCodingSchemeByRevision("urn:oid:11.11.0.1", "1.0");
-//	        assertNotNull(cs);
-//	        assertEquals(cs.getCodingSchemeURI(),"urn:oid:11.11.0.1");
-//	        assertEquals(cs.getRepresentsVersion(),"1.0");
-//	    }
+	    @Test
+	    public void testGetHistoryCodingSchemeByRevision() {
+	        System.out.println("test cs");
+        
+        	String scs = csdao.getLatestRevision("3");
+	        CodingScheme cs = csdao.getHistoryCodingSchemeByRevision("3", scs);
+	        assertNotNull(cs);
+	        assertEquals(cs.getCodingSchemeURI(),"urn:oid:11.11.0.1");
+	        assertEquals(cs.getRepresentsVersion(),"1.0");
+	    }
 	    
 	    @Test
 	    public void testGetEntryStateUId() {
@@ -168,5 +170,125 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    	        assertTrue(scs.stream().anyMatch(x -> x.getContent().equals("presentation")));
 	    	        assertTrue(scs.stream().anyMatch(x -> x.getContent().equals("property")));
 	    	    }
+	    
+	    @Test
+	    public void testgetDistinctFormatsOfCodingScheme() {
+    		
+	        System.out.println("test cs");
+	        
+	        List<String> scs = csdao.getDistinctFormatsOfCodingScheme("3");
+	        assertNotNull(scs);
+	        assertEquals(scs.size(), 2);
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("text/plain")));
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("textplain")));
+
+	    }
+	    
+	    @Test
+	    public void testgetDistinctPropertyQualifierNamesOfCodingScheme() {
+    		
+	        System.out.println("test cs");
+	        
+	        List<String> scs = csdao.getDistinctPropertyQualifierNamesOfCodingScheme("3");
+	        assertNotNull(scs);
+	        assertTrue((scs.size() == 0 || scs.get(0) == null));
+	        
+	        String uid = csdao.getCodingSchemeUIdByUriAndVersion("urn:oid:2.16.840.1.113883.3.26.1.2", "200902_For_Test");
+	        List<String> metaQuals = csdao.getDistinctPropertyQualifierNamesOfCodingScheme(uid);
+	        assertNotNull(metaQuals);
+	        assertTrue(!(metaQuals.size() == 0));
+	        assertEquals(metaQuals.size(),14);
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("SAUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("source-code")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("CVF")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("AUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("SCUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("mrrank")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("SDUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("LUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("SUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("METAUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("STYPE")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("ATUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("SATUI")));
+	        assertTrue(metaQuals.stream().filter(x -> x != null).anyMatch(x -> x.equals("SAUI")));
+	    }
+	    
+	    @Test
+	    public void testgetDistinctPropertyQualifierTypesOfCodingScheme() {
+    		
+	        System.out.println("test cs");
+	        
+	        List<String> scs = csdao.getDistinctPropertyQualifierTypesOfCodingScheme("3");
+	        assertNotNull(scs);
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("source")));
+	    }
+	    
+	    @Test
+	    public void testgetDistinctNamespacesOfCodingScheme() {
+    		
+	        System.out.println("test cs");
+	        
+	        List<String> scs = csdao.getDistinctNamespacesOfCodingScheme("3");
+	        assertNotNull(scs);
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("Automobiles")));
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("TestForSameCodeNamespace")));
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("TestForDifferentNamespaceSameCode")));
+
+	    }
+	    
+	    @Test
+	    public void testgetDistinctEntityTypesOfCodingScheme() {
+    		
+	        System.out.println("test cs");
+	        
+	        List<String> scs = csdao.getDistinctEntityTypesOfCodingScheme("3");
+	        assertNotNull(scs);
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("concept")));
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("valueDomain")));
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("association")));
+	    }
+	    
+	    @Test
+	    public void testgetDistinctLanguagesOfCodingScheme() {
+    		
+	        System.out.println("test cs");
+	        
+	        List<String> scs = csdao.getDistinctLanguagesOfCodingScheme("3");
+	        assertNotNull(scs);
+	        assertTrue(scs.stream().anyMatch(x -> x.equals("en")));
+	    }
+	    
+	    
+	    @Test
+	    public void testgetLatestRevision() {
+    		
+	        System.out.println("test cs");
+	        
+	        String scs = csdao.getLatestRevision("3");
+	        assertNotNull(scs);
+	        System.out.println(scs);
+	    }
+	    
+	    @Test
+	    public void testgetRevisionWhenNew() {
+    		
+	        System.out.println("test cs");
+	        
+	        String scs = csdao.getRevisionWhenNew("3");
+	        assertNotNull(scs);
+	        System.out.println(scs);
+	    }
+	    
+	    @Test
+	    public void testgetAllCodingSchemeRevisions() {
+    		
+	        System.out.println("test cs");
+	        
+	        List<String> scs = csdao.getAllCodingSchemeRevisions("3");
+	        assertNotNull(scs);
+	        scs.stream().forEach(x -> System.out.println(x));
+	    }
+	    
 
 }

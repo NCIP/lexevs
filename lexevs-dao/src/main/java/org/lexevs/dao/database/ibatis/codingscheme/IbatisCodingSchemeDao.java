@@ -272,7 +272,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		String prefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		String actualTableSetPrefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		PrefixedParameterTuple param = new PrefixedParameterTuple(prefix, codingSchemeUId, revisionId);
+		PrefixedParameterTuple param = new PrefixedParameterTuple(actualTableSetPrefix, codingSchemeUId, revisionId);
 		param.setActualTableSetPrefix(actualTableSetPrefix);
 		
 		return (CodingScheme)
