@@ -443,7 +443,7 @@
 	<bean id="lexEvsJdbcTemplate"
 		class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource">
-			<ref bean="dataSource" />
+			<ref bean="dataSourceBean" />
 		</property>
 	</bean>
 
@@ -458,7 +458,7 @@
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
   		<property name="configLocation" value="classpath:ibatis/v20/v20SqlMaps.xml" />
-  		<property name="dataSource" ref="dataSource" />
+  		<property name="dataSource" ref="dataSourceBean" />
 		<property name="mapperLocations" value="classpath*:resources/ibatis.v20/**/*.xml" />
 	</bean>
 
@@ -469,7 +469,7 @@
      </bean>
     
      <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">  
-   		<property name="sessionFactory">
+   		<property name="sessionFactory" >
     		<ref bean="registrySessionFactory"/>
  		 </property>
 	</bean>
@@ -575,7 +575,7 @@
         <constructor-arg><ref bean="pool"/></constructor-arg>
     </bean>
     
-    <bean id="dataSource" 
+    <bean id="dataSourceBean"
     	class="org.lexevs.dao.database.datasource.ErrorReportingDataSourceDecorator">
     	<constructor-arg ref="dbcpDataSource"/>
     	<property name="systemVariables" ref="systemVariables"/>
@@ -617,12 +617,12 @@
     
     <bean id="mysqlTableBasedBigIntKeyIncrementer" class="org.lexevs.dao.database.key.incrementer.MysqlTableBasedBigIntKeyIncrementer">
    		<property name="databaseUtility" ref="defaultDatabaseUtility" />
-   		<property name="dataSource" ref="dataSource"/>
+   		<property name="dataSource" ref="dataSourceBean"/>
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
     </bean>
     
     <bean id="sequenceBasedBigIntKeyIncrementer" class="org.lexevs.dao.database.key.incrementer.SequenceBasedBigIntKeyIncrementer">
-    	<property name="dataSource" ref="dataSource"/>
+    	<property name="dataSource" ref="dataSourceBean"/>
     	<property name="databaseType" ref="databaseTypeFactory"/>
     	<property name="prefixResolver" ref="defaultPrefixResolver"/>
     </bean>
@@ -630,7 +630,7 @@
     <bean id="defaultLexEvsDatabaseOperations" class="org.lexevs.dao.database.operation.DefaultLexEvsDatabaseOperations">
    	 	<property name="databaseUtility" ref="defaultDatabaseUtility" />
    		<property name="prefixResolver" ref="defaultPrefixResolver"/>
-   		<property name="dataSource" ref="dataSource"/>
+   		<property name="dataSource" ref="dataSourceBean"/>
    		<property name="databaseType" ref="databaseTypeFactory"/>
    		<property name="transactionManager" ref="transactionManager"/>
    		<property name="transitivityBuilder" ref="defaultTransitivityBuilder"/>
@@ -704,7 +704,7 @@
 	
 	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 		<property name="dataSource">
-			<ref bean="dataSource" />
+			<ref bean="dataSourceBean" />
 		</property>
 		<property name="entityInterceptor" ref="prefixInterceptor"/>
 		<property name="configLocations" value="classpath:hibernate/registry/hibernate.cfg.xml"/>
@@ -722,7 +722,7 @@
 	
 	<bean id="xmlRegistry" class="org.lexevs.registry.service.XmlRegistry">
 		<constructor-arg ref="systemVariables"/>
-		<property name="dataSource" ref="dataSource"/>
+		<property name="dataSource" ref="dataSourceBean"/>
 	</bean>
 	
 	<bean id="registry" class="org.lexevs.registry.service.DelegatingDatabaseToXmlRegistry">
@@ -738,7 +738,7 @@
 	<bean id="resourceManager" class="org.lexevs.system.ResourceManager" init-method="init">
 		<property name="systemVariables" ref="systemVariables"/>
 		<property name="logger" ref="loggerFactory"/>
-		<property name="dataSource" ref="dataSource"/>
+		<property name="dataSource" ref="dataSourceBean"/>
 		<property name="databaseType" ref="databaseTypeFactory"/>
 		<property name="xmlRegistry" ref="xmlRegistry"/>
 	</bean>
@@ -772,12 +772,12 @@
 	
     <bean id="defaultDatabaseUtility"
 		class="org.lexevs.dao.database.utility.DefaultDatabaseUtility">
-		<property name="dataSource" ref="dataSource" />
+		<property name="dataSource" ref="dataSourceBean" />
 	</bean>
 	
 	<bean id="lexGridSchemaCheckFactory"
 		class="org.lexevs.dao.database.setup.schemacheck.LexGridSchemaCheckFactory">
-		<property name="dataSource" ref="dataSource"/>  
+		<property name="dataSource" ref="dataSourceBean"/>
 		<property name="databaseType" ref="databaseTypeFactory"/>  
 		<property name="systemVariables" ref="systemVariables"/>
 	</bean>
@@ -785,7 +785,7 @@
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
 	
 	<bean id="databaseTypeFactory" class="org.lexevs.dao.database.type.DatabaseTypeFactory">
-		<property name="dataSource" ref="dataSource"/> 
+		<property name="dataSource" ref="dataSourceBean"/>
 	</bean>
 	
 	<bean id="lexEvsServiceLocator" 

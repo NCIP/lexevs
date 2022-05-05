@@ -12,7 +12,7 @@
 			 m:classifier="tests" conf="test"/>
 	</publications>
 	<dependencies>
-		<dependency org="apache" name="ddlUtils" rev="1.0-PATCHED" conf="default"/>
+		<dependency org="ddlutils" name="ddlutils" rev="1.1" conf="default"/>
 		<dependency org="args4j" name="args4j" rev="2.0.12" conf="default"/>
 		<dependency org="oro" name="oro" rev="2.0.8" conf="default"/>
 		<dependency org="commons-digester" name="commons-digester" rev="1.8" conf="default"/>
@@ -110,7 +110,7 @@
 		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
 		<dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.13" conf="default"/>
 		<dependency org="com.fasterxml" name="classmate" rev="1.5.1" conf="default"/>
-		
+		<dependency org="commons-cli" name="commons-cli" rev="1.2" conf="default"/>
 		
    	 </dependencies>
 </ivy-module>

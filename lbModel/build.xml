@@ -15,7 +15,7 @@
 	<property name="lib.dir" value="lib"/>
 
 	<!-- bda related properties -->
-	<property name="bda.build.dir" location="../../lexevs_bda/lbPackager"/>
+	<property name="bda.build.dir" location="../../lexevs/lbPackager"/>
 	<property file="bda.properties" location="${bda.build.dir}"/>
 	<property name="lgSharedLibs.dir" location="../lgSharedLibraries"/>	
 	<property name="lgModel.project.dir" location="../lgModel"/>
@@ -29,7 +29,7 @@
 		<property name="ivy.def.file" location="ivy.xml" />
 
 		<property name="ivy.jar.dir" value="${lbPackager.dir}/ivy/lib" />
-		<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.1.0-rc1.jar" />
+		<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy-2.3.0.jar" />
 
 		<target name="ivy:init" depends="ivy:clean">
 			<path id="ivy.lib.path">

@@ -15,6 +15,7 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
@@ -22,6 +23,8 @@ import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.orm.hibernate5.HibernateTemplate;
+import org.springframework.transaction.annotation.Propagation;
 //
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +34,256 @@ import org.springframework.transaction.annotation.Transactional;
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 //@TransactionConfiguration
+@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 
 	/** The ibatis association dao. */
 	@Resource
 	private IbatisAssociationDao ibatisAssociationDao;
+
+	@Test
+	public void getRelationsContainerNameForAssociationInstanceId() {
+	}
+
+	@Test
+	public void getHistoryRelationByRevisionId() {
+	}
+
+	@Test
+	public void getAllTriplesOfCodingScheme() {
+	}
+
+	@Test
+	public void getAllGraphDbTriplesOfCodingScheme() {
+	}
+
+	@Test
+	public void getAnonDesignationForPredicate() {
+	}
+
+	@Test
+	public void getAssociationPredicateUIdByContainerUId() {
+	}
+
+	@Test
+	public void getAssociationPredicateUIdByContainerName() {
+	}
+
+	@Test
+	public void getAssociationPredicateUidsForAssociationName() {
+	}
+
+	@Test
+	public void getAssociationPredicateUidsForDirectionalName() {
+	}
+
+	@Test
+	public void getRelationUId() {
+	}
+
+	@Test
+	public void getRelationEntryStateUId() {
+	}
+
+	@Test
+	public void getAssociationPredicateUIdsForRelationsUId() {
+	}
+
+	@Test
+	public void getRelationsUIdsForCodingSchemeUId() {
+	}
+
+	@Test
+	public void getNodesPath() {
+	}
+
+	@Test
+	public void getRelationsNamesForCodingSchemeUId() {
+	}
+
+	@Test
+	public void deleteAssociationQualificationsByCodingSchemeUId() {
+	}
+
+	@Test
+	public void getAssociationPredicateNameForUId() {
+	}
+
+	@Test
+	public void insertRelations() {
+	}
+
+	@Test
+	public void doInsertRelations() {
+	}
+
+	@Test
+	public void insertAssociationEntity() {
+	}
+
+	@Test
+	public void testInsertAssociationEntity() {
+	}
+
+	@Test
+	public void updateAssociationEntity() {
+	}
+
+	@Test
+	public void insertAssociationPredicate() {
+	}
+
+	@Test
+	public void insertBatchAssociationSources() {
+	}
+
+	@Test
+	public void insertBatchAssociationQualifiers() {
+	}
+
+	@Test
+	public void insertAssociationSource() {
+	}
+
+	@Test
+	public void testInsertBatchAssociationSources() {
+	}
+
+	@Test
+	public void doInsertIntoTransitiveClosure() {
+	}
+
+	@Test
+	public void insertIntoTransitiveClosure() {
+	}
+
+	@Test
+	public void insertBatchTransitiveClosure() {
+	}
+
+	@Test
+	public void testInsertAssociationSource1() {
+	}
+
+	@Test
+	public void insertAssociationQualifier() {
+	}
+
+	@Test
+	public void getAssociationPredicateByUId() {
+	}
+
+	@Test
+	public void getRelationsByUId() {
+	}
+
+	@Test
+	public void getKeyForAssociationInstanceId() {
+	}
+
+	@Test
+	public void getInstanceToGuidCache() {
+	}
+
+	@Test
+	public void doGetSupportedLgSchemaVersions() {
+	}
+
+	@Test
+	public void getIbatisVersionsDao() {
+	}
+
+	@Test
+	public void setIbatisVersionsDao() {
+	}
+
+	@Test
+	public void insertHistoryRelation() {
+	}
+
+	@Test
+	public void doInsertHistoryRelation() {
+	}
+
+	@Test
+	public void updateRelation() {
+	}
+
+	@Test
+	public void doUpdateRelation() {
+	}
+
+	@Test
+	public void removeRelationByUId() {
+	}
+
+	@Test
+	public void updateRelationVersionableChanges() {
+	}
+
+	@Test
+	public void updateRelationEntryStateUId() {
+	}
+
+	@Test
+	public void deleteAssociationQualificationsByRelationUId() {
+	}
+
+	@Test
+	public void getRelationLatestRevision() {
+	}
+
+	@Test
+	public void getAllEntityAssocToEntityGuidsOfCodingScheme() {
+	}
+
+	@Test
+	public void getGuidToInstanceMap() {
+	}
+
+	@Test
+	public void testGetAllGraphDbTriplesOfCodingScheme() {
+	}
+
+	@Test
+	public void getAllAncestorTriplesTrOfCodingScheme() {
+	}
+
+	@Test
+	public void getAllDescendantTriplesTrOfCodingScheme() {
+	}
+
+	@Test
+	public void getPropertyDao() {
+	}
+
+	@Test
+	public void setPropertyDao() {
+	}
+
+	@Test
+	public void getAssociationTargetDao() {
+	}
+
+	@Test
+	public void setAssociationTargetDao() {
+	}
+
+	@Test
+	public void getAssociationDataDao() {
+	}
+
+	@Test
+	public void setAssociationDataDao() {
+	}
+
+	@Test
+	public void entryStateExists() {
+	}
+
+	@Test
+	public void getAssociationPredicateNameForAssociationInstanceId() {
+	}
 
 	/**
 	 * Test get key for association instance id.
@@ -44,10 +292,11 @@ public class IbatisAssociationDaoTest extends LexEvsDbUnitTestBase {
 	 *             the SQL exception
 	 */
 	@Test
-	@Transactional
+	@Transactional(propagation=Propagation.REQUIRED,readOnly=false)
 	public void testGetKeyForAssociationInstanceId() throws SQLException {
 
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
+
 
 		template
 				.execute("Insert into codingScheme (codingSchemeGuid, codingSchemeName, codingSchemeUri, representsVersion) "

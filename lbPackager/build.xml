@@ -510,11 +510,18 @@ You may obtain a copy of the License at
   		</antcall>
 	</target>
 	
-	<target name="lexevs-dao" depends="lgModel,lbModel,lgUtility" description="packages the LexEVS DAO">
+	<target name="lexevs-dao" depends="ddlutils,lgModel,lbModel,lgUtility" description="packages the LexEVS DAO">
 		<antcall target="common-project-build">
    			<param name="project" value="lexevs-dao"/>
 			<param name="module" value="lexevs-dao"/>
   		</antcall>
+	</target>
+
+	<target name="ddlutils" description="packages the ddlutils.">
+		<antcall target="common-project-build">
+			<param name="project" value="ddlutils"/>
+			<param name="module" value="ddlutils"/>
+		</antcall>
 	</target>
 
 	<target name="lbInterfaces" description="packages the LexBIG service interfaces">
