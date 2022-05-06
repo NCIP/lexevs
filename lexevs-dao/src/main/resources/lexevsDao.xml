@@ -708,7 +708,6 @@
 		</property>
 		<property name="entityInterceptor" ref="prefixInterceptor"/>
 		<property name="configLocations" value="classpath:hibernate/registry/hibernate.cfg.xml"/>
-		<!--<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>-->
 	</bean>
 
 	<bean id="prefixInterceptor" class="org.lexevs.dao.database.hibernate.prefix.PrefixInterceptor">

@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-//@TransactionConfiguration
+@Transactional(readOnly=false)
 public class HibernateRegistryDaoTest extends LexEvsDbUnitTestBase {
 
 	/** The hibernate registry dao. */
