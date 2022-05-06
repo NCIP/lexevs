@@ -429,9 +429,23 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
-		bean.setCodingScheme(codingScheme);
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
+		
+
+		bean.setCodingSchemeGuid(codingScheme.getCodingSchemeName());
+		bean.setCodingSchemeURI(codingScheme.getCodingSchemeURI());
+		bean.setRepresentsVersion(codingScheme.getRepresentsVersion());
+		bean.setFormalName(codingScheme.getFormalName());
+		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
+		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
+		bean.setDescription(codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setIsActive(codingScheme.getIsActive());
+		bean.setOwner(codingScheme.getOwner());
+		bean.setStatus(codingScheme.getStatus());
+		bean.setEffectiveDate(codingScheme.getEffectiveDate());
+		bean.setExpirationDate(codingScheme.getExpirationDate());
 
 		this.getSqlSessionTemplate().update(UPDATE_CODING_SCHEME_BY_ID_SQL,
 				bean);
@@ -518,9 +532,23 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
-		bean.setCodingScheme(codingScheme);
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
+		
+
+		bean.setCodingSchemeGuid(codingScheme.getCodingSchemeName());
+		bean.setCodingSchemeURI(codingScheme.getCodingSchemeURI());
+		bean.setRepresentsVersion(codingScheme.getRepresentsVersion());
+		bean.setFormalName(codingScheme.getFormalName());
+		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
+		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
+		bean.setDescription(codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setIsActive(codingScheme.getIsActive());
+		bean.setOwner(codingScheme.getOwner());
+		bean.setStatus(codingScheme.getStatus());
+		bean.setEffectiveDate(codingScheme.getEffectiveDate());
+		bean.setExpirationDate(codingScheme.getExpirationDate());
 		
 		this.getSqlSessionTemplate().update(UPDATE_CODING_SCHEME_VER_ATTRIB_BY_ID_SQL, bean);
 		
@@ -675,7 +703,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				for(URIMap uriMap : supportedProperties){
 					String uriMapId = createUniqueId();
 					
-					this.getSqlSessionBatchTemplate().insert(INSERT_URIMAP_SQL, 
+					this.getSqlSessionTemplate().insert(INSERT_URIMAP_SQL, 
 							buildInsertOrUpdateURIMapBean(
 									getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 									uriMapId, 
@@ -959,11 +987,26 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	protected InsertOrUpdateCodingSchemeBean buildInsertCodingSchemeBean(String prefix, String codingSchemeUId, String releaseUId, String entryStateUId, CodingScheme codingScheme){
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
-		bean.setCodingScheme(codingScheme);
 		bean.setReleaseUId(releaseUId);
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
 		
+
+		bean.setCodingSchemeGuid(codingScheme.getCodingSchemeName());
+		bean.setCodingSchemeURI(codingScheme.getCodingSchemeURI());
+		bean.setCodingSchemeName(codingScheme.getCodingSchemeName());
+		bean.setRepresentsVersion(codingScheme.getRepresentsVersion());
+		bean.setFormalName(codingScheme.getFormalName());
+		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
+		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
+		bean.setDescription(codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setIsActive(codingScheme.getIsActive());
+		bean.setOwner(codingScheme.getOwner());
+		bean.setStatus(codingScheme.getStatus());
+		bean.setEffectiveDate(codingScheme.getEffectiveDate());
+		bean.setExpirationDate(codingScheme.getExpirationDate());
+
 		return bean;
 	}
 	

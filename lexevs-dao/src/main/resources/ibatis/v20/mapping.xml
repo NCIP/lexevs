@@ -173,71 +173,77 @@
 			#{uriMap.localId}, 
 			#{uriMap.uri,jdbcType=VARCHAR},
 			#{uriMap.content,jdbcType=VARCHAR},
-			#{associationNames,jdbcType=VARCHAR}
+			#{associationNames,jdbcType=VARCHAR},
 
+
+		<if test="uriMap instanceof org.LexGrid.naming.SupportedHierarchy">
 			<if test="uriMap.rootCode !=null">
 				#{uriMap.rootCode:VARCHAR},
 			</if>
-			 <if test="uriMap.rootCode ==null">
+			<if test="uriMap.rootCode ==null">
 				 null,
 		 	</if>
-
-		 <if test="uriMap.isForwardNavigable !=null">
-			 #{uriMap.isForwardNavigable},
+		 	<if test="uriMap.isForwardNavigable !=null">
+			 	#{uriMap.isForwardNavigable},
+		 	</if>
+		 	<if test="uriMap.isForwardNavigable ==null">
+			 	null,
+		 	</if>
 		 </if>
-		 <if test="uriMap.isForwardNavigable ==null">
-			 null,
+		 <if test="uriMap instanceof org.LexGrid.naming.SupportedCodingScheme">
+		 	<if test="uriMap.isImported !=null">
+			 	#{uriMap.isImported},
+		 	</if>
+		 	<if test="uriMap.isImported ==null">
+			 	null,
+		 	</if>
 		 </if>
-
-		 <if test="uriMap.isImported !=null">
-			 #{uriMap.isImported},
+		 <if test="uriMap instanceof org.LexGrid.naming.SupportedNamespace">
+		 	<if test="uriMap.equivalentCodingScheme !=null">
+			 	#{uriMap.equivalentCodingScheme:VARCHAR},
+		 	</if>
+		 	<if test="uriMap.equivalentCodingScheme ==null">
+			 	null,
+		 	</if>
 		 </if>
-		 <if test="uriMap.isImported ==null">
-			 null,
+		 <if test="uriMap instanceof org.LexGrid.naming.SupportedNamespace">
+		 	<if test="uriMap.assemblyRule !=null">
+			 	#{uriMap.assemblyRule:VARCHAR},
+		 	</if>
+		 	<if test="uriMap.assemblyRule ==null">
+			 	null,
+		 	</if>
 		 </if>
-
-		 <if test="uriMap.equivalentCodingScheme !=null">
-			 #{uriMap.equivalentCodingScheme:VARCHAR},
+		 <if test="uriMap instanceof org.LexGrid.naming.SupportedAssociation">
+		 	<if test="uriMap.codingScheme !=null">
+			 	#{uriMap.codingScheme:VARCHAR},
+		 	</if>
+		 	<if test="uriMap.codingScheme ==null">
+			 	null,
+		 	</if>
+		 
+		 	<if test="uriMap.entityCodeNamespace !=null">
+			 	#{uriMap.entityCodeNamespace:VARCHAR},
+		 	</if>
+		 	<if test="uriMap.entityCodeNamespace ==null">
+			 	null,
+		 	</if>
+		
+		 	<if test="uriMap.entityCode !=null">
+			 	#{uriMap.entityCode:VARCHAR},
+		 	</if>
+		 	<if test="uriMap.entityCode ==null">
+			 	null,
+		 	</if>
 		 </if>
-		 <if test="uriMap.equivalentCodingScheme ==null">
-			 null,
+		 <if test="uriMap instanceof org.LexGrid.naming.SupportedProperty">
+		 	<if test="uriMap.propertyType !=null">
+			 	#{uriMap.propertyType:VARCHAR}
+		 	</if>
+		 	<if test="uriMap.propertyType ==null">
+			 	null
+		 	</if>
 		 </if>
-
-		 <if test="uriMap.assemblyRule !=null">
-			 #{uriMap.assemblyRule:VARCHAR},
-		 </if>
-		 <if test="uriMap.assemblyRule ==null">
-			 null,
-		 </if>
-
-		 <if test="uriMap.codingScheme !=null">
-			 #{uriMap.codingScheme:VARCHAR},
-		 </if>
-		 <if test="uriMap.codingScheme ==null">
-			 null,
-		 </if>
-
-		 <if test="uriMap.entityCodeNamespace !=null">
-			 #{uriMap.entityCodeNamespace:VARCHAR},
-		 </if>
-		 <if test="uriMap.entityCodeNamespace ==null">
-			 null,
-		 </if>
-
-		 <if test="uriMap.entityCode !=null">
-			 #{uriMap.entityCode:VARCHAR},
-		 </if>
-		 <if test="uriMap.entityCode ==null">
-			 null,
-		 </if>
-
-		 <if test="uriMap.propertyType !=null">
-			 #{uriMap.propertyType:VARCHAR}
-		 </if>
-		 <if test="uriMap.propertyType ==null">
-			 null
-		 </if>
-
 		)
   </insert>
 
