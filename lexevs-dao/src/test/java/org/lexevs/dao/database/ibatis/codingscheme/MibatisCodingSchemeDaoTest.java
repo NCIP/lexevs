@@ -7,17 +7,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
 import org.LexGrid.LexBIG.DataModel.enums.PropertyType;
 import org.LexGrid.codingSchemes.CodingScheme;
+import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.commonTypes.Text;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.naming.Mappings;
 import org.LexGrid.naming.SupportedAssociation;
 import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.versions.EntryState;
+import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +45,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
     
     	@Test
     	public void testGetCodingSchemeByUId(){
-    		System.out.println("test cs");
+    		
     		CodingScheme cs = csdao.getCodingSchemeByUId("3");
     		assertNotNull(cs);
     		assertEquals(cs.getFormalName(),"autos");
@@ -47,7 +53,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 
 	    @Test
 	    public void testGetCodingSchemeUIdByUriAndVersion(){
-	        System.out.println("test cs");
+	       
 	        String cs = csdao.getCodingSchemeUIdByUriAndVersion("urn:oid:11.11.0.1", "1.0");
 	        assertNotNull(cs);
 	        assertEquals(cs,"3");
@@ -55,7 +61,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 	    @Test
 	    public void testGetCodingSchemeByUriAndVersion(){
-	        System.out.println("test cs");
+	       
 	        CodingScheme cs = csdao.getCodingSchemeByUriAndVersion("urn:oid:11.11.0.1", "1.0");
 	        assertNotNull(cs);
 	        assertEquals(cs.getCodingSchemeURI(),"urn:oid:11.11.0.1");
@@ -64,7 +70,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 //	    @Test
 //	    public void testetCodingSchemeByNameAndVersion(){
-//	        System.out.println("test cs");
+//	       
 //	        CodingScheme cs = csdao.getCodingSchemeByNameAndVersion("Automobiles", "1.0");
 //	        assertNotNull(cs);
 //	        assertEquals(cs.getCodingSchemeURI(),"urn:oid:11.11.0.1");
@@ -73,7 +79,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 	    @Test
 	    public void testGetCodingSchemeSummaryByUriAndVersion() {
-	        System.out.println("test cs");
+	       
 	        CodingSchemeSummary cs = csdao.getCodingSchemeSummaryByUriAndVersion("urn:oid:11.11.0.1", "1.0");
 	        assertNotNull(cs);
 	        assertEquals(cs.getCodingSchemeURI(),"urn:oid:11.11.0.1");
@@ -82,7 +88,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 	    @Test
 	    public void testGetHistoryCodingSchemeByRevision() {
-	        System.out.println("test cs");
+	       
         
         	String scs = csdao.getLatestRevision("3");
 	        CodingScheme cs = csdao.getHistoryCodingSchemeByRevision("3", scs);
@@ -93,7 +99,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 	    @Test
 	    public void testGetEntryStateUId() {
-	        System.out.println("test cs");
+	       
 	        String cs = csdao.getEntryStateUId("3");
 	        assertNotNull(cs);
 	        assertEquals(cs,"214");
@@ -101,7 +107,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 	    @Test
 	    public void testGetURIMap() {
-	        System.out.println("test cs");
+	       
 	        SupportedCodingScheme scs = csdao.getUriMap("3","Automobiles",SupportedCodingScheme.class);
 	        assertNotNull(scs);
 	        assertEquals(scs.getUri(),"urn:oid:11.11.0.1");
@@ -112,7 +118,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 	    @Test
 	    public void testGetPropertyUriMapForPropertyType() {
-	        System.out.println("test cs");
+	       
 	        
 	        List<SupportedProperty> scs = csdao.getPropertyUriMapForPropertyType("3",PropertyTypes.PROPERTY);
 	        assertNotNull(scs);
@@ -124,7 +130,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    
 	    @Test
 	    public void testValidateSupportedAttribute() {
-	        System.out.println("test cs");
+	       
 	        
 	        assertTrue(csdao.validateSupportedAttribute("3", "is_a", SupportedAssociation.class));
 	    }
@@ -133,7 +139,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetMappings() {
 	    		
-		        System.out.println("test cs");
+		       
 		        
 		        Mappings scs = csdao.getMappings("3");
 		        assertNotNull(scs);
@@ -145,7 +151,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctPropertyNamesOfCodingScheme() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getDistinctPropertyNamesOfCodingScheme("3");
 	        assertNotNull(scs);
@@ -158,7 +164,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctPropertyNameAndType() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<NameAndValue> scs = csdao.getDistinctPropertyNameAndType("3");
 	    	        assertNotNull(scs);
@@ -174,7 +180,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctFormatsOfCodingScheme() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getDistinctFormatsOfCodingScheme("3");
 	        assertNotNull(scs);
@@ -187,7 +193,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctPropertyQualifierNamesOfCodingScheme() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getDistinctPropertyQualifierNamesOfCodingScheme("3");
 	        assertNotNull(scs);
@@ -217,7 +223,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctPropertyQualifierTypesOfCodingScheme() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getDistinctPropertyQualifierTypesOfCodingScheme("3");
 	        assertNotNull(scs);
@@ -227,7 +233,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctNamespacesOfCodingScheme() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getDistinctNamespacesOfCodingScheme("3");
 	        assertNotNull(scs);
@@ -240,7 +246,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctEntityTypesOfCodingScheme() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getDistinctEntityTypesOfCodingScheme("3");
 	        assertNotNull(scs);
@@ -252,7 +258,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetDistinctLanguagesOfCodingScheme() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getDistinctLanguagesOfCodingScheme("3");
 	        assertNotNull(scs);
@@ -263,7 +269,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetLatestRevision() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        String scs = csdao.getLatestRevision("3");
 	        assertNotNull(scs);
@@ -273,7 +279,7 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetRevisionWhenNew() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        String scs = csdao.getRevisionWhenNew("3");
 	        assertNotNull(scs);
@@ -283,12 +289,55 @@ public class MibatisCodingSchemeDaoTest extends AbstractTransactionalJUnit4Sprin
 	    @Test
 	    public void testgetAllCodingSchemeRevisions() {
     		
-	        System.out.println("test cs");
+	       
 	        
 	        List<String> scs = csdao.getAllCodingSchemeRevisions("3");
 	        assertNotNull(scs);
 	        scs.stream().forEach(x -> System.out.println(x));
 	    }
+	    
+		@Test
+		public void testInsertCodingScheme() throws SQLException{
+			CodingScheme cs = new CodingScheme();
+			
+			final Timestamp effectiveDate = new Timestamp(1l);
+			final Timestamp expirationDate = new Timestamp(2l);
+			
+			cs.setCodingSchemeName("csName");
+			cs.setCodingSchemeURI("uri");
+			cs.setRepresentsVersion("1.2");
+			cs.setFormalName("csFormalName");
+			cs.setDefaultLanguage("lang");
+			cs.setApproxNumConcepts(22l);
+			
+			EntityDescription ed = new EntityDescription();
+			ed.setContent("cs Description");
+			cs.setEntityDescription(ed);
+			
+			Text copyright = new Text();
+			copyright.setContent("cs Copyright");
+			cs.setCopyright(copyright);
+			
+			cs.setIsActive(false);
+			
+			cs.setOwner("cs owner");
+			
+			cs.setStatus("testing");
+			
+			cs.setEffectiveDate(effectiveDate);
+			cs.setExpirationDate(expirationDate);
+
+			EntryState es = new EntryState();
+			es.setChangeType(ChangeType.REMOVE);
+			es.setRelativeOrder(22l);
+			cs.setEntryState(es);
+			
+			String id = csdao.insertCodingScheme(cs, null, true);
+			
+			CodingScheme rscs = csdao.getCodingSchemeByUriAndVersion("csName", "id");
+			assertNotNull(rscs);
+			System.out.println(cs.getCodingSchemeName());
+		}
 	    
 
 }

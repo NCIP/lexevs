@@ -1,6 +1,8 @@
 
 package org.lexevs.dao.database.prefix;
 
+import java.util.List;
+
 import org.LexGrid.LexBIG.Exceptions.LBInvocationException;
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.apache.commons.lang.StringUtils;
@@ -82,7 +84,8 @@ public class DefaultPrefixResolver implements PrefixResolver {
 
 				@Override
 				public String execute(DaoManager daoManager) {
-					for(RegistryEntry entry : registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME)){
+					List<RegistryEntry> rentries = registry.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+					for(RegistryEntry entry : rentries){
 						String foundCodingSchemeId = daoManager.getCurrentCodingSchemeDao().
 							getCodingSchemeUIdByUriAndVersion(entry.getResourceUri(), entry.getResourceVersion());
 						

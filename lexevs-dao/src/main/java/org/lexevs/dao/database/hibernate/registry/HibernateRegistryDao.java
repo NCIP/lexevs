@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
@@ -13,6 +15,7 @@ import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -65,7 +68,17 @@ public class HibernateRegistryDao extends org.springframework.orm.hibernate5.sup
 	 */
 	public void deleteRegistryEntry(
 			RegistryEntry entry) {
-		this.getHibernateTemplate().delete(entry);
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.delete(entry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 
 	/* (non-Javadoc)
@@ -86,7 +99,18 @@ public class HibernateRegistryDao extends org.springframework.orm.hibernate5.sup
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#insertRegistryEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void insertRegistryEntry(RegistryEntry entry) {
-		this.getHibernateTemplate().save(entry);
+
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.save(entry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -126,7 +150,18 @@ public class HibernateRegistryDao extends org.springframework.orm.hibernate5.sup
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateRegistryEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void updateRegistryEntry(RegistryEntry entry) {
-		this.getHibernateTemplate().merge(entry);
+		
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.merge(entry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 
 	/* (non-Javadoc)
@@ -135,7 +170,17 @@ public class HibernateRegistryDao extends org.springframework.orm.hibernate5.sup
 	public void updateLastUsedDbIdentifier(String databaseIdentifier) {
 		Registry registry = this.getRegistryMetadataEntry();
 		registry.setLastUsedDbIdentifer(databaseIdentifier);
-		this.getHibernateTemplate().update(registry);	
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.update(registry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }	
 	}
 
 	/* (non-Javadoc)
@@ -196,8 +241,17 @@ public class HibernateRegistryDao extends org.springframework.orm.hibernate5.sup
 		
 		Date now = new Date(); 
 		metadata.setLastUpdateTime(new Timestamp(now.getTime()));
-		
-		this.getHibernateTemplate().save(metadata);
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.save(metadata);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 
 	/**
