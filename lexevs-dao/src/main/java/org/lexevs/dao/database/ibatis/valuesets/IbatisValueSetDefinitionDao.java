@@ -728,8 +728,16 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 		bean.setSupportedAttributeTag(supportedAttributeTag);
 		bean.setCodingSchemeUId(referenceGuid);
 		bean.setReferenceType(ReferenceType.VALUESETDEFINITION.name());
-		bean.setUriMap(uriMap);
 		bean.setUId(uriMapId);
+		bean.setRootCode(((SupportedHierarchy)uriMap).getRootCode());
+		bean.setIsForwardNavigable(((SupportedHierarchy)uriMap).getIsForwardNavigable());
+		bean.setIsImported(((SupportedCodingScheme)uriMap).getIsImported());
+		bean.setAssnCodingScheme(((SupportedNamespace)uriMap).getEquivalentCodingScheme());
+		bean.setAssemblyRule(((SupportedSource)uriMap).getAssemblyRule());
+		bean.setAssnCodingScheme(((SupportedAssociation)uriMap).getCodingScheme());
+		bean.setAssnNamespace(((SupportedAssociation)uriMap).getEntityCodeNamespace());
+		bean.setAssnEntityCode(((SupportedAssociation)uriMap).getEntityCode());
+		bean.setPropertyType(((SupportedProperty)uriMap).getPropertyType().value());
 		
 		if (uriMap instanceof SupportedHierarchy)
 		{
