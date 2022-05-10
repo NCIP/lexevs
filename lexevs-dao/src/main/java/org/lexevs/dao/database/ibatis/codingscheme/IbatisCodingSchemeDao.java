@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary;
 import org.LexGrid.LexBIG.DataModel.Core.NameAndValue;
@@ -16,8 +17,13 @@ import org.LexGrid.commonTypes.Source;
 import org.LexGrid.commonTypes.types.PropertyTypes;
 import org.LexGrid.concepts.Entity;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedPropertyType;
+import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.relations.Relations;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
@@ -429,9 +435,23 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
-		bean.setCodingScheme(codingScheme);
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
+		
+
+		bean.setCodingSchemeGuid(codingScheme.getCodingSchemeName());
+		bean.setCodingSchemeURI(codingScheme.getCodingSchemeURI());
+		bean.setRepresentsVersion(codingScheme.getRepresentsVersion());
+		bean.setFormalName(codingScheme.getFormalName());
+		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
+		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
+		bean.setDescription(codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setIsActive(codingScheme.getIsActive());
+		bean.setOwner(codingScheme.getOwner());
+		bean.setStatus(codingScheme.getStatus());
+		bean.setEffectiveDate(codingScheme.getEffectiveDate());
+		bean.setExpirationDate(codingScheme.getExpirationDate());
 
 		this.getSqlSessionTemplate().update(UPDATE_CODING_SCHEME_BY_ID_SQL,
 				bean);
@@ -518,9 +538,23 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
-		bean.setCodingScheme(codingScheme);
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
+		
+
+		bean.setCodingSchemeGuid(codingScheme.getCodingSchemeName());
+		bean.setCodingSchemeURI(codingScheme.getCodingSchemeURI());
+		bean.setRepresentsVersion(codingScheme.getRepresentsVersion());
+		bean.setFormalName(codingScheme.getFormalName());
+		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
+		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
+		bean.setDescription(codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setIsActive(codingScheme.getIsActive());
+		bean.setOwner(codingScheme.getOwner());
+		bean.setStatus(codingScheme.getStatus());
+		bean.setEffectiveDate(codingScheme.getEffectiveDate());
+		bean.setExpirationDate(codingScheme.getExpirationDate());
 		
 		this.getSqlSessionTemplate().update(UPDATE_CODING_SCHEME_VER_ATTRIB_BY_ID_SQL, bean);
 		
@@ -675,7 +709,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 				for(URIMap uriMap : supportedProperties){
 					String uriMapId = createUniqueId();
 					
-					this.getSqlSessionBatchTemplate().insert(INSERT_URIMAP_SQL, 
+					this.getSqlSessionTemplate().insert(INSERT_URIMAP_SQL, 
 							buildInsertOrUpdateURIMapBean(
 									getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 									uriMapId, 
@@ -889,13 +923,48 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setPrefix(prefix);
 		bean.setSupportedAttributeTag(supportedAttributeTag);
 		bean.setCodingSchemeUId(codingSchemeId);
-		bean.setUriMap(uriMap);
 		bean.setUId(uriMapId);
+		bean.setId(uriMap.getLocalId());
+		bean.setIdValue(uriMap.getContent());
 		
 		if (uriMap instanceof SupportedHierarchy){
 			String[] assocNames = ((SupportedHierarchy)uriMap).getAssociationNames();
 			bean.setAssociationNames(StringUtils.arrayToCommaDelimitedString(assocNames));
+			bean.setRootCode(((SupportedHierarchy)uriMap).getRootCode());
+			bean.setIsForwardNavigable(((SupportedHierarchy)uriMap).getIsForwardNavigable());
 		}
+		
+		if (uriMap instanceof SupportedCodingScheme){
+			bean.setIsImported(((SupportedCodingScheme)uriMap).getIsImported());
+		}
+		
+		if (uriMap instanceof SupportedNamespace){
+			bean.setAssnCodingScheme(((SupportedNamespace)uriMap).getEquivalentCodingScheme());
+		}
+		
+		if (uriMap instanceof SupportedSource){
+			bean.setAssemblyRule(((SupportedSource)uriMap).getAssemblyRule());
+		}
+		
+		if (uriMap instanceof SupportedAssociation){
+			bean.setAssnCodingScheme(((SupportedAssociation)uriMap).getCodingScheme());
+			bean.setAssnNamespace(((SupportedAssociation)uriMap).getEntityCodeNamespace());
+			bean.setAssnEntityCode(((SupportedAssociation)uriMap).getEntityCode());
+		}
+		
+		if (uriMap instanceof SupportedAssociation){
+			bean.setAssnCodingScheme(((SupportedAssociation)uriMap).getCodingScheme());
+			bean.setAssnNamespace(((SupportedAssociation)uriMap).getEntityCodeNamespace());
+			bean.setAssnEntityCode(((SupportedAssociation)uriMap).getEntityCode());
+		}
+		
+		
+		if (uriMap instanceof SupportedProperty){
+			PropertyTypes prop = ((SupportedProperty)uriMap).getPropertyType();
+			bean.setPropertyType((prop != null? prop.value(): null));
+		}
+
+		
 		
 		return bean;
 	}
@@ -959,11 +1028,26 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	protected InsertOrUpdateCodingSchemeBean buildInsertCodingSchemeBean(String prefix, String codingSchemeUId, String releaseUId, String entryStateUId, CodingScheme codingScheme){
 		InsertOrUpdateCodingSchemeBean bean = new InsertOrUpdateCodingSchemeBean();
 		bean.setPrefix(prefix);
-		bean.setCodingScheme(codingScheme);
 		bean.setReleaseUId(releaseUId);
 		bean.setUId(codingSchemeUId);
 		bean.setEntryStateUId(entryStateUId);
 		
+
+		bean.setCodingSchemeGuid(codingScheme.getCodingSchemeName());
+		bean.setCodingSchemeURI(codingScheme.getCodingSchemeURI());
+		bean.setCodingSchemeName(codingScheme.getCodingSchemeName());
+		bean.setRepresentsVersion(codingScheme.getRepresentsVersion());
+		bean.setFormalName(codingScheme.getFormalName());
+		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
+		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
+		bean.setDescription(codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setIsActive(codingScheme.getIsActive());
+		bean.setOwner(codingScheme.getOwner());
+		bean.setStatus(codingScheme.getStatus());
+		bean.setEffectiveDate(codingScheme.getEffectiveDate());
+		bean.setExpirationDate(codingScheme.getExpirationDate());
+
 		return bean;
 	}
 	

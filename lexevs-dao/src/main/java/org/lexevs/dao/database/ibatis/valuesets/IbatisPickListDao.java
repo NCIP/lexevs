@@ -10,7 +10,12 @@ import org.LexGrid.commonTypes.Properties;
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.naming.Mappings;
+import org.LexGrid.naming.SupportedAssociation;
+import org.LexGrid.naming.SupportedCodingScheme;
 import org.LexGrid.naming.SupportedHierarchy;
+import org.LexGrid.naming.SupportedNamespace;
+import org.LexGrid.naming.SupportedProperty;
+import org.LexGrid.naming.SupportedSource;
 import org.LexGrid.naming.URIMap;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.valueSets.PickListDefinition;
@@ -538,8 +543,16 @@ public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao 
 		bean.setSupportedAttributeTag(supportedAttributeTag);
 		bean.setCodingSchemeUId(referenceGuid);
 		bean.setReferenceType(ReferenceType.PICKLISTDEFINITION.name());
-		bean.setUriMap(uriMap);
 		bean.setUId(uriMapId);
+		bean.setRootCode(((SupportedHierarchy)uriMap).getRootCode());
+		bean.setIsForwardNavigable(((SupportedHierarchy)uriMap).getIsForwardNavigable());
+		bean.setIsImported(((SupportedCodingScheme)uriMap).getIsImported());
+		bean.setAssnCodingScheme(((SupportedNamespace)uriMap).getEquivalentCodingScheme());
+		bean.setAssemblyRule(((SupportedSource)uriMap).getAssemblyRule());
+		bean.setAssnCodingScheme(((SupportedAssociation)uriMap).getCodingScheme());
+		bean.setAssnNamespace(((SupportedAssociation)uriMap).getEntityCodeNamespace());
+		bean.setAssnEntityCode(((SupportedAssociation)uriMap).getEntityCode());
+		bean.setPropertyType(((SupportedProperty)uriMap).getPropertyType().value());
 		
 		if (uriMap instanceof SupportedHierarchy)
 		{
