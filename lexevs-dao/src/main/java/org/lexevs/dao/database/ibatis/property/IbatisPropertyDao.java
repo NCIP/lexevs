@@ -753,6 +753,18 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 		bean.setUId(propertyUId);
 		bean.setEntryStateUId(entryStateUId);
 		bean.setProperty(property);
+		bean.setPropertyId(property.getPropertyId());
+		bean.setPropertyType(property.getPropertyType());
+		bean.setPropertyName(property.getPropertyName());
+		bean.setLanguage(property.getLanguage());
+		bean.setFormat(property.getValue().getDataType());
+		bean.setPropertyValue(property.getValue().getContent());
+		bean.setIsActive(property.getIsActive());
+		bean.setOwner(property.getOwner());
+		bean.setStatus(property.getStatus());
+		bean.setEffectiveDate(property.getEffectiveDate());
+		bean.setExpirationDate(property.getExpirationDate());
+
 		
 		return bean;
 	}
