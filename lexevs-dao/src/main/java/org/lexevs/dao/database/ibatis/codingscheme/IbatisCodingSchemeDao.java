@@ -961,7 +961,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		
 		if (uriMap instanceof SupportedProperty){
 			PropertyTypes prop = ((SupportedProperty)uriMap).getPropertyType();
-			bean.setPropertyType((prop != null? prop.value(): null));
+			bean.setPropertyType((prop != null? prop.name(): null));
 		}
 
 		
