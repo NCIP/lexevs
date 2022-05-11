@@ -302,6 +302,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@SuppressWarnings("unchecked")
 	@Override
 	@CacheMethod
+	@Deprecated
 	public List<String> getAssociationPredicateUidsForDirectionalName(
 			String codingSchemeId, String directionalName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
