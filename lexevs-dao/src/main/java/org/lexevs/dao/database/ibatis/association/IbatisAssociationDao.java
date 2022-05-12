@@ -646,7 +646,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source){
 		this.insertAssociationSource(codingSchemeId, associationPredicateId, source, 
-				this.getSqlSessionTemplate());
+				this.getSqlSessionBatchTemplate());
 	}
 	
 	/* (non-Javadoc)
