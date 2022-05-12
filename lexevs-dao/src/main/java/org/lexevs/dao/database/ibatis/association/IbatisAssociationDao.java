@@ -446,13 +446,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			boolean cascade) {
 		String entryStateUId = this.createUniqueId();
 		
-		InsertOrUpdateRelationsBean bean = new InsertOrUpdateRelationsBean();
-		bean.setEntryStateUId(entryStateUId);
-		bean.setUId(relationsUId);
-		bean.setCodingSchemeUId(codingSchemeUId);
-		bean.setRelations(relations);
-		bean.setPrefix(prefix);
-		
+		InsertOrUpdateRelationsBean bean = buildInsertOrUpdateRelationsBean(prefix,
+				codingSchemeUId,
+				relationsUId,
+				relations,
+				cascade);
+
 		this.ibatisVersionsDao.insertEntryState(
 				codingSchemeUId, 
 				entryStateUId, 
@@ -484,6 +483,29 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		return relationsUId;
 	}
 	
+	private InsertOrUpdateRelationsBean buildInsertOrUpdateRelationsBean(String prefix, String codingSchemeUId,
+			String relationsUId, Relations relations, boolean cascade) {
+		InsertOrUpdateRelationsBean bean = new InsertOrUpdateRelationsBean();
+		bean.setPrefix(prefix);
+		bean.setCodingSchemeGuid(codingSchemeUId);
+		bean.setRelationGuid(relationsUId);
+		bean.setRelations(relations);
+		bean.setContainerName(relations.getContainerName());
+		bean.setIsMapping(relations.getIsMapping());
+		bean.setSourceCodingScheme(relations.getSourceCodingScheme());
+		bean.setSourceCodingSchemeVersion(relations.getSourceCodingSchemeVersion());
+		bean.setTargetCodingScheme(relations.getTargetCodingScheme());
+		bean.setSourceCodingSchemeVersion(relations.getTargetCodingSchemeVersion());
+		bean.setDescription(relations.getEntityDescription().getContent());
+		bean.setIsActive(relations.getIsActive());
+		bean.setOwner(relations.getOwner());
+		bean.setStatus(relations.getStatus());
+		bean.setEffectiveDate(relations.getEffectiveDate());
+		bean.setExpirationDate(relations.getExpirationDate());
+
+		return bean;
+	}
+
 	public String insertAssociationEntity(
 			String codingSchemeId,
 			String entityId,
