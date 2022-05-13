@@ -1,6 +1,8 @@
 
 package org.lexevs.dao.database.ibatis.entity.parameter;
 
+import java.util.Date;
+
 import org.LexGrid.concepts.Entity;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
@@ -26,6 +28,20 @@ public class InsertOrUpdateEntityBean extends IdableParameterBean {
 	private Boolean isNavigable = null;
 	
 	private Boolean isTransitive = null;
+	
+	private String entityGuid;
+	private String codingSchemeGuid;
+	private String entityCode;
+	private String entityCodeNamespace;
+	private Boolean isDefined;
+	private Boolean isAnonymous;
+	private String description;
+	private Boolean isActive;
+	private String owner;
+	private String status;
+	private Date effectiveDate;
+	private Date expirationDate;
+	private String entryStateGuid;
 	
 	/**
 	 * Gets the entity.
@@ -125,5 +141,109 @@ public class InsertOrUpdateEntityBean extends IdableParameterBean {
 	 */
 	public void setIsTransitive(Boolean isTransitive) {
 		this.isTransitive = isTransitive;
+	}
+
+	public String getEntityGuid() {
+		return entityGuid;
+	}
+
+	public void setEntityGuid(String entityGuid) {
+		this.entityGuid = entityGuid;
+	}
+
+	public String getCodingSchemeGuid() {
+		return codingSchemeGuid;
+	}
+
+	public void setCodingSchemeGuid(String codingSchemeGuid) {
+		this.codingSchemeGuid = codingSchemeGuid;
+	}
+
+	public String getEntityCode() {
+		return entityCode;
+	}
+
+	public void setEntityCode(String entityCode) {
+		this.entityCode = entityCode;
+	}
+
+	public String getEntityCodeNamespace() {
+		return entityCodeNamespace;
+	}
+
+	public void setEntityCodeNamespace(String entityCodeNamespace) {
+		this.entityCodeNamespace = entityCodeNamespace;
+	}
+
+	public Boolean getIsDefined() {
+		return isDefined;
+	}
+
+	public void setIsDefined(Boolean boolean1) {
+		this.isDefined = boolean1;
+	}
+
+	public Boolean getIsAnonymous() {
+		return isAnonymous;
+	}
+
+	public void setIsAnonymous(Boolean boolean1) {
+		this.isAnonymous = boolean1;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean boolean1) {
+		this.isActive = boolean1;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date date) {
+		this.effectiveDate = date;
+	}
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date date) {
+		this.expirationDate = date;
+	}
+
+	public String getEntryStateGuid() {
+		return entryStateGuid;
+	}
+
+	public void setEntryStateGuid(String entryStateGuid) {
+		this.entryStateGuid = entryStateGuid;
 	}
 }

@@ -369,54 +369,21 @@
         ) VALUES (
         #{uid},
         #{codingSchemeUId},
-        #{entity.entityCode},
-        #{entity.entityCodeNamespace},
-        <if test="entity != null and entity.isDefined != null">
-            #{entity.isDefined},
-        </if>
-        <if test="entity == null or entity.isDefined == null">
-            '0',
-        </if>
-        #{entity.isAnonymous},
-        #{entity.entityDescription.content,jdbcType=VARCHAR},
-
-        <if test="entity != null and entity.isActive != null">
-            #{entity.isActive},
-        </if>
-        <if test="entity == null or entity.isActive == null">
-            '1',
-        </if>
-
-        #{entity.owner,jdbcType=VARCHAR},
-        #{entity.status,jdbcType=VARCHAR},
-        #{entity.effectiveDate,jdbcType=TIMESTAMP},
-        #{entity.expirationDate,jdbcType=TIMESTAMP},
-        #{entryStateUId}
-
-        <if test="forwardName != null">
-            #{forwardName:VARCHAR#},
-        </if>
-        <if test="forwardName == null">
-            null
-        </if>
-        <if test="reverseName != null">
-            #{reverseName:VARCHAR#},
-        </if>
-        <if test="reverseName == null">
-            null
-        </if>
-        <if test="isNavigable != null">
-            #{isNavigable},
-        </if>
-        <if test="isNavigable == null">
-            null
-        </if>
-        <if test="isTransitive != null">
-            #{isTransitive}
-        </if>
-        <if test="isTransitive == null">
-            null
-        </if>
+        #{entityCode},
+        #{entityCodeNamespace},
+        #{isDefined},
+        #{isAnonymous},
+        #{description,jdbcType=VARCHAR},
+        #{isActive},
+        #{owner,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{effectiveDate,jdbcType=TIMESTAMP},
+        #{expirationDate,jdbcType=TIMESTAMP},
+        #{entryStateUId},
+        #{forwardName:VARCHAR},
+        #{reverseName:VARCHAR},
+        #{isNavigable},
+        #{isTransitive}
 
         )
     </insert>
