@@ -31,19 +31,19 @@
 	
 	<resultMap id="codingSchemeMetaDataResult" type="codingSchemeBean">
 		<result property="uid" column="codingSchemeGuid"/>
-		<result property="codingScheme.codingSchemeName" column="codingSchemeName"/>
-		<result property="codingScheme.codingSchemeURI" column="codingSchemeURI"/>
-		<result property="codingScheme.representsVersion" column="representsVersion"/>
-		<result property="codingScheme.formalName" column="formalName"/>
-		<result property="codingScheme.defaultLanguage" column="defaultLanguage"/>
-		<result property="codingScheme.approxNumConcepts" column="approxNumConcepts"/>
-		<result property="codingScheme.entityDescription.content" column="description"/>
-		<result property="codingScheme.copyright.content" column="copyright"/>	
-		<result property="codingScheme.isActive" column="isActive"/>
-		<result property="codingScheme.owner" column="owner"/>
-		<result property="codingScheme.status" column="status"/>
-		<result property="codingScheme.effectiveDate" column="effectiveDate"/>
-		<result property="codingScheme.expirationDate" column="expirationDate"/>
+		<result property="codingSchemeName" column="codingSchemeName"/>
+		<result property="codingSchemeURI" column="codingSchemeURI"/>
+		<result property="representsVersion" column="representsVersion"/>
+		<result property="formalName" column="formalName"/>
+		<result property="defaultLanguage" column="defaultLanguage"/>
+		<result property="approxNumConcepts" column="approxNumConcepts"/>
+		<result property="description" column="description"/>
+		<result property="copyright" column="copyright"/>	
+		<result property="isActive" column="isActive"/>
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
 		<result property="releaseUId" column="releaseGuid"/>
 		<result property="entryStateUId" column="entryStateGuid"/>
 		<collection property="csMultiAttribList" resultMap="CodingScheme.csMultiAttribResultBean"/>
@@ -265,23 +265,23 @@
 		UPDATE 
 			${prefix}codingScheme
 		<set>
-			<if test="codingScheme.codingSchemeName != null">
-				codingSchemeName = #{codingScheme.codingSchemeName},
+			<if test="codingSchemeName != null">
+				codingSchemeName = #{codingSchemeName},
 			</if>
-			<if test="codingScheme.formalName != null">
-				formalName = #{codingScheme.formalName},
+			<if test="formalName != null">
+				formalName = #{formalName},
 			</if>
-			<if test="codingScheme.approxNumConcepts != null">
-				approxNumConcepts = #{codingScheme.approxNumConcepts},
+			<if test="approxNumConcepts != null">
+				approxNumConcepts = #{approxNumConcepts},
 			</if>
-			<if test="codingScheme.defaultLanguage != null">
-				defaultLanguage = #{codingScheme.defaultLanguage},
+			<if test="defaultLanguage != null">
+				defaultLanguage = #{defaultLanguage},
 			</if>
-			<if test="codingScheme.entityDescription.content != null">
-				description = #{codingScheme.entityDescription.content},
+			<if test="description != null">
+				description = #{description},
 			</if>
-			<if test="codingScheme.copyright.content != null">
-				copyright = #{codingScheme.copyright.content},
+			<if test="copyright != null">
+				copyright = #{copyright},
 			</if>
 			<if test="entryStateUId != null">
 				entryStateGuid = #{entryStateUId}

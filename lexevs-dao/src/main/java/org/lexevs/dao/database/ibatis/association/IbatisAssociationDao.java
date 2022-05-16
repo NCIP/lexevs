@@ -581,7 +581,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void insertBatchAssociationSources(final String codingSchemeId,
 			final List<AssociationSourceBatchInsertItem> list) {
 		
-		SqlSessionTemplate session = getSqlSessionBatchTemplate();
+		SqlSessionTemplate session = getSqlSessionTemplate();
 		
 
 				
@@ -606,7 +606,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void insertBatchAssociationQualifiers(final String codingSchemeId,
 			final List<AssociationQualifierBatchInsertItem> list, HashMap<String,String> instanceMap) {
 		
-				SqlSessionTemplate session = this.getSqlSessionBatchTemplate();
+				SqlSessionTemplate session = this.getSqlSessionTemplate();
 				
 				for(AssociationQualifierBatchInsertItem item : list){
 					String associationId = instanceMap.get(item.getParentId());
@@ -646,7 +646,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source){
 		this.insertAssociationSource(codingSchemeId, associationPredicateId, source, 
-				this.getSqlSessionBatchTemplate());
+				this.getSqlSessionTemplate());
 	}
 	
 	/* (non-Javadoc)
@@ -656,15 +656,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@ClearCache
 	public void insertBatchAssociationSources(final String codingSchemeUId,
 			final String associationPredicateUId, final List<AssociationSource> batch) {
-		SqlSessionTemplate session = getSqlSessionBatchTemplate();
+		SqlSessionTemplate session = getSqlSessionTemplate();
 			
 				
 				for(AssociationSource source : batch) {
 					insertAssociationSource(codingSchemeUId, associationPredicateUId, source, session);
 				}
-				
-				session.commit();
-				session.clearCache();
+
 			}	
 
 	
@@ -743,7 +741,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		SqlSessionTemplate session = this.getSqlSessionBatchTemplate();
+		SqlSessionTemplate session = this.getSqlSessionTemplate();
 
 
 				

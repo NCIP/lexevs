@@ -103,7 +103,7 @@
         ${prefix}codingScheme codingScheme
         ON (entity.codingSchemeGuid = codingScheme.codingSchemeGuid)
         LEFT JOIN
-        ${actualTableSetPrefix}entityType entityType
+        ${prefix}entityType entityType
         ON
         entity.entityGuid =
         entityType.entityGuid
@@ -183,31 +183,31 @@
         FROM ${prefix}entity entity
 
                  LEFT JOIN
-             ${actualTableSetPrefix}entityType entityType
+             ${prefix}entityType entityType
              ON
                      entity.entityGuid =
                      entityType.entityGuid
 
                  LEFT JOIN
-             ${actualTableSetPrefix}entryState entryState
+             ${prefix}entryState entryState
              ON
                      entity.entryStateGuid =
                      entryState.entryStateGuid
 
                  LEFT JOIN
-             ${actualTableSetPrefix}propertyLinks propertyLinks
+             ${prefix}propertyLinks propertyLinks
              ON
                      entity.entityGuid =
                      propertyLinks.entityGuid
 
                  LEFT JOIN
-             ${actualTableSetPrefix}property sourcePropertyLinksProperty
+             ${prefix}property sourcePropertyLinksProperty
              ON
                      propertyLinks.sourcePropertyGuid =
                      sourcePropertyLinksProperty.propertyGuid
 
                  LEFT JOIN
-             ${actualTableSetPrefix}property targetPropertyLinksProperty
+             ${prefix}property targetPropertyLinksProperty
              ON
                      propertyLinks.targetPropertyGuid =
                      targetPropertyLinksProperty.propertyGuid
@@ -256,7 +256,7 @@
         entity.codingSchemeGuid = #{param1}
         AND
         entity.entityGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[]}
+        #{item}
     </foreach> )
     </select>
 

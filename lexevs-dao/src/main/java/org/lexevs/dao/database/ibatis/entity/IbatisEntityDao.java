@@ -624,7 +624,8 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		bean.setEntityCodeNamespace(entity.getEntityCodeNamespace());
 		bean.setIsDefined(entity.getIsDefined()==null? false: entity.getIsDefined());
 		bean.setIsAnonymous(entity.getIsAnonymous());
-		bean.setDescription(entity.getEntityDescription().getContent());
+		bean.setDescription(entity.getEntityDescription()==null? 
+				null: entity.getEntityDescription().getContent());
 		bean.setIsActive(entity.getIsActive() == null? true: entity.getIsActive());
 		bean.setOwner(entity.getOwner());
 		bean.setStatus(entity.getStatus());
