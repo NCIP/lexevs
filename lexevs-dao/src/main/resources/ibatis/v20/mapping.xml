@@ -252,41 +252,41 @@
 
 
 		<set>
-			<if test="uriMap.uri !=null">
-				uri = #{uriMap.uri},
+			<if test="uri !=null">
+				uri = #{uri},
 			</if>
-			<if test="uriMap.localId !=null">
-				id = #{uriMap.localId},
+			<if test="id !=null">
+				id = #{id},
 			</if>
-			<if test="uriMap.associationNames !=null">
-				associationNames = #{uriMap.associationNames},
+			<if test="associationNames !=null">
+				associationNames = #{associationNames},
 			</if>
-			<if test="uriMap.rootCode !=null">
-				rootCode = #{uriMap.rootCode},
+			<if test="rootCode !=null">
+				rootCode = #{rootCode},
 			</if>
-			<if test="uriMap.isForwardNavigable !=null">
-				isForwardNavigable = #{uriMap.isForwardNavigable},
+			<if test="isForwardNavigable !=null">
+				isForwardNavigable = #{isForwardNavigable},
 			</if>
-			<if test="uriMap.isImported !=null">
-				isImported = #{uriMap.isImported},
+			<if test="isImported !=null">
+				isImported = #{isImported},
 			</if>
-			<if test="uriMap.equivalentCodingScheme !=null">
-				equivalentCodingScheme = #uriMap.equivalentCodingScheme,
+			<if test="equivalentCodingScheme !=null">
+				equivalentCodingScheme = #{equivalentCodingScheme},
 			</if>
-			<if test="uriMap.assemblyRule !=null">
-				assemblyRule = #uriMap.assemblyRule,
+			<if test="assemblyRule !=null">
+				assemblyRule = #{assemblyRule},
 			</if>
-			<if test="uriMap.codingScheme !=null">
-				codingScheme = #uriMap.codingScheme,
+			<if test="assnCodingScheme !=null">
+				assnCodingScheme = #{assnCodingScheme},
 			</if>
-			<if test="uriMap.entityCodeNamespace !=null">
-				entityCodeNamespace = #uriMap.entityCodeNamespace,
+			<if test="assnNamespace !=null">
+				assnNamespace = #{assnNamespace},
 			</if>
-			<if test="uriMap.entityCode !=null">
-				entityCode = #uriMap.entityCode,
+			<if test="assnEntityCode !=null">
+				assnEntityCode = #{assnEntityCode},
 			</if>
-			<if test="uriMap.propertyType !=null">
-				propertyType = #{uriMap.propertyType.name}
+			<if test="propertyType !=null">
+				propertyType = #{propertyType}
 			</if>
 		</set>
 
@@ -295,7 +295,7 @@
 		AND
 			supportedAttributeTag = #{supportedAttributeTag}
 		AND
-			id = #{uriMap.localId}	
+			id = #{id}	
 	</update>
 	
 	

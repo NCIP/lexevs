@@ -285,19 +285,9 @@ private VersionsDao versionsDao;
 
 		String entryStateUId = this.createUniqueId();
 
-		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
-
-		if (target.getAssociationInstanceId() == null
-				|| target.getAssociationInstanceId().trim().equals("")) {
-			target.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX + this.createRandomIdentifier());
-		}
+		InsertOrUpdateAssociationTargetBean bean = buildInsertOrUpdateAssociationTargetBean(
+				prefix,associationPredicateUId,associationTargetUId,source,target,entryStateUId );
 		
-		bean.setPrefix(prefix);
-		bean.setUId(associationTargetUId);
-		bean.setAssociationPredicateUId(associationPredicateUId);
-		bean.setEntryStateUId(entryStateUId);
-		bean.setAssociationSource(source);
-		bean.setAssociationTarget(target);
 
 		session.insert(INSERT_ENTITY_ASSN_ENTITY_SQL, bean);
 
@@ -337,6 +327,39 @@ private VersionsDao versionsDao;
 		}
 		
 		return entryStateUId;
+	}
+
+	private InsertOrUpdateAssociationTargetBean buildInsertOrUpdateAssociationTargetBean(String prefix,
+			String associationPredicateUId, String associationTargetUId, AssociationSource source,
+			AssociationTarget target, String entryStateUId) {
+		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
+
+		if (target.getAssociationInstanceId() == null
+				|| target.getAssociationInstanceId().trim().equals("")) {
+			bean.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX + this.createRandomIdentifier());
+		}
+		
+		bean.setPrefix(prefix);
+		bean.setUId(associationTargetUId);
+		bean.setAssociationPredicateUId(associationPredicateUId);
+		bean.setEntryStateUId(entryStateUId);
+		bean.setAssociationSource(source);
+		bean.setAssociationTarget(target);
+		bean.setEntityAssnsGuid(associationTargetUId);
+		bean.setSourceEntityCode(source.getSourceEntityCode());
+		bean.setSourceEntityCodeNamespace(source.getSourceEntityCodeNamespace());
+		bean.setTargetEntityCode(target.getTargetEntityCode());
+		bean.setTargetEntityCodeNamespace(target.getTargetEntityCodeNamespace());
+		bean.setAssociationInstanceId(target.getAssociationInstanceId());
+		bean.setIsDefining(target.getIsDefining());
+		bean.setIsInferred(target.getIsInferred());
+		bean.setIsActive(target.getIsActive());
+		bean.setOwner(target.getOwner());
+		bean.setStatus(target.getStatus());
+		bean.setEffectiveDate(target.getEffectiveDate());
+		bean.setExpirationDate(target.getExpirationDate());
+
+		return bean;
 	}
 
 	/**

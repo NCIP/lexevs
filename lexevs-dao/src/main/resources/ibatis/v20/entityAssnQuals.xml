@@ -19,11 +19,11 @@
 			qualifierValue,
 			entryStateGuid
 		) VALUES (
-			#{uid, 
-			#{referenceUId,
+			#{uid}, 
+			#{referenceUId},
 			#{qualifierName}, 
 			#{qualifierValue},
-			#{entryStateUId
+			#{entryStateUId}
 		)
   </insert>
   

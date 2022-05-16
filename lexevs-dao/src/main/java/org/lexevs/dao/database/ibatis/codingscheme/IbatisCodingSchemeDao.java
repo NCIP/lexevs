@@ -445,8 +445,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setFormalName(codingScheme.getFormalName());
 		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
 		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
-		bean.setDescription(codingScheme.getEntityDescription().getContent());
-		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setDescription(codingScheme.getEntityDescription()==null?
+				null:codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright()==null?
+				null:codingScheme.getCopyright().getContent());
 		bean.setIsActive(codingScheme.getIsActive());
 		bean.setOwner(codingScheme.getOwner());
 		bean.setStatus(codingScheme.getStatus());
@@ -548,8 +550,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setFormalName(codingScheme.getFormalName());
 		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
 		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
-		bean.setDescription(codingScheme.getEntityDescription().getContent());
-		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setDescription(codingScheme.getEntityDescription()==null?
+				null:codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright()==null?
+				null:codingScheme.getCopyright().getContent());
 		bean.setIsActive(codingScheme.getIsActive());
 		bean.setOwner(codingScheme.getOwner());
 		bean.setStatus(codingScheme.getStatus());
@@ -920,6 +924,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 	 */
 	protected InsertOrUpdateURIMapBean buildInsertOrUpdateURIMapBean(String prefix, String uriMapId, String codingSchemeId, String supportedAttributeTag, URIMap uriMap){
 		InsertOrUpdateURIMapBean bean = new InsertOrUpdateURIMapBean();
+		bean.setUri(uriMap.getUri());
 		bean.setPrefix(prefix);
 		bean.setSupportedAttributeTag(supportedAttributeTag);
 		bean.setCodingSchemeUId(codingSchemeId);
@@ -951,13 +956,6 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			bean.setAssnNamespace(((SupportedAssociation)uriMap).getEntityCodeNamespace());
 			bean.setAssnEntityCode(((SupportedAssociation)uriMap).getEntityCode());
 		}
-		
-		if (uriMap instanceof SupportedAssociation){
-			bean.setAssnCodingScheme(((SupportedAssociation)uriMap).getCodingScheme());
-			bean.setAssnNamespace(((SupportedAssociation)uriMap).getEntityCodeNamespace());
-			bean.setAssnEntityCode(((SupportedAssociation)uriMap).getEntityCode());
-		}
-		
 		
 		if (uriMap instanceof SupportedProperty){
 			PropertyTypes prop = ((SupportedProperty)uriMap).getPropertyType();
