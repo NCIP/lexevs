@@ -122,7 +122,7 @@
 
         FROM ${prefix}property property
                  LEFT JOIN
-             ${actualTableSetPrefix}entryState entryState
+             ${prefix}entryState entryState
              ON
                      property.entryStateGuid =
                      entryState.entryStateGuid
@@ -213,16 +213,16 @@
         WHERE
         property.referenceType = #{param1}
         <if test="param2 != null and param2 != ''">AND
-            property.propertyName IN (  <foreach collection="param2" item="item" separator=",">#{param2[]}</foreach> )
+            property.propertyName IN (  <foreach collection="param2" item="item" separator=",">#{item}</foreach> )
         </if>
 
         <if test="param3 != null and param3 != ''">AND
-            property.propertyType IN (  <foreach collection="param3" item="item" separator=",">#{param3[]}</foreach> )
+            property.propertyType IN (  <foreach collection="param3" item="item" separator=",">#{item}</foreach> )
         </if>
 
         AND
         property.referenceGuid IN (  <foreach collection="param4" item="item" separator=",">
-        #{param4[]}
+        #{item}
     </foreach> )
 
     </select>
