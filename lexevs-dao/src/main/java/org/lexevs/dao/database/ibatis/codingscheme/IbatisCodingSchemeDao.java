@@ -1038,8 +1038,10 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 		bean.setFormalName(codingScheme.getFormalName());
 		bean.setDefaultLanguage(codingScheme.getDefaultLanguage());
 		bean.setApproxNumConcepts(codingScheme.getApproxNumConcepts());
-		bean.setDescription(codingScheme.getEntityDescription().getContent());
-		bean.setCopyright(codingScheme.getCopyright().getContent());
+		bean.setDescription(codingScheme.getEntityDescription()==null?
+				null:codingScheme.getEntityDescription().getContent());
+		bean.setCopyright(codingScheme.getCopyright()==null?
+				null:codingScheme.getCopyright().getContent());
 		bean.setIsActive(codingScheme.getIsActive());
 		bean.setOwner(codingScheme.getOwner());
 		bean.setStatus(codingScheme.getStatus());
