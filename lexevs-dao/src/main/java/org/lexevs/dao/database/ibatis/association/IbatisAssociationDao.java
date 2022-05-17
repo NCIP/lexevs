@@ -496,7 +496,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setSourceCodingSchemeVersion(relations.getSourceCodingSchemeVersion());
 		bean.setTargetCodingScheme(relations.getTargetCodingScheme());
 		bean.setSourceCodingSchemeVersion(relations.getTargetCodingSchemeVersion());
-		bean.setDescription(relations.getEntityDescription().getContent());
+		bean.setDescription(relations.getEntityDescription()==null?
+				null:relations.getEntityDescription().getContent());
 		bean.setIsActive(relations.getIsActive());
 		bean.setOwner(relations.getOwner());
 		bean.setStatus(relations.getStatus());
