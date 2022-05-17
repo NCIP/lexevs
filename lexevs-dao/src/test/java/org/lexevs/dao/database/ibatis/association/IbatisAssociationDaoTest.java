@@ -1,47 +1,29 @@
 
 package org.lexevs.dao.database.ibatis.association;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Resource;
-
-import org.LexGrid.commonTypes.EntityDescription;
 import org.LexGrid.relations.AssociationPredicate;
-import org.LexGrid.relations.AssociationQualification;
-import org.LexGrid.relations.AssociationSource;
-import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
-import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.association.model.InstanceToGuid;
-import org.lexevs.dao.database.access.association.model.Triple;
-import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.dao.test.LexEvsDbUnitTestBase;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Propagation;
-//
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * The Class IbatisAssociationDaoTest.
@@ -67,6 +49,7 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 
 	@Test
 	public void getHistoryRelationByRevisionId() {
+		//TODO create revision?
 		Relations relations = ibatisAssociationDao.getHistoryRelationByRevisionId("1003", "1021", null);
 		assertNotNull("relations null",relations);
 		assertTrue("relations has no values", relations.getAssociationPredicateCount()>0);
@@ -75,16 +58,16 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 
 	@Test
 	public void getAnonDesignationForPredicate() {
-		String description = ibatisAssociationDao.getAnonDesignationForPredicate("3", "1023");
+		String description = ibatisAssociationDao.getAnonDesignationForPredicate("1003", "1023");
 		assertNotNull("description null",description);
-		assertEquals("description incorrect", description, "hasSubtype");
+		assertEquals("description incorrect", "1", description);
 	}
 
 	@Test
 	public void getAssociationPredicateUIdByContainerUId() {
-		String predicateID =ibatisAssociationDao.getAssociationPredicateUIdByContainerUId("3", "1021", "hasSubtype");
+		String predicateID =ibatisAssociationDao.getAssociationPredicateUIdByContainerUId("1003", "1021", "hasSubtype");
 		assertNotNull("predicateID null", predicateID);
-		assertEquals("predicateID incorrect",predicateID, "157");
+		assertEquals("predicateID incorrect","1023", predicateID);
 	}
 
 	@Test
@@ -103,6 +86,7 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 
 	@Test
 	public void getAssociationPredicateUidsForDirectionalName() {
+		//TODO Deprected - not working? Remove?
 		List<String> predicateUIDs =ibatisAssociationDao.getAssociationPredicateUidsForDirectionalName("3", "hasSubtype");
 		assertNotNull("predicateUID null", predicateUIDs);
 		assertTrue("predicateUIDs empty", predicateUIDs.size()>0);
@@ -150,7 +134,7 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 		List<String> relationNames = ibatisAssociationDao.getRelationsNamesForCodingSchemeUId("3");
 		assertNotNull("relationNames null", relationNames);
 		assertTrue("relationNames empty", relationNames.size()>0);
-		assertTrue("value missing from relationNames", relationNames.contains("hasSubclass"));
+		assertTrue("value missing from relationNames", relationNames.contains("relations"));
 	}
 	
 
@@ -175,15 +159,14 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 		Relations relations = ibatisAssociationDao.getRelationsByUId("1003", "1021", true);
 		assertNotNull("relations null", relations);
 		assertTrue("relations empty", relations.getAssociationPredicateCount()>0);
-		assertTrue("relations incorrect name", relations.getContainerName().equals("relations"));
-		assertTrue("relations wrong cs", relations.getTargetCodingScheme().equals(null));
+		assertEquals("relations incorrect name","relations", relations.getContainerName());
 	}
 
 	@Test
 	public void getKeyForAssociationInstanceId() {
 		String associationID = ibatisAssociationDao.getKeyForAssociationInstanceId("3", "instance001");
 		assertNotNull("associationID null", associationID);
-		assertEquals("associationID wrong", associationID, "162");
+		assertEquals("associationID wrong", "162", associationID);
 	}
 
 	@Test
@@ -215,7 +198,7 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 	
 	@Test
 	public void getRelationLatestRevision() {
-		String latestVersion = ibatisAssociationDao.getRelationLatestRevision("3", "155");
+		String latestVersion = ibatisAssociationDao.getRelationLatestRevision("1003", "1021");
 		//TODO create revision?
 		assertNotNull("latestVersion null", latestVersion);
 		assertEquals("latestVersion incorrect", latestVersion,"1.0");
@@ -257,15 +240,19 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 		assertNotNull("propDao null",propDao);
 		assertTrue ("propDao incorrect object", propDao instanceof PropertyDao);
 	}
-	
+
+
+	@Test
+	public void getAssociationPredicateNameForAssociationInstanceId() {
+		String predicateName = ibatisAssociationDao.getAssociationPredicateNameForAssociationInstanceId("3", "instance001");
+		assertNotNull("predicate name null", predicateName);
+		assertEquals("predicate name wrong","hasSubtype",predicateName);
+	}
 
 	@Test
 	public void deleteAssociationQualificationsByCodingSchemeUId() {
 	}
-	
-	@Test
-	public void getAssociationPredicateNameForAssociationInstanceId() {
-	}
+
 
 	@Test
 	public void insertRelations() {
