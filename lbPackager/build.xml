@@ -80,6 +80,7 @@ You may obtain a copy of the License at
 		<property name="junit.libs.dir" value="${libs}/junit"/> <!--junit jars for packager-->
 		<property name="sql.libs.dir" value="${libs}/sqlDrivers"/><!-- sql drivers for packager-->
 		<property name="crossdb.libs.dir" value="${libs}/crossdb"/><!-- db tools for packager-->
+		<property name="commons-cli.libs.dir" value="${libs}/apache/commons"/><!--commons cli for packager -->
 		<property name="icu4j.libs.dir" value="${libs}/icu4j"/>
 		<property name="jdom.libs.dir" value="${libs}/jdom"/>
 		<property name="lvg.libs.dir" value="${libs}/lvg"/>
@@ -275,6 +276,7 @@ You may obtain a copy of the License at
 			<fileset dir="${temp.pkg}" id="runtime-built">
 				<include name="*.jar"/>			
 			</fileset>
+			<fileset file="${commons-cli.libs.dir}/commons-cli-1.0.jar" id="commons"/>
 			<fileset file="${lvg.libs.dir}/*.jar" id="lvg"/>
 			<fileset file="${caGrid.libs.dir}/*.jar" id="cabig"/>
 			<fileset file="${crossdb.libs.dir}/*.jar" id="crossdb.compile-time-only"/>
