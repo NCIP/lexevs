@@ -11,8 +11,8 @@
 		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd
 		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd">
 
-	<beans:import resource="rrfReaders.xml"/>
-	<beans:import resource="rrfBaseLoaderStaging.xml"/>
+	<beans:import resource="classpath*:rrfReaders.xml"/>
+	<beans:import resource="classpath:rrfBaseLoaderStaging.xml"/>
 	
 	<beans:bean class="org.springframework.batch.core.scope.StepScope" />
 	
@@ -37,7 +37,7 @@
 
 	<beans:bean id="mrsabUtility" class="org.lexgrid.loader.rrf.data.codingscheme.DefaultMrsabUtility">
 		<beans:property name="mrsabList"> 
-			<beans:ref local="mrsabFactory"/> 
+			<beans:ref bean="mrsabFactory"/> 
 		</beans:property> 
 	</beans:bean>
 
@@ -138,14 +138,14 @@
   	<beans:bean id="methodCacheInterceptor"
 		class="org.lexgrid.loader.rrf.staging.cache.interceptor.MrconsoStagingCacheInterceptor">
 		<beans:property name="cache">
-			<beans:ref local="methodCache" />
+			<beans:ref bean="methodCache" />
 		</beans:property>
 	</beans:bean>
   	   
 	<beans:bean id="methodCachePointCut"
 		class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
 		<beans:property name="advice">
-			<beans:ref local="methodCacheInterceptor" />
+			<beans:ref bean="methodCacheInterceptor" />
 		</beans:property>
 		<beans:property name="mappedName" value="getCode" />
 	</beans:bean>
@@ -162,7 +162,7 @@
 	<beans:bean id="methodCache"
 		class="org.springframework.cache.ehcache.EhCacheFactoryBean">
 		<beans:property name="cacheManager">
-			<beans:ref local="cacheManager" />
+			<beans:ref bean="cacheManager" />
 		</beans:property>
 		<beans:property name="cacheName">
 			<beans:value>mrconsoStagingCache</beans:value>

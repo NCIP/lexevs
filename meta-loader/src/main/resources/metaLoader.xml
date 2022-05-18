@@ -11,7 +11,7 @@
 		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd
 		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd">
 
-	<beans:import resource="classpath:rrfBaseLoader.xml" />
+	<beans:import resource="classpath*:rrfBaseLoader.xml" />
 	<beans:import resource="classpath:metaLoaderStaging.xml" />
 
 	<beans:bean class="org.springframework.batch.core.scope.StepScope" />
@@ -114,13 +114,13 @@
 
 	<beans:bean id="codingSchemeNameSettingProcessor" abstract="true">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="metaRelationResolver" abstract="true">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 	
@@ -664,7 +664,7 @@
 	<beans:bean id="metaCodingSchemeLoadingTasklet"
 		class="org.lexgrid.loader.meta.tasklet.MetaCodingSchemeLoadingTasklet">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="codingSchemeProperties" ref="codingSchemeProperties"/>
 	</beans:bean>
@@ -735,7 +735,7 @@
 
 	<beans:bean id="metaAssociationProcessor" parent="associationProcessor">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
@@ -750,7 +750,7 @@
 	<beans:bean id="metaCodingSchemeIdSetter"
 		class="org.lexgrid.loader.meta.data.codingscheme.MetaCodingSchemeIdSetter">
 		<beans:property name="codingSchemeProperties">
-			<beans:ref local="codingSchemeProperties" />
+			<beans:ref bean="codingSchemeProperties" />
 		</beans:property>
 		<beans:property name="isoMap">
 			<beans:ref bean="isoMap" />
@@ -820,14 +820,14 @@
 	<beans:bean id="metaEntityNamespaceResolver"
 		class="org.lexgrid.loader.processor.support.SameAsCodingSchemeNameEntityNamespaceResolver">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="hardcodedValuesLoadingTasklet" 
 				class="org.lexgrid.loader.meta.hardcodedvalues.MetaHardcodedValuesTasklet">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
@@ -840,14 +840,14 @@
 		<beans:property name="retry" value="${retry}"/>
 		<beans:property name="prefix" value="${prefix}"/>
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 	</beans:bean>
 
 	<beans:bean id="indexingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.IndexingTasklet">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="retry" value="${retry}"/>
 	</beans:bean>
@@ -856,7 +856,7 @@
 		class="org.lexgrid.loader.lexbigadmin.MetadataLoadingTasklet">
 		<beans:property name="inputResource" value="file:/${user.home}/NciMetadata.xml" />
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="deleteXmlAfterLoad" value="false"/>
 	</beans:bean>
@@ -865,14 +865,14 @@
 		class="org.lexgrid.loader.lexbigadmin.MetadataLoadingTasklet">
 		<beans:property name="inputResource" value="file:/${user.home}/NciMrdocMetadata.xml" />
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="deleteXmlAfterLoad" value="false"/>
 	</beans:bean>
 
 	<beans:bean id="metaDefaultPropertyProcessor" abstract="true">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="supportedAttributeTemplate">
 			<beans:ref bean="cachingSupportedAttribuiteTemplate" />
@@ -891,7 +891,7 @@
 	<beans:bean id="transitivityBuildingTasklet" parent="abstractLexEvsUtilityTasklet"
 		class="org.lexgrid.loader.lexbigadmin.TransitivityBuildingTasklet">
 		<beans:property name="codingSchemeIdSetter">
-			<beans:ref local="metaCodingSchemeIdSetter" />
+			<beans:ref bean="metaCodingSchemeIdSetter" />
 		</beans:property>
 		<beans:property name="retry" value="${retry}"/>
 		<beans:property name="skip" value="true"/>
