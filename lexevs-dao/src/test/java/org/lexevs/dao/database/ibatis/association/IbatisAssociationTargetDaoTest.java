@@ -62,17 +62,17 @@ public class IbatisAssociationTargetDaoTest extends AbstractTransactionalJUnit4S
 
     @Test
     public void getAssociationTargetUId() {
-    	String uid = ibatisAssociationTargetDao.getAssociationTargetUId("3", "hasSubtype");
+    	String uid = ibatisAssociationTargetDao.getAssociationTargetUId("3", "instance001");
 		assertNotNull("uid null",uid);
-		assertEquals("uid wrong", uid, "REPLACE");
+		assertEquals("uid wrong","162", uid);
     }
 
 
     @Test
     public void getLatestRevision() {
-    	String revision = ibatisAssociationTargetDao.getLatestRevision("3", null);
+    	String revision = ibatisAssociationTargetDao.getLatestRevision("3", "A");
     	assertNotNull("revision null", revision);
-    	assertEquals("revision wrong", revision, "REPLACE");
+    	assertEquals("revision wrong", "111", revision);
     }
 
 
@@ -84,7 +84,7 @@ public class IbatisAssociationTargetDaoTest extends AbstractTransactionalJUnit4S
 
     @Test
     public void getEntryStateUId() {
-    	String uid = ibatisAssociationTargetDao.getEntryStateUId("3", null);
+    	String uid = ibatisAssociationTargetDao.getEntryStateUId("3", "163");
 		assertNotNull("uid null",uid);
 		assertEquals("uid wrong", uid, "REPLACE");
     }

@@ -832,19 +832,30 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 	@Override
 	public String getEntityDescriptionAsString(String codingSchemeUid,
 			String entityCode, String entityCodeNamespace) {
-		PrefixedParameterTuple bean = 
-			new PrefixedParameterTuple(
-					codingSchemeUid, 
-					entityCode, 
-					entityCodeNamespace);
 		
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
-				codingSchemeUid);
-		
-		bean.setPrefix(prefix);
-		
-		return  (String) this.getSqlSessionTemplate().selectOne(
-				GET_ENTITY_DESCRIPTION_STRING,
-				bean);
+		EntityDescription ed = getEntityDescription(codingSchemeUid, entityCode, entityCodeNamespace);
+		if(ed != null) {
+			return ed.getContent();
+		} else
+		{
+			return "";
+		}
+//		PrefixedParameterTuple bean = 
+//			new PrefixedParameterTuple(
+//					codingSchemeUid, 
+//					entityCode, 
+//					entityCodeNamespace);
+//		
+//		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+//				codingSchemeUid);
+//		
+//		bean.setPrefix(prefix);
+//		
+//		return  (String) this.getSqlSessionTemplate().selectOne(
+//				GET_ENTITY_DESCRIPTION_STRING,
+//				bean);
 	}
+	
+	
+
 }

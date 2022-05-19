@@ -6,29 +6,26 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
+import java.util.Map;
 import javax.annotation.Resource;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
-import org.LexGrid.codingSchemes.CodingScheme;
 import org.LexGrid.commonTypes.EntityDescription;
+import org.LexGrid.concepts.Definition;
 import org.LexGrid.concepts.Entity;
-import org.LexGrid.concepts.Presentation;
 import org.LexGrid.concepts.PropertyLink;
 import org.LexGrid.relations.AssociationEntity;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexevs.dao.database.ibatis.association.IbatisAssociationDao;
 import org.lexevs.dao.database.ibatis.codingscheme.IbatisCodingSchemeDao;
-import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.dao.test.LexEvsDbUnitTestBase;
+import org.lexevs.dao.database.ibatis.property.IbatisPropertyDao;
+import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 //import org.springframework.test.context.transaction.TransactionConfiguration;
@@ -37,7 +34,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * The Class IbatisEntityDaoTest.
@@ -51,11 +53,11 @@ import static org.junit.Assert.assertTrue;
 public class IbatisEntityDaoTest extends AbstractTransactionalJUnit4SpringContextTests  {
 
 	/** The ibatis entity dao. */
-	@Resource
+	@Autowired
 	private IbatisEntityDao ibatisEntityDao;
 	
 	/** The ibatis coding scheme dao. */
-	@Resource
+	@Autowired
 	private IbatisCodingSchemeDao ibatisCodingSchemeDao;
 	
 	/** The cs id. */
@@ -63,42 +65,90 @@ public class IbatisEntityDaoTest extends AbstractTransactionalJUnit4SpringContex
 
     @Test
     public void getEntityByCodeAndNamespace() {
-		ibatisEntityDao.getEntityByCodeAndNamespace("3", "005", "Automobiles");
-
+		Entity entity = ibatisEntityDao.getEntityByCodeAndNamespace("2003", "C100044", "ncit");
+		assertNotNull("entity null",entity);
+		assertTrue("entity count wrong", entity.getEntityTypeCount()==1);
+		assertEquals("entity type wrong", entity.getEntityType(0),"concept");
     }
 
 
     @Test
     public void getEntities() {
 		List<String> uids = new ArrayList<String>();
-		uids.add("005");
-		uids.add("Ford");
-		ibatisEntityDao.getEntities("3", uids);
+		uids.add("37");
+		List<Entity> entities = ibatisEntityDao.getEntities("3", uids);
+		assertTrue("entities empty", entities.size()>0);
+		assertTrue("entities wrong size", entities.size()==1);
+		assertTrue("entity missing", entities.get(0).getEntityDescription().getContent().equals("Domestic Auto Makers"));
+
     }
 
     @Test
     public void getEntitiesWithUidMap() {
 		List<String> uids = new ArrayList<String>();
-		uids.add("005");
-		uids.add("Ford");
+		uids.add("2183");
+		uids.add("136278");
 		List<String> propertyNames = new ArrayList<>();
 		propertyNames.add("definition");
 		propertyNames.add("textualPresentation");
 		List<String> propertyTypes = new ArrayList<>();
 		propertyTypes.add("definition");
-		ibatisEntityDao.getEntitiesWithUidMap("3",propertyNames,null,null);
+		Map<String,Entity> entityMap = new HashMap<String,Entity>();
+		Map<String,Entity> entityMap2 = new HashMap<String,Entity>();
+		Map<String,Entity> entityMap3 = new HashMap<String,Entity>();
+		Entity testEntity, testEntity2, testEntity3;
+		
+		entityMap = ibatisEntityDao.getEntitiesWithUidMap("2003", null, null, uids);
+		assertTrue("entityMap empty", entityMap.size()>0);
+		assertTrue("entityMap wrong size", entityMap.size()==2);
+		testEntity = entityMap.get("136278");
+		assertNotNull("testEntity null",testEntity);
+		assertEquals("testEntity wrong", "C1036", testEntity.getEntityCode());
 
-		ibatisEntityDao.getEntitiesWithUidMap("3", null, propertyTypes, null);
 
-		ibatisEntityDao.getEntitiesWithUidMap("3", null, null, uids);
+		entityMap2 = ibatisEntityDao.getEntitiesWithUidMap("2003", propertyNames, null, uids);
+		assertTrue("entityMap2 empty", entityMap2.size()>0);
+		//only change property list returned.  Size of map shouldn't change
+		assertTrue("entityMap2 wrong size", entityMap2.size()==entityMap.size());
+		testEntity2 = entityMap.get("136278");
+		assertNotNull("testEntity2 null", testEntity2);
+		assertEquals("testEntity2 wrong", "C1036", testEntity2.getEntityCode());
 
-		ibatisEntityDao.getEntitiesWithUidMap("3", propertyNames, null, uids);
+		
+		entityMap3 = ibatisEntityDao.getEntitiesWithUidMap("2003", null, propertyTypes, uids);
+		assertTrue("entityMap3 empty", entityMap3.size()>0);
+		//only change property list returned.  Size of map shouldn't change
+		assertTrue("entityMap2 wrong size", entityMap2.size()==entityMap.size());
+		testEntity3 = entityMap3.get("136278");
+		assertNotNull("testEntity3 null",testEntity3);
 
-		ibatisEntityDao.getEntitiesWithUidMap("3", null, propertyTypes, uids);
+		
+		entityMap3 = ibatisEntityDao.getEntitiesWithUidMap("2003", propertyNames, propertyTypes, uids);
+		assertTrue("entityMap empty", entityMap2.size()>0);
+		//only change property list returned.  Size of map shouldn't change
+		assertTrue("entityMap2 wrong size", entityMap2.size()==entityMap.size());
+		testEntity2 = entityMap.get("136278");
+		assertNotNull("testEntity null", testEntity);
+		
+		
+		entityMap = ibatisEntityDao.getEntitiesWithUidMap("3", null, null, null);
+		assertTrue("uids required", entityMap.isEmpty());
 
-		ibatisEntityDao.getEntitiesWithUidMap("3", propertyNames, propertyTypes, uids);
+		entityMap = ibatisEntityDao.getEntitiesWithUidMap("3",propertyNames,null,null);
+		assertTrue("uids required", entityMap.isEmpty());
+		
+		entityMap = ibatisEntityDao.getEntitiesWithUidMap("3", null, propertyTypes, null);
+		assertTrue("uids required", entityMap.isEmpty());
 
-		ibatisEntityDao.getEntitiesWithUidMap(null, propertyNames, null, uids);
+
+
+
+		try {
+			ibatisEntityDao.getEntitiesWithUidMap(null, propertyNames, null, uids);
+			fail("Should throw error");
+		} catch(Exception ex){
+			assertTrue("wrong exception",ex instanceof RuntimeException);
+		}
     }
 
     @Test
@@ -111,46 +161,108 @@ public class IbatisEntityDaoTest extends AbstractTransactionalJUnit4SpringContex
 		propertyNames.add("textualPresentation");
 		List<String> propertyTypes = new ArrayList<>();
 		propertyTypes.add("definition");
-		ibatisEntityDao.getEntities("3", uids);
 
-		ibatisEntityDao.getEntities("3", null, null, uids);
+		Entity testEntity, testEntity2;
+		
+		List<Entity> entities1 = ibatisEntityDao.getEntities("3", uids);
+		assertTrue("entityMap empty", entities1.size()>0);
+		assertTrue("entityMap wrong size", entities1.size()==2);
+		testEntity = entities1.get(0);
+		assertNotNull("testEntity null",testEntity);
 
-		ibatisEntityDao.getEntities("3",propertyNames,propertyTypes,uids);
+		List<Entity> entities2 = ibatisEntityDao.getEntities("3", null, null, uids);
+		assertNotNull("entity null", entities2);
+		testEntity2 = entities2.get(0);
+		assertTrue("entity wrong type", testEntity2 instanceof Entity);
+		assertEquals("entity wrong", "C0001",testEntity2.getEntityCode());
+		assertTrue("entity should match", testEntity2.equals(testEntity));
 
-		ibatisEntityDao.getEntities("3", null, propertyTypes, uids);
+		entities2 = ibatisEntityDao.getEntities("3",propertyNames,propertyTypes,uids);
+		assertNotNull("entity null", entities2);
+		testEntity2 = entities2.get(0);
+		assertTrue("entity wrong type", testEntity2 instanceof Entity);
+		assertEquals("entity wrong", "C0001",testEntity2.getEntityCode());
 
-		ibatisEntityDao.getEntities("3", propertyNames, null, uids);
 
-		ibatisEntityDao.getEntities("3", propertyNames, null, null);
+		entities2 = ibatisEntityDao.getEntities("3", null, propertyTypes, uids);
+		assertNotNull("entity null", entities2);
+		testEntity2 = entities2.get(0);
+		assertTrue("entity wrong type", testEntity2 instanceof Entity);
+		assertEquals("entity wrong", "C0001",testEntity2.getEntityCode());
 
-		ibatisEntityDao.getEntities("3", null, propertyTypes, null);
 
+		entities2 = ibatisEntityDao.getEntities("3", propertyNames, null, uids);
+		assertNotNull("entity null", entities2);
+		testEntity2 = entities2.get(0);
+		assertTrue("entity wrong type", testEntity2 instanceof Entity);
+		assertEquals("entity wrong", "C0001",testEntity2.getEntityCode());
+
+
+		entities2 = ibatisEntityDao.getEntities("3", propertyNames, null, null);
+		assertNotNull("entity null", entities2);
+		assertTrue("entities should be empty", entities2.isEmpty());
+
+
+
+		entities2 = ibatisEntityDao.getEntities("3", null, propertyTypes, null);
+		assertNotNull("entity null", entities2);
+		assertTrue("entities should be empty", entities2.isEmpty());
+
+
+
+
+		try {
 		ibatisEntityDao.getEntities(null, propertyNames,null , uids);
+		fail("Should throw error");
+	} catch(Exception ex){
+		assertTrue("wrong exception",ex instanceof RuntimeException);
+	}
     }
 
     @Test
     public void getAssociationEntityByCodeAndNamespace() {
-		ibatisEntityDao.getAssociationEntityByCodeAndNamespace("3", "Ford","Automobiles");
+		AssociationEntity entity = ibatisEntityDao.getAssociationEntityByCodeAndNamespace("3", "AssocEntity","Automobiles");
+		assertNotNull("entity null",entity);
+		assertTrue("entity incorrect type", entity instanceof AssociationEntity);
+		assertEquals("entity wrong", "An AssociationEntity", entity.getEntityDescription().getContent());
 
-		ibatisEntityDao.getAssociationEntityByCodeAndNamespace("3", "Ford", null);
-
+		entity = ibatisEntityDao.getAssociationEntityByCodeAndNamespace("3", "AssocEntity", null);
+		assertNull("namespace required",entity);
     }
 
     @Test
     public void getResolvedCodedNodeReferenceByCodeAndNamespace() {
-		ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("3", "Ford", "Automobiles");
+		ResolvedConceptReference conceptRef = ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("3", "C0001", "Automobiles");
+		assertNotNull("concept reference null", conceptRef);
+		assertTrue("reference is wrong type", conceptRef instanceof ResolvedConceptReference);
+		//This does not actually resolve.  It gets a skeleton object with no conceptRef within
+//		assertNotNull("referenced entity null", conceptRef.getReferencedEntry());
 
-		ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("3", "Ford",null);
+		
 
-		ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("3", null, "Automobiles");
+		conceptRef = ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("3", "C0001",null);
+		assertNotNull("concept reference null", conceptRef);
+		assertTrue("reference is wrong type", conceptRef instanceof ResolvedConceptReference);
 
-		ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace(null, "Ford", "Automobiles");
+		conceptRef = ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace("3", null, "Automobiles");
+		assertNull("code required", conceptRef);
+		
+		try {
+			conceptRef = ibatisEntityDao.getResolvedCodedNodeReferenceByCodeAndNamespace(null, "Ford", "Automobiles");
+		fail("Should have thrown an error");
+		}catch(RuntimeException ex) {
+			assertTrue("Wrong error",ex instanceof RuntimeException);
+		}
 
     }
 
     @Test
     public void getEntityByEntryStateUid() {
-		ibatisEntityDao.getEntityByEntryStateUid("3", "Ford", null);
+    	//TODO load or create a testable revision
+		Entity entity = ibatisEntityDao.getEntityByEntryStateUid("3", "103", "2");
+		assertNotNull("entity null", entity);
+		assertTrue("entity wrong type", entity instanceof Entity);
+		assertEquals("entity wrong", "Ford",entity.getEntityCode());
     }
 
     @Test
@@ -160,26 +272,55 @@ public class IbatisEntityDaoTest extends AbstractTransactionalJUnit4SpringContex
 		propertyNames.add("textualPresentation");
 		List<String> propertyTypes = new ArrayList<>();
 		propertyTypes.add("definition");
-		ibatisEntityDao.getEntityByUId("3","C0001");
+		
+		Entity entity = ibatisEntityDao.getEntityByUId("3","79");
+		assertNotNull("entity null 1", entity);
+		assertTrue("entity wrong type 1", entity instanceof Entity);
+		assertEquals("entity wrong 1", "C0001",entity.getEntityCode());
 
-		ibatisEntityDao.getEntityByUId("3", "C0001", null, null);
+		Entity entity2 = ibatisEntityDao.getEntityByUId("3", "79", null, null);
+		assertNotNull("entity null 2", entity2);
+		assertTrue("entity wrong type 2", entity2 instanceof Entity);
+		assertEquals("entity wrong 2", "C0001",entity2.getEntityCode());
+		assertTrue("entity should match 2", entity.equals(entity2));
 
-		ibatisEntityDao.getEntityByUId("3", "C0001", propertyNames, null);
+		entity = ibatisEntityDao.getEntityByUId("3", "79", propertyNames, null);
+		assertNotNull("entity null 3", entity);
+		assertTrue("entity wrong type 3", entity instanceof Entity);
+		assertEquals("entity wrong 3", "C0001",entity.getEntityCode());
 
-		ibatisEntityDao.getEntityByUId("3", "C0001", null, propertyTypes);
+		
 
-		ibatisEntityDao.getEntityByUId("3", "C0001", propertyNames, propertyTypes);
+		entity2 = ibatisEntityDao.getEntityByUId("3", "79", null, propertyTypes);
+		assertNotNull("entity null 4", entity2);
+		assertTrue("entity wrong type 4", entity2 instanceof Entity);
+		assertEquals("entity wrong 4", "C0001",entity2.getEntityCode());
 
-		ibatisEntityDao.getEntityByUId("3", null, null, propertyTypes);
+
+		ibatisEntityDao.getEntityByUId("3", "79", propertyNames, propertyTypes);
+		assertNotNull("entity null 5", entity2);
+		assertTrue("entity wrong type 5", entity2 instanceof Entity);
+		assertEquals("entity wrong 5", "C0001",entity2.getEntityCode());
+
+		
+
+		
+		   entity = ibatisEntityDao.getEntityByUId("3", null, null, propertyTypes);
+		   assertNull("Uid required", entity);
+
 
     }
 
 
     @Test
     public void getHistoryEntityByRevision() {
-		ibatisEntityDao.getHistoryEntityByRevision("3", "C0001",null);
+    	//TODO load or create a testable revision
+		Entity entity = ibatisEntityDao.getHistoryEntityByRevision("3", "C0001",null);
+		assertNull("entity should be null", entity);
 
-		ibatisEntityDao.getHistoryEntityByRevision("3", "C0001","1.0");
+		entity = ibatisEntityDao.getHistoryEntityByRevision("3", "C0001","1.0");
+		assertNotNull("entity null", entity);
+		assertEquals("entity wrong", "C0001", entity.getEntityCode());
     }
 
     @Test
@@ -187,99 +328,156 @@ public class IbatisEntityDaoTest extends AbstractTransactionalJUnit4SpringContex
 		List<String> uids = new ArrayList<String>();
 		uids.add("005");
 		uids.add("Ford");
-		ibatisEntityDao.doGetPropertyLinks(null, "3", uids);
+		List<PropertyLink> links = ibatisEntityDao.doGetPropertyLinks("lbaaab", "3", uids);
+		assertNotNull("property links null", links);
 		//TODO This may not return any results, ever
     }
 
     @Test
     public void getEntityCount() {
-		ibatisEntityDao.getEntityCount("3");
+    	int count = ibatisEntityDao.getEntityCount("3");
+    	assertEquals("Automobiles count wrong",24,count);
 
-		ibatisEntityDao.getEntityCount("2003");
+    	count = ibatisEntityDao.getEntityCount("2003");
+    	assertEquals("ncit count wrong",203452, count);
 
-		ibatisEntityDao.getEntityCount("10");
+    	try {
+    		ibatisEntityDao.getEntityCount("10");
+    		fail("Exception not thrown");
+    	}
+    	catch(RuntimeException ex) {
+    		assertTrue("wrong exception thrown",ex instanceof RuntimeException);
+    	}
+
 
     }
 
     @Test
     public void getAllEntitiesOfCodingScheme() {
-		ibatisEntityDao.getAllEntitiesOfCodingScheme("3", 0, 10);
+		List<? extends Entity> entities = ibatisEntityDao.getAllEntitiesOfCodingScheme("3", 0, 10);
+		assertNotNull("entities null", entities);
+		assertTrue("entities empty", entities.size()>0);
+		assertTrue("should be Entity", entities.get(0) instanceof Entity);
+		
 
 		ibatisEntityDao.getAllEntitiesOfCodingScheme("3", 0, -1);
+		assertNotNull("entities null", entities);
+		assertTrue("entities empty", entities.size()>0);
+		assertTrue("should be Entity", entities.get(0) instanceof Entity);
 
 		ibatisEntityDao.getAllEntitiesOfCodingScheme("2003", 5, 50);
+		assertNotNull("entities null", entities);
+		assertTrue("entities empty", entities.size()>0);
+		assertTrue("should be Entity", entities.get(0) instanceof Entity);
     }
 
     @Test
     public void getEntityUId() {
-		ibatisEntityDao.getEntityUId("3", "Ford", "Automobiles");
+		String entityUid = ibatisEntityDao.getEntityUId("3", "Ford", "Automobiles");
+		assertNotNull("entityUid null", entityUid);
+		assertEquals("entityUid wrong", "103", entityUid);
     }
 
     @Test
     public void doGetSupportedLgSchemaVersions() {
-		ibatisEntityDao.doGetSupportedLgSchemaVersions();
+		List<LexGridSchemaVersion> versions = ibatisEntityDao.doGetSupportedLgSchemaVersions();
+		LexGridSchemaVersion vers = new LexGridSchemaVersion();
+		vers.setMajorVersion(2);
+		vers.setMinorVersion(0);
+		assertNotNull("versions null", versions);
+		assertTrue("version missing", versions.contains(vers));
     }
 
     @Test
     public void getIbatisVersionsDao() {
-		ibatisEntityDao.getIbatisVersionsDao();
+		IbatisVersionsDao versionsDao = ibatisEntityDao.getIbatisVersionsDao();
+		assertNotNull("versionsDao null", versionsDao);
+		assertTrue("versionsDao wrong object", versionsDao instanceof IbatisVersionsDao);
     }
 
     @Test
     public void getIbatisPropertyDao() {
-		ibatisEntityDao.getIbatisPropertyDao();
+		IbatisPropertyDao propertyDao = ibatisEntityDao.getIbatisPropertyDao();
+		assertNotNull("propertyDao null", propertyDao);
+		assertTrue("propertyDao wrong object", propertyDao instanceof IbatisPropertyDao);
     }
 
     @Test
     public void getIbatisAssociationDao() {
-		ibatisEntityDao.getIbatisAssociationDao();
+		IbatisAssociationDao assocDao = ibatisEntityDao.getIbatisAssociationDao();
+		assertNotNull("assocDao null", assocDao);
+		assertTrue("assocDao wrong object", assocDao instanceof IbatisAssociationDao);
     }
 
 	@Test
 	public void getIbatisCodingSchemeDao() {
-		ibatisEntityDao.getIbatisCodingSchemeDao();
+		IbatisCodingSchemeDao csDao = ibatisEntityDao.getIbatisCodingSchemeDao();
+		assertNotNull("csDao null", csDao);
+		assertTrue("csDao wrong object", csDao instanceof IbatisCodingSchemeDao);
 	}
 
     @Test
     public void getLatestRevision() {
-		ibatisEntityDao.getLatestRevision("3", "C0001");
+    	//TODO enter a testable revision
+		String revision = ibatisEntityDao.getLatestRevision("2003", "2003");
+		assertNotNull("revision null", revision);
+		assertEquals("revision wrong", "2.0", revision);
     }
 
     @Test
     public void entityInUse() {
-		ibatisEntityDao.entityInUse("3", "C0001","Automobiles");
+		boolean entityInUse = ibatisEntityDao.entityInUse("3", "C0001","Automobiles");
+		assertTrue("entityInUse false", entityInUse);
 
-		ibatisEntityDao.entityInUse("2003", "C12663", "ncit");
+		entityInUse = ibatisEntityDao.entityInUse("2003", "C12663", "ncit");
+		assertTrue("entityInUse false", entityInUse);
     }
 
     @Test
     public void getEntryStateUId() {
-		ibatisEntityDao.getEntryStateUId("3","Ford");
+		String entryStateUid = ibatisEntityDao.getEntryStateUId("3","97");
+		assertNotNull("entryStateUid null", entryStateUid);
+		assertEquals("entryStateUid wrong", "98", entryStateUid);
     }
 
     @Test
     public void getDistinctEntityNamespacesFromCode() {
-		ibatisEntityDao.getDistinctEntityNamespacesFromCode("3", "Ford");
+		List<String> namespaces = ibatisEntityDao.getDistinctEntityNamespacesFromCode("3", "Ford");
+		assertNotNull("namespaces null", namespaces);
+		assertTrue("namespaces empty", namespaces.size()>0);
+		assertTrue("namespace missing", namespaces.contains("Automobiles"));
     }
 
     @Test
     public void getEntryState() {
-		ibatisEntityDao.getEntryState("3", "C0001", null);
+    	//TODO load or create a testable revision
+		String entryState = ibatisEntityDao.getEntryState("3", "C0001", "2");
+		assertNotNull("entryState null", entryState);
+		assertEquals("entryState wrong", "REPLACE", entryState);
+		
     }
 
     @Test
     public void entryStateExists() {
-		ibatisEntityDao.entryStateExists("3", "76");
+		boolean entryStateExists = ibatisEntityDao.entryStateExists("3", "205");
+		assertTrue("entryStateExists false", entryStateExists);
+		
+		entryStateExists = ibatisEntityDao.entryStateExists("3", "76");
+		assertFalse("entryStateExists false", entryStateExists);
     }
 
     @Test
     public void getEntityDescription() {
-		ibatisEntityDao.getEntityDescription("3", "C0001", "Automobiles");
+		EntityDescription entityDescription =ibatisEntityDao.getEntityDescription("3", "C0001", "Automobiles");
+		assertNotNull("entityDescription null", entityDescription);
+		assertEquals("entityDescription wrong", "Car", entityDescription.getContent());
     }
 
     @Test
     public void getEntityDescriptionAsString() {
-		ibatisEntityDao.getEntityDescriptionAsString("3", "C0001", "Automobiles");
+		String entityDescription = ibatisEntityDao.getEntityDescriptionAsString("3", "C0001", "Automobiles");
+		assertNotNull("entityDescription null", entityDescription);
+		assertEquals("entityDescription wrong", "Car", entityDescription);
     }
 //
 //    /**

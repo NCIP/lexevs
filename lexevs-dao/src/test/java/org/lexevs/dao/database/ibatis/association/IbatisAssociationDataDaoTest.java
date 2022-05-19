@@ -77,7 +77,7 @@ public class IbatisAssociationDataDaoTest extends AbstractTransactionalJUnit4Spr
 
     @Test
     public void getLatestRevision() {
-    	String revision = ibatisAssociationDataDao.getLatestRevision("3", "hasSubtype");
+    	String revision = ibatisAssociationDataDao.getLatestRevision("3", "157");
     	assertNotNull("revision null", revision);
     	assertEquals("revision wrong", revision, "1.0");
     }
@@ -98,60 +98,57 @@ public class IbatisAssociationDataDaoTest extends AbstractTransactionalJUnit4Spr
     @Test
     public void insertAssociationData() {
 
-    	ibatisAssociationDataDao.insertAssociationData(null, null, null, null);
+//    	ibatisAssociationDataDao.insertAssociationData(null, null, null, null);
     }
 
     @Test
     public void testInsertAssociationData() {
-    	AssociationSource source = new AssociationSource();
-    	ibatisAssociationDataDao.insertAssociationData(null, null, source, null, null);
+//    	AssociationSource source = new AssociationSource();
+//    	ibatisAssociationDataDao.insertAssociationData(null, null, source, null, null);
     }
 
     @Test
     public void testInsertAssociationData1() {
-    	ibatisAssociationDataDao.insertAssociationData(null, null, "test", null, null);
+//    	ibatisAssociationDataDao.insertAssociationData(null, null, "test", null, null);
     }
     
     @Test
     public void setVersionsDao() {
-    	ibatisAssociationDataDao.setVersionsDao(null);
+//    	ibatisAssociationDataDao.setVersionsDao(null);
     }
     
     @Test
     public void insertHistoryAssociationData() {
-    	ibatisAssociationDataDao.insertHistoryAssociationData(null, null, null, null);
+//    	ibatisAssociationDataDao.insertHistoryAssociationData(null, null, null, null);
     }
 
     @Test
     public void updateAssociationData() {
-    	ibatisAssociationDataDao.updateAssociationData(null, null, null);
+//    	ibatisAssociationDataDao.updateAssociationData(null, null, null);
     }
 
     @Test
     public void deleteAllAssocQualsByAssocDataUId() {
-    	ibatisAssociationDataDao.deleteAllAssocQualsByAssocDataUId(null, null);
+//    	ibatisAssociationDataDao.deleteAllAssocQualsByAssocDataUId(null, null);
     }
 
     @Test
     public void deleteAssociationData() {
-    	ibatisAssociationDataDao.deleteAssociationData(null, null);
+//    	ibatisAssociationDataDao.deleteAssociationData(null, null);
     }
 
     @Test
     public void updateVersionableChanges() {
-    	ibatisAssociationDataDao.updateVersionableChanges(null, null, null);
+//    	ibatisAssociationDataDao.updateVersionableChanges(null, null, null);
     }
     
 
     @Test
     public void doInsertAssociationData() {
-    	ibatisAssociationDataDao.doInsertAssociationData(null, null, null, null, null, null);
+//    	ibatisAssociationDataDao.doInsertAssociationData(null, null, null, null, null, null);
     }
 
 
-    @Test
-    public void getTripleByUid() {
-    	ibatisAssociationDataDao.getTripleByUid(null, null);
-    }
+
 
 }

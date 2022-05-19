@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.LexGrid.relations.AssociationSource;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.database.access.association.model.Triple;
@@ -21,6 +22,9 @@ public class MybatisAssocGraphDBDaoTest extends AbstractTransactionalJUnit4Sprin
 	/** The ibatis association dao. */
 	@Resource
 	private IbatisAssociationDao ibatisAssociationDao;
+	
+	@Resource
+	private IbatisAssociationDataDao ibatisAssociationDataDao;
 
 	
 	@Test
@@ -43,5 +47,10 @@ public class MybatisAssocGraphDBDaoTest extends AbstractTransactionalJUnit4Sprin
 	@Test
 	public void getAllDescendantTriplesTrOfCodingScheme() {
 	}
+	
+    @Test
+    public void getTripleByUid() {
+    	AssociationSource source = ibatisAssociationDataDao.getTripleByUid(null, null);
+    }
 	
 }
