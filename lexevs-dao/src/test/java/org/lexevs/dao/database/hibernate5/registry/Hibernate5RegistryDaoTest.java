@@ -1,15 +1,19 @@
 package org.lexevs.dao.database.hibernate5.registry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
 
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
+import org.LexGrid.LexBIG.Exceptions.LBParameterException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao;
@@ -111,4 +115,80 @@ public class Hibernate5RegistryDaoTest  extends AbstractTransactionalJUnit4Sprin
 		
 		assertEquals(entries.get(0).getResourceUri(),"urn:oid:11.11.0.1"); 
 	}
+	
+	@Test
+	public  void testgetAllRegistryEntriesOfType(){
+		
+		List<RegistryEntry> entries = hdao.getAllRegistryEntriesOfType(ResourceType.CODING_SCHEME);
+		
+		assertTrue(entries.stream().anyMatch(x -> x.getResourceUri().equals("urn:oid:11.11.0.1"))); 
+		
+	}
+	
+	@Test
+	public  void testgetAllRegistryEntriesOfTypeAndURI(){
+
+		List<RegistryEntry> entries = hdao.getAllRegistryEntriesOfTypeAndURI(ResourceType.CODING_SCHEME, "urn:oid:11.11.0.1");
+		
+		assertEquals(entries.get(0).getResourceUri(),"urn:oid:11.11.0.1"); 
+	}
+	
+	@Test
+	public  void testgetAllRegistryEntriesOfTypeURIAndVersion(){
+		
+		List<RegistryEntry> entries = hdao.getAllRegistryEntriesOfTypeURIAndVersion(ResourceType.CODING_SCHEME, "urn:oid:11.11.0.1", "1.0");
+		
+		assertTrue(entries.stream().anyMatch(x -> x.getResourceUri().equals("urn:oid:11.11.0.1")));
+	}
+	
+	@Test
+	public  void testgetAllRegistryEntries(){
+		
+		List<RegistryEntry> entries = hdao.getAllRegistryEntries();
+		
+		assertTrue(entries.stream().anyMatch(x -> x.getResourceUri().equals("urn:oid:11.11.0.1")));
+	}
+
+	@Test
+	public void getRegistryEntryForUriAndVersion() throws LBParameterException{
+		
+		RegistryEntry entry = hdao.getRegistryEntryForUriAndVersion("urn:oid:11.11.0.1", "1.0");
+		
+		assertTrue(entry.getResourceUri().equals("urn:oid:11.11.0.1"));
+	}
+	
+	@Test
+	public  void testgetRegistryEntriesForUri(){
+		
+		List<RegistryEntry> entries = hdao.getRegistryEntriesForUri("urn:oid:11.11.0.1");
+		
+		assertTrue(entries.stream().anyMatch(x -> x.getResourceUri().equals("urn:oid:11.11.0.1")));
+	}
+
+	@Test
+	public void testgetLastUsedDbIdentifier(){
+		
+		String id = hdao.getLastUsedDbIdentifier();
+		
+		assertNotNull(id);
+	}
+	
+	@Test
+	public void initRegistryMetadata(){}
+	
+	@Test
+	public void testgetLastUsedHistoryIdentifier(){
+		String id = hdao.getLastUsedHistoryIdentifier();
+		
+		assertNotNull(id);
+	}
+	
+	@Test
+	public void testgetLastUpdateTime(){
+		Date date = hdao.getLastUpdateTime();
+		
+		assertNotNull(date);
+	}
+	
+
 }

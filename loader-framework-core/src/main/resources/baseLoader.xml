@@ -58,10 +58,13 @@
   	<beans:bean id="jobRepository"
 		class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
 		<beans:property name="dataSource" ref="dataSource"/> 
+		<beans:property name="jdbcOperations" ref="jdbcOperations"/>
 		<beans:property name="transactionManager" ref="noOptransactionManager"/>
 		<beans:property name="incrementerFactory" ref="incrementerFactory"/>
 		<beans:property name="tablePrefix" value="${prefix}"/>
 	</beans:bean>
+
+	<beans:bean id="jdbcOperations" class="org.springframework.jdbc.core.simple.SimpleJdbcInsertOperations"/>
 	
 	<beans:bean id="abstractCleanupListener" parent="loggingBean" abstract="true"
 	class="org.lexgrid.loader.listener.CleanupListener">

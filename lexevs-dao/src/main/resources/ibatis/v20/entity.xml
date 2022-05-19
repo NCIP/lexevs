@@ -145,7 +145,7 @@
         entity.codingSchemeGuid = #{param1}
         AND
         entity.entityGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[]}
+        #{item}
     </foreach> )
     </select>
 
