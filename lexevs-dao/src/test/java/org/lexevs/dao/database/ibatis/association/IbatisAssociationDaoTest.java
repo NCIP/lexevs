@@ -198,7 +198,7 @@ public class IbatisAssociationDaoTest extends AbstractTransactionalJUnit4SpringC
 	
 	@Test
 	public void getRelationLatestRevision() {
-		String latestVersion = ibatisAssociationDao.getRelationLatestRevision("1003", "1021");
+		String latestVersion = ibatisAssociationDao.getRelationLatestRevision("21566139", "1021");
 		//TODO create revision?
 		assertNotNull("latestVersion null", latestVersion);
 		assertEquals("latestVersion incorrect", latestVersion,"1.0");
