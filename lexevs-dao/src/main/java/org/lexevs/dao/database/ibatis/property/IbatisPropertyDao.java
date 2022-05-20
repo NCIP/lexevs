@@ -294,6 +294,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	}
 
 	@SuppressWarnings("unchecked")
+	@Deprecated
 	protected <T> List<T> doGetPropertyMultiAttrib(String prefix, String propertyId, Class<T> multiAttrib){
 		return this.getSqlSessionTemplate().selectList(GET_PROPERTY_MULTIATTRIB_BY_PROPERTY_ID_SQL, 
 				new PrefixedParameterTuple(prefix, propertyId, this.propertyMultiAttributeClassifier.classify(multiAttrib)));
@@ -924,9 +925,11 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	public void setIbatisVersionsDao(IbatisVersionsDao ibatisVersionsDao) {
 		this.ibatisVersionsDao = ibatisVersionsDao;
 	}
-	
+
+	@Deprecated
 	public Property getPropertyByUId(String vsPropertyUId) {
-		
+		//TODO cannot work.  It uses the default prefix and property table - this does not exist.
+		// I can find no record that this method is used anywhere
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		InsertOrUpdatePropertyBean propertyBean = (InsertOrUpdatePropertyBean) this
