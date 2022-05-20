@@ -120,7 +120,7 @@
   			previousRevision.revisionId AS previousRevisionId
   			
 		FROM
-			${prefix}entityAssnsToData data
+			${actualTableSetPrefix}entityAssnsToData data
 			
 		LEFT JOIN
 			${actualTableSetPrefix}entryState entryState

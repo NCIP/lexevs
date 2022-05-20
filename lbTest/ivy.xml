@@ -25,5 +25,6 @@
 		<dependency org="lexevs" name="umls-loader" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="loader-framework-core" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="abstract-rrf-loader" rev="${vBuild}"  conf="default"/>
+		<dependency org="commons-cli" name="commons-cli" rev="1.2" conf="default"/>
    	 </dependencies>
 </ivy-module>
