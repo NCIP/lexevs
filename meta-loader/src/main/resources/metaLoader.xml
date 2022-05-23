@@ -6,10 +6,10 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans classpath:springxsds/spring-beans-2.0.xsd
-		http://www.springframework.org/schema/batch classpath:springxsds/spring-batch-2.1.xsd
-		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd
-		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd">
+		http://www.springframework.org/schema/beans classpath:springxsds/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/batch classpath:springxsds/spring-batch-3.0.xsd
+		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-4.3.xsd">
 
 	<beans:import resource="classpath*:rrfBaseLoader.xml" />
 	<beans:import resource="classpath:metaLoaderStaging.xml" />
@@ -896,6 +896,9 @@
 		<beans:property name="retry" value="${retry}"/>
 		<beans:property name="skip" value="true"/>
 	</beans:bean>
+
+	<beans:bean id="nameCoder"
+		class="com.thoughtworks.xstream.io.naming.NoNameCoder"/>
 	
 	<beans:bean id="mrsabXmlWriter"
 		class="org.lexgrid.loader.writer.NoClosingRootTagStaxEventItemWriter">
@@ -906,6 +909,7 @@
 
 	<beans:bean id="mrsabXmlMarshaller"
 		class="org.springframework.oxm.xstream.XStreamMarshaller">
+		<beans:property name="nameCoder" ref="nameCoder"/>
 		<beans:property name="aliases">
 			<beans:map>
 				<beans:entry key="mrsabEntry" value="org.lexgrid.loader.rrf.model.Mrsab" />
@@ -913,7 +917,7 @@
 		</beans:property>
 	</beans:bean>
 	
-		<beans:bean id="mrdocXmlWriter"
+	<beans:bean id="mrdocXmlWriter"
 		class="org.lexgrid.loader.writer.NoClosingRootTagStaxEventItemWriter">
 		<beans:property name="resource" value="file:/${user.home}/NciMrdocMetadata.xml" />
 		<beans:property name="marshaller" ref="mrsabXmlMarshaller" />
@@ -922,6 +926,7 @@
 
 	<beans:bean id="mrdocXmlMarshaller"
 		class="org.springframework.oxm.xstream.XStreamMarshaller">
+		<beans:property name="nameCoder" ref="nameCoder"/>
 		<beans:property name="aliases">
 			<beans:map>
 				<beans:entry key="mrdocEntry" value="org.lexgrid.loader.rrf.model.Mrdoc" />
