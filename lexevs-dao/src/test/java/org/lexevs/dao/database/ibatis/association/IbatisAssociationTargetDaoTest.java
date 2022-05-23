@@ -84,9 +84,9 @@ public class IbatisAssociationTargetDaoTest extends AbstractTransactionalJUnit4S
 
     @Test
     public void getEntryStateUId() {
-    	String uid = ibatisAssociationTargetDao.getEntryStateUId("3", "163");
+    	String uid = ibatisAssociationTargetDao.getEntryStateUId("3", "190");
 		assertNotNull("uid null",uid);
-		assertEquals("uid wrong", uid, "REPLACE");
+		assertEquals("uid wrong", uid, "191");
     }
 
     @Test
