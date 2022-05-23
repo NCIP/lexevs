@@ -595,10 +595,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 							session);
 				}
 				
-				session.commit();
-				session.clearCache();
-				
-
 			}	
 
 	
@@ -633,9 +629,6 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						session.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 					}
 					}
-				session.commit();
-				session.clearCache();
-
 
 			}
 

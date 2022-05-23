@@ -563,7 +563,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 			final boolean cascade) {
 		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 
-		SqlSessionTemplate session = this.getSqlSessionBatchTemplate();
+		SqlSessionTemplate session = this.getSqlSessionTemplate();
 
 
 				
@@ -575,9 +575,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 							session,
 							cascade);
 				}
-				
-				session.commit();
-				session.clearCache();
 				
 
 	}
