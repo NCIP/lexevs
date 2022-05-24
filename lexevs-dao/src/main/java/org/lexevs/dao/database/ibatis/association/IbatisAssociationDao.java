@@ -614,7 +614,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						
 						String qualUId = createUniqueId();
 						InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-						qualBean.setReferenceUId(item.getParentId() );
+						qualBean.setReferenceUId(associationId);
 						qualBean.setUId(qualUId);
 						qualBean.setPrefix(getPrefixResolver().resolvePrefixForCodingScheme(
 								codingSchemeId));
