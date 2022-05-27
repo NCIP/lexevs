@@ -323,14 +323,14 @@
 			description
 			)
 		VALUES (
-			#{param1},
-			#{param2},
-			#{param3.releaseURI},
-			#{param3.releaseId},
-			#{param3.releaseDate},
-			#{param3.basedOnRelease},
-			#{param3.releaseAgency},
-			#{param3.entityDescription.content}
+			#{releaseGuid},
+			#{codingSchemeUri},
+			#{releaseURI},
+			#{releaseId},
+			#{releaseDate},
+			#{basedOnRelease},
+			#{releaseAgency},
+			#{description}
 			)
  	</insert>
  	
@@ -346,14 +346,14 @@
 			referenceName
 			)
 		VALUES (
-			#{param1},
-			#{param2},
-			#{param3.conceptcode},
-			#{param3.conceptName},
-			#{param3.editaction},
-			#{param3.editDate},
-			#{param3.referencecode},
-			#{param3.referencename}
+			#{ncitHistGuid},
+			#{releaseGuid},
+			#{entityCode},
+			#{conceptName},
+			#{editAction},
+			#{editDate},
+			#{referenceCode},
+			#{referenceName}
 			)
  	</insert>
 		
