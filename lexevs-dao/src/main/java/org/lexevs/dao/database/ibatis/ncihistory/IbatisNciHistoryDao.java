@@ -281,14 +281,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	
 	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent) {
 		
-		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
-				this.createUniqueId(),
+		this.getSqlSessionTemplate().insert(INSERT_NCI_CHANGEEVENT_SQL,
+				buildInsertNciChangeEventParamaterBean(
+				this.getPrefixResolver().resolveDefaultPrefix(),
 				releaseUid,
-				changeEvent);
-		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
-		
-		this.getSqlSessionTemplate().insert(INSERT_NCI_CHANGEEVENT_SQL, 
-				sParam);	
+				changeEvent));		
 	}
 	
 	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent, SqlSessionTemplate session) {
