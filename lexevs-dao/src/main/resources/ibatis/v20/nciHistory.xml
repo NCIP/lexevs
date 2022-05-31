@@ -189,7 +189,7 @@
 			nciHist.entityCode = #{param2}
 
 		AND
-			editAction = 'create'
+			editAction = 'CREATE'
 	</select> 
 	
 	<select id="getConceptChangeVersions" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
@@ -232,9 +232,9 @@
 			nciHist.entityCode = #{param2}
 		AND
 			(
-				nciHist.editAction = 'split'
+				nciHist.editAction = 'SPLIT'
 				OR
-				nciHist.editAction = 'merge'
+				nciHist.editAction = 'MERGE'
 			)
 	</select> 
 	
@@ -245,9 +245,9 @@
 			nciHist.referenceCode = #{param2}
 		AND
 			(
-				nciHist.editAction = 'split'
+				nciHist.editAction = 'SPLIT'
 				OR
-				nciHist.editAction = 'merge'
+				nciHist.editAction = 'MERGE'
 			)
 	</select> 
 

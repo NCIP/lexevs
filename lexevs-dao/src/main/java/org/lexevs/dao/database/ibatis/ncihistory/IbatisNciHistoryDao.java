@@ -179,13 +179,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 
 	@Override
 	public List<NCIChangeEvent> getDescendants(String codingSchemeUri, String conceptCode) {
-		
-		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+
+		return this.getSqlSessionTemplate().selectList(GET_DECENDANTS_SQL, new PrefixedParameterTuple(
+				this.getPrefixResolver().resolveDefaultPrefix(),
 				codingSchemeUri,
-				conceptCode);
-	    sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
-	    
-		return this.getSqlSessionTemplate().selectList(GET_DECENDANTS_SQL, sParam);
+				conceptCode));
 
 	}
 
