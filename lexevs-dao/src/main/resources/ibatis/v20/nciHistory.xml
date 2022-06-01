@@ -189,7 +189,7 @@
 			nciHist.entityCode = #{param2}
 
 		AND
-			editAction = 'create'
+			editAction = 'CREATE'
 	</select> 
 	
 	<select id="getConceptChangeVersions" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
@@ -232,9 +232,9 @@
 			nciHist.entityCode = #{param2}
 		AND
 			(
-				nciHist.editAction = 'split'
+				nciHist.editAction = 'SPLIT'
 				OR
-				nciHist.editAction = 'merge'
+				nciHist.editAction = 'MERGE'
 			)
 	</select> 
 	
@@ -245,9 +245,9 @@
 			nciHist.referenceCode = #{param2}
 		AND
 			(
-				nciHist.editAction = 'split'
+				nciHist.editAction = 'SPLIT'
 				OR
-				nciHist.editAction = 'merge'
+				nciHist.editAction = 'MERGE'
 			)
 	</select> 
 
@@ -323,14 +323,14 @@
 			description
 			)
 		VALUES (
-			#{param1},
-			#{param2},
-			#{param3.releaseURI},
-			#{param3.releaseId},
-			#{param3.releaseDate},
-			#{param3.basedOnRelease},
-			#{param3.releaseAgency},
-			#{param3.entityDescription.content}
+			#{releaseGuid},
+			#{codingSchemeUri},
+			#{releaseURI},
+			#{releaseId},
+			#{releaseDate},
+			#{basedOnRelease},
+			#{releaseAgency},
+			#{description}
 			)
  	</insert>
  	
@@ -346,14 +346,14 @@
 			referenceName
 			)
 		VALUES (
-			#{param1},
-			#{param2},
-			#{param3.conceptcode},
-			#{param3.conceptName},
-			#{param3.editaction},
-			#{param3.editDate},
-			#{param3.referencecode},
-			#{param3.referencename}
+			#{ncitHistGuid},
+			#{releaseGuid},
+			#{entityCode},
+			#{conceptName},
+			#{editAction},
+			#{editDate},
+			#{referenceCode},
+			#{referenceName}
 			)
  	</insert>
 		

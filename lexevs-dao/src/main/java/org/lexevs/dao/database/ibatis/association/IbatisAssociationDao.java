@@ -595,6 +595,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 							session);
 				}
 				
+				session.close();
+				
 			}	
 
 	
@@ -614,7 +616,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						
 						String qualUId = createUniqueId();
 						InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-						qualBean.setReferenceUId(item.getParentId() );
+						qualBean.setReferenceUId(associationId);
 						qualBean.setUId(qualUId);
 						qualBean.setPrefix(getPrefixResolver().resolvePrefixForCodingScheme(
 								codingSchemeId));
@@ -629,7 +631,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						session.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 					}
 					}
-
+				session.close();
 			}
 
 	

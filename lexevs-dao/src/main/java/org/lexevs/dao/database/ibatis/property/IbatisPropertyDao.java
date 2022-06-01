@@ -31,8 +31,6 @@ import org.lexevs.dao.database.ibatis.property.parameter.InsertOrUpdatePropertyB
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyLinkBean;
 import org.lexevs.dao.database.ibatis.property.parameter.InsertPropertyMultiAttribBean;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
-import org.lexevs.dao.database.inserter.BatchInserter;
-import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.mybatis.spring.SqlSessionTemplate;
