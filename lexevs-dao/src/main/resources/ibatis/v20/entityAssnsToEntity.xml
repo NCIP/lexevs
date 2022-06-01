@@ -1172,13 +1172,13 @@
             <if test="param2 != null and param2 != ''">AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate1.associationPredicateGuid =
-                    #{param2[]}
+                    #{item}
                 </foreach>
                 )
                 AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate2.associationPredicateGuid =
-                    #{param2[]}
+                    #{item}
                 </foreach>
                 )
             </if>
@@ -1188,10 +1188,10 @@
         <if test="param3 != null and param3 != ''">AND
             (
             <foreach collection="param3" item="item" separator="OR">
-                eaq2.qualifierName = #{param3[].qualifierName}
+                eaq2.qualifierName = #{item.qualifierName}
 
                 <if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
-                    eaq2.qualifierValue = #{param3[].qualifierValue}
+                    eaq2.qualifierValue = #{item.qualifierValue}
                 </if>
             </foreach>
             )
@@ -1218,10 +1218,10 @@
         <if test="param3 != null and param3 != ''">AND
             (
             <foreach collection="param3" item="item" separator="OR">
-                eaq1.qualifierName = #{param3[].qualifierName}
+                eaq1.qualifierName = #{item.qualifierName}
 
                 <if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
-                    eaq1.qualifierValue = #{param3[].qualifierValue}
+                    eaq1.qualifierValue = #{item.qualifierValue}
                 </if>
             </foreach>
             )
@@ -1229,14 +1229,14 @@
 
         <if test="param2 != null and param2 != ''">AND
             eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">
-                #{param2[]}
+                #{item}
             </foreach> )
         </if>
 
         <if test="param4 != null and param4 != ''">AND
             (
             <foreach collection="param4" item="item" separator="OR">
-                eate1.sourceEntityCodeNamespace = #{param4[]}
+                eate1.sourceEntityCodeNamespace = #{item}
             </foreach>
             )
         </if>
@@ -1244,15 +1244,15 @@
         <if test="param5 != null and param5 != ''">AND
             (
             <foreach collection="param5" item="item" separator="OR">
-                eate1.targetEntityCodeNamespace = #{param5[]}
+                eate1.targetEntityCodeNamespace = #{item}
             </foreach>
             )
         </if>
         <if test="param6 != null and param6 != ''">
             ORDER BY
             <foreach collection="param6" item="item" separator=",">
-                ${param6[].columnSortType.tailColumn}
-                ${param6[].order}
+                ${item.columnSortType.tailColumn}
+                ${item.order}
             </foreach>
         </if>
 
