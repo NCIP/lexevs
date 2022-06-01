@@ -181,7 +181,7 @@ public class MybatisNciHistoryDaoTest  extends AbstractTransactionalJUnit4Spring
 	public final void testGetSystemReleaseUidForDate() throws ParseException {
 	      String value  = "2006-01-03 00:00:00";
 
-	       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");      
+	       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");      
 
 	       Date date = formatter.parse(value); 
 	       
@@ -199,13 +199,22 @@ public class MybatisNciHistoryDaoTest  extends AbstractTransactionalJUnit4Spring
 	}
 
 	@Test
-	public final void testGetDateForVersion() {
-		fail("Not yet implemented"); // TODO
+	public final void testGetDateForVersion() throws ParseException {
+		
+	    String target  = "2006-02-06 00:00:00";
+	    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");      
+	    Date expected = format.parse(target);  
+		Date date = nciHistoryDao.getDateForVersion("05.12f");
+		assertNotNull(date);
+		assertEquals(expected, date);
 	}
 
 	@Test
 	public final void testGetVersionsForDateRange() {
-		fail("Not yet implemented"); // TODO
+		List<String> versions = nciHistoryDao.getVersionsForDateRange("2005-08-26 00:00:00","2006-03-03 00:00:00");
+		assertNotNull(versions);
+		assertTrue(versions.size() > 0);
+		assertTrue(versions.stream().anyMatch(x -> x.equals("05.09e")));
 	}
 
 }
