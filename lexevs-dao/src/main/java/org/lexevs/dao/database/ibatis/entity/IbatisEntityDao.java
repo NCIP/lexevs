@@ -576,8 +576,6 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 							cascade);
 				}
 				
-				session.close();
-				
 
 	}
 	
