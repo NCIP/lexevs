@@ -882,7 +882,7 @@ public class IbatisCodingSchemeDao extends AbstractIbatisDao implements CodingSc
 			DaoUtility.insertIntoMappings(mappings, uriMap);
 		}
 		
-		return mappings;
+            		return mappings;
 	}
 	
 	/* (non-Javadoc)

@@ -250,7 +250,7 @@ public class IbatisPropertyDao extends AbstractIbatisDao implements PropertyDao 
 	@SuppressWarnings("unchecked")
 	public List<Property> getAllPropertiesOfParent(String codingSchemeId,
 			String parentId, PropertyType type) {
-		return this.getSqlSessionTemplate().selectList(GET_ALL_PROPERTIES_OF_PARENT_SQL, 
+               return this.getSqlSessionTemplate().selectList(GET_ALL_PROPERTIES_OF_PARENT_SQL,
 				new PrefixedParameterTuple(
 						this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId),
 						this.propertyTypeClassifier.classify(type),
