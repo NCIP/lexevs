@@ -444,9 +444,12 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			return new ArrayList<ConceptReference>();
 		}
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
-		
+		String tripleNodeString=null;
+		if (tripleNode != null) {
+			tripleNodeString = tripleNode.toString();
+		}
 		SequentialMappedParameterBean bean = 
-			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids, sorts);
+			new SequentialMappedParameterBean(tripleNodeString, tripleUids, sorts);
 		bean.setPrefix(prefix);
 		
 		return this.getSqlSessionTemplate().selectList(

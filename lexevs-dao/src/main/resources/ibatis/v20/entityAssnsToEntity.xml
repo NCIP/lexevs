@@ -218,6 +218,7 @@
             resultMap="Entity.conceptReferenceResult">
         SELECT
 
+        <if test="param1 != null">
         <if test="param1 == &quot;SUBJECT&quot;">
             eate.sourceEntityCode as entityCode,
             eate.sourceEntityCodeNamespace as entityCodeNamespace
@@ -226,7 +227,11 @@
             eate.targetEntityCode as entityCode,
             eate.targetEntityCodeNamespace as entityCodeNamespace
         </if>
-
+        </if>
+        <if test="tripleNode== null">
+            eate.sourceEntityCode AS entityCode,
+            eate.sourceEntityCodeNamespace AS entityCodeNamespace
+        </if>
         entityType.entityType
 
         FROM
@@ -545,27 +550,33 @@
         ON
         (eate.entityAssnsGuid = quals.referenceGuid)
 
-        <if test="needsEntityJoin == &quot;true&quot;">
+        <if test="needsEntityJoin == true">
             LEFT JOIN
             ${prefix}entity entity
-            ON
-            (
-            <if test="tripleNode == &quot;SUBJECT&quot;">
+            ON (
+            <if test="tripleNode != null">
+                <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                    eate.targetEntityCode = entity.entityCode
+                    AND
+                    eate.targetEntityCodeNamespace = entity.entityCodeNamespace
+                </if>
+                <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                    eate.sourceEntityCode = entity.entityCode
+                    AND
+                    eate.sourceEntityCodeNamespace = entity.entityCodeNamespace
+                </if>
+            </if>
+            <if test="tripleNode == null ">
                 eate.targetEntityCode = entity.entityCode
                 AND
                 eate.targetEntityCodeNamespace = entity.entityCodeNamespace
-            </if>
-            <if test="tripleNode == &quot;OBJECT&quot;">
-                eate.sourceEntityCode = entity.entityCode
-                AND
-                eate.sourceEntityCodeNamespace = entity.entityCodeNamespace
             </if>
             )
             LEFT JOIN
             ${prefix}entityType entityType
             ON
             (entity.entityGuid = entityType.entityGuid)
-        </if>
+       </if>
 
         WHERE
         rel.codingSchemeGuid = #{codingSchemeUid}
@@ -604,21 +615,29 @@
         <if test="mustHaveCodes != null and mustHaveCodes != ''">AND
             (
             <foreach collection="mustHaveCodes" item="item" separator="OR">
-                <if test="tripleNode == &quot;SUBJECT&quot;">
-                    (
-                    eate.targetEntityCode = #{item.code}
-                    <if test="item != null and item.namespace != null">AND
-                        eate.targetEntityCodeNamespace = #{item.namespace}
+                <if test="tripleNode !=null">
+                    <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                        (
+                        eate.targetEntityCode = #{item.code}
+                        <if test="item != null and item.namespace != null">AND
+                            eate.targetEntityCodeNamespace = #{item.namespace}
+                        </if>
+                        )
                     </if>
-                    )
+                    <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                        (
+                        eate.sourceEntityCode = #{item.code}
+                        <if test="item != null and item.namespace != null">AND
+                            eate.sourceEntityCodeNamespace = #{item.namespace}
+                        </if>
+                        )
+                    </if>
                 </if>
-                <if test="tripleNode == &quot;OBJECT&quot;">
-                    (
+                <if test="tripleNode == null">
                     eate.sourceEntityCode = #{item.code}
                     <if test="item != null and item.namespace != null">AND
                         eate.sourceEntityCodeNamespace = #{item.namespace}
                     </if>
-                    )
                 </if>
             </foreach>
             )
@@ -626,15 +645,17 @@
         <if test="mustHaveNamespaces != null and mustHaveNamespaces != ''">AND
             (
             <foreach collection="mustHaveNamespaces" item="item" separator="OR">
-                <if test="tripleNode == &quot;SUBJECT&quot;">
-                    (
-                    eate.targetEntityCodeNamespace = #{item}
-                    )
-                </if>
-                <if test="tripleNode == &quot;OBJECT&quot;">
-                    (
-                    eate.sourceEntityCodeNamespace = #{item}
-                    )
+                <if test="tripleNode != null">
+                    <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                        (
+                        eate.targetEntityCodeNamespace = #{item}
+                        )
+                    </if>
+                    <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                        (
+                        eate.sourceEntityCodeNamespace = #{item}
+                        )
+                    </if>
                 </if>
             </foreach>
             )
@@ -662,49 +683,68 @@
     </sql>
 
     <sql id="restrictEntityAssnsToEntityUidsBySingleCodeFragment">
-
-        <if test="tripleNode == &quot;SUBJECT&quot;">AND
+        <if test="tripleNode !=null">
+        <if test="tripleNode.toString() == &quot;SUBJECT&quot;">AND
             eate.sourceEntityCode = #{entityCode}
             <if test="entityCodeNamespace != null">AND
                 eate.sourceEntityCodeNamespace = #{entityCodeNamespace}
             </if>
         </if>
-        <if test="tripleNode == &quot;OBJECT&quot;">AND
+        <if test="tripleNode.toString() == &quot;OBJECT&quot;">AND
             eate.targetEntityCode = #{entityCode}
             <if test="entityCodeNamespace != null">AND
                 eate.targetEntityCodeNamespace = #{entityCodeNamespace}
             </if>
         </if>
-
+        </if>
+        <if test="tripleNode == null">AND
+            eate.sourceEntityCode = #{entityCode}
+            <if test="entityCodeNamespace != null">AND
+                eate.sourceEntityCodeNamespace = #{entityCodeNamespace}
+            </if>
+        </if>
     </sql>
 
     <sql id="restrictEntityAssnsToEntityUidsByMultipleCodesFragment">
-
-        <if test="tripleNode == &quot;SUBJECT&quot;">AND
-            (
-            <foreach collection="conceptReferences" item="item" separator="OR">
+        <if test="tripleNode !=null">
+            <if test="tripleNode.toString() == &quot;SUBJECT&quot;">AND
                 (
-                eate.sourceEntityCode = #{item.code}
-                <if test="item != null and item.codeNamespace != null">AND
-                    eate.sourceEntityCodeNamespace = #{item.codeNamespace}
-                </if>
+                <foreach collection="conceptReferences" item="item" separator="OR">
+                    (
+                    eate.sourceEntityCode = #{item.code}
+                    <if test="item != null and item.codeNamespace != null">AND
+                        eate.sourceEntityCodeNamespace = #{item.codeNamespace}
+                    </if>
+                    )
+                </foreach>
                 )
-            </foreach>
-            )
-        </if>
-        <if test="tripleNode == &quot;OBJECT&quot;">AND
-            (
-            <foreach collection="conceptReferences" item="item" separator="OR">
+            </if>
+            <if test="tripleNode.toString() == &quot;OBJECT&quot;">AND
                 (
-                eate.targetEntityCode = #{item.code}
-                <if test="item != null and item.codeNamespace != null">AND
-                    eate.targetEntityCodeNamespace = #{item.codeNamespace}
-                </if>
+                <foreach collection="conceptReferences" item="item" separator="OR">
+                    (
+                    eate.targetEntityCode = #{item.code}
+                    <if test="item != null and item.codeNamespace != null">AND
+                        eate.targetEntityCodeNamespace = #{item.codeNamespace}
+                    </if>
+                    )
+                </foreach>
                 )
-            </foreach>
-            )
+            </if>
         </if>
-
+<if test="tripleNode == null">
+    AND
+    (
+    <foreach collection="conceptReferences" item="item" separator="OR">
+        (
+        eate.sourceEntityCode = #{item.code}
+        <if test="item != null and item.codeNamespace != null">AND
+            eate.sourceEntityCodeNamespace = #{item.codeNamespace}
+        </if>
+        )
+    </foreach>
+    )
+</if>
     </sql>
 
     <sql id="getRelationshipsFragment">
@@ -902,7 +942,7 @@
             resultType="string">
         <include refid="getEntityAssnsToEntityRelationships"/>
 
-        <if test="useTransitive == &quot;true&quot;">
+        <if test="useTransitive">
             UNION
             <include refid="getEntityAssnsToEntityTrRelationships"/>
         </if>
@@ -1224,12 +1264,12 @@
         SELECT DISTINCT
         (eate.entityAssnsGuid) AS uidKey
 
-        <if test="sorts != null and sorts != ''">,
+        <if test="sorts != null and sorts != '' and tripleNode != null">,
             <foreach collection="sorts" item="item" separator=",">
-                <if test="tripleNode == &quot;SUBJECT&quot;">
+                <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
                     ${item.columnSortType.subjectColumn}
                 </if>
-                <if test="tripleNode == &quot;OBJECT&quot;">
+                <if test="tripleNode.toString() == &quot;OBJECT&quot;">
                     ${item.columnSortType.objectColumn}
                 </if>
             </foreach>
@@ -1241,11 +1281,13 @@
         <if test="sorts != null and sorts != ''">
             ORDER BY
             <foreach collection="sorts" item="item" separator=",">
-                <if test="tripleNode == &quot;SUBJECT&quot;">
-                    ${item.columnSortType.subjectColumn}
-                </if>
-                <if test="tripleNode == &quot;OBJECT&quot;">
-                    ${item.columnSortType.objectColumn}
+                <if test="tripleNode !=null">
+                    <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                        ${item.columnSortType.subjectColumn}
+                    </if>
+                    <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                        ${item.columnSortType.objectColumn}
+                    </if>
                 </if>
                 ${item.order}
             </foreach>
@@ -1269,13 +1311,15 @@
             resultMap="countConceptReferenceResult">
         SELECT
         COUNT( DISTINCT eate.entityAssnsGuid ) AS relationshipsCount,
-        <if test="tripleNode == &quot;SUBJECT&quot;">
-            eate.sourceEntityCode AS entityCode,
-            eate.sourceEntityCodeNamespace AS entityCodeNamespace
-        </if>
-        <if test="tripleNode == &quot;OBJECT&quot;">
-            eate.targetEntityCode AS entityCode,
-            eate.targetEntityCodeNamespace AS entityCodeNamespace
+        <if test="tripleNode !=null">
+            <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                eate.sourceEntityCode AS entityCode,
+                eate.sourceEntityCodeNamespace AS entityCodeNamespace
+            </if>
+            <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                eate.targetEntityCode AS entityCode,
+                eate.targetEntityCodeNamespace AS entityCodeNamespace
+            </if>
         </if>
 
         <include refid="getEntityAssnsToEntityUidsFragment"/>
@@ -1286,30 +1330,43 @@
         AND
         eate.targetEntityCode NOT IN ('@' , '@@')
 
+        <if test="tripleNode !=null">
+
+            GROUP BY
+            <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                eate.sourceEntityCode,
+                eate.sourceEntityCodeNamespace
+            </if>
+            <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                eate.targetEntityCode,
+                eate.targetEntityCodeNamespace
+            </if>
+        </if>
+    <if test="tripleNode == null">
         GROUP BY
-        <if test="tripleNode == &quot;SUBJECT&quot;">
-            eate.sourceEntityCode,
-            eate.sourceEntityCodeNamespace
-        </if>
-        <if test="tripleNode == &quot;OBJECT&quot;">
-            eate.targetEntityCode,
-            eate.targetEntityCodeNamespace
-        </if>
+        eate.targetEntityCode,
+        eate.targetEntityCodeNamespace
+    </if>
     </select>
 
     <select id="getConceptReferences"
             parameterType="org.lexevs.dao.database.ibatis.association.parameter.GetEntityAssnUidsCountBean"
             resultMap="Entity.noEntityTypeConceptReferenceResult">
         SELECT
-        <if test="tripleNode == &quot;SUBJECT&quot;">
-            eate.targetEntityCode AS entityCode,
-            eate.targetEntityCodeNamespace AS entityCodeNamespace
+        <if test="tripleNode != null">
+            <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                eate.targetEntityCode AS entityCode,
+                eate.targetEntityCodeNamespace AS entityCodeNamespace
+            </if>
+            <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                eate.sourceEntityCode AS entityCode,
+                eate.sourceEntityCodeNamespace AS entityCodeNamespace
+            </if>
         </if>
-        <if test="tripleNode == &quot;OBJECT&quot;">
+        <if test="tripleNode== null">
             eate.sourceEntityCode AS entityCode,
             eate.sourceEntityCodeNamespace AS entityCodeNamespace
         </if>
-
         <include refid="getEntityAssnsToEntityUidsFragment"/>
         <include refid="restrictEntityAssnsToEntityUidsByMultipleCodesFragment"/>
 
@@ -1318,22 +1375,25 @@
         AND
         eate.targetEntityCode NOT IN ('@' , '@@')
 
-        GROUP BY
-        <if test="tripleNode == &quot;SUBJECT&quot;">
-            eate.targetEntityCode,
-            eate.targetEntityCodeNamespace
+
+        <if test="tripleNode != null">
+            GROUP BY
+            <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
+                eate.targetEntityCode,
+                eate.targetEntityCodeNamespace
+            </if>
+            <if test="tripleNode.toString() == &quot;OBJECT&quot;">
+                eate.sourceEntityCode,
+                eate.sourceEntityCodeNamespace
+            </if>
         </if>
-        <if test="tripleNode == &quot;OBJECT&quot;">
-            eate.sourceEntityCode,
-            eate.sourceEntityCodeNamespace
-        </if>
-        <if test="sorts != null and sorts != ''">
+        <if test="sorts != null and sorts != '' and tripleNode != null">
             ORDER BY
             <foreach collection="sorts" item="item" separator=",">
-                <if test="tripleNode == &quot;SUBJECT&quot;">
+                <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
                     ${item.columnSortType.subjectColumn}
                 </if>
-                <if test="tripleNode == &quot;OBJECT&quot;">
+                <if test="tripleNode.toString() == &quot;OBJECT&quot;">
                     ${item.columnSortType.objectColumn}
                 </if>
                 ${item.order}
@@ -1805,8 +1865,8 @@
                     (SELECT
                     <if test="sortList[].order == ASC">
                         MAX(
-                    </if >
-                    <if test= "sortList[].order == DESC">
+                    </if>
+                    <if test="sortList[].order == DESC">
                         MIN(
                     </if>
                     maxQual.qualifierValue)
