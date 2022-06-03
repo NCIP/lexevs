@@ -447,6 +447,9 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		String tripleNodeString=null;
 		if (tripleNode != null) {
 			tripleNodeString = tripleNode.toString();
+		} else
+		{
+			tripleNodeString = "SUBJECT";
 		}
 		SequentialMappedParameterBean bean = 
 			new SequentialMappedParameterBean(tripleNodeString, tripleUids, sorts);

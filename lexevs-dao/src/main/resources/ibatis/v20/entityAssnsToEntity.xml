@@ -218,19 +218,19 @@
             resultMap="Entity.conceptReferenceResult">
         SELECT
 
-        <if test="param1 != null">
-        <if test="param1 == &quot;SUBJECT&quot;">
+        <if test="tripleNode != null">
+        <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
             eate.sourceEntityCode as entityCode,
-            eate.sourceEntityCodeNamespace as entityCodeNamespace
+            eate.sourceEntityCodeNamespace as entityCodeNamespace,
         </if>
-        <if test="param1 == &quot;OBJECT&quot;">
+        <if test="tripleNode.toString() == &quot;OBJECT&quot;">
             eate.targetEntityCode as entityCode,
-            eate.targetEntityCodeNamespace as entityCodeNamespace
+            eate.targetEntityCodeNamespace as entityCodeNamespace,
         </if>
         </if>
         <if test="tripleNode== null">
             eate.sourceEntityCode AS entityCode,
-            eate.sourceEntityCodeNamespace AS entityCodeNamespace
+            eate.sourceEntityCodeNamespace AS entityCodeNamespace,
         </if>
         entityType.entityType
 
@@ -248,7 +248,7 @@
 
         WHERE
         eate.entityAssnsGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[]}
+        #{item}
     </foreach> )
     </select>
 
@@ -317,19 +317,19 @@
 
         WHERE
         eate.entityAssnsGuid IN (  <foreach collection="param2" item="item" separator=",">
-        #{param2[]}
+        #{item}
     </foreach> )
 
         <if test="param3 != null and param3 != ''">
             ORDER BY
             <foreach collection="param3" item="item" separator=",">
                 <if test="param1 == &quot;SUBJECT&quot;">
-                    ${param3[].columnSortType.objectColumn}
+                    ${item.columnSortType.objectColumn}
                 </if>
                 <if test="param1 == &quot;OBJECT&quot;">
-                    ${param3[].columnSortType.subjectColumn}
+                    ${item.columnSortType.subjectColumn}
                 </if>
-                ${param3[].order}
+                ${item.order}
             </foreach>
         </if>
     </select>
@@ -1005,12 +1005,12 @@
         eate1.sourceEntityCode AS entityCode,
         eate1.sourceEntityCodeNamespace AS entityCodeNamespace
 
-        <if test="param6 != null and param6 != ''">,
-            <foreach collection="param6" item="item" separator=",">
-                ${param6[].columnSortType.rootColumn}
-                ${param6[].order}
-            </foreach>
-        </if>
+<!--        <if test="param6 != null and param6 != ''">,-->
+<!--            <foreach collection="param6" item="item" separator=",">-->
+<!--                ${item.columnSortType.rootColumn}-->
+<!--                ${item.order}-->
+<!--            </foreach>-->
+<!--        </if>-->
         FROM
         ${prefix}entityAssnsToEntity eate1
 
@@ -1042,13 +1042,13 @@
             <if test="param2 != null and param2 != ''">AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate1.associationPredicateGuid =
-                    #{param2[]}
+                    #{pitem}
                 </foreach>
                 )
                 AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate2.associationPredicateGuid =
-                    #{param2[]}
+                    #{item}
                 </foreach>
                 )
             </if>
@@ -1058,10 +1058,10 @@
         <if test="param3 != null and param3 != ''">AND
             (
             <foreach collection="param3" item="item" separator="OR">
-                eaq2.qualifierName = #{param3[].qualifierName}
+                eaq2.qualifierName = #{item.qualifierName}
 
-                <if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
-                    eaq2.qualifierValue = #{param3[].qualifierValue}
+                <if test="item != null and item.qualifierValue != null and item.qualifierValue != ''">AND
+                    eaq2.qualifierValue = #{item.qualifierValue}
                 </if>
             </foreach>
             )
@@ -1089,10 +1089,10 @@
         <if test="param3 != null and param3 != ''">AND
             (
             <foreach collection="param3" item="item" separator="OR">
-                eaq1.qualifierName = #{param3[].qualifierName}
+                eaq1.qualifierName = #{item.qualifierName}
 
-                <if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
-                    eaq1.qualifierValue = #{param3[].qualifierValue}
+                <if test="item != null and item.qualifierValue != null and item.qualifierValue != ''">AND
+                    eaq1.qualifierValue = #{item.qualifierValue}
                 </if>
             </foreach>
             )
@@ -1100,14 +1100,14 @@
 
         <if test="param2 != null and param2 != ''">AND
             eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">
-                #{param2[]}
+                #{item}
             </foreach> )
         </if>
 
         <if test="param4 != null and param4 != ''">AND
             (
             <foreach collection="param4" item="item" separator="OR">
-                eate1.sourceEntityCodeNamespace = #{param4[]}
+                eate1.sourceEntityCodeNamespace = #{item}
             </foreach>
             )
         </if>
@@ -1115,7 +1115,7 @@
         <if test="param5 != null and param5 != ''">AND
             (
             <foreach collection="param5" item="item" separator="OR">
-                eate1.targetEntityCodeNamespace = #{param5[]}
+                eate1.targetEntityCodeNamespace = #{item}
             </foreach>
             )
         </if>
@@ -1123,8 +1123,8 @@
         <if test="param6 != null and param6 != ''">
             ORDER BY
             <foreach collection="param6" item="item" separator=",">
-                ${param6[].columnSortType.rootColumn}
-                ${param6[].order}
+                ${item.columnSortType.rootColumn}
+                ${item.order}
             </foreach>
         </if>
     </select>
@@ -1135,12 +1135,12 @@
         SELECT DISTINCT
         eate1.targetEntityCode AS entityCode,
         eate1.targetEntityCodeNamespace AS entityCodeNamespace
-        <if test="param6 != null and param6 != ''">,
-            <foreach collection="param6" item="item" separator=",">
-                ${param6[].columnSortType.tailColumn}
-                ${param6[].order}
-            </foreach>
-        </if>
+<!--        <if test="param6 != null and param6 != ''">,-->
+<!--            <foreach collection="param6" item="item" separator=",">-->
+<!--                ${item.columnSortType.tailColumn}-->
+<!--                ${item.order}-->
+<!--            </foreach>-->
+<!--        </if>-->
         FROM
         ${prefix}entityAssnsToEntity eate1
 
@@ -1190,7 +1190,7 @@
             <foreach collection="param3" item="item" separator="OR">
                 eaq2.qualifierName = #{item.qualifierName}
 
-                <if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
+                <if test="item != null and item.qualifierValue != null and item.qualifierValue != ''">AND
                     eaq2.qualifierValue = #{item.qualifierValue}
                 </if>
             </foreach>
@@ -1220,7 +1220,7 @@
             <foreach collection="param3" item="item" separator="OR">
                 eaq1.qualifierName = #{item.qualifierName}
 
-                <if test="param3[] != null and param3[].qualifierValue != null and param3[].qualifierValue != ''">AND
+                <if test="item != null and item.qualifierValue != null and item.qualifierValue != ''">AND
                     eaq1.qualifierValue = #{item.qualifierValue}
                 </if>
             </foreach>
@@ -1977,23 +1977,23 @@
         rel.containerName = #{param2}
 
         <if test="param3 != null and param3 != ''">AND
-            eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{param3[].code}
+            eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
         <if test="param4 != null and param4 != ''">AND
-            eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{param4[].code}
+            eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
         <if test="param5 != null and param5 != ''">AND
             (
-            eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}
+            eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{item.code}
             </foreach> )
 
             OR
 
-            eate.targetEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}
+            eate.targetEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{item.code}
             </foreach> )
             )
         </if>
@@ -2077,7 +2077,7 @@
 
         WHERE
         eate.entityAssnsGuid IN (  <foreach collection="param7" item="item" separator=",">
-        #{param7[]}
+        #{item}
     </foreach> )
         AND
         rel.codingSchemeGuid = #{param1}
@@ -2119,23 +2119,23 @@
         rel.containerName = #{param2}
 
         <if test="param3 != null and param3 != ''">AND
-            eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{param3[].code}
+            eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
         <if test="param4 != null and param4 != ''">AND
-            eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{param4[].code}
+            eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
         <if test="param5 != null and param5 != ''">AND
             (
-            eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}
+            eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{item.code}
             </foreach> )
 
             OR
 
-            eate.targetEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{param5[].code}
+            eate.targetEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{item.code}
             </foreach> )
             )
         </if>
@@ -2254,7 +2254,7 @@
         AND
         eae.entityAssnsGuid
         IN
-        (  <foreach collection="param2" item="item" separator=",">#{param2[]}
+        (  <foreach collection="param2" item="item" separator=",">#{item}
     </foreach> )
     </select>
 
