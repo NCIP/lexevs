@@ -26,7 +26,7 @@
 	</bean>
     
     <bean id="abstractIbatisDao" abstract="true">
-    	<property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+    	<property name="sqlSessionTemplate" ref="sqlSessionBatchTemplate"/>
 		<property name="sqlSessionBatchTemplate" ref="sqlSessionBatchTemplate"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="primaryKeyIncrementer" ref="primaryKeyIncrementer"/>
@@ -796,7 +796,7 @@
 		<property name="registry" ref="registry"/>
 		<property name="indexServiceManager" ref="indexServiceManager"/>
 		<property name="indexDaoManager" ref="indexDaoManager"/>
-		<!--<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>-->
+		<property name="cacheWrappingFactory" ref="cacheWrappingFactory"/>
 		<property name="lexEvsIndexOperations" ref="defaultLexEvsIndexOperations"/>
 	</bean>
 	
