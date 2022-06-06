@@ -324,10 +324,10 @@
             ORDER BY
             <foreach collection="param3" item="item" separator=",">
                 <if test="param1 == &quot;SUBJECT&quot;">
-                    ${item.columnSortType.objectColumn}
+                    ${item.columnSortType.subjectColumn}
                 </if>
                 <if test="param1 == &quot;OBJECT&quot;">
-                    ${item.columnSortType.subjectColumn}
+                    ${item.columnSortType.objectColumn}
                 </if>
                 ${item.order}
             </foreach>
