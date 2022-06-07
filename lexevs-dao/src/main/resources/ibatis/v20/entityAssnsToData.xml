@@ -60,17 +60,17 @@
 		) VALUES (
 			#{uid},
 			#{associationPredicateUId},
-			#{associationSource.sourceEntityCode},
-			#{associationSource.sourceEntityCodeNamespace},
-			#{associationData.associationInstanceId},
-			#{associationData.isDefining},
-			#{associationData.isInferred},
-			#{associationData.associationDataText.content},
-			#{associationData.isActive},
-			#{associationData.owner},
-			#{associationData.status},
-			#{associationData.effectiveDate},
-			#{associationData.expirationDate},
+			#{sourceEntityCode},
+			#{sourceEntityCodeNamespace},
+			#{associationInstanceId},
+			#{isDefining},
+			#{isInferred},
+			#{dataValue},
+			#{isActive},
+			#{owner},
+			#{status},
+			#{effectiveDate},
+			#{expirationDate},
 			#{entryStateUId}
 		)
   </insert>
