@@ -185,6 +185,18 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		bean.setEntryStateUId(entryStateUId);
 		bean.setAssociationSource(source);
 		bean.setAssociationData(data);
+		
+		bean.setSourceEntityCode(source.getSourceEntityCode());
+		bean.setSourceEntityCodeNamespace(source.getSourceEntityCodeNamespace());
+		bean.setAssociationInstanceId(data.getAssociationInstanceId());
+		bean.setIsDefining(data.getIsDefining());
+		bean.setIsInferred(data.getIsInferred());
+		bean.setDataValue(data.getAssociationDataText().getContent());
+		bean.setIsActive(data.getIsActive());
+		bean.setOwner(data.getOwner());
+		bean.setStatus(data.getStatus());
+		bean.setEffectiveDate(data.getEffectiveDate());
+		bean.setExpirationDate(data.getExpirationDate());
 
 		session.insert(INSERT_ENTITY_ASSN_DATA_SQL, bean);
 

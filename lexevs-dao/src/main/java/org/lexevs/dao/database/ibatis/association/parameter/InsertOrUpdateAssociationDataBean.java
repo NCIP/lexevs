@@ -1,6 +1,7 @@
 
 package org.lexevs.dao.database.ibatis.association.parameter;
 
+import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.relations.AssociationData;
@@ -18,9 +19,122 @@ private String associationPredicateUId;
 	/** The association data. */
 	private AssociationData associationData;
 	
+
 	/** The association qualifications and usage contexts.*/
 	private List<InsertAssociationQualificationOrUsageContextBean> assnQualsAndUsageContextList = null;
 	
+	
+	
+	private String sourceEntityCode;
+	private String sourceEntityCodeNamespace;
+	private String associationInstanceId;
+	private Boolean isDefining;
+	private Boolean isInferred;
+	private String dataValue;
+	private Boolean isActive;
+	private String owner;
+	private String status;
+	private Date effectiveDate;
+	private Date expirationDate;
+	private String entryStateGuid;
+	
+
+	public String getSourceEntityCode() {
+		return sourceEntityCode;
+	}
+
+	public void setSourceEntityCode(String sourceEntityCode) {
+		this.sourceEntityCode = sourceEntityCode;
+	}
+
+	public String getSourceEntityCodeNamespace() {
+		return sourceEntityCodeNamespace;
+	}
+
+	public void setSourceEntityCodeNamespace(String sourceEntityCodeNamespace) {
+		this.sourceEntityCodeNamespace = sourceEntityCodeNamespace;
+	}
+
+	public String getAssociationInstanceId() {
+		return associationInstanceId;
+	}
+
+	public void setAssociationInstanceId(String associationInstanceId) {
+		this.associationInstanceId = associationInstanceId;
+	}
+
+	public Boolean getIsDefining() {
+		return isDefining;
+	}
+
+	public void setIsDefining(Boolean boolean1) {
+		this.isDefining = boolean1;
+	}
+
+	public Boolean getIsInferred() {
+		return isInferred;
+	}
+
+	public void setIsInferred(Boolean boolean1) {
+		this.isInferred = boolean1;
+	}
+
+	public String getDataValue() {
+		return dataValue;
+	}
+
+	public void setDataValue(String dataValue) {
+		this.dataValue = dataValue;
+	}
+
+	public Boolean getIsActive() {
+		return isActive;
+	}
+
+	public void setIsActive(Boolean boolean1) {
+		this.isActive = boolean1;
+	}
+
+	public String getOwner() {
+		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Date getEffectiveDate() {
+		return effectiveDate;
+	}
+
+	public void setEffectiveDate(Date date) {
+		this.effectiveDate = date;
+	}
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
+
+	public void setExpirationDate(Date date) {
+		this.expirationDate = date;
+	}
+
+	public String getEntryStateGuid() {
+		return entryStateGuid;
+	}
+
+	public void setEntryStateGuid(String entryStateGuid) {
+		this.entryStateGuid = entryStateGuid;
+	}
+
 	/**
 	 * Gets the association predicate id.
 	 * 
