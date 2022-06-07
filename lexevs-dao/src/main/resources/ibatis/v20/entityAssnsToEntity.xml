@@ -5,8 +5,8 @@
 
 
     <resultMap id="countConceptReferenceResult" type="countConceptReference">
-        <result property="code" column="entityCode"/>
-        <result property="codeNamespace" column="entityCodeNamespace"/>
+        <result property="_code" column="entityCode"/>
+        <result property="_codeNamespace" column="entityCodeNamespace"/>
         <result property="childCount" column="relationshipsCount"/>
     </resultMap>
 
@@ -1854,13 +1854,14 @@
         <if test="sortList != null and sortList != ''">
             <foreach collection="sortList" item="item">
 
-                <if test="item.getQualifierName() != null">
+                <if test="item.getQualifierName() != null and item.getTableAlias() !=null">
+                    (#{item})
                     LEFT JOIN
-                    ${prefix}entityAssnQuals ${item.tableAlias}
+                    ${prefix}entityAssnQuals #{item.getTableAlias}
                     ON (
-                    eate.entityAssnsGuid = ${item.tableAlias}.referenceGuid
+                    eate.entityAssnsGuid = #{item.getTableAlias}.referenceGuid
                     AND
-                    ${item.tableAlias}.qualifierName = #{item.qualifierName}
+                    ${item.getTableAlias}.qualifierName = #{item.qualifierName}
                     AND
                     ${item.tableAlias}.qualifierValue =
                     (SELECT
@@ -1893,12 +1894,12 @@
         <if test="sortList != null and sortList != ''">
             ORDER BY
             <foreach collection="sortList" item="item" separator=",">
-                <if test="item.qualifierName !=null">
+                <if test="item.getQualifierName() !=null">
                     ${item.columnSortType.mappingColumn}
                     ${item.order}
                 </if>
                 <if test="item.qualifierName ==null">
-                    ${item.tableAlias$.$item.columnSortType.mappingColumn}
+                    ${item.getTableAlias().columnSortType.mappingColumn}
                     ${item.order}
                 </if>
 
