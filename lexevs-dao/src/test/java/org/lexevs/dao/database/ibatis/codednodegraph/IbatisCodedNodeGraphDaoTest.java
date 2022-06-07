@@ -4,6 +4,7 @@ package org.lexevs.dao.database.ibatis.codednodegraph;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,8 @@ import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.MappingSortOptionN
 import org.LexGrid.LexBIG.Extensions.Generic.MappingExtension.QualifierSortOption;
 import org.LexGrid.custom.relations.TerminologyMapBean;
 import org.LexGrid.relations.Relations;
+import org.hibernate.type.EntityType;
+import org.hibernate.type.IntegerType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -81,7 +84,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 	public void getConceptReferencesContainingObject() {
 		List<ConceptReference> objects = new ArrayList<ConceptReference>();
 		ConceptReference object = new ConceptReference();
-		object.setConceptCode("C10001");
+		object.setConceptCode("C633");
 		object.setCodeNamespace("ncit");
 		objects.add(object);
 		List<ConceptReference> cRefs = ibatisCodedNodeGraphDao.getConceptReferencesContainingObject("2003",
@@ -90,7 +93,8 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 				false, null, 0, -1);
 		assertNotNull("references null", cRefs);
 		assertTrue("references empty", cRefs.size()>0);
-		assertEquals("reference wrong", cRefs.get(0).getEntityType(0),"concept");
+		assertNotNull("contained cRef is null",cRefs.get(0));
+		assertEquals("cRefs wrong size", 98, cRefs.size());
 	}
 
 	@Test
@@ -98,6 +102,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		List<ConceptReference> subjects = new ArrayList<ConceptReference>();
 		ConceptReference subject = new ConceptReference();
 		subject.setConceptCode("C10001");
+		subject.setCodeNamespace("ncit");
 		subjects.add(subject);
 		List<ConceptReference> cRefs = ibatisCodedNodeGraphDao.getConceptReferencesContainingSubject("2003",
 				"roles",subjects,null,null,
@@ -105,7 +110,8 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 				false, null, 0, -1);
 		assertNotNull("references null", cRefs);
 		assertTrue("references empty", cRefs.size()>0);
-		assertEquals("reference wrong", cRefs.get(0).getEntityType(0),"concept");
+		assertNotNull("contained cRef is null",cRefs.get(0));
+		assertEquals("cRefs wrong size", 5, cRefs.size());
 	}
 
 	@Test
@@ -113,6 +119,8 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		List<ConceptReference> subjects = new ArrayList<ConceptReference>();
 		ConceptReference subject = new ConceptReference();
 		subject.setConceptCode("C10001");
+		subject.setCodeNamespace("ncit");
+		subject.addEntityType("concept");
 		subjects.add(subject);
 		List<ConceptReference> cRefs = ibatisCodedNodeGraphDao.doGetConceptReferences("2003",
 				"roles",subjects,null,null,
@@ -120,7 +128,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 				null, null, 0, -1);
 		assertNotNull("references null", cRefs);
 		assertTrue("references empty", cRefs.size()>0);
-		assertEquals("reference wrong", cRefs.size()==5);
+		assertEquals("reference wrong", 5,cRefs.size());
 	}
 
 
@@ -136,7 +144,8 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 				tripleUids,TripleNode.SUBJECT,sorts);
 		assertNotNull("cRefs null", cRefs);
 		assertFalse("cRefs empty", cRefs.isEmpty());
-		assertTrue("cRef missing", cRefs.contains(new ConceptReference()));
+		assertTrue("cRefs wrong sixe", cRefs.size()==1);
+		assertEquals("cRef missing","C10001", cRefs.get(0).getCode());
 	}
 
 
@@ -170,44 +179,61 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 
 	@Test
 	public void getCountConceptReferencesContainingObject() {
+		List<ConceptReference> references = new ArrayList<ConceptReference>();
+		ConceptReference reference = new CountConceptReference();
+		reference.setCodeNamespace("ncit");
+		reference.setCode("C405");
+		references.add(reference);
 		List<CountConceptReference> cRefs = ibatisCodedNodeGraphDao.getCountConceptReferencesContainingObject("2003",
-				null, null, null,
+				"roles", references, null,
 				null,null,null,
 				null,null);
 		assertNotNull("cRefs null", cRefs);
 		assertFalse("cRefs empty", cRefs.isEmpty());
-		assertTrue("cRef missing", cRefs.contains(new ConceptReference()));
+		assertEquals("cref wrong size", 1, cRefs.size());
 	}
 
 	@Test
 	public void getCountConceptReferencesContainingSubject() {
+		List<ConceptReference> references = new ArrayList<ConceptReference>();
+		ConceptReference reference = new CountConceptReference();
+		reference.setCodeNamespace("ncit");
+		reference.setCode("C10001");
+		references.add(reference);
 		List<CountConceptReference> cRefs = ibatisCodedNodeGraphDao.getCountConceptReferencesContainingSubject("2003",
-				null, null, null,
+				"roles", references, null,
 				null,null,null,
-				null,null);
+				null,Boolean.FALSE);
 		assertNotNull("cRefs null", cRefs);
 		assertFalse("cRefs empty", cRefs.isEmpty());
-		assertTrue("cRef missing", cRefs.contains(new ConceptReference()));
-	}
+		assertTrue("cRefs wrong size", cRefs.size()==1);
+		assertEquals("wrong child count", 5, cRefs.get(0).getChildCount());	}
 
 	@Test
 	public void doGetCountConceptReferences() {
+		ConceptReference conceptReference = new ConceptReference();
+		conceptReference.setCodeNamespace("ncit");
+		conceptReference.setCode("C10001");
+		List<ConceptReference> references = new ArrayList<ConceptReference>();
+		references.add(conceptReference);
 		List<CountConceptReference> cRefs = ibatisCodedNodeGraphDao.doGetCountConceptReferences("2003",
-				null, null, null,
+				"roles", references, null,
 				null,null,null,
-				null,null,null);
+				null,null,TripleNode.SUBJECT);
 		assertNotNull("cRefs null", cRefs);
 		assertFalse("cRefs empty", cRefs.isEmpty());
-		assertTrue("cRef missing", cRefs.contains(new CountConceptReference()));
+		assertTrue("cRefs wrong size", cRefs.size()==1);
+		assertEquals("wrong child count", 5, cRefs.get(0).getChildCount());
 	}
 
 	@Test
 	public void listCodeRelationships() {
+		Boolean transitive = Boolean.TRUE;
 		List<String> codeRel = ibatisCodedNodeGraphDao.listCodeRelationships("2003",
-				null, null, null,
-				null,null,null,
+				"roles", "C10001", "ncit",
+				"C405","ncit",null,
 				null,null,null,null,
-				null,null,null,true);
+				null,null,Boolean.FALSE,true);
 		assertNotNull("codeRel null",codeRel);
 		assertTrue("codeRel empty", codeRel.size()>0);
 		assertTrue("codeRel missing", codeRel.contains("REPLACE"));
@@ -216,25 +242,27 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 	@Test
 	public void getTripleUidsContainingObjectCount() {
 		Map<String, Integer> containCount = ibatisCodedNodeGraphDao.getTripleUidsContainingObjectCount("2003",
-				null, null, null,
+				"roles", "C405", "ncit",
 				null,null,null,
 				null,null,null);
 		assertNotNull("containCount null", containCount);
 		assertFalse("containCount empty", containCount.isEmpty());
-		Integer testInt = containCount.get("REPLACE");
+
+		Integer testInt = containCount.get("Chemotherapy_Regimen_Has_Component");
 		assertNotNull("value is null", testInt);
-		assertTrue("value wrong", testInt.intValue()==1);
+		assertTrue("value wrong", testInt.intValue()==2);
 	}
 
 	@Test
 	public void getTripleUidsContainingSubjectCount() {
 		Map<String, Integer> containCount = ibatisCodedNodeGraphDao.getTripleUidsContainingSubjectCount("2003",
-				null, null, null,
+				"roles", "C100051", "ncit",
 				null,null,null,
 				null,null,null);
 		assertNotNull("containCount null", containCount);
 		assertFalse("containCount empty", containCount.isEmpty());
-		Integer testInt = containCount.get("REPLACE");
+		Integer testInt = containCount.get("Disease_May_Have_Finding");
+
 		assertNotNull("value is null", testInt);
 		assertTrue("value wrong", testInt.intValue()==1);
 
@@ -243,12 +271,12 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 	@Test
 	public void doGetTripleUidsCount() {
 		Map<String, Integer> tripleUids = ibatisCodedNodeGraphDao.doGetTripleUidsCount("2003",
-				"2073", "C00051", "ncit",
+				"roles", "C100051", "ncit",
 				null,null,null,
 				null,null,null,null);
 		assertNotNull("tripleUids null", tripleUids);
 		assertFalse("tripleUids empty", tripleUids.isEmpty());
-		Integer testInt = tripleUids.get("REPLACE");
+		Integer testInt =  tripleUids.get("Disease_Has_Normal_Cell_Origin");
 		assertNotNull("value is null", testInt);
 		assertTrue("value wrong", testInt.intValue()==1);
 	}
@@ -256,35 +284,35 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 	@Test
 	public void getTripleUidsContainingSubject() {
 		List<String> tripleUids = ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("2003",
-				null, null, null,
+				null, "C100051", "ncit",
 				null,null,null,
 				null,null,null,null, 0, -1);
 		assertNotNull("tripleUids null", tripleUids);
 		assertFalse("tripleUids empty", tripleUids.isEmpty());
-		assertTrue("tripleUid missing",tripleUids.contains("REPLACE"));
+		assertTrue("tripleUid missing",tripleUids.contains("5573734"));
 
 	}
 
 	@Test
 	public void getTripleUidsContainingObject() {
 		List<String> tripleUids = ibatisCodedNodeGraphDao.getTripleUidsContainingObject("2003",
-				"1023", "C00051", "ncit",
+				"2062", "C61410", "ncit",
 				null,null,null,
 				null,null,null,null,0, -1);
 		assertNotNull("tripleUids null", tripleUids);
 		assertFalse("tripleUids empty", tripleUids.isEmpty());
-		assertTrue("tripleUid missing", tripleUids.contains("REPLACE"));
+		assertTrue("tripleUid missing", tripleUids.contains("5575635"));
 	}
 
 	@Test
 	public void doGetTripleUids() {
 		List<String> tripleUids = ibatisCodedNodeGraphDao.doGetTripleUids("2003",
-				"2073", "C00051", "ncit",
+				"2076", "C100051", "ncit",
 				null,null,null,
 				null,null,null,null, 0, -1);
 		assertNotNull("tripleUids null", tripleUids);
 		assertFalse("tripleUids empty", tripleUids.isEmpty());
-		assertTrue("tripleUid missing", tripleUids.contains("REPLACE"));
+		assertTrue("tripleUid missing", tripleUids.contains("5573914"));
 	}
 
 	@Test
@@ -292,34 +320,35 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		List<String> tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer("13513003",
 				"3","13512003","AutoToGMPMappings",null,0,-1);
 		assertNotNull("tripleUids null", tripleUids);
-		assertTrue("tripleUids empty", tripleUids.isEmpty());
-		assertTrue("triple exists", tripleUids.contains("REPLACE"));
+		assertFalse("tripleUids empty", tripleUids.isEmpty());
+		assertTrue("triple exists", tripleUids.contains("13513034"));
 	}
 
 	@Test
 	public void getTripleUidsForMappingRelationsContainerAndCodes() {
 		List<ConceptReference> cRefs = new ArrayList<ConceptReference>();
 		ConceptReference subject = new ConceptReference();
-		subject.setConceptCode("C10001");
+		subject.setConceptCode("C0001");
 		cRefs.add(subject);
 		List<Sort> sorts = new ArrayList<Sort>();
-		sorts.add(new Sort(ColumnSortType.CODE, Order.ASC));
-		List<String> tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","3","13512003","relations",cRefs,null,null,sorts,0,-1);
+		sorts.add(new Sort(ColumnSortType.SOURCE_CODE, Order.ASC));
+		String relationName="AutoToGMPMappings";
+		List<String> tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","3","13512003",relationName,cRefs,null,null,sorts,0,-1);
 		assertNotNull("tripleUids null 1", tripleUids);
 		assertFalse("tripleUids empty 1", tripleUids.isEmpty());
-		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","3","13512003","relations",null,cRefs,null,sorts,0,-1);
+		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","3","13512003",relationName,null,cRefs,null,sorts,0,-1);
 		assertNotNull("tripleUids null 2", tripleUids);
 		assertFalse("tripleUids empty 2", tripleUids.isEmpty());
-		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","3","13512003","relations",null,null,cRefs,sorts,0,-1);
+		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","3","13512003",relationName,null,null,cRefs,sorts,0,-1);
 		assertNotNull("tripleUids null 3", tripleUids);
 		assertFalse("tripleUids empty 3", tripleUids.isEmpty());
-		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","relations",cRefs,null,null);
+		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003",relationName,cRefs,null,null);
 		assertNotNull("tripleUids null 4", tripleUids);
-		assertFalse("tripleUids empty 4", tripleUids.isEmpty());tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","relations",null,cRefs,null);
-		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003","relations",null,null,cRefs);
+		assertFalse("tripleUids empty 4", tripleUids.isEmpty());tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003",relationName,null,cRefs,null);
+		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainerAndCodes("13513003",relationName,null,null,cRefs);
 		assertNotNull("tripleUids null 5", tripleUids);
 		assertFalse("tripleUids empty 5", tripleUids.isEmpty());
-		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer("13513003", "3", "13512003", "relations", sorts, 0, -1);
+		tripleUids = ibatisCodedNodeGraphDao.getTripleUidsForMappingRelationsContainer("13513003", "3", "13512003", relationName, sorts, 0, -1);
 		assertNotNull("tripleUids null 6", tripleUids);
 		assertFalse("tripleUids empty 6", tripleUids.isEmpty());
 	}
@@ -330,22 +359,27 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		List<LexGridSchemaVersion> versions = ibatisCodedNodeGraphDao.doGetSupportedLgSchemaVersions();
 		assertNotNull("versions null",versions);
 		assertTrue("versions empty", versions.size()>0);
-		assertTrue("version should exist", versions.contains("REPLACE"));
+		LexGridSchemaVersion version = new LexGridSchemaVersion();
+		version.setMinorVersion(0);
+		version.setMajorVersion(2);
+		assertTrue("version should exist", versions.contains(version));
 	}
 
 
 	@Test
 	public void getAssociatedConceptsFromUid() {
 		List<String> tripleUids = new ArrayList<String>();
-		tripleUids.add("5573151");
-		tripleUids.add("5562242");
-		tripleUids.add("5572929");
+		tripleUids.add("5573914");
+		tripleUids.add("5611978");
+		tripleUids.add("5573962");
 		List<Sort> sorts = new ArrayList<Sort>();
 		sorts.add(new Sort(ColumnSortType.CODE, Order.ASC));
 		List<EntityReferencingAssociatedConcept> associatedConcepts = ibatisCodedNodeGraphDao.getAssociatedConceptsFromUid("2003",tripleUids,sorts,TripleNode.SUBJECT);
 		assertNotNull("associatedConcepts null", associatedConcepts);
-		assertTrue("associatedConcepts emtpy", associatedConcepts.isEmpty());
-		assertTrue("concept exists", associatedConcepts.contains(new AssociatedConcept()));
+		assertFalse("associatedConcepts empty", associatedConcepts.isEmpty());
+		assertEquals("Result count wrong",3, associatedConcepts.size() );
+		String qualifierName = associatedConcepts.get(0).getAssociationQualifiers().getNameAndValue(0).getName();
+		assertEquals("qualifier should be some", "some", qualifierName);
 	}
 
 
@@ -354,7 +388,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		List<String> predicates = ibatisCodedNodeGraphDao.getValidPredicatesForTargetandSourceOf("2003","C10000");
 		assertNotNull("predicates null", predicates);
 		assertTrue("predicates empty", predicates.size()>0);
-		assertTrue("predicate missing", predicates.contains("REPLACE"));
+		assertTrue("predicate missing", predicates.contains("Chemotherapy_Regimen_Has_Component"));
 	}
 
 	@Test
@@ -383,7 +417,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		assertTrue("nodes empty", nodes.size()>0);
 		Node node = new Node();
 		node.setEntityCodeNamespace("ncit");
-		node.setEntityCode("C1078");
+		node.setEntityCode("C47817");
 		assertTrue("node missing", nodes.contains(node));
 	}
 
@@ -413,13 +447,16 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 	@Test
 	public void getTriplesForMappingRelationsContainer() {
 		List<String> tripleUids = new ArrayList<String>();
-		tripleUids.add("5573151");
-		tripleUids.add("5562242");
-		tripleUids.add("5572929");
-		List<? extends ResolvedConceptReference> tripleRef = ibatisCodedNodeGraphDao.getTriplesForMappingRelationsContainer("13513003","3","13512003","roles",tripleUids);
+		tripleUids.add("13513029");
+		tripleUids.add("13513034");
+		tripleUids.add("13513041");
+		List<? extends ResolvedConceptReference> tripleRef = ibatisCodedNodeGraphDao.getTriplesForMappingRelationsContainer("13513003","3","13512003","AutoToGMPMappings",tripleUids);
 		assertNotNull("ref null", tripleRef);
-		assertTrue("refs empty", tripleRef.size()>0);
-		assertTrue("ref missing", tripleRef.contains(new ResolvedConceptReference()));
+		assertFalse("refs empty", tripleRef.isEmpty());
+		ResolvedConceptReference reference = tripleRef.get(0);
+		assertNotNull("contained reference is null",reference);
+		assertEquals("source codingScheme should be Automobiles","Automobiles",reference.getCodeNamespace());
+
 	}
 
 
@@ -431,10 +468,11 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		Triple triple = new Triple();
 		triple.setSourceEntityNamespace("ncit");
 		triple.setTargetEntityNamespace("ncit");
-		triple.setSourceEntityCode("100003");
-		triple.setTargetEntityCode("C80449");
+		triple.setSourceEntityCode("C10000");
+		triple.setTargetEntityCode("C61007");
 		triple.setAssociationPredicateId("2066");
-		assertTrue("triple missing", triples.contains(triple));
+		Boolean contained = triples.contains(triple);
+		assertTrue("triple missing", contained);
 	}
 
 
@@ -446,8 +484,8 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		Triple triple = new Triple();
 		triple.setSourceEntityNamespace("ncit");
 		triple.setTargetEntityNamespace("ncit");
-		triple.setSourceEntityCode("C36130");
-		triple.setTargetEntityCode("C36130");
+		triple.setSourceEntityCode("C105555");
+		triple.setTargetEntityCode("C36115");
 		triple.setAssociationPredicateId("2076");
 		assertTrue("triple missing", triples.contains(triple));
 	}
@@ -463,21 +501,28 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 
 	@Test
 	public void getValidSexTuplesOfAssociation() {
-		List<Sextuple> sextuples = ibatisCodedNodeGraphDao.getValidSexTuplesOfAssociation("2003", "2076");
+		List<Sextuple> sextuples = ibatisCodedNodeGraphDao.getValidSexTuplesOfAssociation("2003", "2067");
 		assertNotNull("sextuples null", sextuples);
-		assertTrue("sextuples empty", sextuples.isEmpty());
-		assertTrue("sextuple missing", sextuples.contains(new Sextuple()));
+		assertFalse("sextuples empty", sextuples.isEmpty());
+		assertEquals("sextuples wrong size",11,sextuples.size());
+		assertTrue("sextuple missing", sextuples.get(0).getAssociationPredicateId().equals("2067"));
 	}
 
 	@Test
 	public void getTriplesForMappingRelationsContainerAndCodesCount() {
 		List<ConceptReference> cRefs = new ArrayList<ConceptReference>();
 		ConceptReference conceptReference = new ConceptReference();
-		conceptReference.setConceptCode("C100000");
+		conceptReference.setConceptCode("C10001");
+		conceptReference.setCodeNamespace("ncit");
+		cRefs.add(conceptReference);
+		ConceptReference conceptReference1 = new ConceptReference();
+		conceptReference1.setConceptCode("C405");
+		conceptReference1.setCodeNamespace("ncit");
+		cRefs.add(conceptReference1);
 		int tripleCount = ibatisCodedNodeGraphDao.getTriplesForMappingRelationsContainerAndCodesCount("2003",
 				"roles",cRefs,null,null);
 		assertTrue("tripleCount empty 1", tripleCount>0);
-
+//TODO better error handling when the references come up emtpy
 		tripleCount = ibatisCodedNodeGraphDao.getTriplesForMappingRelationsContainerAndCodesCount("2003",
 				"roles",null,cRefs,null);
 		assertTrue("tripleCount empty 2", tripleCount>0);
@@ -504,7 +549,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 		assertTrue("enity participates", entityParticipates);
 
 		entityParticipates = ibatisCodedNodeGraphDao.doesEntityParticipateInRelationships("13513003",
-				"relations","Ford","Automobiles");
+				"relations","GM","Automobiles");
 		assertFalse("entity does not participate", entityParticipates);
 	}
 
