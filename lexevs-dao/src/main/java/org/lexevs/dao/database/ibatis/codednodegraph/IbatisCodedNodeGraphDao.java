@@ -999,12 +999,12 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Sextuple> getValidSexTuplesOfAssociation(String codingSchemeUid, String assocUid) {
+	public List<Sextuple> getValidSexTuplesOfAssociation(String codingSchemeUid, String assocPredicateUid) {
 		String codingSchemePrefix = this.getPrefixResolver().
 				resolvePrefixForCodingScheme(codingSchemeUid);
 		PrefixedParameter bean = new PrefixedParameter();
 		bean.setPrefix(codingSchemePrefix);
-		bean.setParam1(assocUid);
+		bean.setParam1(assocPredicateUid);
 		return (List<Sextuple>) 
 				this.getSqlSessionTemplate().<Sextuple>
 				selectList(

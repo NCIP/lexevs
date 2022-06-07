@@ -1850,23 +1850,24 @@
             )
         </if>
 
+
         <if test="sortList != null and sortList != ''">
             <foreach collection="sortList" item="item">
 
-                <if test="sortList[].qualifierName != null">
+                <if test="item.getQualifierName() != null">
                     LEFT JOIN
-                    ${prefix}entityAssnQuals ${sortList[].tableAlias}
+                    ${prefix}entityAssnQuals ${item.tableAlias}
                     ON (
-                    eate.entityAssnsGuid = ${sortList[].tableAlias}.referenceGuid
+                    eate.entityAssnsGuid = ${item.tableAlias}.referenceGuid
                     AND
-                    ${sortList[].tableAlias}.qualifierName = #{sortList[].qualifierName}
+                    ${item.tableAlias}.qualifierName = #{item.qualifierName}
                     AND
-                    ${sortList[].tableAlias}.qualifierValue =
+                    ${item.tableAlias}.qualifierValue =
                     (SELECT
-                    <if test="sortList[].order == ASC">
+                    <if test="item.order == ASC">
                         MAX(
                     </if>
-                    <if test="sortList[].order == DESC">
+                    <if test="item.order == DESC">
                         MIN(
                     </if>
                     maxQual.qualifierValue)
@@ -1875,7 +1876,7 @@
                     WHERE
                     maxQual.referenceGuid = eate.entityAssnsGuid
                     AND
-                    maxQual.qualifierName = #{sortList[].qualifierName}
+                    maxQual.qualifierName = #{item.qualifierName}
                     )
                     )
                 </if>
@@ -1892,13 +1893,13 @@
         <if test="sortList != null and sortList != ''">
             ORDER BY
             <foreach collection="sortList" item="item" separator=",">
-                <if test="sortList[].qualifierName !=null">
-                    ${sortList[].columnSortType.mappingColumn}
-                    ${sortList[].order}
+                <if test="item.qualifierName !=null">
+                    ${item.columnSortType.mappingColumn}
+                    ${item.order}
                 </if>
-                <if test="sortList[].qualifierName ==null">
-                    ${sortList[].tableAlias$.$sortList[].columnSortType.mappingColumn}
-                    ${sortList[].order}
+                <if test="item.qualifierName ==null">
+                    ${item.tableAlias$.$item.columnSortType.mappingColumn}
+                    ${item.order}
                 </if>
 
             </foreach>
