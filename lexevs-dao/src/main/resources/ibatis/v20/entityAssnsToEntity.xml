@@ -757,7 +757,7 @@
         ON
         (rel.relationGuid = ap.relationGuid)
 
-        <if test="needsEntityJoin == &quot;true&quot;">
+        <if test="needsEntityJoin == true">
             LEFT JOIN
             ${prefix}entity sourceEntity
             ON

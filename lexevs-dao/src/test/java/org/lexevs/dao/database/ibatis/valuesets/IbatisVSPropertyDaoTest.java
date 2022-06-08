@@ -1,144 +1,74 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
+import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.commonTypes.Property;
 import org.junit.Test;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
 
 import static org.junit.Assert.*;
 
 public class IbatisVSPropertyDaoTest {
+    IbatisVSPropertyDao propertyDao = new IbatisVSPropertyDao();
 
     @Test
     public void doGetPropertyMultiAttrib() {
+
+        propertyDao.doGetPropertyMultiAttrib("propGuid", null);
     }
 
     @Test
     public void getPropertyTypeString() {
-    }
-
-    @Test
-    public void testDoInsertProperty() {
-    }
-
-    @Test
-    public void doInsertPropertySource() {
-    }
-
-    @Test
-    public void doInsertPropertyUsageContext() {
-    }
-
-    @Test
-    public void buildInsertPropertyBean() {
-    }
-
-    @Test
-    public void buildInsertPropertyQualifierBean() {
-    }
-
-    @Test
-    public void buildInsertPropertyUsageContextBean() {
-    }
-
-    @Test
-    public void buildInsertPropertySourceBean() {
-    }
-
-    @Test
-    public void insertProperty() {
-    }
-
-    @Test
-    public void insertHistoryProperty() {
+        propertyDao.getPropertyTypeString(new Property());
     }
 
     @Test
     public void getAllPropertiesOfParent() {
+        propertyDao.getAllPropertiesOfParent("parentGuid", VSPropertyDao.ReferenceType.VALUESETDEFINITION);
     }
 
     @Test
     public void getAllHistoryPropertiesOfParentByRevisionGuid() {
-    }
-
-    @Test
-    public void doInsertProperty() {
-    }
-
-    @Test
-    public void updateProperty() {
-    }
-
-    @Test
-    public void insertPropertyQualifier() {
-    }
-
-    @Test
-    public void insertPropertySource() {
-    }
-
-    @Test
-    public void insertPropertyUsageContext() {
-    }
-
-    @Test
-    public void deleteAllDefinitionEntityPropertiesOfValueSetDefinition() {
-    }
-
-    @Test
-    public void deleteAllValueSetDefinitionProperties() {
-    }
-
-    @Test
-    public void deleteAllPickListEntityPropertiesOfPickListDefinition() {
-    }
-
-    @Test
-    public void deleteAllPickListDefinitionProperties() {
-    }
-
-    @Test
-    public void deleteAllPickListEntryNodeProperties() {
+        propertyDao.getAllHistoryPropertiesOfParentByRevisionGuid("parentGuid", "revisionGuid",
+                VSPropertyDao.ReferenceType.DEFINITIONENTRY);
     }
 
     @Test
     public void getPropertyGuidFromParentGuidAndPropertyId() {
+        propertyDao.getPropertyGuidFromParentGuidAndPropertyId("parentGuid", "propertyId");
     }
 
     @Test
     public void doGetSupportedLgSchemaVersions() {
+        propertyDao.doGetSupportedLgSchemaVersions();
     }
 
     @Test
     public void getIbatisVersionsDao() {
-    }
-
-    @Test
-    public void setIbatisVersionsDao() {
-    }
-
-    @Test
-    public void deletePropertyByUId() {
-    }
-
-    @Test
-    public void updateVersionableAttributes() {
+        propertyDao.getIbatisVersionsDao();
     }
 
     @Test
     public void getVsEntryStateDao() {
-    }
-
-    @Test
-    public void setVsEntryStateDao() {
+        propertyDao.getVsEntryStateDao();
     }
 
     @Test
     public void getLatestRevision() {
+        propertyDao.getLatestRevision("propertyUid");
     }
 
     @Test
     public void resolveVSPropertyByRevision() {
+        try {
+            propertyDao.resolveVSPropertyByRevision("parentGuid", "propertyId", "revisionId");
+        }
+        catch (LBRevisionException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
     public void getPropertyByUId() {
+        propertyDao.getPropertyByUId("vsPropertyUid");
     }
 }

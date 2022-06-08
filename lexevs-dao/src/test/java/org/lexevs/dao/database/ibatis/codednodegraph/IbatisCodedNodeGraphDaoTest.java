@@ -115,7 +115,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
         assertFalse("tripleUids empty", tripleUids.isEmpty());
         Integer testInt = tripleUids.get("Disease_Has_Normal_Cell_Origin");
         assertNotNull("value is null", testInt);
-		assertEquals("value wrong", 1, (int) testInt);
+		assertEquals("value wrong", 2, (int) testInt);
     }
 
     @Test
@@ -272,15 +272,18 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
     @Test
     public void getRootNodes() {
         List<String> assocPredUid = new ArrayList<String>();
-        assocPredUid.add("1023");
+        assocPredUid.add("2010");
         List<Sort> sorts = new ArrayList<Sort>();
         sorts.add(new Sort(ColumnSortType.CODE, Order.ASC));
+        List<String> namespaces = new ArrayList<String>();
+        namespaces.add("ncit");
         List<ConceptReference> cRefs = ibatisCodedNodeGraphDao.getRootNodes("2003",
-                assocPredUid, null, null,
-                null, TraverseAssociations.TOGETHER, sorts, 0, -1);
+                assocPredUid, null, namespaces,
+                namespaces, TraverseAssociations.TOGETHER, sorts, 0, -1);
         assertNotNull("cRefs null", cRefs);
         assertFalse("cRefs empty", cRefs.isEmpty());
-        assertTrue("cRef missing", cRefs.contains(new ConceptReference()));
+        assertTrue("crefs should be under 20k", cRefs.size()<20000);
+        assertTrue("crefs more than 18k", cRefs.size()>18000);
     }
 
     @Test
@@ -297,7 +300,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
     @Test
     public void getTailNodes() {
         List<String> assocPredUid = new ArrayList<String>();
-        assocPredUid.add("1023");
+        assocPredUid.add("2010");
         List<Sort> sorts = new ArrayList<Sort>();
         sorts.add(new Sort(ColumnSortType.CODE, Order.ASC));
         List<ConceptReference> cRefs = ibatisCodedNodeGraphDao.getTailNodes("2003",
@@ -305,7 +308,8 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
                 null, TraverseAssociations.TOGETHER, sorts, 0, -1);
         assertNotNull("cRefs null", cRefs);
         assertFalse("cRefs empty", cRefs.isEmpty());
-        assertTrue("cRef missing", cRefs.contains(new ConceptReference()));
+        assertTrue("crefs less than 20k", cRefs.size()<20000);
+        assertTrue("crefs more than 18k", cRefs.size()>18000);
     }
 
     @Test
@@ -348,7 +352,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 
         Integer testInt = containCount.get("Chemotherapy_Regimen_Has_Component");
         assertNotNull("value is null", testInt);
-		assertEquals("value wrong", 2, testInt.intValue());
+		assertEquals("value wrong", 759, testInt.intValue());
     }
 
     @Test
@@ -374,7 +378,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
         Integer testInt = containCount.get("Disease_May_Have_Finding");
 
         assertNotNull("value is null", testInt);
-		assertEquals("value wrong", 1, testInt.intValue());
+		assertEquals("value wrong", 2, testInt.intValue());
 
     }
 
@@ -513,7 +517,7 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
                 null, null, Boolean.FALSE, true);
         assertNotNull("codeRel null", codeRel);
         assertTrue("codeRel empty", codeRel.size() > 0);
-        assertTrue("codeRel missing", codeRel.contains("REPLACE"));
+        assertTrue("codeRel missing", codeRel.contains("2085"));
     }
 
     @Test
