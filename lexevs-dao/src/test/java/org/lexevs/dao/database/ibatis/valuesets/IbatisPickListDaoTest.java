@@ -1,14 +1,23 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
-import javafx.scene.control.TableColumn;
+
+import javax.annotation.Resource;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(value = {"classpath:lexevsDao.xml"})
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+public class IbatisPickListDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-public class IbatisPickListDaoTest {
-
-    IbatisPickListDao ibatisPickListDao = new IbatisPickListDao();
+    @Resource
+    IbatisPickListDao ibatisPickListDao;
 
     @Test
     public void getPickListDefinitionById() {

@@ -46,7 +46,7 @@ import org.springframework.util.CollectionUtils;
 @Cacheable(cacheName = "IbatisCodedNodeGraphDaoCache")
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
 
-/** The supported datebase version. */
+/** The supported database version. */
 private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 	private static String GET_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getEntityAssnsToEntityUids";

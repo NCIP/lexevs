@@ -41,10 +41,19 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	
 	@Override
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String matchCode, String assertedRelation, String predicateUID, String csUID) {
+		//TODO assertedRelation is not used
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
 		return this.getSqlSessionTemplate().selectList(
 				GET_VS_ENTITIES_FROM_CODE, 
 				new PrefixedParameterTuple(prefix, predicateUID, matchCode));
+	}
+
+	@Override
+	public List<Entity> getPagedValueSetEntities(String matchCode, String csUID, String predicateUID, int start, int pageSize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
+		return this.getSqlSessionTemplate().selectList(
+				GET_VS_ENTITIES_FROM_CODE,
+				new PrefixedParameterTuple(prefix, predicateUID, matchCode), new RowBounds(start, pageSize));
 	}
 
 	
@@ -97,13 +106,7 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 	}
 
 	
-	@Override
-	public List<Entity> getPagedValueSetEntities(String matchCode, String csUID, String predicateUID, int start, int pageSize) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
-		return this.getSqlSessionTemplate().<Entity>selectList(
-				GET_VS_ENTITIES_FROM_CODE, 
-				new PrefixedParameterTuple(prefix, predicateUID, matchCode), new RowBounds(start, pageSize));
-	}
+
 	
 	
 	@Override

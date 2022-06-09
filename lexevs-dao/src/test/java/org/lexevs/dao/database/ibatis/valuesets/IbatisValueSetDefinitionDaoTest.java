@@ -1,29 +1,46 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
+import java.util.List;
+import javax.annotation.Resource;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
+import org.LexGrid.valueSets.ValueSetDefinition;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-public class IbatisValueSetDefinitionDaoTest {
 
-    IbatisValueSetDefinitionDao definitionDao = new IbatisValueSetDefinitionDao();
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(value = {"classpath:lexevsDao.xml"})
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
+
+    @Resource
+    IbatisValueSetDefinitionDao definitionDao;
 
     @Test
     public void getValueSetDefinitionByURI() {
-        definitionDao.getValueSetDefinitionByURI("uri");
+        ValueSetDefinition definition =definitionDao.getValueSetDefinitionByURI("GM");
+        assertNotNull("definition null", definition);
     }
 
     @Test
     public void getGuidFromvalueSetDefinitionURI() {
-        definitionDao.getGuidFromvalueSetDefinitionURI("uri");
+       String guid =  definitionDao.getGuidFromvalueSetDefinitionURI("uri");
+       assertNotNull("guid null",guid);
     }
 
     @Test
     public void getAllValueSetDefinitionsWithNoName() {
         try {
-            definitionDao.getAllValueSetDefinitionsWithNoName();
+            List<String> noNames = definitionDao.getAllValueSetDefinitionsWithNoName();
+            assertNotNull("noNames null", noNames);
         }
         catch (LBException e) {
             e.printStackTrace();
@@ -33,7 +50,8 @@ public class IbatisValueSetDefinitionDaoTest {
     @Test
     public void getValueSetDefinitionURIsForName() {
         try {
-            definitionDao.getValueSetDefinitionURIsForName("name");
+            List<String> definitionURIS = definitionDao.getValueSetDefinitionURIsForName("GM");
+            assertNotNull("definition URIs null", definitionURIS);
         }
         catch (LBException e) {
             e.printStackTrace();

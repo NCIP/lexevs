@@ -54,8 +54,9 @@ public class IbatisVSEntryStateDao extends AbstractIbatisDao implements VSEntryS
 	
 
 	public EntryState getEntryStateByUId(String entryStateUId) {
+		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		return (EntryState) this.getSqlSessionTemplate().selectOne(GET_ENTRY_STATE_BY_ID_SQL, 
-			new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), entryStateUId));
+			new PrefixedParameter(prefix, entryStateUId));
 	}
 	
 	public void updateEntryState(String id, EntryState entryState) {
