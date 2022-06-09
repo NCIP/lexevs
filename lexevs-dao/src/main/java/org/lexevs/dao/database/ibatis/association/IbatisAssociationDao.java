@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.relations.AssociationData;
@@ -17,6 +18,7 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.versions.EntryState;
 import org.apache.ibatis.session.RowBounds;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
@@ -33,11 +35,16 @@ import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.constants.DatabaseConstants;
+import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.GetNodesPathBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationTargetEntryState;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -45,12 +52,15 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
+import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.inserter.BatchInserter;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.classify.Classifier;
 import org.springframework.util.Assert;
 
 
@@ -67,6 +77,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
+	
+	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	public static String ASSOCIATION_NAMESPACE = "Association.";
 	
@@ -166,11 +178,15 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
+	private IbatisRevisionDao ibatisRevisionDao;
+	
 	private AssociationTargetDao associationTargetDao = null;
 	
 	private AssociationDataDao associationDataDao = null;
 	
 	private PropertyDao propertyDao = null;
+	
+	
 	
 
 	@Override
@@ -596,7 +612,157 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				}
 				
 			}	
+	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.util.List)
+	 */
+	@ClearCache
+	public void insertMybatisBatchAssociationSources(final String codingSchemeUId,
+			final List<AssociationSourceBatchInsertItem> list) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+		String associationTargetUId = this.createUniqueId();
+		
+				List<InsertOrUpdateAssociationTargetBean> targetsToBatch = new ArrayList<InsertOrUpdateAssociationTargetBean>();
+				
+				
+				for(AssociationSourceBatchInsertItem item : list){
+					AssociationTarget[] targets = item.getAssociationSource().getTarget();
+					List<InsertOrUpdateAssociationTargetBean> insertTargetBeans = Stream.of(targets)
+							.map(x -> associationTargetDao
+							.buildInsertOrUpdateAssociationTargetBean(
+									prefix, 
+									item.getParentId(), 
+									associationTargetUId, 
+									item.getAssociationSource(), 
+									x, 
+									this.createUniqueId()))
+							.collect(Collectors.toList());
+					
+					targetsToBatch.addAll(insertTargetBeans);
+					
+					List<InsertEntryStateBean> esBeans = targetsToBatch
+							.stream().map(x -> 
+							buildInsertEntryStateBean( codingSchemeUId, x, x.getAssociationTarget().getEntryState()))
+							.collect(Collectors.toList());
+					
+					if(targetsToBatch.size() > 1000) {
+						associationTargetDao.insertMybatisBatchAssociationTarget(insertTargetBeans);
+						
+						List<InsertAssociationQualificationOrUsageContextBean> quals = 
+								targetsToBatch
+								.stream()
+								.map(
+										x -> processTargetBeansToQuals(x))
+								.flatMap(List::stream)
+								.collect(Collectors.toList());
+						
+						insertMybatisBatchQualifications(quals);
+						ibatisVersionsDao.insertEntryStateMybatisBatch(codingSchemeUId, esBeans);
+						
+					}
+					
+					List<AssociationData> adatas = item.getAssociationSource().getTargetDataAsReference();
+					adatas
+						.stream()
+						.map(x -> buildInsertOrUpdateAssociationDataBean(x, item.getAssociationSource(), prefix, this.createUniqueId(), item.getParentId()))
+						.collect(Collectors.toList());
+				}
+	
+			}	
+	
 
+
+	private InsertOrUpdateAssociationDataBean buildInsertOrUpdateAssociationDataBean(
+			AssociationData data, AssociationSource source, String prefix, String associationDataUId, String associationPredicateUId) {
+		
+		InsertOrUpdateAssociationDataBean bean = new InsertOrUpdateAssociationDataBean();
+
+		if (data.getAssociationInstanceId() == null
+				|| data.getAssociationInstanceId().trim().equals("")) {
+			data.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX  + this.createRandomIdentifier());
+		}
+		String entryStateUId = this.createUniqueId();
+		bean.setPrefix(prefix);
+		bean.setUId(associationDataUId);
+		bean.setAssociationPredicateUId(associationPredicateUId);
+		bean.setEntryStateUId(entryStateUId);
+		bean.setAssociationSource(source);
+		bean.setAssociationData(data);
+		
+		bean.setSourceEntityCode(source.getSourceEntityCode());
+		bean.setSourceEntityCodeNamespace(source.getSourceEntityCodeNamespace());
+		bean.setAssociationInstanceId(data.getAssociationInstanceId());
+		bean.setIsDefining(data.getIsDefining());
+		bean.setIsInferred(data.getIsInferred());
+		bean.setDataValue(data.getAssociationDataText().getContent());
+		bean.setIsActive(data.getIsActive());
+		bean.setOwner(data.getOwner());
+		bean.setStatus(data.getStatus());
+		bean.setEffectiveDate(data.getEffectiveDate());
+		bean.setExpirationDate(data.getExpirationDate());
+		
+		return bean;
+	}
+
+	public List<InsertAssociationQualificationOrUsageContextBean> processTargetBeansToQuals(InsertOrUpdateAssociationTargetBean bean) {
+		
+		return bean.getAssociationTarget()
+		.getAssociationQualificationAsReference()
+		.stream().map(x -> buildAssociationQualifierInsertBean(x, bean)).collect(Collectors.toList());
+
+	}
+	
+	public InsertAssociationQualificationOrUsageContextBean buildAssociationQualifierInsertBean(AssociationQualification qual, InsertOrUpdateAssociationTargetBean bean) {
+		String qualUId = createUniqueId();
+		InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+		qualBean.setReferenceUId(bean.getAssociationInstanceId());
+		qualBean.setUId(qualUId);
+		qualBean.setPrefix(
+				bean.getPrefix());
+		qualBean.setQualifierName(qual.getAssociationQualifier());
+		qualBean.setEntryStateUId(createUniqueId());
+
+		if (qual.getQualifierText() != null) {
+			qualBean
+					.setQualifierValue(qual.getQualifierText().getContent());
+		}
+		
+		return qualBean;
+	}
+	
+	protected InsertEntryStateBean buildInsertEntryStateBean( String codingSchemeUID, 
+			InsertOrUpdateAssociationTargetBean tbean, EntryState entryState) {
+
+		String revisionUId = null;
+		String prevRevisionUId = null;
+
+		if (entryState != null) {
+			revisionUId = ibatisRevisionDao.getRevisionUIdById(entryState
+					.getContainingRevision());
+			prevRevisionUId = ibatisRevisionDao.getRevisionUIdById(entryState
+					.getPrevRevision());
+		}
+
+		InsertEntryStateBean bean = new InsertEntryStateBean();
+		bean.setPrefix(tbean.getPrefix());
+		bean.setEntryUId(tbean.getEntryStateUId());
+		bean.setEntryState(entryState);
+		bean.setEntryType(entryStateTypeClassifier.classify(EntryStateType.ENTITYASSNSTOENTITY));
+		bean.setEntryStateUId(tbean.getEntryStateUId());
+		bean.setPreviousEntryStateUId(null);
+		bean.setRevisionUId(revisionUId);
+		bean.setPrevRevisionUId(prevRevisionUId);
+
+		return bean;
+	}
+
+	@ClearCache
+	private void insertMybatisBatchQualifications(List<InsertAssociationQualificationOrUsageContextBean> quals) {
+		quals.stream().forEach(qualbean -> 
+		this.getSqlSessionBatchTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualbean));
+	}
 	
 	
 	@ClearCache

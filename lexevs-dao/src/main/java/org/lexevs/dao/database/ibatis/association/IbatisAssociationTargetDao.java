@@ -150,6 +150,17 @@ private VersionsDao versionsDao;
 				target, 
 				this.getSqlSessionTemplate());
 	} 
+	
+	@Override
+	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> list) {
+
+		list
+		.stream()
+		.forEach(
+				x -> 
+				this.getSqlSessionBatchTemplate()
+				.insert(INSERT_ENTITY_ASSN_ENTITY_SQL, x));
+	}
 
 	@Override
 	public String insertAssociationTarget(
@@ -329,7 +340,7 @@ private VersionsDao versionsDao;
 		return entryStateUId;
 	}
 
-	private InsertOrUpdateAssociationTargetBean buildInsertOrUpdateAssociationTargetBean(String prefix,
+	public InsertOrUpdateAssociationTargetBean buildInsertOrUpdateAssociationTargetBean(String prefix,
 			String associationPredicateUId, String associationTargetUId, AssociationSource source,
 			AssociationTarget target, String entryStateUId) {
 		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();

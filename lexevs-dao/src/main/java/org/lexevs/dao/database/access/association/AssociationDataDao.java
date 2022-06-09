@@ -62,4 +62,7 @@ public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 
 	public AssociationSource getTripleByUid(String codingSchemeUId, String tripleUid);
 
+	String insertMybatisBatchAssociationData(String codingSchemeUId, String associationPredicateUId,
+			AssociationSource source, AssociationData data, SqlSessionTemplate session);
+
 }

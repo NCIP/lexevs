@@ -1,9 +1,12 @@
 
 package org.lexevs.dao.database.access.association;
 
+import java.util.List;
+
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
 import org.mybatis.spring.SqlSessionTemplate;
 
 public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
@@ -48,4 +51,10 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 			String codingSchemeUId, 
 			String tripleUid, 
 			String revisionId);
+	
+	public InsertOrUpdateAssociationTargetBean buildInsertOrUpdateAssociationTargetBean(String prefix,
+			String associationPredicateUId, String associationTargetUId, AssociationSource source,
+			AssociationTarget target, String entryStateUId);
+
+	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> insertTargetBeans);
 }

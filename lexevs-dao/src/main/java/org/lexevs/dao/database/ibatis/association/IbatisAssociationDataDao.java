@@ -158,6 +158,39 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 	}
 	
 	@Override
+	public String insertMybatisBatchAssociationData(
+			String codingSchemeUId,
+			String associationPredicateUId, 
+			AssociationSource source,
+			AssociationData data, 
+			SqlSessionTemplate session) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		String associationDataUId = this.createUniqueId();
+
+		String entryStateUId = this.doInsertAssociationData(
+				prefix,
+				associationPredicateUId, 
+				associationDataUId, 
+				source, 
+				data,
+				session);
+
+		this.versionsDao
+				.insertEntryState(
+						codingSchemeUId, 
+						entryStateUId, 
+						associationDataUId,
+						EntryStateType.ENTITYASSNSTODATA,
+						null, 
+						data.getEntryState());
+
+		return associationDataUId;
+	}
+	
+	@Override
 	public AssociationSource getTripleByUid(String codingSchemeUId, String tripleUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
