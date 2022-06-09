@@ -268,23 +268,23 @@ public class IbatisCodedNodeGraphDaoTest extends AbstractTransactionalJUnit4Spri
 
 	}
 
-	@Test
-	public void doGetTripleUidsCount() {
-		Map<String, Integer> tripleUids = ibatisCodedNodeGraphDao.doGetTripleUidsCount("2003",
-				"roles", "C100051", "ncit",
-				null,null,null,
-				null,null,null,null);
-		assertNotNull("tripleUids null", tripleUids);
-		assertFalse("tripleUids empty", tripleUids.isEmpty());
-		Integer testInt =  tripleUids.get("Disease_Has_Normal_Cell_Origin");
-		assertNotNull("value is null", testInt);
-		assertTrue("value wrong", testInt.intValue()==1);
-	}
+	  @Test
+	  public void doGetTripleUidsCount() {
+	      Map<String, Integer> tripleUids = ibatisCodedNodeGraphDao.doGetTripleUidsCount("2003",
+	              "roles", "C100051", "ncit",
+	              null, null, null,
+	              null, null, null, null);
+	      assertNotNull("tripleUids null", tripleUids);
+	      assertFalse("tripleUids empty", tripleUids.isEmpty());
+	      Integer testInt = tripleUids.get("Disease_Has_Normal_Cell_Origin");
+	      assertNotNull("value is null", testInt);
+	      assertEquals("value wrong", 1, (int) testInt);
+	  }
 
 	@Test
 	public void getTripleUidsContainingSubject() {
 		List<String> tripleUids = ibatisCodedNodeGraphDao.getTripleUidsContainingSubject("2003",
-				null, "C100051", "ncit",
+				null, "C100051", "Thesaurus.owl",
 				null,null,null,
 				null,null,null,null, 0, -1);
 		assertNotNull("tripleUids null", tripleUids);

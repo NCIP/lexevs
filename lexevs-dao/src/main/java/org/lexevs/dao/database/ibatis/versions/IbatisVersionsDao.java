@@ -188,6 +188,35 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 
 		session.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
 	}
+	
+	@Override
+	public void insertEntryStateMybatisBatch(
+			String codingSchemeUId,
+			List<InsertEntryStateBean> beans
+			) {
+		
+		for(InsertEntryStateBean bean: beans) {
+		if (bean.getEntryState() == null) {
+			return;
+		}
+
+		Assert.state(bean.getEntryType() != null);
+		Assert.state(
+				!bean.getEntryType().equals(EntryStateType.VALUESETDEFINITION)
+				&&
+				!bean.getEntryType().equals(EntryStateType.VALUESETDEFINITIONENTRY)
+				&&
+				!bean.getEntryType().equals(EntryStateType.PICKLISTDEFINITION)
+				&&
+				!bean.getEntryType().equals(EntryStateType.PICKLISTENTRYNODE),
+				"For inserting a ValueSet/Picklist EntryState, use the " +
+				" ValueSet DAOs.");
+
+
+
+		this.getSqlSessionBatchTemplate().insert(INSERT_ENTRY_STATE_SQL, bean);
+		}
+	}
 
 	/*
 	 * (non-Javadoc)
