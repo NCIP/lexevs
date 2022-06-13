@@ -1,19 +1,29 @@
 package org.lexevs.dao.database.ibatis.valuesets;
 
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Resource;
+import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.Exceptions.LBException;
 import org.LexGrid.LexBIG.Exceptions.LBRevisionException;
 import org.LexGrid.valueSets.ValueSetDefinition;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.lexevs.dao.database.access.valuesets.VSDefinitionEntryDao;
+import org.lexevs.dao.database.access.valuesets.VSEntryStateDao;
+import org.lexevs.dao.database.access.valuesets.VSPropertyDao;
+import org.lexevs.dao.database.access.versions.VersionsDao;
+import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -26,13 +36,13 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
 
     @Test
     public void getValueSetDefinitionByURI() {
-        ValueSetDefinition definition =definitionDao.getValueSetDefinitionByURI("GM");
+        ValueSetDefinition definition =definitionDao.getValueSetDefinitionByURI("SRITEST:AUTO:GM");
         assertNotNull("definition null", definition);
     }
 
     @Test
     public void getGuidFromvalueSetDefinitionURI() {
-       String guid =  definitionDao.getGuidFromvalueSetDefinitionURI("uri");
+       String guid =  definitionDao.getGuidFromvalueSetDefinitionURI("SRITEST:AUTO:GM");
        assertNotNull("guid null",guid);
     }
 
@@ -41,6 +51,7 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
         try {
             List<String> noNames = definitionDao.getAllValueSetDefinitionsWithNoName();
             assertNotNull("noNames null", noNames);
+            assertTrue("noNames should be empty", noNames.isEmpty());
         }
         catch (LBException e) {
             e.printStackTrace();
@@ -60,73 +71,113 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
 
     @Test
     public void getValueSetDefinitionSchemeRefForTopNodeSourceCode() {
-        definitionDao.getValueSetDefinitionSchemeRefForTopNodeSourceCode("code");
+        List<AbsoluteCodingSchemeVersionReference> versionReferences = definitionDao.getValueSetDefinitionSchemeRefForTopNodeSourceCode("code");
+        assertNotNull("versions null",versionReferences);
+        assertFalse("versions empty", versionReferences.isEmpty());
+        assertEquals("versions wrong size", 1, versionReferences.size());
     }
 
     @Test
     public void getValueSetDefinitionDefRefForTopNodeSourceCode() {
-        definitionDao.getValueSetDefinitionDefRefForTopNodeSourceCode("code");
+        List<AbsoluteCodingSchemeVersionReference> versionReferences =definitionDao.getValueSetDefinitionDefRefForTopNodeSourceCode("GM");
+        assertNotNull("versions null",versionReferences);
+        assertFalse("versions empty", versionReferences.isEmpty());
+        assertEquals("versions wrong size", 7, versionReferences.size());
     }
 
     @Test
     public void getValueSetDefinitionURIs() {
-        definitionDao.getValueSetDefinitionURIs();
+        List<String> definitionURIS =  definitionDao.getValueSetDefinitionURIs();
+        assertNotNull("definitions null",definitionURIS);
+        assertFalse("definitions empty", definitionURIS.isEmpty());
+        assertEquals("definitions wrong size", 27, definitionURIS.size());
     }
 
     @Test
     public void getPrefix() {
-        definitionDao.getPrefix();
+        String prefix = definitionDao.getPrefix();
+        assertNotNull("prefix null", prefix);
+        assertEquals("prefix wrong", "lb",prefix);
     }
 
     @Test
     public void doGetSupportedLgSchemaVersions() {
-        definitionDao.doGetSupportedLgSchemaVersions();
+         List<LexGridSchemaVersion> versions= definitionDao.doGetSupportedLgSchemaVersions();
+         assertNotNull("versions null",versions);
+         assertFalse("versions empty",versions.isEmpty());
+         assertEquals("versions wrong size",1, versions.size());
     }
 
     @Test
     public void getVersionsDao() {
-        definitionDao.getVersionsDao();
+        VersionsDao versionsDao = definitionDao.getVersionsDao();
+        assertNotNull("versionsDao null", versionsDao);
+        assertTrue("versionsDao wrong type", versionsDao instanceof VersionsDao);
     }
+
 
     @Test
     public void getVsPropertyDao() {
-        definitionDao.getVsPropertyDao();
+        VSPropertyDao vsPropertyDao = definitionDao.getVsPropertyDao();
+        assertNotNull("propertyDao null", vsPropertyDao);
+        assertTrue("propertyDao wrong type", vsPropertyDao instanceof VSPropertyDao);
     }
 
     @Test
     public void getVsEntryStateDao() {
-        definitionDao.getVsEntryStateDao();
-    }
-
-    @Test
-    public void getValueSetDefEntryStateUId() {
-        definitionDao.getValueSetDefEntryStateUId("uid");
+        VSEntryStateDao vsEntryStateDao = definitionDao.getVsEntryStateDao();
+        assertNotNull("entryStateDao null", vsEntryStateDao);
+        assertTrue("entryStateDao wrong type", vsEntryStateDao instanceof VSEntryStateDao);
     }
 
     @Test
     public void getVsDefinitionEntryDao() {
-        definitionDao.getVsDefinitionEntryDao();
+        VSDefinitionEntryDao definitionEntryDao = definitionDao.getVsDefinitionEntryDao();
+        assertNotNull("entryDao null", definitionEntryDao);
+        assertTrue("entryDao wrong type", definitionEntryDao instanceof VSDefinitionEntryDao);
+    }
+
+    @Test
+    public void getValueSetDefEntryStateUId() {
+        String uid = definitionDao.getValueSetDefEntryStateUId("SRITEST:AUTO:GM");
+        assertNotNull("uid null", uid);
+        assertEquals("uid wrong","uid", uid);
     }
 
     @Test
     public void getValueSetDefinitionURIForSupportedTagAndValue() {
-        definitionDao.getValueSetDefinitionURIForSupportedTagAndValue("tag", "value", "uri");
+        List<String> uris =  definitionDao.getValueSetDefinitionURIForSupportedTagAndValue("CodingScheme", "German Made Parts", null);
+        assertNotNull("uri null", uris);
+        assertFalse("uris empty", uris.isEmpty());
+        assertEquals("uris wrong size", 21, uris.size());
+
+
+        uris =  definitionDao.getValueSetDefinitionURIForSupportedTagAndValue("CodingScheme", "German Made Parts", "urn:oid:11.11.0.2");
+        assertNotNull("uri2 null", uris);
+        assertFalse("uris2 empty", uris.isEmpty());
+        assertEquals("uris2 wrong size", 21, uris.size());
+
     }
 
     @Test
     public void getLatestRevision() {
-        definitionDao.getLatestRevision("uid");
+        //TODO We don't use revisions
+        String revision = definitionDao.getLatestRevision("21566660");
+        assertNotNull("revision null", revision);
     }
 
     @Test
     public void entryStateExists() {
-        definitionDao.entryStateExists("entryID");
+        boolean exists = definitionDao.entryStateExists("21566786");
+        assertTrue("entryState exists", exists);
     }
 
     @Test
     public void getValueSetDefinitionByRevision() {
         try {
-            definitionDao.getValueSetDefinitionByRevision("uri", "revision");
+            ValueSetDefinition valueSetDefinition = definitionDao.getValueSetDefinitionByRevision("uri",
+                    "revision");
+            assertNotNull("definition null", valueSetDefinition);
         }
         catch (LBRevisionException e) {
             e.printStackTrace();
@@ -135,11 +186,18 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
 
     @Test
     public void getValueSetURIsForContext() {
-        definitionDao.getValueSetURIsForContext("contextURI");
+        //TODO we don't have any value set URIs under the "Context" attributeTag
+        List<String> contextURIs = definitionDao.getValueSetURIsForContext("contextURI");
+        assertNotNull("contextURIs null" , contextURIs);
+        assertFalse("contextURIs empty", contextURIs.isEmpty());
+        assertEquals("contextURIs wrong size",1,contextURIs );
     }
 
     @Test
     public void getValueSetURIMapToDefinitions() {
-        definitionDao.getValueSetURIMapToDefinitions();
+        Map<String, ValueSetDefinition> definitions = definitionDao.getValueSetURIMapToDefinitions();
+        assertNotNull("definitions null", definitions);
+        assertTrue("definitions empty",definitions.size()>0);
+        assertNotNull("definition missing",definitions.get("REPLACE") );
     }
 }
