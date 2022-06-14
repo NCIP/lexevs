@@ -112,7 +112,7 @@
 	 <select id="getURIMaps" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.referenceGuid = #{}
+	 		urimap.referenceGuid = #{param1}
 	 	AND
 	 		urimap.referenceType = #{param2}
 	 </select>
@@ -120,7 +120,7 @@
 	 <select id="getURIMapByLocalNameAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuad" resultMap="uriMapResult">
 	 	<include refid="getUriMapFragment"/>
 	 	WHERE
-	 		urimap.referenceGuid = #{}
+	 		urimap.referenceGuid = #{param1}
 	 	AND
 	 		urimap.referenceType = #{param2}
 	 	AND
@@ -135,7 +135,7 @@
 	 	FROM
 	 		${prefix}vsSupportedAttrib urimap
 	 	WHERE
-	 		urimap.referenceGuid = #{}
+	 		urimap.referenceGuid = #{param1}
 	 	AND
 	 		urimap.id = #{param2}
 	 	AND
@@ -339,7 +339,7 @@
 		DELETE FROM
 			${prefix}vsSupportedAttrib
 		WHERE
-			referenceGuid = #{}
+			referenceGuid = #{param1}
 		AND
 			referenceType = #{param2}
 	</delete>
@@ -348,7 +348,7 @@
 		DELETE FROM
 			${prefix}vsSupportedAttrib
 		WHERE
-			referenceGuid = #{}
+			referenceGuid = #{param1}
 		AND
 			referenceType = #{param2}
 		AND

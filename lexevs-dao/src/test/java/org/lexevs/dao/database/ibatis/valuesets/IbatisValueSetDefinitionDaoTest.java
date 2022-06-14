@@ -38,6 +38,7 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
     public void getValueSetDefinitionByURI() {
         ValueSetDefinition definition =definitionDao.getValueSetDefinitionByURI("SRITEST:AUTO:GM");
         assertNotNull("definition null", definition);
+        assertEquals("definition wrong", "GM", definition.getValueSetDefinitionName());
     }
 
     @Test
@@ -51,7 +52,8 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
         try {
             List<String> noNames = definitionDao.getAllValueSetDefinitionsWithNoName();
             assertNotNull("noNames null", noNames);
-            assertTrue("noNames should be empty", noNames.isEmpty());
+            assertEquals("one entry", 1, noNames.size());
+            assertEquals("noName wrong","SRITEST:AUTO:AutomobilesNoName",noNames.get(0) );
         }
         catch (LBException e) {
             e.printStackTrace();
@@ -71,7 +73,7 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
 
     @Test
     public void getValueSetDefinitionSchemeRefForTopNodeSourceCode() {
-        List<AbsoluteCodingSchemeVersionReference> versionReferences = definitionDao.getValueSetDefinitionSchemeRefForTopNodeSourceCode("code");
+        List<AbsoluteCodingSchemeVersionReference> versionReferences = definitionDao.getValueSetDefinitionSchemeRefForTopNodeSourceCode("005");
         assertNotNull("versions null",versionReferences);
         assertFalse("versions empty", versionReferences.isEmpty());
         assertEquals("versions wrong size", 1, versionReferences.size());
@@ -139,9 +141,9 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
 
     @Test
     public void getValueSetDefEntryStateUId() {
-        String uid = definitionDao.getValueSetDefEntryStateUId("SRITEST:AUTO:GM");
+        String uid = definitionDao.getValueSetDefEntryStateUId("21566785");
         assertNotNull("uid null", uid);
-        assertEquals("uid wrong","uid", uid);
+        assertEquals("uid wrong","21566786", uid);
     }
 
     @Test
@@ -161,7 +163,7 @@ public class IbatisValueSetDefinitionDaoTest extends AbstractTransactionalJUnit4
 
     @Test
     public void getLatestRevision() {
-        //TODO We don't use revisions
+        //TODO We don't use revisions so this will always fail
         String revision = definitionDao.getLatestRevision("21566660");
         assertNotNull("revision null", revision);
     }
