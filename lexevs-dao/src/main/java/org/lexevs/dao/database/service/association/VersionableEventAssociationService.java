@@ -77,8 +77,8 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.service.association.AssociationService#insertAssociationSource(java.lang.String, java.lang.String, java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
 	 */
-	@Transactional
-	@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONSOURCE_ERROR)
+	//@Transactional
+	//@DatabaseErrorIdentifier(errorCode=INSERT_ASSOCIATIONSOURCE_ERROR)
 	public void insertAssociationSource(String codingSchemeUri, 
 			String version, 
 			String relationContainerName,
@@ -161,7 +161,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 						codingSchemeUri, codingSchemeVersion, relations,
 						sources));
 
-		associationDao.insertBatchAssociationSources(codingSchemeId,
+		associationDao.insertMybatisBatchAssociationSources(codingSchemeId,
 				predicateId, sources);
 	}
 

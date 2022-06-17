@@ -479,6 +479,45 @@
                 #{entryStateUId})
     </insert>
 
+    <insert id="insertEntityAssnsToEntityBatch"
+            parameterType="java.util.List">
+
+
+	<foreach collection="list"  item="item" index="index" separator="," >
+		INSERT INTO ${item.prefix}entityAssnsToEntity (entityAssnsGuid,
+												  associationPredicateGuid,
+                                                  sourceEntityCode,
+                                                  sourceEntityCodeNamespace,
+                                                  targetEntityCode,
+                                                  targetEntityCodeNamespace,
+                                                  associationInstanceId,
+                                                  isDefining,
+                                                  isInferred,
+                                                  isActive,
+                                                  owner,
+                                                  status,
+                                                  effectiveDate,
+                                                  expirationDate,
+                                                  entryStateGuid)  
+		VALUES
+        		(#{item.uid},
+                #{item.associationPredicateUId},
+                #{item.sourceEntityCode},
+                #{item.sourceEntityCodeNamespace},
+                #{item.targetEntityCode},
+                #{item.targetEntityCodeNamespace},
+                #{item.associationInstanceId,jdbcType=VARCHAR},
+                #{item.isDefining},
+                #{item.isInferred},
+                #{item.isActive},
+                #{item.owner,jdbcType=VARCHAR},
+                #{item.status,jdbcType=VARCHAR},
+                #{item.effectiveDate,jdbcType=TIMESTAMP},
+                #{item.expirationDate,jdbcType=TIMESTAMP},
+                #{item.entryStateUId})
+	</foreach>
+    </insert>
+
     <select id="getTransitiveTableCount" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
             resultType="int">
         SELECT COUNT(*)

@@ -56,5 +56,5 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 			String associationPredicateUId, String associationTargetUId, AssociationSource source,
 			AssociationTarget target, String entryStateUId);
 
-	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> insertTargetBeans);
+	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> list, String prefix);
 }

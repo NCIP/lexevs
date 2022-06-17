@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -72,6 +73,7 @@ import org.springframework.util.Assert;
 @Cacheable(cacheName = "IbatisAssociationDaoCache")
 public class IbatisAssociationDao extends AbstractIbatisDao implements AssociationDao {
 	
+	public static List<AssociationSource> sourceCache = new CopyOnWriteArrayList<AssociationSource>();
 
 
 
@@ -617,38 +619,40 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.util.List)
 	 */
 	@ClearCache
-	public void insertMybatisBatchAssociationSources(final String codingSchemeUId,
-			final List<AssociationSourceBatchInsertItem> list) {
+	public void insertMybatisBatchAssociationSources(final String codingSchemeUId, String associatinPredicateId, 
+			final List<AssociationSource> list) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
-		String associationTargetUId = this.createUniqueId();
 		
+				sourceCache.addAll(list);
+				if(sourceCache.size() > 10) {
+				List<AssociationSource> temp = sourceCache.subList(0, sourceCache.size());
+					
 				List<InsertOrUpdateAssociationTargetBean> targetsToBatch = new ArrayList<InsertOrUpdateAssociationTargetBean>();
-				
-				
-				for(AssociationSourceBatchInsertItem item : list){
-					AssociationTarget[] targets = item.getAssociationSource().getTarget();
+				List<InsertEntryStateBean> esBeans = new ArrayList<InsertEntryStateBean>();
+				for(AssociationSource item : temp){
+					AssociationTarget[] targets = item.getTarget();
 					List<InsertOrUpdateAssociationTargetBean> insertTargetBeans = Stream.of(targets)
 							.map(x -> associationTargetDao
 							.buildInsertOrUpdateAssociationTargetBean(
 									prefix, 
-									item.getParentId(), 
-									associationTargetUId, 
-									item.getAssociationSource(), 
+									associatinPredicateId, 
+									this.createUniqueId(), 
+									item, 
 									x, 
 									this.createUniqueId()))
 							.collect(Collectors.toList());
 					
 					targetsToBatch.addAll(insertTargetBeans);
 					
-					List<InsertEntryStateBean> esBeans = targetsToBatch
+				esBeans.addAll(targetsToBatch
 							.stream().map(x -> 
 							buildInsertEntryStateBean( codingSchemeUId, x, x.getAssociationTarget().getEntryState()))
-							.collect(Collectors.toList());
-					
-					if(targetsToBatch.size() > 1000) {
-						associationTargetDao.insertMybatisBatchAssociationTarget(insertTargetBeans);
+							.collect(Collectors.toList()));
+				}
+
+						associationTargetDao.insertMybatisBatchAssociationTarget(targetsToBatch, prefix);
 						
 						List<InsertAssociationQualificationOrUsageContextBean> quals = 
 								targetsToBatch
@@ -660,14 +664,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						
 						insertMybatisBatchQualifications(quals);
 						ibatisVersionsDao.insertEntryStateMybatisBatch(codingSchemeUId, esBeans);
-						
-					}
+						sourceCache.clear();
 					
-					List<AssociationData> adatas = item.getAssociationSource().getTargetDataAsReference();
-					adatas
-						.stream()
-						.map(x -> buildInsertOrUpdateAssociationDataBean(x, item.getAssociationSource(), prefix, this.createUniqueId(), item.getParentId()))
-						.collect(Collectors.toList());
+//					List<AssociationData> adatas = item.getTargetDataAsReference();
+//					adatas
+//						.stream()
+//						.map(x -> buildInsertOrUpdateAssociationDataBean(x, item, prefix, this.createUniqueId(), associatinPredicateId))
+//						.collect(Collectors.toList());
 				}
 	
 			}	
@@ -717,7 +720,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public InsertAssociationQualificationOrUsageContextBean buildAssociationQualifierInsertBean(AssociationQualification qual, InsertOrUpdateAssociationTargetBean bean) {
 		String qualUId = createUniqueId();
 		InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-		qualBean.setReferenceUId(bean.getAssociationInstanceId());
+		qualBean.setReferenceUId(bean.getUId());
 		qualBean.setUId(qualUId);
 		qualBean.setPrefix(
 				bean.getPrefix());

@@ -120,6 +120,8 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public void insertBatchAssociationSources(String codingSchemeUId,
 			String associationPredicateUId, List<AssociationSource> batch);
 
+	public void insertMybatisBatchAssociationSources(final String codingSchemeUId, String associationPredicateId,
+			final List<AssociationSource> list);
 	/**
 	 * Insert relations.
 	 * 

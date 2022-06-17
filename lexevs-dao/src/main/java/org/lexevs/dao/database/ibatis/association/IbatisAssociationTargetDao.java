@@ -9,6 +9,7 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.ibatis.session.SqlSession;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -16,11 +17,16 @@ import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
+import org.lexevs.dao.database.ibatis.mybatis.association.batch.BatchAssociationPrefixedTableNameSupplier;
+import org.lexevs.dao.database.ibatis.mybatis.association.batch.InsertAssociationTargetDynamicBatch.EntityAssnsToEntity;
+import org.lexevs.dao.database.ibatis.mybatis.association.batch.MybatisAssociationBatchInsertDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.dynamic.sql.insert.render.BatchInsert;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
 import org.mybatis.spring.SqlSessionTemplate;
 
 public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
@@ -28,6 +34,8 @@ public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 
 /** The versions dao. */
 private VersionsDao versionsDao;
+
+private  MybatisAssociationBatchInsertDao assnsBatchInsertDao;
 	/** */
 	private static String ASSOCIATION_NAMESPACE = "Association.";
 	/** */
@@ -83,6 +91,8 @@ private VersionsDao versionsDao;
 	
 	private static String GET_ENTRYSTATE_UID_BY_ASSOCIATION_TARGET_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "getEntryStateUidByAssociationTarget";
+	
+//	private static String INSERT_ENTITY_ASSOC_ENTITY_BATCH = ASSOCIATION_NAMESPACE  + "insertEntityAssnsToEntityBatch";
 
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
@@ -152,14 +162,11 @@ private VersionsDao versionsDao;
 	} 
 	
 	@Override
-	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> list) {
+	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> list, String prefix) {
+		
+		BatchAssociationPrefixedTableNameSupplier.setPrefixedTable(prefix);
 
-		list
-		.stream()
-		.forEach(
-				x -> 
-				this.getSqlSessionBatchTemplate()
-				.insert(INSERT_ENTITY_ASSN_ENTITY_SQL, x));
+		assnsBatchInsertDao.insertMybatisBatchAssociationTarget(list);
 	}
 
 	@Override
@@ -386,6 +393,14 @@ private VersionsDao versionsDao;
 	 */
 	public void setVersionsDao(VersionsDao versionsDao) {
 		this.versionsDao = versionsDao;
+	}
+
+	public MybatisAssociationBatchInsertDao getAssnsBatchInsertDao() {
+		return assnsBatchInsertDao;
+	}
+
+	public void setAssnsBatchInsertDao(MybatisAssociationBatchInsertDao assnsBatchInsertDao) {
+		this.assnsBatchInsertDao = assnsBatchInsertDao;
 	}
 
 	@Override

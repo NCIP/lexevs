@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.commonTypes.EntityDescription;
@@ -578,6 +579,35 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				
 
 	}
+	
+	public void insertMybatisBatchEntities(
+			final String codingSchemeId, 
+			final List<? extends Entity> entities,
+			final boolean cascade) {
+		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
+
+		
+		List<InsertOrUpdateEntityBean> beans = entities.stream()
+				.map(entity -> buildInsertEntityParamaterBean(
+									prefix,
+									prefix,
+									codingSchemeId, 
+									this.createUniqueId(), 
+									this.createUniqueId(), 
+									entity)).collect(Collectors.toList());
+
+
+
+				
+				beans.stream().forEach(bean ->
+					
+					this.getSqlSessionBatchTemplate().insert(INSERT_ENTITY_SQL, 
+							bean));
+				
+				
+
+	}
+	
 	
 
 	/* (non-Javadoc)

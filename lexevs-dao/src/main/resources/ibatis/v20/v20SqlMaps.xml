@@ -117,5 +117,6 @@
 			<mapper resource="ibatis/v20/vsEntryState.xml"/>
 			<mapper resource="ibatis/v20/associationEntity.xml"/>
 			<mapper resource="ibatis/v20/nciHistory.xml"/>
+			<mapper class="org.lexevs.dao.database.ibatis.mybatis.association.batch.AssociationTargetMapper"/>
 		</mappers>
 	</configuration>

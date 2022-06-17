@@ -232,6 +232,12 @@
 		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationTargetDao"
 		parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao" />
+		<property name="assnsBatchInsertDao" ref="myBatisAssnsBatchInsertDao"/>
+	</bean>
+	<bean id="myBatisAssnsBatchInsertDao"
+		class="org.lexevs.dao.database.ibatis.mybatis.association.batch.MybatisAssociationBatchInsertDao"
+		parent="abstractIbatisDao">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 	
     <bean id="ibatisAssociationDataDao"
@@ -460,6 +466,11 @@
   		<property name="configLocation" value="classpath:ibatis/v20/v20SqlMaps.xml" />
   		<property name="dataSource" ref="dataSource" />
 		<property name="mapperLocations" value="classpath*:resources/ibatis.v20/**/*.xml" />
+	</bean>
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    	<property name="basePackage" value="org.lexevs.dao.database.ibatis.mybatis.association.batch" />
+	    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
 	</bean>
 
     <bean id="abstractResourceManagerVariableFactory" 
