@@ -24,6 +24,13 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	
 	@SuppressWarnings("unchecked")
 	@Override
+	/**
+	 * This gets all value sets that are marked to be published.
+	 * It pulls back contributing sources as one of its values
+	 * 	sourceDescription = name of property holding the source (Ex "Contributing_Source")
+	 * 	publishName = name of property that holds publication permission (Ex "Publish_Value_Set")
+	 * 	canPublish = value of publishName property (Ex "Yes","No")
+	 */
 	public List<VSHierarchyNode> getAllVSTriplesTrOfVSNode(
 			String codingSchemeId, String code, String associationGuid, String sourceDesignation, String publishName, String canPublish,  int start, int pagesize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);

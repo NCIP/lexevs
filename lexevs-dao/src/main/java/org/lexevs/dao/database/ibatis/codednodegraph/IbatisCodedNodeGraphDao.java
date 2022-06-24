@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
+import javax.persistence.SecondaryTable;
+import javax.persistence.criteria.CriteriaBuilder;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.custom.relations.TerminologyMapBean;
@@ -43,7 +46,7 @@ import org.springframework.util.CollectionUtils;
 @Cacheable(cacheName = "IbatisCodedNodeGraphDaoCache")
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
 
-/** The supported datebase version. */
+/** The supported database version. */
 private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 	private static String GET_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getEntityAssnsToEntityUids";
@@ -318,9 +321,23 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setMustHaveEntityTypes(mustHaveEntityType);
 		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
-		
-		return (Map<String,Integer> ) this.getSqlSessionTemplate().
-			<String,Integer>selectMap(GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL, bean, "key");
+
+		List<HashMap> testList =  this.getSqlSessionTemplate().
+				selectList(GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL, bean);
+//TODO This is an ugly patch
+		HashMap<String, Integer> returnMap = new HashMap<String, Integer>();
+		for(HashMap<String,Integer> map: testList){
+
+			Object ko = map.get("key");
+			Object vo = map.get("value");
+			returnMap.put((String) ko,(Integer) vo);
+		}
+
+		return returnMap;
+//		return (Map<String,Integer> ) this.getSqlSessionTemplate().
+//			<String,Integer>selectMap(GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL, bean, "key");
+
+
 	}
 	
 	@Override
@@ -581,7 +598,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			int start, 
 			int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
-		
+		if (traverse == null){
+			traverse = TraverseAssociations.TOGETHER;
+		}
+
 		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
 				traverse.toString(), 
 				associationPredicateUids, 

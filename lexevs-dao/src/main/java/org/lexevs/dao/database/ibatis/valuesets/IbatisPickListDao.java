@@ -53,7 +53,7 @@ import org.lexevs.dao.database.utility.DaoUtility;
  */
 @Cacheable(cacheName = "IbatisPickListDao")
 public class IbatisPickListDao extends AbstractIbatisDao implements PickListDao {
-	
+	//EVS never uses picklists.  We have none loaded
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	

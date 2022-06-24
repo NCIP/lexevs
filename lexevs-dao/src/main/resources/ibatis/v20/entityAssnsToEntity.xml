@@ -5,8 +5,8 @@
 
 
     <resultMap id="countConceptReferenceResult" type="countConceptReference">
-        <result property="code" column="entityCode"/>
-        <result property="codeNamespace" column="entityCodeNamespace"/>
+        <result property="_code" column="entityCode"/>
+        <result property="_codeNamespace" column="entityCodeNamespace"/>
         <result property="childCount" column="relationshipsCount"/>
     </resultMap>
 
@@ -796,7 +796,7 @@
         ON
         (rel.relationGuid = ap.relationGuid)
 
-        <if test="needsEntityJoin == &quot;true&quot;">
+        <if test="needsEntityJoin == true">
             LEFT JOIN
             ${prefix}entity sourceEntity
             ON
@@ -1480,8 +1480,7 @@
     <select id="getValueSetHierarchySourcesOfTargets"
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint"
             resultMap="valueSetHierarchyRootNodeResolution">
-        SELECT assns.sourceEntityCode          AS entityCode,
-               assns.sourceEntityCodeNamespace AS namespace,
+        SELECT
                ent.description                 AS description,
                CASE prop.propertyName
                    WHEN #{param3} THEN prop.propertyValue
@@ -1509,7 +1508,9 @@
                 OR
                     prop2.propertyName = #{param4})
         GROUP BY description, publish, source
-        having publish = #{param5}
+
+           having publish = #{param5}
+
     </select>
 
     <select id="getValueSetEntitiesFromCode"
@@ -1893,13 +1894,14 @@
         <if test="sortList != null and sortList != ''">
             <foreach collection="sortList" item="item">
 
-                <if test="item.getQualifierName() != null">
+                <if test="item.getQualifierName() != null and item.getTableAlias() !=null">
+                    (#{item})
                     LEFT JOIN
-                    ${prefix}entityAssnQuals ${item.tableAlias}
+                    ${prefix}entityAssnQuals #{item.getTableAlias}
                     ON (
-                    eate.entityAssnsGuid = ${item.tableAlias}.referenceGuid
+                    eate.entityAssnsGuid = #{item.getTableAlias}.referenceGuid
                     AND
-                    ${item.tableAlias}.qualifierName = #{item.qualifierName}
+                    ${item.getTableAlias}.qualifierName = #{item.qualifierName}
                     AND
                     ${item.tableAlias}.qualifierValue =
                     (SELECT
@@ -1932,12 +1934,12 @@
         <if test="sortList != null and sortList != ''">
             ORDER BY
             <foreach collection="sortList" item="item" separator=",">
-                <if test="item.qualifierName !=null">
+                <if test="item.getQualifierName() !=null">
                     ${item.columnSortType.mappingColumn}
                     ${item.order}
                 </if>
                 <if test="item.qualifierName ==null">
-                    ${item.tableAlias$.$item.columnSortType.mappingColumn}
+                    ${item.getTableAlias().columnSortType.mappingColumn}
                     ${item.order}
                 </if>
 

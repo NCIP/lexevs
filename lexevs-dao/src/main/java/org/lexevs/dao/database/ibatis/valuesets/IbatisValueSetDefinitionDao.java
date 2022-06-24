@@ -220,8 +220,9 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 			
 			if (contextList != null)
 				vsd.setRepresentsRealmOrContext(contextList);
-			
-			vsd.setMappings(getMappings(vsdGuid));
+
+			Mappings mappings = getMappings(vsdGuid);
+			vsd.setMappings(mappings);
 		}
 		return vsd;
 	}
@@ -716,7 +717,7 @@ public class IbatisValueSetDefinitionDao extends AbstractIbatisDao implements Va
 	 * 
 	 * @param prefix the prefix
 	 * @param uriMapId the uri map id
-	 * @param codingSchemeId the coding scheme id
+
 	 * @param supportedAttributeTag the supported attribute tag
 	 * @param uriMap the uri map
 	 * 
