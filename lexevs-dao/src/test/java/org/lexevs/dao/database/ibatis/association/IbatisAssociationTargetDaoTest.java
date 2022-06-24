@@ -6,19 +6,25 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
+import org.apache.ibatis.executor.BatchExecutorException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -34,11 +40,45 @@ import org.springframework.transaction.annotation.Transactional;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value={"classpath:lexevsDao.xml"})
 @Transactional(propagation=Propagation.REQUIRED,readOnly=false)
+@Rollback(false)
 public class IbatisAssociationTargetDaoTest extends AbstractTransactionalJUnit4SpringContextTests{
 	
 	/** The ibatis association dao. */
 	@Resource
 	private IbatisAssociationTargetDao ibatisAssociationTargetDao;
+	
+	List<InsertOrUpdateAssociationTargetBean> list;
+	
+	@Before
+	public void setup() {
+		list = new ArrayList<InsertOrUpdateAssociationTargetBean>();
+	
+		for(int i = 0; i <= 30000 ; i++ ) {
+			
+			InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
+			bean.setPrefix("lbaaab");
+			bean.setAssociationPredicateUId("30");
+			bean.setAssociationInstanceId("instance" + i);
+			bean.setUId("" + (585 + i));
+			bean.setSourceEntityCode("C" + i);
+			bean.setSourceEntityCodeNamespace("nci");
+			bean.setTargetEntityCode("T" + i);
+			bean.setTargetEntityCodeNamespace("nci");
+			bean.setIsDefining(true);
+			bean.setIsInferred(true);
+			bean.setIsActive(true);
+			bean.setOwner("mytest");
+			bean.setStatus("Pending");
+			bean.setEffectiveDate(new Date(System.currentTimeMillis()));
+			bean.setExpirationDate(new Date(System.currentTimeMillis()));
+			bean.setEntryStateGuid(null);
+			
+			
+			list.add(bean);
+		}
+			
+		
+	}
 
     @Test
     public void doGetSupportedLgSchemaVersions() {
@@ -102,11 +142,35 @@ public class IbatisAssociationTargetDaoTest extends AbstractTransactionalJUnit4S
     }
 
     @Test
-    public void testInsertAssociationTarget1() {
+    public void testInsertAssociationTargetBatch() {
+    	long start = System.currentTimeMillis();
+    	List<InsertOrUpdateAssociationTargetBean> temp = new ArrayList<InsertOrUpdateAssociationTargetBean>();
+    	int split = 0;
+    	
+    	try {
+    	for(int i = 0; i <= 30000; i++) {
+    		split++;
+    		temp.add(list.get(i));
+    		
+    		if(split == 50) {
+    			ibatisAssociationTargetDao.insertMybatisBatchAssociationTarget(temp,"lbaaab");
+    			temp.clear();
+    		}
+    	}
+    	ibatisAssociationTargetDao.insertMybatisBatchAssociationTarget(list,"lbaaab");
+    	}catch(Exception e) {
+    		
+    	}finally {
+    	System.out.println("Batch Insert Time: " + (System.currentTimeMillis() - start));
+    	}
     }
 
     @Test
-    public void doInsertAssociationTarget() {
+    public void testInsertAssociationTargetForEach() {
+    	long start = System.currentTimeMillis();
+    	list.stream().forEach(x ->
+    	ibatisAssociationTargetDao.testNonBatchInsertAssociationTarget(x));
+    	System.out.println("For each Insert Time: " + (System.currentTimeMillis() - start));
     }
 
     @Test

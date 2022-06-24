@@ -39,14 +39,14 @@ public class AssociationSourceAccumulator {
 	
 	private class MetaSource {
 		
-		public MetaSource(AssociationSource metaSource,  String predicateId,
+		public MetaSource(AssociationSource source,  String predicateId,
 				String codingSchemeId) {
-			this.metaSource = metaSource;
+			this.source = source;
 			this.predicateId = predicateId;
 			this.codingSchemeId = codingSchemeId;
 		}
 		
-		private AssociationSource metaSource;
+		private AssociationSource source;
 		private String predicateId;
 		private String codingSchemeId;
 

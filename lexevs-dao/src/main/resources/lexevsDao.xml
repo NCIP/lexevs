@@ -26,7 +26,7 @@
 	</bean>
     
     <bean id="abstractIbatisDao" abstract="true">
-    	<property name="sqlSessionTemplate" ref="sqlSessionBatchTemplate"/>
+    	<property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
 		<property name="sqlSessionBatchTemplate" ref="sqlSessionBatchTemplate"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="primaryKeyIncrementer" ref="primaryKeyIncrementer"/>

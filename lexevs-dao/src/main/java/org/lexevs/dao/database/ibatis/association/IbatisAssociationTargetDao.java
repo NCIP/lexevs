@@ -168,6 +168,12 @@ private  MybatisAssociationBatchInsertDao assnsBatchInsertDao;
 
 		assnsBatchInsertDao.insertMybatisBatchAssociationTarget(list);
 	}
+	
+	@Override
+	public void testNonBatchInsertAssociationTarget(InsertOrUpdateAssociationTargetBean bean) {
+
+		this.getSqlSessionTemplate().insert(INSERT_ENTITY_ASSN_ENTITY_SQL, bean);
+	}
 
 	@Override
 	public String insertAssociationTarget(

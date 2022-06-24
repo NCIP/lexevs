@@ -39,6 +39,7 @@ import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
 import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.association.parameter.BatchAssociationInsertBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetNodesPathBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
@@ -619,27 +620,24 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.util.List)
 	 */
 	@ClearCache
-	public void insertMybatisBatchAssociationSources(final String codingSchemeUId, String associatinPredicateId, 
-			final List<AssociationSource> list) {
+	public void insertMybatisBatchAssociationSources(final String codingSchemeUId,
+			final List<BatchAssociationInsertBean> list) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
-		
-				sourceCache.addAll(list);
-				if(sourceCache.size() > 10) {
-				List<AssociationSource> temp = sourceCache.subList(0, sourceCache.size());
+
 					
 				List<InsertOrUpdateAssociationTargetBean> targetsToBatch = new ArrayList<InsertOrUpdateAssociationTargetBean>();
 				List<InsertEntryStateBean> esBeans = new ArrayList<InsertEntryStateBean>();
-				for(AssociationSource item : temp){
-					AssociationTarget[] targets = item.getTarget();
+				for(BatchAssociationInsertBean item : list){
+					AssociationTarget[] targets = item.getSource().getTarget();
 					List<InsertOrUpdateAssociationTargetBean> insertTargetBeans = Stream.of(targets)
 							.map(x -> associationTargetDao
 							.buildInsertOrUpdateAssociationTargetBean(
 									prefix, 
-									associatinPredicateId, 
+									item.getAssociationPredicateId(), 
 									this.createUniqueId(), 
-									item, 
+									item.getSource(), 
 									x, 
 									this.createUniqueId()))
 							.collect(Collectors.toList());
@@ -664,14 +662,14 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						
 						insertMybatisBatchQualifications(quals);
 						ibatisVersionsDao.insertEntryStateMybatisBatch(codingSchemeUId, esBeans);
-						sourceCache.clear();
+
 					
 //					List<AssociationData> adatas = item.getTargetDataAsReference();
 //					adatas
 //						.stream()
 //						.map(x -> buildInsertOrUpdateAssociationDataBean(x, item, prefix, this.createUniqueId(), associatinPredicateId))
 //						.collect(Collectors.toList());
-				}
+
 	
 			}	
 	
