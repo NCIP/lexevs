@@ -320,7 +320,7 @@
         #{item}
     </foreach> )
 
-        <if test="param3 != null and param3 != ''">
+        <if test="param3 != null and param3.size > 0">
             ORDER BY
             <foreach collection="param3" item="item" separator=",">
                 <if test="param1 == &quot;SUBJECT&quot;">
@@ -629,9 +629,8 @@
         </if>
 
 
-        <if test="associationQualifiers != null and associationQualifiers != ''">AND
-            (
-            <foreach collection="associationQualifiers" item="item" separator="AND">
+        <if test="associationQualifiers != null and associationQualifiers.size > 0">
+            <foreach collection="associationQualifiers" item="item" open="AND (" separator="AND" close=")">
                 (
                 quals.qualifierName = #{item.qualifierName}
                 <if test="item != null and item.qualifierValue != null and item.qualifierValue != ''">
@@ -640,18 +639,16 @@
                 </if>
                 )
             </foreach>
-            )
+
         </if>
 
-        <if test="associations != null and associations != ''">AND
-            (
-            <foreach collection="associations" item="item" separator="OR">
-                ap.associationName = #{item}
+        <if test="associations != null and associations.size > 0">
+            <foreach collection="associations" item="item" index="index" open="AND (" separator="OR" close=")" >
+                ap.associationName=#{item}
             </foreach>
-            )
-        </if>
+        </if> 
 
-        <if test="mustHaveCodes != null and mustHaveCodes != ''">AND
+        <if test="mustHaveCodes != null and mustHaveCodes.size > 0">AND
             (
             <foreach collection="mustHaveCodes" item="item" separator="OR">
                 <if test="tripleNode !=null">
@@ -681,7 +678,7 @@
             </foreach>
             )
         </if>
-        <if test="mustHaveNamespaces != null and mustHaveNamespaces != ''">AND
+       <if test="mustHaveNamespaces != null and mustHaveNamespaces.size > 0">AND
             (
             <foreach collection="mustHaveNamespaces" item="item" separator="OR">
                 <if test="tripleNode != null">
@@ -699,7 +696,7 @@
             </foreach>
             )
         </if>
-        <if test="mustHaveEntityTypes != null and mustHaveEntityTypes != ''">AND
+       <if test="mustHaveEntityTypes != null and mustHaveEntityTypes.size > 0 ">AND
             (
             (
             <foreach collection="mustHaveEntityTypes" item="item" separator="OR">
@@ -711,8 +708,8 @@
             entityType.entityType IS NULL
             )
             )
-        </if>
-        <if test="restrictToAnonymous != null">AND
+        </if> 
+      <if test="restrictToAnonymous != null">AND
             (
             entity.isAnonymous = #{restrictToAnonymous}
             OR
@@ -831,7 +828,7 @@
             rel.containerName = #{relationsContainerName}
         </if>
 
-        <if test="associations != null and associations != ''">AND
+        <if test="associations != null and associations.size > 0">AND
             (
             <foreach collection="associations" item="item" separator="OR">
                 ap.associationName = #{item}
@@ -852,7 +849,7 @@
             eate.targetEntityCodeNamespace = #{targetNamespace}
         </if>
 
-        <if test="mustHaveSourceCodes != null and mustHaveSourceCodes != ''">AND
+        <if test="mustHaveSourceCodes != null and mustHaveSourceCodes.size > 0">AND
             (
             <foreach collection="mustHaveSourceCodes" item="item" separator="OR">
                 (
@@ -865,7 +862,7 @@
             )
         </if>
 
-        <if test="mustHaveTargetCodes != null and mustHaveTargetCodes != ''">AND
+        <if test="mustHaveTargetCodes != null and mustHaveTargetCodes.size > 0">AND
             (
             <foreach collection="mustHaveTargetCodes" item="item" separator="OR">
                 (
@@ -877,7 +874,7 @@
             </foreach>
             )
         </if>
-        <if test="mustHaveSourceNamespaces != null and mustHaveSourceNamespaces != ''">AND
+        <if test="mustHaveSourceNamespaces != null and mustHaveSourceNamespaces.size > 0">AND
             (
             <foreach collection="mustHaveSourceNamespaces" item="item" separator="OR">
                 (
@@ -886,7 +883,7 @@
             </foreach>
             )
         </if>
-        <if test="mustHaveTargetNamespaces != null and mustHaveTargetNamespaces != ''">AND
+        <if test="mustHaveTargetNamespaces != null and mustHaveTargetNamespaces.size > 0">AND
             (
             <foreach collection="mustHaveTargetNamespaces" item="item" separator="OR">
                 (
@@ -896,7 +893,7 @@
             )
         </if>
 
-        <if test="mustHaveEntityTypes != null and mustHaveEntityTypes != ''">AND
+        <if test="mustHaveEntityTypes != null and mustHaveEntityTypes.size > 0">AND
             (
             (
             (
@@ -952,7 +949,7 @@
         (eate.entityAssnsGuid = quals.referenceGuid)
         <include refid="getRelationshipsFragment"/>
 
-        <if test="associationQualifiers != null and associationQualifiers != ''">AND
+        <if test="associationQualifiers != null and associationQualifiers.size > 0">AND
             (
             <foreach collection="associationQualifiers" item="item" separator="AND">
                 (
@@ -1054,11 +1051,11 @@
         ${prefix}entityAssnsToEntity eate1
 
         LEFT JOIN
-        <if test="param3 != null and param3 != ''">
+        <if test="param3 != null and param3.size > 0">
             (
         </if>
         ${prefix}entityAssnsToEntity eate2
-        <if test="param3 != null and param3 != ''">
+        <if test="param3 != null and param3.size > 0">
             LEFT JOIN
             ${prefix}entityAssnQuals eaq2
             ON
@@ -1078,7 +1075,7 @@
 
         <if test="param1 == &quot;TOGETHER&quot;">
 
-            <if test="param2 != null and param2 != ''">AND
+            <if test="param2 != null and param2.size > 0">AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate1.associationPredicateGuid =
                     #{pitem}
@@ -1094,7 +1091,7 @@
 
         </if>
 
-        <if test="param3 != null and param3 != ''">AND
+        <if test="param3 != null and param3.size > 0">AND
             (
             <foreach collection="param3" item="item" separator="OR">
                 eaq2.qualifierName = #{item.qualifierName}
@@ -1115,7 +1112,7 @@
         <!--			</isNotEmpty>-->
 
         )
-        <if test="param3 != null and param3 != ''">
+        <if test="param3 != null and param3.size > 0">
             LEFT JOIN
             ${prefix}entityAssnQuals eaq1
             ON
@@ -1125,7 +1122,7 @@
         WHERE
         eate2.entityAssnsGuid IS NULL
 
-        <if test="param3 != null and param3 != ''">AND
+        <if test="param3 != null and param3.size > 0">AND
             (
             <foreach collection="param3" item="item" separator="OR">
                 eaq1.qualifierName = #{item.qualifierName}
@@ -1137,13 +1134,13 @@
             )
         </if>
 
-        <if test="param2 != null and param2 != ''">AND
+        <if test="param2 != null and param2.size > 0">AND
             eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">
                 #{item}
             </foreach> )
         </if>
 
-        <if test="param4 != null and param4 != ''">AND
+        <if test="param4 != null and param4.size > 0">AND
             (
             <foreach collection="param4" item="item" separator="OR">
                 eate1.sourceEntityCodeNamespace = #{item}
@@ -1151,7 +1148,7 @@
             )
         </if>
 
-        <if test="param5 != null and param5 != ''">AND
+        <if test="param5 != null and param5.size > 0">AND
             (
             <foreach collection="param5" item="item" separator="OR">
                 eate1.targetEntityCodeNamespace = #{item}
@@ -1159,7 +1156,7 @@
             )
         </if>
 
-        <if test="param6 != null and param6 != ''">
+        <if test="param6 != null and param6.size > 0">
             ORDER BY
             <foreach collection="param6" item="item" separator=",">
                 ${item.columnSortType.rootColumn}
@@ -1184,11 +1181,11 @@
         ${prefix}entityAssnsToEntity eate1
 
         LEFT JOIN
-        <if test="param3 != null and param3 != ''">
+        <if test="param3 != null and param3.size > 0">
             (
         </if>
         ${prefix}entityAssnsToEntity eate2
-        <if test="param3 != null and param3 != ''">
+        <if test="param3 != null and param3.size > 0">
             LEFT JOIN
             ${prefix}entityAssnQuals eaq2
             ON
@@ -1208,7 +1205,7 @@
 
         <if test="param1 == &quot;TOGETHER&quot;">
 
-            <if test="param2 != null and param2 != ''">AND
+            <if test="param2 != null and param2.size > 0">AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate1.associationPredicateGuid =
                     #{item}
@@ -1224,7 +1221,7 @@
 
         </if>
 
-        <if test="param3 != null and param3 != ''">AND
+        <if test="param3 != null and param3.size > 0">AND
             (
             <foreach collection="param3" item="item" separator="OR">
                 eaq2.qualifierName = #{item.qualifierName}
@@ -1245,7 +1242,7 @@
         <!--			</isNotEmpty>-->
         )
 
-        <if test="param3 != null and param3 != ''">
+        <if test="param3 != null and param3.size > 0">
             LEFT JOIN
             ${prefix}entityAssnQuals eaq1
             ON
@@ -1254,7 +1251,7 @@
         WHERE
         eate2.entityAssnsGuid IS NULL
 
-        <if test="param3 != null and param3 != ''">AND
+        <if test="param3 != null and param3.size > 0">AND
             (
             <foreach collection="param3" item="item" separator="OR">
                 eaq1.qualifierName = #{item.qualifierName}
@@ -1266,13 +1263,13 @@
             )
         </if>
 
-        <if test="param2 != null and param2 != ''">AND
+        <if test="param2 != null and param2.size > 0">AND
             eate1.associationPredicateGuid IN (  <foreach collection="param2" item="item" separator=",">
                 #{item}
             </foreach> )
         </if>
 
-        <if test="param4 != null and param4 != ''">AND
+        <if test="param4 != null and param4.size > 0">AND
             (
             <foreach collection="param4" item="item" separator="OR">
                 eate1.sourceEntityCodeNamespace = #{item}
@@ -1280,14 +1277,14 @@
             )
         </if>
 
-        <if test="param5 != null and param5 != ''">AND
+        <if test="param5 != null and param5.size > 0">AND
             (
             <foreach collection="param5" item="item" separator="OR">
                 eate1.targetEntityCodeNamespace = #{item}
             </foreach>
             )
         </if>
-        <if test="param6 != null and param6 != ''">
+        <if test="param6 != null and param6.size > 0'">
             ORDER BY
             <foreach collection="param6" item="item" separator=",">
                 ${item.columnSortType.tailColumn}
@@ -1303,7 +1300,7 @@
         SELECT DISTINCT
         (eate.entityAssnsGuid) AS uidKey
 
-        <if test="sorts != null and sorts != '' and tripleNode != null">,
+        <if test="sorts != null and sorts.size > 0 and tripleNode != null">,
             <foreach collection="sorts" item="item" separator=",">
                 <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
                     ${item.columnSortType.subjectColumn}
@@ -1317,7 +1314,7 @@
         <include refid="getEntityAssnsToEntityUidsFragment"/>
         <include refid="restrictEntityAssnsToEntityUidsBySingleCodeFragment"/>
 
-        <if test="sorts != null and sorts != ''">
+        <if test="sorts != null and sorts.size > 0">
             ORDER BY
             <foreach collection="sorts" item="item" separator=",">
                 <if test="tripleNode !=null">
@@ -1426,7 +1423,7 @@
                 eate.sourceEntityCodeNamespace
             </if>
         </if>
-        <if test="sorts != null and sorts != '' and tripleNode != null">
+        <if test="sorts != null and sorts.size > 0 and tripleNode != null">
             ORDER BY
             <foreach collection="sorts" item="item" separator=",">
                 <if test="tripleNode.toString() == &quot;SUBJECT&quot;">
@@ -1891,7 +1888,7 @@
         </if>
 
 
-        <if test="sortList != null and sortList != ''">
+        <if test="sortList != null and sortList.size > 0">
             <foreach collection="sortList" item="item">
 
                 <if test="item.getQualifierName() != null and item.getTableAlias() !=null">
@@ -1931,7 +1928,7 @@
     </sql>
 
     <sql id="getTripleUidsForMappingContainerPost">
-        <if test="sortList != null and sortList != ''">
+        <if test="sortList != null and sortList.size > 0">
             ORDER BY
             <foreach collection="sortList" item="item" separator=",">
                 <if test="item.getQualifierName() !=null">
@@ -1966,19 +1963,19 @@
             parameterType="org.lexevs.dao.database.ibatis.codednodegraph.IbatisCodedNodeGraphDao$RestrictingMappingTripleParameterBean"
             resultMap="Common.uidResult">
         <include refid="getTripleUidsForMappingContainerPre"/>
-        <if test="sourceConceptReferences != null and sourceConceptReferences != ''">AND
+        <if test="sourceConceptReferences != null and sourceConceptReferences.size > 0">AND
             eate.sourceEntityCode IN (  <foreach collection="sourceConceptReferences" item="item" separator=",">
                 #{item.code}
             </foreach> )
         </if>
 
-        <if test="targetConceptReferences != null and targetConceptReferences != ''">AND
+        <if test="targetConceptReferences != null and targetConceptReferences.size > 0">AND
             eate.targetEntityCode IN (  <foreach collection="targetConceptReferences" item="item" separator=",">
                 #{item.code}
             </foreach> )
         </if>
 
-        <if test="sourceOrTargetConceptReferences != null and sourceOrTargetConceptReferences != ''">AND
+        <if test="sourceOrTargetConceptReferences != null and sourceOrTargetConceptReferences.size > 0">AND
             (
             eate.sourceEntityCode IN (  <foreach collection="sourceOrTargetConceptReferences" item="item" separator=",">
                 #{item.code}
@@ -2018,17 +2015,17 @@
         AND
         rel.containerName = #{param2}
 
-        <if test="param3 != null and param3 != ''">AND
+        <if test="param3 != null and param3.size > 0">AND
             eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
-        <if test="param4 != null and param4 != ''">AND
+        <if test="param4 != null and param4.size > 0">AND
             eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
-        <if test="param5 != null and param5 != ''">AND
+        <if test="param5 != null and param5.size > 0">AND
             (
             eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{item.code}
             </foreach> )
@@ -2160,17 +2157,17 @@
         AND
         rel.containerName = #{param2}
 
-        <if test="param3 != null and param3 != ''">AND
+        <if test="param3 != null and param3.size > 0">AND
             eate.sourceEntityCode IN (  <foreach collection="param3" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
-        <if test="param4 != null and param4 != ''">AND
+        <if test="param4 != null and param4.size > 0">AND
             eate.targetEntityCode IN (  <foreach collection="param4" item="item" separator=",">#{item.code}
             </foreach> )
         </if>
 
-        <if test="param5 != null and param5 != ''">AND
+        <if test="param5 != null and param5.size > 0">AND
             (
             eate.sourceEntityCode IN (  <foreach collection="param5" item="item" separator=",">#{item.code}
             </foreach> )
@@ -2210,7 +2207,7 @@
         <if test="param3 != null">
             eate.sourceEntityCode = #{param3}
         </if>
-        <if test="param5 != null and param5 != ''">AND
+        <if test="param5 != null and param5.size > 0">AND
             eate.sourceEntityCodeNamespace = #{param2}
         </if>
         )
@@ -2220,7 +2217,7 @@
         <if test="param3 != null">
             eate.targetEntityCode = #{param3}
         </if>
-        <if test="param5 != null and param5 != ''">AND
+        <if test="param5 != null and param5.size > 0">AND
             eate.targetEntityCodeNamespace = #{param2}
         </if>
         )
