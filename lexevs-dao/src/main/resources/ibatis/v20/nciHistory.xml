@@ -10,10 +10,11 @@
 	</resultMap>
 
 	<resultMap id="nciChangeEventResult" type="nciChangeEvent">
-		<result property="editaction" column="editAction"/>
 		<result property="conceptcode" column="entityCode"/>
 		<result property="conceptName" column="conceptName"/>
+		<result property="editAction" column="editAction" />
 		<result property="editDate" column="editDate"/>
+		<result property="releaseAgency" column="releaseAgency"/>	
 		<result property="referencecode" column="referenceCode"/>
 		<result property="referencename" column="referenceName"/>
 	</resultMap>
@@ -124,7 +125,7 @@
 		SELECT 
 			entityCode,
 			conceptName,
-			editAction,
+			UPPER(editAction),
 			editDate,
 			releaseAgency,
 			referenceCode,
@@ -189,7 +190,7 @@
 			nciHist.entityCode = #{param2}
 
 		AND
-			editAction = 'CREATE'
+			editAction = 'create'
 	</select> 
 	
 	<select id="getConceptChangeVersions" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultMap="nciChangeEventResult">
@@ -232,9 +233,9 @@
 			nciHist.entityCode = #{param2}
 		AND
 			(
-				nciHist.editAction = 'SPLIT'
+				nciHist.editAction = 'split'
 				OR
-				nciHist.editAction = 'MERGE'
+				nciHist.editAction = 'merge'
 			)
 	</select> 
 	
@@ -245,9 +246,9 @@
 			nciHist.referenceCode = #{param2}
 		AND
 			(
-				nciHist.editAction = 'SPLIT'
+				nciHist.editAction = 'merge'
 				OR
-				nciHist.editAction = 'MERGE'
+				nciHist.editAction = 'merge'
 			)
 	</select> 
 

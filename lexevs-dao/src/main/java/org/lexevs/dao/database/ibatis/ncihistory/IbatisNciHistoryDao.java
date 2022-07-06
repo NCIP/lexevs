@@ -4,6 +4,7 @@ package org.lexevs.dao.database.ibatis.ncihistory;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.versions.CodingSchemeVersion;
@@ -15,6 +16,7 @@ import org.lexevs.dao.database.access.ncihistory.NciHistoryDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.ncihistory.parameter.InsertOrUpdateNciChangeEventBean;
 import org.lexevs.dao.database.ibatis.ncihistory.parameter.InsertOrUpdateNciHistoryBean;
+import org.lexevs.dao.database.ibatis.ncihistory.parameter.NCIHistoryResultSetWrapper;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
@@ -94,11 +96,17 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 
 	@Override
 	public List<NCIChangeEvent> getAncestors(String codingSchemeUri, String conceptCode) {
-		return this.getSqlSessionTemplate().selectList(GET_ANCESTORS_SQL, 
+		
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_ANCESTORS_SQL, 
 				new PrefixedParameterTuple(
 						this.getPrefixResolver().resolveDefaultPrefix(),
 						codingSchemeUri,
 						conceptCode));
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
+
 	}
 
 
@@ -125,11 +133,13 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				conceptCode);
 		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 		
-		NCIChangeEvent event = (NCIChangeEvent) this.getSqlSessionTemplate()
-				.selectOne(GET_CONCEPT_CREATION_VERSION_SQL, sParam);
+		NCIHistoryResultSetWrapper wrapper = (NCIHistoryResultSetWrapper) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectOne(GET_CONCEPT_CREATION_VERSION_SQL, sParam);
 
+		
 
-		return this.buildCodingSchemeVersion(codingSchemeUri, event);
+		return this.buildCodingSchemeVersion(codingSchemeUri, wrapper.buildChangeEvent());
 	}
 
 
@@ -145,8 +155,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 		
-		List<NCIChangeEvent> events = (List<NCIChangeEvent>) this.getSqlSessionTemplate().<NCIChangeEvent>selectList(GET_CONCEPT_CHANGE_VERSIONS_SQL, 
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_CONCEPT_CHANGE_VERSIONS_SQL, 
 				sParam);
+		List<NCIChangeEvent> events = wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 		
 		if(CollectionUtils.isEmpty(events)){return null;}
 		
@@ -180,10 +193,14 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	@Override
 	public List<NCIChangeEvent> getDescendants(String codingSchemeUri, String conceptCode) {
 
-		return this.getSqlSessionTemplate().selectList(GET_DECENDANTS_SQL, new PrefixedParameterTuple(
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_DECENDANTS_SQL, new PrefixedParameterTuple(
 				this.getPrefixResolver().resolveDefaultPrefix(),
 				codingSchemeUri,
 				conceptCode));
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 
 	}
 
@@ -205,8 +222,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				
 		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 				
-		return (List<NCIChangeEvent>) this.getSqlSessionTemplate().<NCIChangeEvent>selectList(
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) this.getSqlSessionTemplate().<NCIHistoryResultSetWrapper>selectList(
 				GET_CHANGE_EVENT_FOR_DATE_SQL, sParam); 
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 
 	}
 
@@ -223,9 +242,12 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				
 		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 				
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(
+						GET_CHANGE_EVENT_SQL, sParam);
 				
-		return (List<NCIChangeEvent>) this.getSqlSessionTemplate().<NCIChangeEvent>selectList(
-				GET_CHANGE_EVENT_SQL, sParam);
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 	}
 
 
@@ -240,8 +262,12 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				
 		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
 		
-		return (List<NCIChangeEvent>) this.getSqlSessionTemplate().<NCIChangeEvent>selectList(GET_CHANGE_EVENT_FOR_SYSTEM_RELEASE_SQL, 
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_CHANGE_EVENT_FOR_SYSTEM_RELEASE_SQL, 
 				sParam);
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 	}
 
 	@Override

@@ -9,7 +9,7 @@
 		<typeAlias alias="associationPredicate" type="org.LexGrid.relations.AssociationPredicate" />
 		<typeAlias alias="associationQualification" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue"/>
 		<typeAlias alias="associationTarget" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean"/>
-		<!--<typeAlias alias="changeTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NCIHistoryChangeTypeTypeHandler"/>-->
+		<typeAlias alias="changeTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.ChangeTypeHandler"/>
 		<typeAlias alias="codingScheme" type="org.LexGrid.codingSchemes.CodingScheme" />
 		<typeAlias alias="codingSchemeBean" type="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean" />
 		<typeAlias alias="codingSchemeReference" type="org.LexGrid.valueSets.CodingSchemeReference" />
@@ -33,7 +33,7 @@
 		<typeAlias alias="insertOrUpdateRelationBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean" />
 		<typeAlias alias="insertPickListDefinitionBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertPickListDefinitionBean"/>
 		<typeAlias alias="mappingTriple" type="org.lexevs.dao.database.ibatis.codednodegraph.model.TripleUidReferencingResolvedConceptReference"/>
-		<typeAlias alias="nciChangeEvent" type="org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent" />
+		<typeAlias alias="nciChangeEvent" type="org.lexevs.dao.database.ibatis.ncihistory.parameter.NCIHistoryResultSetWrapper" />
 		<typeAlias alias="node" type="org.lexevs.dao.database.access.association.model.Node"/>
 		<!-- <typeAlias alias="numericBooleanTypeHandler" type="org.lexevs.dao.database.ibatis.sqlmap.NumericBooleanTypeHandler"/>-->
 		<typeAlias alias="pickListDefinition" type="org.LexGrid.valueSets.PickListDefinition" />
@@ -88,6 +88,7 @@
 	
 	<typeHandlers>
 		<typeHandler handler="org.lexevs.dao.database.ibatis.sqlmap.CSVtoStringListTypeHandler" />
+		<typeHandler handler="org.lexevs.dao.database.ibatis.sqlmap.ChangeTypeHandler" />
 	</typeHandlers>
 	
 	<mappers>
