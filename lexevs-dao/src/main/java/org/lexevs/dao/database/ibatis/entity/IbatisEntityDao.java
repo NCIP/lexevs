@@ -184,7 +184,7 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		Map<String,Entity> entities = (Map<String,Entity>) this.getSqlSessionTemplate().<String,Entity>selectMap(GET_ENTITIES_BY_UIDS_SQL, 
+		Map<String,Entity> entities = this.getSqlSessionTemplate().<String,Entity>selectMap(GET_ENTITIES_BY_UIDS_SQL, 
 				new PrefixedParameterCollection(prefix, codingSchemeId, entityUids), "id");
 		
 		for(Property prop : this.ibatisPropertyDao.getPropertiesOfParents(
@@ -192,7 +192,9 @@ public class IbatisEntityDao extends AbstractIbatisDao implements EntityDao {
 				propertyNames, 
 				propertyTypes, 
 				entityUids)){
-			Entity entity = entities.get(prop.getParent());
+			//Moving this value to string to get the correct hash
+			String parent = String.valueOf(prop.getParent());
+			Entity entity = entities.get(parent);
 			if(entity != null) {
 				entity.addAnyProperty(prop);
 			}
