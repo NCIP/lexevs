@@ -1078,7 +1078,7 @@
             <if test="param2 != null and param2.size > 0">AND
                 (
                 <foreach collection="param2" item="item" separator="OR">eate1.associationPredicateGuid =
-                    #{pitem}
+                    #{item}
                 </foreach>
                 )
                 AND
