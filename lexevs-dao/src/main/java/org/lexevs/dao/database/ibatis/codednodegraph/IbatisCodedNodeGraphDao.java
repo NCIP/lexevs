@@ -322,7 +322,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
 
-		List<HashMap> testList =  this.getSqlSessionTemplate().
+		List<HashMap<String, Integer> > testList =  this.getSqlSessionTemplate().
 				selectList(GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL, bean);
 //TODO This is an ugly patch
 		HashMap<String, Integer> returnMap = new HashMap<String, Integer>();
