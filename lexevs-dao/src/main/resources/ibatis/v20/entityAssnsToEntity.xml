@@ -1891,7 +1891,7 @@
         <if test="sortList != null and sortList.size > 0">
             <foreach collection="sortList" item="item">
 
-                <if test="item.getQualifierName() != null and item.getTableAlias() !=null">
+                <if test="item.getColumnSortType().getName() == &quot;QUALIFIER&quot; and item.getQualifierName() != null and item.getTableAlias() !=null">
                     (#{item})
                     LEFT JOIN
                     ${prefix}entityAssnQuals #{item.getTableAlias}
@@ -1928,9 +1928,9 @@
     </sql>
 
     <sql id="getTripleUidsForMappingContainerPost">
-        <if test="sortList != null and sortList.size > 0">
-            ORDER BY
-            <foreach collection="sortList" item="item" separator=",">
+        <if test="sortList != null and sortList.size > 0 and sortList.get(0).getColumnSortType().getName() == &quot;QUALIFIER&quot;">
+            <foreach collection="sortList" item="item" open="ORDER BY" separator=",">
+			<if test="item.getColumnSortType().getName() == &quot;QUALIFIER&quot;">
                 <if test="item.getQualifierName() !=null">
                     ${item.columnSortType.mappingColumn}
                     ${item.order}
@@ -1939,7 +1939,7 @@
                     ${item.getTableAlias().columnSortType.mappingColumn}
                     ${item.order}
                 </if>
-
+			</if>
             </foreach>
         </if>
     </sql>

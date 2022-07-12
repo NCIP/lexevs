@@ -36,6 +36,7 @@ import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.ibatis.parameter.SourceAndTargetMappingPrefixedParameter;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.QualifierSort;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -1087,7 +1088,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				List<ConceptReference> sourceConceptReferences,
 				List<ConceptReference> targetConceptReferences,
 				List<ConceptReference> sourceOrTargetConceptReferences,
-				List<Sort> sortList){
+				List<? extends Sort> sortList){
 			super(  prefix,
 					mappingCodingSchemeUid,
 					sourceCodingSchemeUid, 
@@ -1140,7 +1141,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		String targetCodingSchemeUid;
 		String targetSchemePrefix;
 		String relationsContainerName;
-		List<Sort> sortList;
+		List<? extends Sort> sortList;
 
 		public MappingTripleParameterBean(
 				String prefix,
@@ -1150,7 +1151,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				String targetCodingSchemeUid, 
 				String targetSchemePrefix,
 				String relationsContainerName, 
-				List<Sort> sortList) {
+				List<? extends Sort> sortList) {
 			super(prefix);
 			this.mappingCodingSchemeUid = mappingCodingSchemeUid;
 			this.sourceCodingSchemeUid = sourceCodingSchemeUid;
@@ -1196,10 +1197,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		public void setRelationsContainerName(String relationsContainerName) {
 			this.relationsContainerName = relationsContainerName;
 		}
-		public List<Sort> getSortList() {
+		public List<? extends Sort> getSortList() {
 			return sortList;
 		}
-		public void setSortList(List<Sort> sortList) {
+		public void setSortList(List<? extends Sort> sortList) {
 			this.sortList = sortList;
 		}
 	}
