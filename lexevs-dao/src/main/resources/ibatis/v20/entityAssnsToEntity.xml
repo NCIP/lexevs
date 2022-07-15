@@ -1478,6 +1478,8 @@
             parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterQuint"
             resultMap="valueSetHierarchyRootNodeResolution">
         SELECT
+			   assns.sourceEntityCode AS entityCode,
+			   assns.sourceEntityCodeNamespace AS namespace,
                ent.description                 AS description,
                CASE prop.propertyName
                    WHEN #{param3} THEN prop.propertyValue
