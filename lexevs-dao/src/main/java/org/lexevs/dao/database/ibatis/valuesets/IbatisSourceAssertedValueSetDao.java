@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.concepts.Entity;
+import org.apache.ibatis.session.RowBounds;
 import org.lexevs.dao.database.access.association.model.DefinedNode;
 import org.lexevs.dao.database.access.valuesets.SourceAssertedValueSetDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
@@ -37,36 +38,45 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 		return DaoUtility.createList(LexGridSchemaVersion.class, supportedDatebaseVersion);
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public List<Entity> getSourceAssertedValueSetEntitiesForEntityCode(String matchCode, String assertedRelation, String predicateUID, String csUID) {
+		//TODO assertedRelation is not used
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_VS_ENTITIES_FROM_CODE, 
 				new PrefixedParameterTuple(prefix, predicateUID, matchCode));
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
+	public List<Entity> getPagedValueSetEntities(String matchCode, String csUID, String predicateUID, int start, int pageSize) {
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
+		return this.getSqlSessionTemplate().selectList(
+				GET_VS_ENTITIES_FROM_CODE,
+				new PrefixedParameterTuple(prefix, predicateUID, matchCode), new RowBounds(start, pageSize));
+	}
+
+	
 	@Override
 	public List<Entity> getSourceAssertedValueSetTopNodeForEntityCode(String matchCode, String codingSchemeUID) {
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUID);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_VS_ENTITY_FROM_CODE, 
 				new PrefixedParameterTuple(prefix, codingSchemeUID,  matchCode));
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public List<Entity> getSourceAssertedValueSetTopNodeDescription(String description, String codingSchemeUID) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUID);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_VS_ENTITY_FROM_DESCRIPITON, 
 				new PrefixedParameterTuple(prefix, codingSchemeUID,  description));
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public List<String> getValueSetEntityUids(String codingSchemeUid, String predUid, int start, int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
@@ -75,12 +85,12 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 			pageSize = Integer.MAX_VALUE;
 		}
 		return
-			this.getSqlMapClientTemplate().queryForList(
+			this.getSqlSessionTemplate().<String>selectList(
 					GET_VS_ENTITY_UIDS, 
-					new PrefixedParameter(prefix, predUid),start, pageSize);
+					new PrefixedParameter(prefix, predUid),new RowBounds(start, pageSize));
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public List<String> getValueSetEntityUidForTopNodeEntityCode(
 			String codingSchemeUid, String predUid, String code, int start, int pageSize) {
@@ -90,25 +100,19 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 			pageSize = Integer.MAX_VALUE;
 		}
 		return
-			this.getSqlMapClientTemplate().queryForList(
+			this.getSqlSessionTemplate().<String>selectList(
 					GET_VS_ENTITY_UIDS_FOR_TOPNODE_CODE, 
-					new PrefixedParameterTuple(prefix, predUid, code),start, pageSize);
+					new PrefixedParameterTuple(prefix, predUid, code),new RowBounds(start, pageSize));
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<Entity> getPagedValueSetEntities(String matchCode, String csUID, String predicateUID, int start, int pageSize) {
-		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
-		return this.getSqlMapClientTemplate().queryForList(
-				GET_VS_ENTITIES_FROM_CODE, 
-				new PrefixedParameterTuple(prefix, predicateUID, matchCode), start, pageSize);
-	}
 	
-	@SuppressWarnings("unchecked")
+
+	
+	
 	@Override
 	public int getValueSetEntityCount(String matchCode, String csUID, String predicateUID) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
-		List<String> results = this.getSqlMapClientTemplate().queryForList(
+		List<String> results = this.getSqlSessionTemplate().selectList(
 				GET_VS_ENTITY_COUNT_FROM_CODE, 
 				new PrefixedParameterTuple(prefix, predicateUID, matchCode));
 				if(!results.isEmpty()){
@@ -116,31 +120,31 @@ public class IbatisSourceAssertedValueSetDao extends AbstractIbatisDao implement
 					else {return 0;}
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public List<Entity> getSourceAssertedValueSetsForVSMemberEntityCode(String matchCode,
 			String assertedValueSetRelation, String predUid, String csUID) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 		GET_VS_FROM_MEMBER_CODE,
 		new PrefixedParameterTuple(prefix, predUid, matchCode));
 	}
 	
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public List<DefinedNode> getAllValidValueSetTopNodeCodes(
 			String propertyName, String propertyValue, String predUid, String csUID){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUID);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_VS_TRIPLES_OF_VS_SQL, 
 				new PrefixedParameterTriple(prefix, predUid, propertyName, propertyValue));
 	}
 
-	@SuppressWarnings("unchecked")
+	
 	@Override
 	public List<Property> getValueSetEntityProperties(String entityCode, String csUid) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUid);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 		GET_VS_PROPERTIES,
 		new PrefixedParameter(prefix, entityCode));
 	}

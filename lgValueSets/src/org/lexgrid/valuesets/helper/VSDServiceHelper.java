@@ -7,6 +7,7 @@ import java.io.PipedReader;
 import java.io.PipedWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -42,6 +43,8 @@ import org.LexGrid.naming.SupportedNamespace;
 import org.LexGrid.proxy.CastorProxy;
 import org.LexGrid.valueSets.DefinitionEntry;
 import org.LexGrid.valueSets.ValueSetDefinition;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,7 +60,6 @@ import org.lexgrid.valuesets.dto.ResolvedValueSetCodedNodeSet;
 import org.lexgrid.valuesets.helper.compiler.FileSystemCachingValueSetDefinitionCompilerDecorator;
 import org.lexgrid.valuesets.helper.compiler.ValueSetDefinitionCompiler;
 
-import com.ibatis.common.io.ReaderInputStream;
 
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.constants.LexGridConstants;
 import edu.mayo.informatics.lexgrid.convert.exporters.xml.lgxml.listeners.LexGridMarshalListener;
@@ -893,7 +895,7 @@ public class VSDServiceHelper {
 
 		InputStream is = null;
 		if (in != null)
-			is = new ReaderInputStream(in);
+			is = new ReaderInputStream(in,StandardCharsets.UTF_8);
 
 		return is;
 	}

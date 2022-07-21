@@ -106,7 +106,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		vsdEntryBean.setEntryStateUId(vsdEntryStateGuid);
 		
 		// insert into vsdEntry table
-		this.getSqlMapClientTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
+		this.getSqlSessionTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, vsdEntryBean);
 
 		EntryState entryState = vsdEntry.getEntryState();
 		
@@ -128,7 +128,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		this.vsEntryStateDao.deleteAllEntryStateByEntryUIdAndType(vsDefinitionEntryUId, ReferenceType.DEFINITIONENTRY.name());
 		
 		// remove definition entries
-		this.getSqlMapClientTemplate().delete(REMOVE_DEFINITION_ENTRY_BY_UID_SQL, new PrefixedParameter(prefix, vsDefinitionEntryUId));
+		this.getSqlSessionTemplate().delete(REMOVE_DEFINITION_ENTRY_BY_UID_SQL, new PrefixedParameter(prefix, vsDefinitionEntryUId));
 	}
 
 	@Override
@@ -137,8 +137,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		String vsDefinitionUId = (String) this.getSqlMapClientTemplate()
-				.queryForObject(
+		String vsDefinitionUId = (String) this.getSqlSessionTemplate()
+				.selectOne(
 						GET_DEFINITION_ENTRY_UID_SQL,
 						new PrefixedParameterTuple(prefix,
 								valueSetDefinitionURI, ruleOrder));
@@ -153,13 +153,13 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		String historyPrefix = this.getPrefixResolver().resolveHistoryPrefix();
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 
-		InsertOrUpdateDefinitionEntryBean definitionEntryData = (InsertOrUpdateDefinitionEntryBean) this.getSqlMapClientTemplate()
-				.queryForObject(GET_DEFINITION_ENTRY_ATTRIBUTES_BY_UID_SQL,
+		InsertOrUpdateDefinitionEntryBean definitionEntryData = (InsertOrUpdateDefinitionEntryBean) this.getSqlSessionTemplate()
+				.selectOne(GET_DEFINITION_ENTRY_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, vsDefinitionUId));
 		
 		definitionEntryData.setPrefix(historyPrefix);
 		
-		this.getNonBatchTemplateInserter().insert(INSERT_DEFINITION_ENTRY_SQL, definitionEntryData);
+		this.getSqlSessionTemplate().insert(INSERT_DEFINITION_ENTRY_SQL, definitionEntryData);
 		
 		if (!vsEntryStateExists(prefix, definitionEntryData.getEntryStateUId())) {
 
@@ -190,7 +190,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setEntryStateUId(entryStateUId);
 		bean.setDefinitionEntry(defEntry);
 		
-		this.getSqlMapClientTemplate().update(UPDATE_DEFINITION_ENTRY_ATTRIBUTES_BY_UID_SQL, bean);
+		this.getSqlSessionTemplate().update(UPDATE_DEFINITION_ENTRY_ATTRIBUTES_BY_UID_SQL, bean);
 		
 		return entryStateUId;
 	}
@@ -208,7 +208,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setEntryStateUId(entryStateUId);
 		bean.setDefinitionEntry(defEntry);
 		
-		this.getSqlMapClientTemplate().update(UPDATE_DEFINITION_ENTRY_VER_ATTRIBUTES_BY_UID_SQL, bean);
+		this.getSqlSessionTemplate().update(UPDATE_DEFINITION_ENTRY_VER_ATTRIBUTES_BY_UID_SQL, bean);
 		
 		return entryStateUId;
 	}
@@ -231,7 +231,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	public String getLatestRevision(String vsDefEntryUId) {
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_DEFINITION_ENTRY_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, vsDefEntryUId));		// TODO Auto-generated method stub
 	}
@@ -287,8 +287,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		// 2. Check if the definition entry in base table is latest compared to the input revisionId
 		// if we get it in the base, we can just return it. Else will have to get it from history
 		
-		definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
-				.queryForObject(
+		definitionEntry = (DefinitionEntry) this.getSqlSessionTemplate()
+				.selectOne(
 						GET_DEFINITION_ENTRY_FROM_BASE_BY_REVISION_SQL,
 						new PrefixedParameterTuple(prefix, vsdEntryUId,
 								revisionId));
@@ -296,8 +296,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		// 3. If the definition entry in base is applied after the revision in question, lets get it from history
 		if (definitionEntry == null) {
 
-			definitionEntry = (DefinitionEntry) this.getSqlMapClientTemplate()
-			.queryForObject(
+			definitionEntry = (DefinitionEntry) this.getSqlSessionTemplate()
+			.selectOne(
 					GET_DEFINITION_ENTRY_FROM_HISTORY_BY_REVISION_SQL,
 					new PrefixedParameterTuple(prefix, vsdEntryUId,
 							revisionId));
@@ -311,7 +311,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
 		DefinitionEntry definitionEntry = (DefinitionEntry) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_DEFINITION_ENTRY_BY_UID_SQL,
 						new PrefixedParameter(prefix, vsdEntryUId));
 		

@@ -15,7 +15,9 @@
    		<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default"/>
     	<dependency org="lexevs" name="lexevs-dao" rev="${vBuild}" conf="default,test"/>
     	<dependency org="lexevs" name="lexbig-impl" rev="${vBuild}" conf="default"/>
-    	<dependency org="org.springframework" name="spring-oxm" rev="3.1.0.RELEASE" conf="default"/>
-    	<dependency org="org.springframework.ws" name="spring-xml" rev="1.5.9" conf="default"/>
+    	<dependency org="org.springframework" name="spring-oxm" rev="5.3.19" conf="default"/>
+    	<dependency org="org.springframework.ws" name="spring-xml" rev="3.1.3" conf="default"/>
+    	<dependency org="javax.batch" name="javax.batch-api" rev="1.0.1" conf="default"/>
+		<dependency org="org.springframework.retry" name="spring-retry" rev="1.3.2" conf="default" />
     </dependencies>
 </ivy-module>

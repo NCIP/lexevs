@@ -4,7 +4,8 @@ package org.lexevs.dao.database.constants.classifier.property;
 import org.LexGrid.commonTypes.PropertyQualifier;
 import org.LexGrid.commonTypes.Source;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.springframework.batch.classify.Classifier;
+import org.springframework.classify.Classifier;
+
 
 public class PropertyMultiAttributeClassifier implements Classifier<Class<?>,String>{
 

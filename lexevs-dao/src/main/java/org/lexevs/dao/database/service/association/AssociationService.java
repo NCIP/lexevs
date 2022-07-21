@@ -1,8 +1,11 @@
 
 package org.lexevs.dao.database.service.association;
 
+import java.util.List;
+
 import org.LexGrid.relations.AssociationPredicate;
 import org.LexGrid.relations.AssociationSource;
+import org.lexevs.dao.database.ibatis.association.parameter.BatchAssociationInsertBean;
 
 /**
  * The Interface AssociationService.
@@ -29,6 +32,9 @@ public interface AssociationService {
 	public void insertAssociationSource(String codingSchemeUri, String version,
 			String relationContainerName, String associationPredicateName,
 			AssociationSource source);
+	
+	public void insertAssociationSourceBatch(String codingSchemeUri, String version,
+			List<BatchAssociationInsertBean> sources);
 	
 	/**
 	 * Insert association predicate.

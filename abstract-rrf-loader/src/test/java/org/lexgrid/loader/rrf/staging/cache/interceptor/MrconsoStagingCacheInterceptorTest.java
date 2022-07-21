@@ -31,19 +31,19 @@ public class MrconsoStagingCacheInterceptorTest {
 		MrconsoStagingCacheInterceptor interceptor = new MrconsoStagingCacheInterceptor();
 		interceptor.setCache(cacheManager.getCache("testCache"));
 	
-		assertTrue(interceptor.getCache().getStatistics().getCacheHits() == 0);
+		assertTrue(interceptor.getCache().getStatistics().cacheHitCount() == 0);
 		
 		MethodInvocation mi1 = createMockMethodInvocation();
 		
 		interceptor.invoke(mi1);
 		
-		assertTrue(interceptor.getCache().getStatistics().getCacheHits() == 0);
+		assertTrue(interceptor.getCache().getStatistics().cacheHitCount() == 0);
 		
 		MethodInvocation mi2 = createMockMethodInvocation();
 		
 		interceptor.invoke(mi2);
 		
-		assertTrue(interceptor.getCache().getStatistics().getCacheHits() == 1);
+		assertTrue(interceptor.getCache().getStatistics().cacheHitCount() == 1);
 
 	}
 	

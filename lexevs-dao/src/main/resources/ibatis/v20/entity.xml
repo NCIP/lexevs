@@ -1,771 +1,645 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Entity">
-
-	<typeAlias alias="entity" type="org.lexevs.dao.database.ibatis.entity.model.IdableEntity" />
-	<typeAlias alias="associationEntity" type="org.lexevs.dao.database.ibatis.entity.model.IdableAssociationEntity" />
-	<typeAlias alias="propertyLink" type="org.LexGrid.concepts.PropertyLink" />
-	<typeAlias alias="resolvedCodedNodeReference" type="org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference" />
-	<typeAlias alias="conceptReference" type="org.LexGrid.LexBIG.DataModel.Core.ConceptReference" />
-	<typeAlias alias="insertOrUpdateEntityBean" type="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean" />
-	<typeAlias alias="InsertOrUpdateAssociationEntityBean" type="org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean" />
-	<typeAlias alias="entityDescription" type="org.LexGrid.commonTypes.EntityDescription" />
-	
-	<resultMap id="entityUidResult" class="string">
-		<result property="java.lang.String" column="uid" typeHandler="variablePrimaryKeyTypeHandler"/>
-	</resultMap>
-	
-	<resultMap id="noEntityTypeConceptReferenceResult" class="resolvedCodedNodeReference" groupBy="code,codeNamespace">
-		<result property="code" column="entityCode" />
-		<result property="codeNamespace" column="entityCodeNamespace" />
-	</resultMap>
-	
-	<resultMap id="conceptReferenceResult" class="resolvedCodedNodeReference" extends="noEntityTypeConceptReferenceResult">
-		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
-	</resultMap>
-	
-	<resultMap id="resolvedCodedNodeReferenceResult" 
-		class="resolvedCodedNodeReference" extends="conceptReferenceResult">
-		<result property="entityDescription.content" column="description" />
-		<result property="codingSchemeURI" column="codingSchemeURI" />
-		<result property="codingSchemeVersion" column="representsVersion" />
-		<result property="codingSchemeName" column="codingSchemeName" />
-	</resultMap>
-
-	<resultMap id="entityResult" class="entity" groupBy="entityCode,entityCodeNamespace,entryState">
-		<result property="id" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="entityCode" column="entityCode" />
-		<result property="entityCodeNamespace" column="entityCodeNamespace" />
-		<result property="isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
-		<result property="isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
-		<result property="entityDescription.content" column="description" />
-		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
-		<result property="_propertyLinkList" resultMap="Entity.propertyLinkResult"/>
-		<result property="entryState" resultMap="Versions.entryStateResult" />
-		<discriminator javaType="string" column="entityType">
-			<subMap value="association" resultMap="Entity.associationEntityResult" />
-		</discriminator>
-	</resultMap>
-	
-	<resultMap id="entityAttributes" class="insertOrUpdateEntityBean">
-		<result property="uid" column="entityGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="codingSchemeUId" column="codingSchemeGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="entity.entityCode" column="entityCode" />
-		<result property="entity.entityCodeNamespace" column="entityCodeNamespace" />
-		<result property="entity.isDefined" column="isDefined" typeHandler="numericBooleanTypeHandler"/>
-		<result property="entity.isAnonymous" column="isAnonymous" typeHandler="numericBooleanTypeHandler"/>
-		<result property="entity.entityDescription.content" column="description" />
-		<result property="entity.isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="entity.owner" column="owner" />
-		<result property="entity.status" column="status" />
-		<result property="entity.effectiveDate" column="effectiveDate" />
-		<result property="entity.expirationDate" column="expirationDate" />
-		<result property="forwardName" column="forwardName"/>
-		<result property="reverseName" column="reverseName"/>
-		<result property="isNavigable" column="isNavigable" typeHandler="numericBooleanTypeHandler"/>
-		<result property="isTransitive" column="isTransitive"/>
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-	</resultMap>
-	
-	<resultMap id="associationEntityResult" class="associationEntity" extends="entityResult">
-		<result property="forwardName" column="forwardName" />
-		<result property="reverseName" column="reverseName" />
-		<result property="isNavigable" column="isNavigable" typeHandler="numericBooleanTypeHandler"/>
-		<result property="isTransitive" column="isTransitive" typeHandler="numericBooleanTypeHandler"/>
-	</resultMap>
-	
-	<resultMap id="propertyLinkResult" class="propertyLink" groupBy="sourceProperty,targetProperty,link">
-		<result property="sourceProperty" column="sourcePropId" />
-		<result property="targetProperty" column="targetPropId" />
-		<result property="propertyLink" column="link" />
-	</resultMap>
-	
-	<resultMap id="entityDescriptionResult" 
-		class="entityDescription">
-		<result property="content" column="description" />
-	</resultMap>
-	
-	<resultMap id="stringResult" class="string">
-		<result property="java.lang.String" column="description" />
-	</resultMap>
-		
-	<select id="getResolvedCodedNodeReferenceByCodeAndNamespace" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
-		resultMap="resolvedCodedNodeReferenceResult"
-		remapResults="true">
-		SELECT
-			entity.entityCode,
-			entity.entityCodeNamespace,
-			entity.description,
-			codingScheme.codingSchemeURI,
-			codingScheme.representsVersion,
-			codingScheme.codingSchemeName,
-			entityType.entityType
-		FROM
-			$prefix$entity entity
-		LEFT JOIN
-			$prefix$codingScheme codingScheme
-		ON (entity.codingSchemeGuid = codingScheme.codingSchemeGuid)
-		LEFT JOIN
-			$actualTableSetPrefix$entityType entityType
-		ON
-			entity.entityGuid =
-			entityType.entityGuid	
-		WHERE
-			entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entity.entityCode = #param2#
-		<isNotNull property="param3">
-		AND
-			entity.entityCodeNamespace = #param3#
-		</isNotNull>
-	</select>
-	
-	<select id="getPropertyLinksByEntityUids"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
-		resultMap="Entity.propertyLinkResult" remapResults="true">
-		SELECT
-			entity.entityGuid,
-		  	sourceProperty.propertyId AS sourcePropId,
-  			targetProperty.propertyId AS targetPropId,
-  			propertyLinks.link
-		FROM
-			$prefix$propertyLinks propertyLinks
-		LEFT JOIN
-			$prefix$property sourceProperty
-		ON
-			sourceProperty.propertyGuid = propertyLinks.sourcePropertyGuid
-		LEFT JOIN
-			$prefix$property targetProperty
-		ON
-			targetProperty.propertyGuid = propertyLinks.targetPropertyGuid
-			
-		LEFT JOIN
-			$prefix$entity entity
-		ON (
-			  targetProperty.referenceGuid = sourceProperty.referenceGuid
-        	)
-		WHERE
-			entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entity.entityGuid IN ( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
-	</select>
-	
-	<sql id="getEntityFragment">
-		SELECT
-			entity.codingSchemeGuid,
-			entity.entityGuid,
-			entity.entityCode,
-			entity.entityCodeNamespace,
-			entity.isDefined,
-			entity.isAnonymous,
-			entity.description,
-			entity.isActive,
-			entity.owner,
-			entity.status,
-			entity.effectiveDate,
-			entity.expirationDate,
-			entity.forwardName,
-			entity.reverseName,
-			entity.isNavigable,
-			entity.isTransitive,
-			
-			entityType.entityType,			 
-			
-			entryState.changeType,
-  			entryState.relativeOrder,
-  			
-  			propertyLinks.link,
-  			
-  			sourcePropertyLinksProperty.propertyId AS sourcePropId,
-  			targetPropertyLinksProperty.propertyId AS targetPropId,
-			
-			currentRevision.revisionId AS currentRevisionId,
-  			previousRevision.revisionId AS previousRevisionId
-  			
-		FROM
-			$prefix$entity entity
-			 
-		LEFT JOIN
-			$actualTableSetPrefix$entityType entityType
-		ON
-			entity.entityGuid =
-			entityType.entityGuid	
-			
-		LEFT JOIN
-			$actualTableSetPrefix$entryState entryState
-		ON
-			entity.entryStateGuid =
-			entryState.entryStateGuid	
-		
-		LEFT JOIN
-			$actualTableSetPrefix$propertyLinks propertyLinks
-		ON
-			entity.entityGuid =
-			propertyLinks.entityGuid
-			
-		LEFT JOIN
-			$actualTableSetPrefix$property sourcePropertyLinksProperty
-		ON
-			propertyLinks.sourcePropertyGuid =
-			sourcePropertyLinksProperty.propertyGuid
-			
-		LEFT JOIN
-			$actualTableSetPrefix$property targetPropertyLinksProperty
-		ON
-			propertyLinks.targetPropertyGuid =
-			targetPropertyLinksProperty.propertyGuid
-			
-		LEFT JOIN
-			${defaultPrefix}revision currentRevision
-		ON 
-			entryState.revisionGuid = currentRevision.revisionGuid
-			
-		LEFT JOIN
-			${defaultPrefix}revision previousRevision
-		ON 
-			entryState.prevRevisionGuid = previousRevision.revisionGuid	
-	</sql>
-	
-	<select id="getEntityCount" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		resultClass="int"
-		remapResults="true">
-		SELECT
-			COUNT(entityGuid)
-		FROM
-			$prefix$entity entity
-		WHERE
-			entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-     </select>
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:16 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Entity">
 
 
-	<select id="getEntityUidByCodeAndNamespace" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
-		resultMap="Common.uidResult" remapResults="true">
-		SELECT
-			entityGuid AS uidKey
-		FROM
-			$prefix$entity entity
-		WHERE
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entity.entityCode = #param2#
-		<isNotNull property="param3">
-		AND
-			entity.entityCodeNamespace = #param3#
-		</isNotNull>
-     </select>
-     
-     <select id="getEntitiesByUids" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection" 
-		resultMap="Entity.entityResult"
-     	remapResults="true">
-		<include refid="getEntityFragment"/>
-		
-		WHERE
-			entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entity.entityGuid IN ( <iterate property="param2" conjunction=",">#param2[],handler=variablePrimaryKeyTypeHandler#</iterate> )
-     </select>
-        
-     <select id="getEntityById" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-     	resultMap="Entity.entityResult"
-     	remapResults="true">
-		<include refid="getEntityFragment"/>
-		WHERE
-			entity.entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entity.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
-     </select>
-     
-     <select id="getEntityByEntryStateUid" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-     	resultMap="Entity.entityResult"
-     	remapResults="true">
-		<include refid="getEntityFragment"/>
-		WHERE
-			entity.entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entity.entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
-     </select>
-     
-	<select id="getEntityByCodeAndNamespace" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
-		resultMap="Entity.entityResult"
-		remapResults="true">
-		<include refid="getEntityFragment"/>
-		WHERE
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entityCode = #param2#
-		AND
-			entity.entityCodeNamespace = #param3#
-     </select>
-     
-     <select id="getEntityByCode"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-		resultMap="Entity.entityResult"
-		remapResults="true">
-		<include refid="getEntityFragment"/>
-		WHERE
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entityCode = #param2#
-     </select>
-     
-     <select id="getAssociationEntityByCodeAndNamespace" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" 
-		resultMap="Entity.associationEntityResult"
-		remapResults="true">
-		<include refid="getEntityFragment"/>
-		WHERE
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-		AND
-			entityCode = #param2#
-		AND
-			entity.entityCodeNamespace = #param3#
-		AND
-			entityType.entityType = 'association'
-     </select>
-     
-    <select id="getEntityByIdAndRevisionId" 
-    	parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" 
-    	resultMap="Entity.entityResult"
-    	remapResults="true">
- 
-		<include refid="getEntityFragment"/>
-		
-		WHERE
-			entity.entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+    <resultMap id="entityUidResult" type="string">
+        <result property="java.lang.String" column="uid" />
+    </resultMap>
 
-		<isNotNull property="revisionId">
-		AND
-			currentRevision.revisionId = #revisionId#
-		</isNotNull>
-		<isNull property="revisionId">
-		AND
-			entryState.revisionGuid IS NULL
-		</isNull>
-     </select>
-     
-     <select id="getEntityAttributesByEntityUId" 
-    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-    	resultMap="entityAttributes"
-    	remapResults="true">
-		SELECT * FROM
-			$prefix$entity
-		WHERE
-			entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#		
-     </select>
-     
-     <select id="getAllEntityUidsOfCodingScheme" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-     	resultMap="Common.uidResult">
-		SELECT
-			entityGuid AS uidKey
-		FROM
-			$prefix$entity entity
-		WHERE
-			entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-     </select>
-     
-     <insert id="insertEntity" 
-     	parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
-		INSERT INTO $prefix$entity (
-			entityGuid,
-			codingSchemeGuid,
-			entityCode,
-			entityCodeNamespace,
-			isDefined,
-			isAnonymous,
-			description,
-			isActive,			
-			owner,
-			status,
-			effectiveDate,
-			expirationDate,
-			entryStateGuid,
-			forwardName,
-			reverseName,
-			isNavigable,
-			isTransitive
-		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#codingSchemeUId,handler=variablePrimaryKeyTypeHandler#,
-			#entity.entityCode#, 
-			#entity.entityCodeNamespace#, 
-			<isNotNull property="entity.isDefined">
-				#entity.isDefined,handler=numericBooleanTypeHandler#,
-			</isNotNull>
-			<isNull property="entity.isDefined">
-				'0',
-			</isNull>
-			#entity.isAnonymous,handler=numericBooleanTypeHandler#,
-			#entity.entityDescription.content:VARCHAR#,
-			
-			<isNotNull property="entity.isActive">
-				#entity.isActive,handler=numericBooleanTypeHandler#,
-			</isNotNull>
-			<isNull property="entity.isActive">
-				'1',
-			</isNull>
-			
-			#entity.owner:VARCHAR#,
-			#entity.status:VARCHAR#,
-			#entity.effectiveDate:TIMESTAMP#,
-			#entity.expirationDate:TIMESTAMP#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			
-			<isPropertyAvailable prepend="," property="forwardName">
-				#forwardName:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="forwardName">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="reverseName">
-				#reverseName:VARCHAR#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="reverseName">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="isNavigable">
-				#isNavigable,handler=numericBooleanTypeHandler#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="isNavigable">
-				null
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable prepend="," property="isTransitive">
-				#isTransitive,handler=numericBooleanTypeHandler#
-			</isPropertyAvailable>
-			<isNotPropertyAvailable prepend="," property="isTransitive">
-				null
-			</isNotPropertyAvailable>
-		)
-  </insert>
-  
-  <update id="updateEntityByUId" parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
-		UPDATE 
-			$prefix$entity
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="entity.isDefined">
-				isDefined = #entity.isDefined,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="entity.isAnonymous">
-				isAnonymous = #entity.isAnonymous,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="entity.entityDescription.content">
-				description = #entity.entityDescription.content#
-			</isNotNull>
-			<isNotNull prepend="," property="forwardName">
-				forwardName = #forwardName#
-			</isNotNull>
-			<isNotNull prepend="," property="reverseName">
-				reverseName = #reverseName#
-			</isNotNull>
-			<isNotNull prepend="," property="isNavigable">
-				isNavigable = #isNavigable,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="isTransitive">
-				isTransitive = #isTransitive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+    <resultMap id="noEntityTypeConceptReferenceResult" type="resolvedCodedNodeReference">
+        <result property="code" column="entityCode"/>
+        <result property="codeNamespace" column="entityCodeNamespace"/>
+    </resultMap>
 
-		WHERE 
-			entityGuid = #uid,handler=variablePrimaryKeyTypeHandler#
-		AND
-			codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
- 	</update>
+    <resultMap id="conceptReferenceResult" type="resolvedCodedNodeReference"
+               extends="noEntityTypeConceptReferenceResult">
+        <collection property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
+    </resultMap>
 
-	<update id="updateEntityVerAttribByUId"
-		parameterClass="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
-		UPDATE
-			$prefix$entity
-		SET
-		<dynamic prepend=" ">
-			<isNotNull prepend="," property="entity.isActive">
-				isActive =
-				#entity.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="entity.owner">
-				owner = #entity.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="entity.status">
-				status = #entity.status#
-			</isNotNull>
-			<isNotNull prepend="," property="entity.effectiveDate">
-				effectiveDate =
-				#entity.effectiveDate#
-			</isNotNull>
-			<isNotNull prepend="," property="entity.expirationDate">
-				expirationDate =
-				#entity.expirationDate#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+    <resultMap id="resolvedCodedNodeReferenceResult" type="resolvedCodedNodeReference" extends="conceptReferenceResult">
+        <result property="entityDescription.content" column="description"/>
+        <result property="codingSchemeURI" column="codingSchemeURI"/>
+        <result property="codingSchemeVersion" column="representsVersion"/>
+        <result property="codingSchemeName" column="codingSchemeName"/>
+    </resultMap>
 
-		WHERE
-			entityGuid = #uid,handler=variablePrimaryKeyTypeHandler#
-		AND
-			codingSchemeGuid = #codingSchemeUId,handler=variablePrimaryKeyTypeHandler#
-	</update>
-    
-    <delete id="deleteEntityByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
-		DELETE FROM
-			$prefix$entity
-		WHERE
-			entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-	</delete>
-	
-	<select id="getEntityLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
-		SELECT 
-			rev.revisionId
-		FROM
-			$prefix$entity ent,
-			$prefix$entryState es,
-			${defaultPrefix}revision rev
-		WHERE
-			ent.entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
-		AND
-			ent.entryStateGuid = es.entryStateGuid	
-		AND
-			es.revisionGuid = rev.revisionGuid	
-	</select>
+    <resultMap id="entityResult" type="entity">
+        <result property="id" column="entityGuid" />
+        <result property="entityCode" column="entityCode"/>
+        <result property="entityCodeNamespace" column="entityCodeNamespace"/>
+        <result property="isDefined" column="isDefined"/>
+        <result property="isAnonymous" column="isAnonymous"/>
+        <result property="entityDescription.content" column="description"/>
+        <result property="isActive" column="isActive"/>
+        <result property="owner" column="owner"/>
+        <result property="status" column="status"/>
+        <result property="effectiveDate" column="effectiveDate"/>
+        <result property="expirationDate" column="expirationDate"/>
+        <collection property="_entityTypeList" resultMap="Entity.entityTypeResult"/>
+        <collection property="_propertyLinkList" resultMap="Entity.propertyLinkResult"/>
+        <collection property="entryState" resultMap="Versions.entryStateResult"/>
+        <discriminator javaType="string" column="entityType">
+            <case value="association" resultMap="Entity.associationEntityResult"/>
+        </discriminator>
+    </resultMap>
 
-	<select id="checkEntityUsage" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="Common.uidResult">
-		SELECT 
-			eat.entityAssnsGuid AS uidKey
-		FROM 
-			$prefix$entityAssnsToEntity eat
-		WHERE
-			(eat.sourceEntityCode = #param1# 
-			AND
-			eat.sourceEntityCodeNamespace = #param2#)
-			OR
-			(eat.targetEntityCode = #param1#
-			AND
-			eat.targetEntityCodeNamespace = #param2#)
-		
-		UNION
-		
-		SELECT 
-			ead.entityAssnsDataGuid AS uidKey
-		FROM 
-			$prefix$entityAssnsToData ead
-		WHERE
-			(ead.sourceEntityCode = #param1# 
-			AND
-			ead.sourceEntityCodeNamespace = #param2#)
-	</select>	
-	
-	<select id="getEntryStateUIdByEntityUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="Common.uidResult">
-		SELECT 
-			entryStateGuid AS uidKey
-		FROM
-			$prefix$entity en
-		WHERE
-			en.entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
-	</select>
-	
-	<update id="updateEntityEntryStateUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-		UPDATE
-			$prefix$entity
-		SET
-			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
-		WHERE 
-			entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#
- 	</update>
- 	
- 	<select id="getPreviousEntryStateId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="Common.uidResult">
-		SELECT 
-			prevEntryStateGuid AS uidKey
-		FROM
-			$prefix$entryState es
-		WHERE
-			es.entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-	</select>
-	
-	<!--  MySQL Specific
-	<select id="getEntityMetaDataByRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="entityAttributes">
-		<![CDATA[
-			SELECT
-				entity.codingSchemeGuid,
-				entity.entityGuid,
-				entity.entityCode,
-				entity.entityCodeNamespace,
-				entity.isDefined,
-				entity.isAnonymous,
-				entity.description,
-				entity.isActive,
-				entity.owner,
-				entity.status,
-				entity.effectiveDate,
-				entity.expirationDate,
-				entity.forwardName,
-				entity.reverseName,
-				entity.isNavigable,
-				entity.isTransitive,
-				entity.entryStateGuid,
-				r1.revAppliedDate revAppliedDate
-			FROM
-				$prefix$h_entity entity,
-				$prefix$entryState es,
-				${defaultPrefix}revision r1,			
-				${defaultPrefix}revision r2		
-			WHERE
-				entity.entityGuid = #param1,handler=variablePrimaryKeyTypeHandler# AND
-				entity.entryStateGuid = es.entryStateGuid AND
-				(
-					(
-						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate >= r2.revAppliedDate AND
-						r2.revisionID = #param2#
-					)
-					OR
-					(
-						es.revisionGuid IS NULL
-					)
-				)
-			ORDER BY
-				revAppliedDate DESC		
-			LIMIT 1	
-		]]>			
-	</select>
-	-->
-	
-	<select id="getEntityPropertyIdsListByEntityUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="string">
-			SELECT
-				propertyId
-			FROM
-				$prefix$property
-			WHERE
-				referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-			AND
-				referenceType = #param2#
-	</select>
+    <resultMap id="entityAttributes" type="insertOrUpdateEntityBean">
+        <result property="uid" column="entityGuid" />
+        <result property="codingSchemeUId" column="codingSchemeGuid" />
+        <result property="entity.entityCode" column="entityCode"/>
+        <result property="entity.entityCodeNamespace" column="entityCodeNamespace"/>
+        <result property="entity.isDefined" column="isDefined"/>
+        <result property="entity.isAnonymous" column="isAnonymous"/>
+        <result property="entity.entityDescription.content" column="description"/>
+        <result property="entity.isActive" column="isActive"/>
+        <result property="entity.owner" column="owner"/>
+        <result property="entity.status" column="status"/>
+        <result property="entity.effectiveDate" column="effectiveDate"/>
+        <result property="entity.expirationDate" column="expirationDate"/>
+        <result property="forwardName" column="forwardName"/>
+        <result property="reverseName" column="reverseName"/>
+        <result property="isNavigable" column="isNavigable"/>
+        <result property="isTransitive" column="isTransitive"/>
+        <result property="entryStateUId" column="entryStateGuid" />
+    </resultMap>
 
-	<select id="getEntityTypeByEntityUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
-			SELECT
-				entityType
-			FROM
-				$prefix$entityType
-			WHERE
-				entityGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-	</select>	
-	
-	<select id="getEntityDescription" 
-		remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultMap="entityDescriptionResult">
-			SELECT
-				description
-			FROM
-				$prefix$entity entity
-			WHERE
-				entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-				AND
-				entity.entityCode = #param2#
-				AND
-				entity.entityCodeNamespace = #param3# 
-	</select>	
-	
-	<select id="getEntityDescriptionAsString" 
-		remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="string">
-			SELECT
-				description
-			FROM
-				$prefix$entity entity
-			WHERE
-				entity.entityCode = #param1#
-				AND
-				entity.entityCodeNamespace = #param1# 
-	</select>	
-	
-	<select id="getDistinctNamespaces" 
-		remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="string">
-			SELECT
-				DISTINCT entity.entityCodeNamespace
-			FROM
-				$prefix$entity entity
-			WHERE
-				entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
-				AND
-				entity.entityCode = #param2#
-			
-			UNION 
-			
-			SELECT 
-				DISTINCT eate.sourceEntityCodeNamespace 
-			FROM 
-				$prefix$entityAssnsToEntity eate
-			INNER JOIN
-				$prefix$associationPredicate ap
-			ON 
-				eate.associationPredicateGuid = ap.associationPredicateGuid
-			INNER JOIN
-				$prefix$relation rel
-			ON 
-				ap.relationGuid = rel.relationGuid
-			
-			WHERE
-				rel.codingSchemeGuid = #param1#
-			AND
-				eate.sourceEntityCode = #param2#
-				
-			UNION 
-			
-			SELECT 
-				DISTINCT eate.targetEntityCodeNamespace 
-			FROM 
-				$prefix$entityAssnsToEntity eate
-			INNER JOIN
-				$prefix$associationPredicate ap
-			ON 
-				eate.associationPredicateGuid = ap.associationPredicateGuid
-			INNER JOIN
-				$prefix$relation rel
-			ON 
-				ap.relationGuid = rel.relationGuid
-			
-			WHERE
-				rel.codingSchemeGuid = #param1#
-			AND
-				eate.targetEntityCode = #param2#
-	</select>	
-	
-</sqlMap>
+    <resultMap id="associationEntityResult" type="associationEntity" extends="entityResult">
+        <result property="forwardName" column="forwardName"/>
+        <result property="reverseName" column="reverseName"/>
+        <result property="isNavigable" column="isNavigable"/>
+        <result property="isTransitive" column="isTransitive"/>
+    </resultMap>
+
+    <resultMap id="propertyLinkResult" type="propertyLink">
+        <result property="sourceProperty" column="sourcePropId"/>
+        <result property="targetProperty" column="targetPropId"/>
+        <result property="propertyLink" column="link"/>
+    </resultMap>
+
+    <resultMap id="entityDescriptionResult" type="entityDescription">
+        <result property="content" column="description"/>
+    </resultMap>
+
+    <resultMap id="stringResult" type="string">
+        <result property="java.lang.String" column="description"/>
+    </resultMap>
+
+    <select id="getResolvedCodedNodeReferenceByCodeAndNamespace"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+            resultMap="resolvedCodedNodeReferenceResult">
+        SELECT
+        entity.entityCode,
+        entity.entityCodeNamespace,
+        entity.description,
+        codingScheme.codingSchemeURI,
+        codingScheme.representsVersion,
+        codingScheme.codingSchemeName,
+        entityType.entityType
+        FROM
+        ${prefix}entity entity
+        LEFT JOIN
+        ${prefix}codingScheme codingScheme
+        ON (entity.codingSchemeGuid = codingScheme.codingSchemeGuid)
+        LEFT JOIN
+        ${prefix}entityType entityType
+        ON
+        entity.entityGuid =
+        entityType.entityGuid
+        WHERE
+        entity.codingSchemeGuid = #{param1}
+        AND
+        entity.entityCode = #{param2}
+        <if test="param3 != null">
+            AND
+            entity.entityCodeNamespace = #{param3}
+        </if>
+    </select>
+
+    <select id="getPropertyLinksByEntityUids"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
+            resultMap="Entity.propertyLinkResult">
+        SELECT
+        entity.entityGuid,
+        sourceProperty.propertyId AS sourcePropId,
+        targetProperty.propertyId AS targetPropId,
+        propertyLinks.link
+        FROM
+        ${prefix}propertyLinks propertyLinks
+        LEFT JOIN
+        ${prefix}property sourceProperty
+        ON
+        sourceProperty.propertyGuid = propertyLinks.sourcePropertyGuid
+        LEFT JOIN
+        ${prefix}property targetProperty
+        ON
+        targetProperty.propertyGuid = propertyLinks.targetPropertyGuid
+
+        LEFT JOIN
+        ${prefix}entity entity
+        ON (
+        targetProperty.referenceGuid = sourceProperty.referenceGuid
+        )
+        WHERE
+        entity.codingSchemeGuid = #{param1}
+        AND
+        entity.entityGuid IN (  <foreach collection="param2" item="item" separator=",">
+        #{item}
+    </foreach> )
+    </select>
+
+    <sql id="getEntityFragment">
+        SELECT entity.codingSchemeGuid,
+               entity.entityGuid,
+               entity.entityCode,
+               entity.entityCodeNamespace,
+               entity.isDefined,
+               entity.isAnonymous,
+               entity.description,
+               entity.isActive,
+               entity.owner,
+               entity.status,
+               entity.effectiveDate,
+               entity.expirationDate,
+               entity.forwardName,
+               entity.reverseName,
+               entity.isNavigable,
+               entity.isTransitive,
+
+               entityType.entityType,
+
+               entryState.changeType,
+               entryState.relativeOrder,
+
+               propertyLinks.link,
+
+               sourcePropertyLinksProperty.propertyId AS sourcePropId,
+               targetPropertyLinksProperty.propertyId AS targetPropId,
+
+               currentRevision.revisionId             AS currentRevisionId,
+               previousRevision.revisionId            AS previousRevisionId
+
+        FROM ${prefix}entity entity
+
+                 LEFT JOIN
+             ${prefix}entityType entityType
+             ON
+                     entity.entityGuid =
+                     entityType.entityGuid
+
+                 LEFT JOIN
+             ${prefix}entryState entryState
+             ON
+                     entity.entryStateGuid =
+                     entryState.entryStateGuid
+
+                 LEFT JOIN
+             ${prefix}propertyLinks propertyLinks
+             ON
+                     entity.entityGuid =
+                     propertyLinks.entityGuid
+
+                 LEFT JOIN
+             ${prefix}property sourcePropertyLinksProperty
+             ON
+                     propertyLinks.sourcePropertyGuid =
+                     sourcePropertyLinksProperty.propertyGuid
+
+                 LEFT JOIN
+             ${prefix}property targetPropertyLinksProperty
+             ON
+                     propertyLinks.targetPropertyGuid =
+                     targetPropertyLinksProperty.propertyGuid
+
+                 LEFT JOIN
+             ${defaultPrefix}revision currentRevision
+             ON
+                 entryState.revisionGuid = currentRevision.revisionGuid
+
+                 LEFT JOIN
+             ${defaultPrefix}revision previousRevision
+             ON
+                 entryState.prevRevisionGuid = previousRevision.revisionGuid
+    </sql>
+
+    <select id="getEntityCount" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+            resultType="int">
+        SELECT COUNT(entityGuid)
+        FROM ${prefix}entity entity
+        WHERE entity.codingSchemeGuid = #{param1}
+    </select>
+
+
+    <select id="getEntityUidByCodeAndNamespace"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+            resultMap="Common.uidResult">
+        SELECT
+        entityGuid AS uidKey
+        FROM
+        ${prefix}entity entity
+        WHERE
+        codingSchemeGuid = #{param1}
+        AND
+        entity.entityCode = #{param2}
+        <if test="param3 != null">
+            AND
+            entity.entityCodeNamespace = #{param3}
+        </if>
+    </select>
+
+    <select id="getEntitiesByUids" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection"
+            resultMap="Entity.entityResult">
+        <include refid="getEntityFragment"/>
+
+        WHERE
+        entity.codingSchemeGuid = #{param1}
+        AND
+        entity.entityGuid IN (  <foreach collection="param2" item="item" separator=",">
+        #{item}
+    </foreach> )
+    </select>
+
+    <select id="getEntityById" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+            resultMap="Entity.entityResult">
+        <include refid="getEntityFragment"/>
+        WHERE
+        entity.entityGuid = #{param1}
+        AND
+        entity.codingSchemeGuid = #{param2}
+    </select>
+
+    <select id="getEntityByEntryStateUid"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+            resultMap="Entity.entityResult">
+        <include refid="getEntityFragment"/>
+        WHERE
+        entity.entityGuid = #{param1}
+        AND
+        entity.entryStateGuid = #{param2}
+    </select>
+
+    <select id="getEntityByCodeAndNamespace"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+            resultMap="Entity.entityResult">
+        <include refid="getEntityFragment"/>
+        WHERE
+        codingSchemeGuid = #{param1}
+        AND
+        entityCode = #{param2}
+        AND
+        entity.entityCodeNamespace = #{param3}
+    </select>
+
+    <select id="getEntityByCode" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+            resultMap="Entity.entityResult">
+        <include refid="getEntityFragment"/>
+        WHERE
+        codingSchemeGuid = #{param1}
+        AND
+        entityCode = #{param2}
+    </select>
+
+    <select id="getAssociationEntityByCodeAndNamespace"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple"
+            resultMap="Entity.associationEntityResult">
+        <include refid="getEntityFragment"/>
+        WHERE
+        codingSchemeGuid = #{param1}
+        AND
+        entityCode = #{param2}
+        AND
+        entity.entityCodeNamespace = #{param3}
+        AND
+        entityType.entityType = 'association'
+    </select>
+
+    <select id="getEntityByIdAndRevisionId"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+            resultMap="Entity.entityResult">
+
+        <include refid="getEntityFragment"/>
+
+        WHERE
+        entity.entityGuid = #{param1}
+
+        <if test="revisionId != null">
+            AND
+            currentRevision.revisionId = #{revisionId}
+        </if>
+        <if test="revisionId == null">
+            AND
+            entryState.revisionGuid IS NULL
+        </if>
+    </select>
+
+    <select id="getEntityAttributesByEntityUId"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="entityAttributes">
+        SELECT *
+        FROM ${prefix}entity
+        WHERE entityGuid = #{param1}
+    </select>
+
+    <select id="getAllEntityUidsOfCodingScheme"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
+        SELECT entityGuid AS uidKey
+        FROM ${prefix}entity entity
+        WHERE entity.codingSchemeGuid = #{param1}
+    </select>
+
+    <insert id="insertEntity" parameterType="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
+        INSERT INTO ${prefix}entity (
+        entityGuid,
+        codingSchemeGuid,
+        entityCode,
+        entityCodeNamespace,
+        isDefined,
+        isAnonymous,
+        description,
+        isActive,
+        owner,
+        status,
+        effectiveDate,
+        expirationDate,
+        entryStateGuid,
+        forwardName,
+        reverseName,
+        isNavigable,
+        isTransitive
+        ) VALUES (
+        #{uid},
+        #{codingSchemeUId},
+        #{entityCode},
+        #{entityCodeNamespace},
+        #{isDefined},
+        #{isAnonymous},
+        #{description,jdbcType=VARCHAR},
+        #{isActive},
+        #{owner,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{effectiveDate,jdbcType=TIMESTAMP},
+        #{expirationDate,jdbcType=TIMESTAMP},
+        #{entryStateUId},
+        #{forwardName:VARCHAR},
+        #{reverseName:VARCHAR},
+        #{isNavigable},
+        #{isTransitive}
+
+        )
+    </insert>
+
+    <update id="updateEntityByUId"
+            parameterType="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
+        UPDATE
+        ${prefix}entity
+
+
+        <set>
+            <if test="entity.isDefined != null">
+                isDefined = #{entity.isDefined},
+            </if>
+            <if test="entity.isAnonymous != null">
+                isAnonymous = #{entity.isAnonymous},
+            </if>
+            <if test="entity.entityDescription.content != null">
+                description = #{entity.entityDescription.content},
+            </if>
+            <if test="forwardName != null">
+                forwardName = #{forwardName},
+            </if>
+            <if test="reverseName != null">
+                reverseName = #{reverseName},
+            </if>
+            <if test="isNavigable != null">
+                isNavigable = #{isNavigable},
+            </if>
+            <if test="isTransitive != null">
+                isTransitive = #{isTransitive},
+            </if>
+            <if test="entryStateUId != null">
+                entryStateUId = #{entryStateUId},
+            </if>
+        </set>
+
+        WHERE
+        entityGuid = #{uid}
+        AND
+        codingSchemeGuid = #{codingSchemeUId}
+    </update>
+
+    <update id="updateEntityVerAttribByUId"
+            parameterType="org.lexevs.dao.database.ibatis.entity.parameter.InsertOrUpdateEntityBean">
+        UPDATE
+        ${prefix}entity
+
+        <set>
+            <if test="entity.isActive != null">
+                isActive = #{entity.isActive},
+            </if>
+            <if test="entity.owner != null">
+                owner = #{entity.owner},
+            </if>
+            <if test="entity.status != null">
+                status = #{entity.status},
+            </if>
+            <if test="entity.effectiveDate != null">
+                effectiveDate = #{entity.effectiveDate},
+            </if>
+            <if test="entity.expirationDate != null">
+                expirationDate = #{entity.expirationDate},
+            </if>
+            <if test="entryStateUId != null">
+                entryStateUId = #{entryStateUId},
+            </if>
+        </set>
+
+        WHERE
+        entityGuid = #{uid}
+        AND
+        codingSchemeGuid = #{codingSchemeUId}
+    </update>
+
+    <delete id="deleteEntityByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+        DELETE
+        FROM ${prefix}entity
+        WHERE entityGuid = #{param1}
+    </delete>
+
+    <select id="getEntityLatestRevisionIdByUId"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
+        SELECT rev.revisionId
+        FROM ${prefix}entity ent,
+             ${prefix}entryState es,
+             ${defaultPrefix}revision rev
+        WHERE ent.entityGuid = #{param1}
+          AND ent.entryStateGuid = es.entryStateGuid
+          AND es.revisionGuid = rev.revisionGuid
+    </select>
+
+    <select id="checkEntityUsage" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+            resultMap="Common.uidResult">
+        SELECT eat.entityAssnsGuid AS uidKey
+        FROM ${prefix}entityAssnsToEntity eat
+        WHERE (eat.sourceEntityCode = #{param1}
+            AND
+               eat.sourceEntityCodeNamespace = #{param2})
+           OR (eat.targetEntityCode = #{param1}
+            AND
+               eat.targetEntityCodeNamespace = #{param2})
+
+        UNION
+
+        SELECT ead.entityAssnsDataGuid AS uidKey
+        FROM ${prefix}entityAssnsToData ead
+        WHERE (ead.sourceEntityCode = #{param1}
+            AND
+               ead.sourceEntityCodeNamespace = #{param2})
+    </select>
+
+    <select id="getEntryStateUIdByEntityUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+            resultMap="Common.uidResult">
+        SELECT entryStateGuid AS uidKey
+        FROM ${prefix}entity en
+        WHERE en.entityGuid = #{param1}
+    </select>
+
+    <update id="updateEntityEntryStateUId"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+        UPDATE
+            ${prefix}entity
+        SET entryStateGuid = #{param2}
+        WHERE entityGuid = #{param1}
+    </update>
+
+    <select id="getPreviousEntryStateId"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+            resultMap="Common.uidResult">
+        SELECT prevEntryStateGuid AS uidKey
+        FROM ${prefix}entryState es
+        WHERE es.entryStateGuid = #{param1}
+    </select>
+
+    <!--  MySQL Specific
+    <select id="getEntityMetaDataByRevision" remapResults="true"
+        parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+        resultMap="entityAttributes">
+        <![CDATA[
+            SELECT
+                entity.codingSchemeGuid,
+                entity.entityGuid,
+                entity.entityCode,
+                entity.entityCodeNamespace,
+                entity.isDefined,
+                entity.isAnonymous,
+                entity.description,
+                entity.isActive,
+                entity.owner,
+                entity.status,
+                entity.effectiveDate,
+                entity.expirationDate,
+                entity.forwardName,
+                entity.reverseName,
+                entity.isNavigable,
+                entity.isTransitive,
+                entity.entryStateGuid,
+                r1.revAppliedDate revAppliedDate
+            FROM
+                ${prefix}h_entity entity,
+                ${prefix}entryState es,
+                ${defaultPrefix}revision r1,
+                ${defaultPrefix}revision r2
+            WHERE
+                entity.entityGuid = #{param1} AND
+                entity.entryStateGuid = es.entryStateGuid AND
+                (
+                    (
+                        es.revisionGuid = r1.revisionGuid AND
+                        r1.revAppliedDate >= r2.revAppliedDate AND
+                        r2.revisionID = #{param2}
+                    )
+                    OR
+                    (
+                        es.revisionGuid IS NULL
+                    )
+                )
+            ORDER BY
+                revAppliedDate DESC
+            LIMIT 1
+        ]]>
+    </select>
+    -->
+
+    <select id="getEntityPropertyIdsListByEntityUId"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="string">
+        SELECT propertyId
+        FROM ${prefix}property
+        WHERE referenceGuid = #{param1}
+          AND referenceType = #{param2}
+    </select>
+
+    <select id="getEntityTypeByEntityUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
+            resultType="string">
+        SELECT entityType
+        FROM ${prefix}entityType
+        WHERE entityGuid = #{param1}
+    </select>
+
+    <select id="getEntityDescription"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
+            resultMap="entityDescriptionResult">
+        SELECT description
+        FROM ${prefix}entity entity
+        WHERE entity.codingSchemeGuid = #{param1}
+          AND entity.entityCode = #{param2}
+          AND entity.entityCodeNamespace = #{param3}
+    </select>
+
+    <select id="getEntityDescriptionAsString"
+            parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="string">
+        SELECT description
+        FROM ${prefix}entity entity
+        WHERE entity.entityCode = #{param1}
+          AND entity.entityCodeNamespace = #{param1}
+    </select>
+
+    <select id="getDistinctNamespaces" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
+            resultType="string">
+        SELECT DISTINCT entity.entityCodeNamespace
+        FROM ${prefix}entity entity
+        WHERE entity.codingSchemeGuid = #{param1}
+          AND entity.entityCode = #{param2}
+
+        UNION
+
+        SELECT DISTINCT eate.sourceEntityCodeNamespace
+        FROM ${prefix}entityAssnsToEntity eate
+                 INNER JOIN
+             ${prefix}associationPredicate ap
+             ON
+                 eate.associationPredicateGuid = ap.associationPredicateGuid
+                 INNER JOIN
+             ${prefix}relation rel
+             ON
+                 ap.relationGuid = rel.relationGuid
+
+        WHERE rel.codingSchemeGuid = #{param1}
+          AND eate.sourceEntityCode = #{param2}
+
+        UNION
+
+        SELECT DISTINCT eate.targetEntityCodeNamespace
+        FROM ${prefix}entityAssnsToEntity eate
+                 INNER JOIN
+             ${prefix}associationPredicate ap
+             ON
+                 eate.associationPredicateGuid = ap.associationPredicateGuid
+                 INNER JOIN
+             ${prefix}relation rel
+             ON
+                 ap.relationGuid = rel.relationGuid
+
+        WHERE rel.codingSchemeGuid = #{param1}
+          AND eate.targetEntityCode = #{param2}
+    </select>
+
+</mapper>

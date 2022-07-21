@@ -499,7 +499,7 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		assertEquals(1,template.queryForInt("select count(*) from registry"));
+		assertEquals(1,template.queryForObject("select count(*) from registry", Integer.class).intValue());
 	}
 	
 	@Test
@@ -508,11 +508,11 @@ public class LexEvsResourceManagingServiceTest extends LexEvsDbUnitTestBase {
 		
 		JdbcTemplate template = new JdbcTemplate(this.getDataSource());
 		
-		assertEquals(1,template.queryForInt("select count(*) from registry"));
+		assertEquals(1,template.queryForObject("select count(*) from registry", Integer.class).intValue());
 		
 		this.lexEvsResourceManagingService.removeNciHistoryResourceToSystemFromSystem("someUri");
 		
-		assertEquals(0,template.queryForInt("select count(*) from registry"));
+		assertEquals(0,template.queryForObject("select count(*) from registry", Integer.class).intValue());
 	}
 
 }

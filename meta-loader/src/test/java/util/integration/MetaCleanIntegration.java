@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import test.rrf.BaseTestRrf;
 
-public class CleanIntegration {
+public class MetaCleanIntegration {
 	
 	@Test
 	public void clean() throws Exception {	

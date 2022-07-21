@@ -80,6 +80,7 @@ You may obtain a copy of the License at
 		<property name="junit.libs.dir" value="${libs}/junit"/> <!--junit jars for packager-->
 		<property name="sql.libs.dir" value="${libs}/sqlDrivers"/><!-- sql drivers for packager-->
 		<property name="crossdb.libs.dir" value="${libs}/crossdb"/><!-- db tools for packager-->
+		<property name="commons-cli.libs.dir" value="${libs}/apache/commons"/><!--commons cli for packager -->
 		<property name="icu4j.libs.dir" value="${libs}/icu4j"/>
 		<property name="jdom.libs.dir" value="${libs}/jdom"/>
 		<property name="lvg.libs.dir" value="${libs}/lvg"/>
@@ -275,6 +276,7 @@ You may obtain a copy of the License at
 			<fileset dir="${temp.pkg}" id="runtime-built">
 				<include name="*.jar"/>			
 			</fileset>
+			<fileset file="${commons-cli.libs.dir}/commons-cli-1.0.jar" id="commons"/>
 			<fileset file="${lvg.libs.dir}/*.jar" id="lvg"/>
 			<fileset file="${caGrid.libs.dir}/*.jar" id="cabig"/>
 			<fileset file="${crossdb.libs.dir}/*.jar" id="crossdb.compile-time-only"/>
@@ -581,7 +583,7 @@ You may obtain a copy of the License at
 		<antcall target="temp-scrub"/>
 		<antcall target="temp-compile"/>
 		
-		<jar destfile="${pkg-test}/lbTest.jar" update="true">
+		<jar destfile="${pkg-test}/lbTest.jar" update="true" >
 		    <fileset dir="${temp.bin}">
 		        <include name="**/*.class"/>
 		    </fileset>
@@ -754,15 +756,15 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
 		umls-loader, meta-loader, lbGUI, lbTest">
-		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve">
+		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve" zip64Mode="always">
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
 		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-components}/lexbig.license.txt"/>
-		<jar jarfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar" filesetmanifest="merge" duplicate="preserve">        	
+		<jar jarfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar" filesetmanifest="merge" duplicate="preserve" zip64Mode="always">        	
         	<zipgroupfileset file="${pkg-extlib}/*.jar" />		
 		</jar>
 		
-		<jar destfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar"
+		<jar destfile="${dist.dir}/LexEVS_localRuntime_dependencies.jar" zip64Mode="always" 
 			basedir="${spring.libs.dir}"
 			includes="META-INF/*"
 			update="true"/>

@@ -18,7 +18,8 @@ import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.springframework.batch.classify.Classifier;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.classify.Classifier;
 import org.springframework.util.Assert;
 
 /**
@@ -107,8 +108,8 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		
 		bean.setPrefix(prefix);
 
-		return (String) this.getSqlMapClientTemplate().
-			queryForObject(GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTRY_SQL, bean);
+		return (String) this.getSqlSessionTemplate().
+			selectOne(GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_ENTRY_SQL, bean);
 	}
 	
 	@Override
@@ -121,8 +122,8 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		bean.setParam1(entryUId);
 		bean.setParam2(revisionId);
 		
-		return (EntryState)this.getSqlMapClientTemplate().
-			queryForObject(GET_ENTRY_STATE_BY_ENTRY_UID_AND_REVISION_ID_SQL, bean);
+		return (EntryState)this.getSqlSessionTemplate().
+			selectOne(GET_ENTRY_STATE_BY_ENTRY_UID_AND_REVISION_ID_SQL, bean);
 	}
 
 	/*
@@ -135,7 +136,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 	@Override
 	public String getSystemReleaseIdByUri(String systemReleaseUri) {
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_SYSTEM_RELEASE_ID_BY_URI, systemReleaseUri);
 	}
 
@@ -158,7 +159,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 			EntryStateType entryType, 
 			String previousEntryStateUId,
 			EntryState entryState, 
-			Inserter inserter) {
+			SqlSessionTemplate session) {
 		if (entryState == null) {
 			return;
 		}
@@ -185,7 +186,36 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				previousEntryStateUId, 
 				entryState);
 
-		inserter.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
+		session.insert(INSERT_ENTRY_STATE_SQL, insertEntryStateBean);
+	}
+	
+	@Override
+	public void insertEntryStateMybatisBatch(
+			String codingSchemeUId,
+			List<InsertEntryStateBean> beans
+			) {
+		
+		for(InsertEntryStateBean bean: beans) {
+		if (bean.getEntryState() == null) {
+			return;
+		}
+
+		Assert.state(bean.getEntryType() != null);
+		Assert.state(
+				!bean.getEntryType().equals(EntryStateType.VALUESETDEFINITION)
+				&&
+				!bean.getEntryType().equals(EntryStateType.VALUESETDEFINITIONENTRY)
+				&&
+				!bean.getEntryType().equals(EntryStateType.PICKLISTDEFINITION)
+				&&
+				!bean.getEntryType().equals(EntryStateType.PICKLISTENTRYNODE),
+				"For inserting a ValueSet/Picklist EntryState, use the " +
+				" ValueSet DAOs.");
+
+
+
+		this.getSqlSessionBatchTemplate().insert(INSERT_ENTRY_STATE_SQL, bean);
+		}
 	}
 
 	/*
@@ -223,7 +253,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		bean.setParam2(prevEntryStateUId);
 		bean.setParam3(newEntryStateUId);
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_PREVIOUS_ENTRY_STATE_UIDS_SQL, bean);
 	}
 
@@ -251,7 +281,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				entryType, 
 				previousEntryStateUId,
 				entryState,
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 
 		return entryStateUId;
 	}
@@ -282,7 +312,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				entryType, 
 				previousEntryStateUId, 
 				entryState, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 
 	/**
@@ -341,7 +371,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ENTRYSTATE_ENTRIES_BY_ENTRY_UID,
 				new PrefixedParameter(prefix, entryUId));
 	}
@@ -380,7 +410,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				codingSchemeUId);
 
 		/* 1. Delete all coding scheme property entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_CS_PROP_ENTRYSTATE_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -388,7 +418,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						codingSchemeUId));
 
 		/* 2. Delete all entity property entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ENTITY_PROPERTY_ENTRYSTATE_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -396,7 +426,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						codingSchemeUId));
 
 		/* 3. Delete all relation property entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_RELATION_PROPERTY_ENTRYSTATE_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -404,7 +434,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						codingSchemeUId));
 
 		/* 4. Delete all entityAssnsToEntity entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSN_TARGET_ENTRYSTATE_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -412,7 +442,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						codingSchemeUId));
 
 		/* 5. Delete all entityAssnsToData entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSN_DATA_ENTRYSTATE_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -420,7 +450,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						codingSchemeUId));
 
 		/* 7. Delete all relation entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_RELATION_ENTRYSTATE_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -428,7 +458,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						codingSchemeUId));
 
 		/* 8. Delete all entity entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ENTITY_ENTRYSTATE_OF_CODINGSCHEME_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -440,12 +470,12 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 		//For some reason, MySQL can't delete these all the time because
 		//the prev entry state references the same column. It fails about
 		//half of the time. To be safe, set these to null first, then delete.
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				SET_PREVIOUS_ENTRY_STATE_UIDS_TO_NULL_SQL,
 				new PrefixedParameter(prefix,
 						codingSchemeUId));
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_CODINGSCHEME_ENTRYSTATES_SQL,
 				new PrefixedParameter(prefix,
 						codingSchemeUId));
@@ -459,7 +489,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				codingSchemeUId);
 
 		/* 1. Delete all entity property entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ENTITY_PROPERTY_ENTRYSTATE_OF_ENTITY_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -477,7 +507,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 				codingSchemeUId);
 
 		/* 1. Delete all entityAssnsToEntity entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSN_TARGET_ENTRYSTATE_OF_RELATION_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -485,7 +515,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						relationUId));
 
 		/* 2. Delete all entityAssnsToData entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSN_DATA_ENTRYSTATE_OF_RELATION_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier
@@ -493,7 +523,7 @@ public class IbatisVersionsDao extends AbstractIbatisDao implements VersionsDao 
 						relationUId));
 
 		/* 3. Delete all relation property entry states. */
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_RELATION_PROPERTY_ENTRYSTATE_OF_RELATION_SQL,
 				new PrefixedParameterTuple(prefix,
 						this.entryStateTypeClassifier

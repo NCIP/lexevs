@@ -21,9 +21,27 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	private List<CodeNamespacePair> mustHaveCodes;
 	private List<String> mustHaveNamespaces;
 	private List<String> mustHaveEntityTypes;
-	private Boolean restrictToAnonymous;
+	private Boolean restrictToAnonymous=Boolean.FALSE;
 	private List<Sort> sorts;
 	private TripleNode tripleNode;
+	private boolean needsEntityJoin;
+	private String associationPredicateUid;
+
+	public String getAssociationPredicateUid() {
+		return associationPredicateUid;
+	}
+	public void setAssociationPredicateUid(String associationPredicateUid) {
+		this.associationPredicateUid = associationPredicateUid;
+	}
+
+	public List<String> getAssociationPredicateUids() {
+		return associationPredicateUids;
+	}
+	public void setAssociationPredicateUids(List<String> associationPredicateUids) {
+		this.associationPredicateUids = associationPredicateUids;
+	}
+
+	private List<String> associationPredicateUids;
 
 	public List<String> getMustHaveEntityTypes() {
 		return mustHaveEntityTypes;
@@ -35,8 +53,13 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 		return restrictToAnonymous;
 	}
 	public void setRestrictToAnonymous(Boolean restrictToAnonymous) {
-		this.restrictToAnonymous = restrictToAnonymous;
+		if(restrictToAnonymous!=null) {
+			this.restrictToAnonymous = restrictToAnonymous;
+		}
 	}
+//	public Boolean getRestrictToAnonymous() {
+//		return restrictToAnonymous;
+//	}
 	
 	public String getEntityCode() {
 		return entityCode;
@@ -95,8 +118,14 @@ public class GetEntityAssnUidsCountBean extends PrefixedTableParameterBean {
 	}
 
 	public boolean isNeedsEntityJoin() {
-		return CollectionUtils.isNotEmpty(this.mustHaveEntityTypes) || (this.restrictToAnonymous != null);
+		needsEntityJoin =  CollectionUtils.isNotEmpty(this.mustHaveEntityTypes) || (this.restrictToAnonymous != null);
+		return needsEntityJoin;
 	}
+
+//	public boolean getNeedsEntityJoin(){
+//		return isNeedsEntityJoin();
+//	}
+
 	public void setSorts(List<Sort> sorts) {
 		this.sorts = sorts;
 	}

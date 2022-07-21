@@ -295,6 +295,7 @@ public class NewOWL2SnippetTestIT extends DataLoadTestBaseSnippet2 {
 	@Test
 	public void testAnonEntityForBadFormating()throws LBInvocationException, LBParameterException, LBResourceUnavailableException{
 		cng = cng.restrictToAssociations(Constructors.createNameAndValueList("equivalentClass"), null);
+		cng = cng.restrictToAnonymous(true);
 		ResolvedConceptReferenceList list = cng.resolveAsList(Constructors.createConceptReference("Brca1", null), true, false, 1, 1, null, null, null, null, 10);
 		assertFalse(list.getResolvedConceptReferenceCount() < 1);
 		ResolvedConceptReference ref = list.getResolvedConceptReference(0);

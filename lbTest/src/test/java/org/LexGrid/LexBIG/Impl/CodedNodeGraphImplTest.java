@@ -343,7 +343,7 @@ public class CodedNodeGraphImplTest extends TestCase {
 
     public void testFilter() throws LBException {
         CodedNodeGraph cng = lbsi.getNodeGraph("Automobiles", null, "relations");
-
+        cng = cng.restrictToAnonymous(true);
         // If I add a filter which only allows 'r' or 'm' as the third letter in
         // entity description
         // this should cut the full tree down to ...

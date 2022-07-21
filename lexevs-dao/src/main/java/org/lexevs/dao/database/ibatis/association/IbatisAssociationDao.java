@@ -7,9 +7,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.LexGrid.commonTypes.Property;
 import org.LexGrid.relations.AssociationData;
@@ -19,10 +19,11 @@ import org.LexGrid.relations.AssociationQualification;
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.relations.Relations;
+import org.LexGrid.versions.EntryState;
+import org.apache.ibatis.session.RowBounds;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.cache.annotation.ClearCache;
-import org.lexevs.dao.database.access.DaoManager;
 import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
@@ -35,11 +36,17 @@ import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
 import org.lexevs.dao.database.access.property.PropertyDao;
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
+import org.lexevs.dao.database.constants.DatabaseConstants;
+import org.lexevs.dao.database.constants.classifier.property.EntryStateTypeClassifier;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.association.parameter.BatchAssociationInsertBean;
 import org.lexevs.dao.database.ibatis.association.parameter.GetNodesPathBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationPredicateBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationTargetEntryState;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationDataBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationEntityBean;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateRelationsBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertTransitiveClosureBean;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
@@ -47,17 +54,17 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterCollection;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedTableParameterBean;
+import org.lexevs.dao.database.ibatis.revision.IbatisRevisionDao;
 import org.lexevs.dao.database.ibatis.versions.IbatisVersionsDao;
+import org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean;
 import org.lexevs.dao.database.inserter.BatchInserter;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
-import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
 import org.lexevs.dao.database.utility.DaoUtility;
-import org.lexevs.locator.LexEvsServiceLocator;
-import org.springframework.orm.ibatis.SqlMapClientCallback;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.classify.Classifier;
 import org.springframework.util.Assert;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class IbatisAssociationDao.
@@ -66,11 +73,15 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
  */
 @Cacheable(cacheName = "IbatisAssociationDaoCache")
 public class IbatisAssociationDao extends AbstractIbatisDao implements AssociationDao {
+	
+	public static List<AssociationSource> sourceCache = new CopyOnWriteArrayList<AssociationSource>();
 
 
 
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
+	
+	private Classifier<EntryStateType, String> entryStateTypeClassifier = new EntryStateTypeClassifier();
 	
 	public static String ASSOCIATION_NAMESPACE = "Association.";
 	
@@ -170,11 +181,16 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	/** The ibatis versions dao. */
 	private IbatisVersionsDao ibatisVersionsDao;
 	
+	private IbatisRevisionDao ibatisRevisionDao;
+	
 	private AssociationTargetDao associationTargetDao = null;
 	
 	private AssociationDataDao associationDataDao = null;
 	
 	private PropertyDao propertyDao = null;
+	
+	
+	
 
 	@Override
 	public String getAssociationPredicateNameForAssociationInstanceId(
@@ -183,7 +199,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		PrefixedParameter bean = new PrefixedParameter(prefix, associationInstanceId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ASSOCIATION_PREDICATE_NAME_FOR_ASSOC_INSTANCE_ID, bean);
 	}
 
@@ -194,7 +210,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		PrefixedParameter bean = new PrefixedParameter(prefix, associationInstanceId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_RELATIONS_CONTAINER_NAME_FOR_ASSOC_INSTANCE_ID, bean);
 	}
 
@@ -210,7 +226,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setParam2(relationUid);
 		bean.setParam3(revisionId);
 		
-		return (Relations) this.getSqlMapClientTemplate().queryForObject(
+		return (Relations) this.getSqlSessionTemplate().selectOne(
 				GET_RELATIONS_FOR_UID_AND_REVISION_ID_SQL, bean);	
 	}
 
@@ -222,11 +238,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			int start, int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_ALL_TRIPLES_OF_CODINGSCHEME_SQL, 
 				new PrefixedParameterTuple(prefix, codingSchemeId, associationPredicateId), 
-				start, 
-				pageSize);
+				new RowBounds(start, 
+				pageSize));
 	}
 	
 
@@ -237,17 +253,17 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			int start, int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_ALL_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL, 
 				new PrefixedParameterTuple(prefix, codingSchemeId, associationPredicateId), 
-				start, 
-				pageSize);
+				new RowBounds(start, 
+				pageSize));
 	}
 	
 	@Override
 	public String getAnonDesignationForPredicate(String codingSchemeId, String associationPredicateId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ANON_DESIGNATION_FOR_PREDICATE_UID, 
 				new PrefixedParameterTuple(prefix, associationPredicateId, "Association"));
 		
@@ -261,7 +277,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String relationContainerId, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeId);
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ASSOCIATION_PREDICATE_UID_BY_CONTAINER_UID_SQL,
 				new PrefixedParameterTuple(prefix, relationContainerId,
 						associationPredicateName));
@@ -275,7 +291,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String relationContainerName, String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUid);
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ASSOCIATION_PREDICATE_UID_BY_CONTAINER_NAME_SQL,
 				new PrefixedParameterTriple(
 						prefix, 
@@ -293,7 +309,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String associationPredicateName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUid);
-		return (List<String>) this.getSqlMapClientTemplate().queryForList(
+		return (List<String>) this.getSqlSessionTemplate().<String>selectList(
 				GET_ASSOCIATION_PREDICATE_UIDS_FOR_NAME_SQL,
 				new PrefixedParameterTriple(
 						prefix, 
@@ -305,6 +321,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@SuppressWarnings("unchecked")
 	@Override
 	@CacheMethod
+	@Deprecated
 	public List<String> getAssociationPredicateUidsForDirectionalName(
 			String codingSchemeId, String directionalName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
@@ -314,8 +331,8 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		tuple.setParam1(codingSchemeId);
 		tuple.setParam2(directionalName);
 		
-		return this.getSqlMapClientTemplate()
-			.queryForList(GET_ASSOCIATION_PREDICATE_UID_FOR_DIRECTIONAL_NAME_SQL, tuple);
+		return this.getSqlSessionTemplate()
+			.selectList(GET_ASSOCIATION_PREDICATE_UID_FOR_DIRECTIONAL_NAME_SQL, tuple);
 	}
 
 	/* (non-Javadoc)
@@ -325,7 +342,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public String getRelationUId(String codingSchemeId, String relationsName) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeId);
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_RELATIONS_KEY_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeId,
 						relationsName));
@@ -336,7 +353,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 				
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_ENTRYSTATE_UID_BY_RELATION_UID_SQL,
+		return (String) this.getSqlSessionTemplate().selectOne(GET_ENTRYSTATE_UID_BY_RELATION_UID_SQL,
 				new PrefixedParameter(prefix, relationUId));
 	}
 	
@@ -347,7 +364,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String codingSchemeId, String relationsId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_ASSOCIATION_PREDICATE_IDS_FOR_RELATIONS_ID_SQL, 
 				new PrefixedParameter(prefix, relationsId));
 	}
@@ -358,7 +375,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public List<String> getRelationsUIdsForCodingSchemeUId(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		List<String> returnList = this.getSqlMapClientTemplate().queryForList(
+		List<String> returnList = this.getSqlSessionTemplate().selectList(
 				GET_RELATIONS_IDS_FOR_CODINGSCHEME_ID_SQL,
 				new PrefixedParameter(prefix, codingSchemeId));
 		
@@ -384,7 +401,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setTargetEntityCode(targetCode);
 		bean.setTargetEntityCodeNamespace(targetNS);
 		bean.setAssociationPredicateUId(associationUid);
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_NODES_PATH, bean);
+		return (String) this.getSqlSessionTemplate().selectOne(GET_NODES_PATH, bean);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -393,7 +410,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public List<String> getRelationsNamesForCodingSchemeUId(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_RELATIONS_NAMES_FOR_CODINGSCHEME_ID_SQL,
 				new PrefixedParameter(prefix, codingSchemeId));
 	}
@@ -403,11 +420,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void deleteAssociationQualificationsByCodingSchemeUId(String codingSchemeUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ENTITY_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL,
 				new PrefixedParameter(prefix, codingSchemeUId));
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_DATA_ASSOCIATION_QUALS_FOR_CODINGSCHEME_UID_SQL,
 				new PrefixedParameter(prefix, codingSchemeUId));
 	}
@@ -418,7 +435,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		return
 			(String) 
-				this.getSqlMapClientTemplate().queryForObject(GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL, new PrefixedParameter(prefix, associationPredicateId));
+				this.getSqlSessionTemplate().selectOne(GET_ASSOCIATION_PREDICATE_NAME_FOR_ID_SQL, new PrefixedParameter(prefix, associationPredicateId));
 	}
 
 	/* (non-Javadoc)
@@ -448,13 +465,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			boolean cascade) {
 		String entryStateUId = this.createUniqueId();
 		
-		InsertOrUpdateRelationsBean bean = new InsertOrUpdateRelationsBean();
-		bean.setEntryStateUId(entryStateUId);
-		bean.setUId(relationsUId);
-		bean.setCodingSchemeUId(codingSchemeUId);
-		bean.setRelations(relations);
-		bean.setPrefix(prefix);
-		
+		InsertOrUpdateRelationsBean bean = buildInsertOrUpdateRelationsBean(prefix,
+				codingSchemeUId,
+				relationsUId,
+				relations,
+				cascade);
+
 		this.ibatisVersionsDao.insertEntryState(
 				codingSchemeUId, 
 				entryStateUId, 
@@ -463,7 +479,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				null,
 				relations.getEntryState());
 		
-		this.getSqlMapClientTemplate().insert(INSERT_RELATIONS_SQL, bean);
+		this.getSqlSessionTemplate().insert(INSERT_RELATIONS_SQL, bean);
 		
 		if(cascade){
 			
@@ -486,11 +502,35 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		return relationsUId;
 	}
 	
+	private InsertOrUpdateRelationsBean buildInsertOrUpdateRelationsBean(String prefix, String codingSchemeUId,
+			String relationsUId, Relations relations, boolean cascade) {
+		InsertOrUpdateRelationsBean bean = new InsertOrUpdateRelationsBean();
+		bean.setPrefix(prefix);
+		bean.setCodingSchemeGuid(codingSchemeUId);
+		bean.setRelationGuid(relationsUId);
+		bean.setRelations(relations);
+		bean.setContainerName(relations.getContainerName());
+		bean.setIsMapping(relations.getIsMapping());
+		bean.setSourceCodingScheme(relations.getSourceCodingScheme());
+		bean.setSourceCodingSchemeVersion(relations.getSourceCodingSchemeVersion());
+		bean.setTargetCodingScheme(relations.getTargetCodingScheme());
+		bean.setSourceCodingSchemeVersion(relations.getTargetCodingSchemeVersion());
+		bean.setDescription(relations.getEntityDescription()==null?
+				null:relations.getEntityDescription().getContent());
+		bean.setIsActive(relations.getIsActive());
+		bean.setOwner(relations.getOwner());
+		bean.setStatus(relations.getStatus());
+		bean.setEffectiveDate(relations.getEffectiveDate());
+		bean.setExpirationDate(relations.getExpirationDate());
+
+		return bean;
+	}
+
 	public String insertAssociationEntity(
 			String codingSchemeId,
 			String entityId,
 			AssociationEntity associationEntity,
-			Inserter inserter){
+			SqlSessionTemplate sqlSessionTemplate){
 		
 		String associationEntityId = this.createUniqueId();
 		
@@ -500,7 +540,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setUId(associationEntityId);
 		bean.setAssociationEntity(associationEntity);
 		
-		inserter.insert(INSERT_ASSOCIATIONENTITY_SQL, bean);	
+		sqlSessionTemplate.insert(INSERT_ASSOCIATIONENTITY_SQL, bean);	
 		
 		return associationEntityId;
 	}
@@ -510,7 +550,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String entityId,
 			AssociationEntity associationEntity) {
 		return this.insertAssociationEntity(
-				codingSchemeId, entityId, associationEntity, this.getNonBatchTemplateInserter());	
+				codingSchemeId, entityId, associationEntity, this.getSqlSessionTemplate());	
 	}
 	
 	public void updateAssociationEntity(String codingSchemeId, String entityId,
@@ -520,9 +560,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setEntityUId(entityId);
 		bean.setAssociationEntity(entity);
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ASSOCIATIONENTITY_FOR_ENTITY_ID_SQL, 
-				bean, 1);
+				bean);
 	}
 
 	/* (non-Javadoc)
@@ -542,7 +582,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setUId(id);
 		bean.setRelationUId(relationId);
 		
-		this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_PREDICATE_SQL, bean);
+		this.getSqlSessionTemplate().insert(INSERT_ASSOCIATION_PREDICATE_SQL, bean);
 		
 		if(cascade) {
 			this.insertBatchAssociationSources(
@@ -561,13 +601,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void insertBatchAssociationSources(final String codingSchemeId,
 			final List<AssociationSourceBatchInsertItem> list) {
 		
-		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		SqlSessionTemplate session = getSqlSessionTemplate();
 		
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				BatchInserter batchInserter = getBatchTemplateInserter(executor);
-				
-				batchInserter.startBatch();
+
 				
 				for(AssociationSourceBatchInsertItem item : list){
 					
@@ -575,27 +611,166 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 							codingSchemeId, 
 							item.getParentId(), 
 							item.getAssociationSource(), 
-							batchInserter);
+							session);
 				}
 				
-				batchInserter.executeBatch();
-				
-				return null;
 			}	
-		});
+	
+	/* (non-Javadoc)
+	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertBatchAssociationSources(java.lang.String, java.util.List)
+	 */
+	@ClearCache
+	public void insertMybatisBatchAssociationSources(final String codingSchemeUId,
+			final List<BatchAssociationInsertBean> list) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+					
+				List<InsertOrUpdateAssociationTargetBean> targetsToBatch = new ArrayList<InsertOrUpdateAssociationTargetBean>();
+				List<InsertEntryStateBean> esBeans = new ArrayList<InsertEntryStateBean>();
+				for(BatchAssociationInsertBean item : list){
+					AssociationTarget[] targets = item.getSource().getTarget();
+					List<InsertOrUpdateAssociationTargetBean> insertTargetBeans = Stream.of(targets)
+							.map(x -> associationTargetDao
+							.buildInsertOrUpdateAssociationTargetBean(
+									prefix, 
+									item.getAssociationPredicateId(), 
+									this.createUniqueId(), 
+									item.getSource(), 
+									x, 
+									this.createUniqueId()))
+							.collect(Collectors.toList());
+					
+					targetsToBatch.addAll(insertTargetBeans);
+					
+				esBeans.addAll(targetsToBatch
+							.stream().map(x -> 
+							buildInsertEntryStateBean( codingSchemeUId, x, x.getAssociationTarget().getEntryState()))
+							.collect(Collectors.toList()));
+				}
+
+						associationTargetDao.insertMybatisBatchAssociationTarget(targetsToBatch, prefix);
+						
+						List<InsertAssociationQualificationOrUsageContextBean> quals = 
+								targetsToBatch
+								.stream()
+								.map(
+										x -> processTargetBeansToQuals(x))
+								.flatMap(List::stream)
+								.collect(Collectors.toList());
+						
+						insertMybatisBatchQualifications(quals);
+						ibatisVersionsDao.insertEntryStateMybatisBatch(codingSchemeUId, esBeans);
+
+					
+//					List<AssociationData> adatas = item.getTargetDataAsReference();
+//					adatas
+//						.stream()
+//						.map(x -> buildInsertOrUpdateAssociationDataBean(x, item, prefix, this.createUniqueId(), associatinPredicateId))
+//						.collect(Collectors.toList());
+
+	
+			}	
+	
+
+
+	private InsertOrUpdateAssociationDataBean buildInsertOrUpdateAssociationDataBean(
+			AssociationData data, AssociationSource source, String prefix, String associationDataUId, String associationPredicateUId) {
+		
+		InsertOrUpdateAssociationDataBean bean = new InsertOrUpdateAssociationDataBean();
+
+		if (data.getAssociationInstanceId() == null
+				|| data.getAssociationInstanceId().trim().equals("")) {
+			data.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX  + this.createRandomIdentifier());
+		}
+		String entryStateUId = this.createUniqueId();
+		bean.setPrefix(prefix);
+		bean.setUId(associationDataUId);
+		bean.setAssociationPredicateUId(associationPredicateUId);
+		bean.setEntryStateUId(entryStateUId);
+		bean.setAssociationSource(source);
+		bean.setAssociationData(data);
+		
+		bean.setSourceEntityCode(source.getSourceEntityCode());
+		bean.setSourceEntityCodeNamespace(source.getSourceEntityCodeNamespace());
+		bean.setAssociationInstanceId(data.getAssociationInstanceId());
+		bean.setIsDefining(data.getIsDefining());
+		bean.setIsInferred(data.getIsInferred());
+		bean.setDataValue(data.getAssociationDataText().getContent());
+		bean.setIsActive(data.getIsActive());
+		bean.setOwner(data.getOwner());
+		bean.setStatus(data.getStatus());
+		bean.setEffectiveDate(data.getEffectiveDate());
+		bean.setExpirationDate(data.getExpirationDate());
+		
+		return bean;
 	}
+
+	public List<InsertAssociationQualificationOrUsageContextBean> processTargetBeansToQuals(InsertOrUpdateAssociationTargetBean bean) {
+		
+		return bean.getAssociationTarget()
+		.getAssociationQualificationAsReference()
+		.stream().map(x -> buildAssociationQualifierInsertBean(x, bean)).collect(Collectors.toList());
+
+	}
+	
+	public InsertAssociationQualificationOrUsageContextBean buildAssociationQualifierInsertBean(AssociationQualification qual, InsertOrUpdateAssociationTargetBean bean) {
+		String qualUId = createUniqueId();
+		InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+		qualBean.setReferenceUId(bean.getUId());
+		qualBean.setUId(qualUId);
+		qualBean.setPrefix(
+				bean.getPrefix());
+		qualBean.setQualifierName(qual.getAssociationQualifier());
+		qualBean.setEntryStateUId(createUniqueId());
+
+		if (qual.getQualifierText() != null) {
+			qualBean
+					.setQualifierValue(qual.getQualifierText().getContent());
+		}
+		
+		return qualBean;
+	}
+	
+	protected InsertEntryStateBean buildInsertEntryStateBean( String codingSchemeUID, 
+			InsertOrUpdateAssociationTargetBean tbean, EntryState entryState) {
+
+		String revisionUId = null;
+		String prevRevisionUId = null;
+
+		if (entryState != null) {
+			revisionUId = ibatisRevisionDao.getRevisionUIdById(entryState
+					.getContainingRevision());
+			prevRevisionUId = ibatisRevisionDao.getRevisionUIdById(entryState
+					.getPrevRevision());
+		}
+
+		InsertEntryStateBean bean = new InsertEntryStateBean();
+		bean.setPrefix(tbean.getPrefix());
+		bean.setEntryUId(tbean.getEntryStateUId());
+		bean.setEntryState(entryState);
+		bean.setEntryType(entryStateTypeClassifier.classify(EntryStateType.ENTITYASSNSTOENTITY));
+		bean.setEntryStateUId(tbean.getEntryStateUId());
+		bean.setPreviousEntryStateUId(null);
+		bean.setRevisionUId(revisionUId);
+		bean.setPrevRevisionUId(prevRevisionUId);
+
+		return bean;
+	}
+
+	@ClearCache
+	private void insertMybatisBatchQualifications(List<InsertAssociationQualificationOrUsageContextBean> quals) {
+		quals.stream().forEach(qualbean -> 
+		this.getSqlSessionBatchTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualbean));
+	}
+	
 	
 	@ClearCache
 	public void insertBatchAssociationQualifiers(final String codingSchemeId,
 			final List<AssociationQualifierBatchInsertItem> list, HashMap<String,String> instanceMap) {
 		
-		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
-		
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				BatchInserter batchInserter = getBatchTemplateInserter(executor);
-				
-				batchInserter.startBatch();
+				SqlSessionTemplate session = this.getSqlSessionTemplate();
 				
 				for(AssociationQualifierBatchInsertItem item : list){
 					String associationId = instanceMap.get(item.getParentId());
@@ -603,41 +778,26 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 						System.out.println(item.getParentId() + "Is an associationId"
 								+ " with no loaded association"); 
 					}else {
-					insertAssociationQualifier(
-							codingSchemeId, 
-							associationId,
-							item.getParentId(), 
-							item.getAssociationQualifier(), 
-							batchInserter);
+						
+						String qualUId = createUniqueId();
+						InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
+						qualBean.setReferenceUId(associationId);
+						qualBean.setUId(qualUId);
+						qualBean.setPrefix(getPrefixResolver().resolvePrefixForCodingScheme(
+								codingSchemeId));
+						qualBean.setQualifierName(item.getAssociationQualifier().getAssociationQualifier());
+						qualBean.setEntryStateUId(createUniqueId());
+
+						if (item.getAssociationQualifier().getQualifierText() != null) {
+							qualBean
+									.setQualifierValue(item.getAssociationQualifier().getQualifierText().getContent());
+						}
+
+						session.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 					}
 					}
-				
-				batchInserter.executeBatch();
-				return null;
 			}
 
-			@ClearCache
-			private void insertAssociationQualifier(String codingSchemeId,  String associationTargetId, String parentId,
-					AssociationQualification qual, BatchInserter batchInserter) {
-				String qualUId = createUniqueId();
-				InsertAssociationQualificationOrUsageContextBean qualBean = new InsertAssociationQualificationOrUsageContextBean();
-				qualBean.setReferenceUId(associationTargetId );
-				qualBean.setUId(qualUId);
-				qualBean.setPrefix(getPrefixResolver().resolvePrefixForCodingScheme(
-						codingSchemeId));
-				qualBean.setQualifierName(qual.getAssociationQualifier());
-				qualBean.setEntryStateUId(createUniqueId());
-
-				if (qual.getQualifierText() != null) {
-					qualBean
-							.setQualifierValue(qual.getQualifierText().getContent());
-				}
-
-				batchInserter.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
-				
-			}	
-		});
-	}
 	
 	/* (non-Javadoc)
 	 * @see org.lexevs.dao.database.access.association.AssociationDao#insertAssociationSource(java.lang.String, java.lang.String, org.LexGrid.relations.AssociationSource)
@@ -646,7 +806,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public void insertAssociationSource(String codingSchemeId,
 			String associationPredicateId, AssociationSource source){
 		this.insertAssociationSource(codingSchemeId, associationPredicateId, source, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 	
 	/* (non-Javadoc)
@@ -656,24 +816,15 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	@ClearCache
 	public void insertBatchAssociationSources(final String codingSchemeUId,
 			final String associationPredicateUId, final List<AssociationSource> batch) {
-		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		SqlSessionTemplate session = getSqlSessionTemplate();
 			
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				BatchInserter batchInserter = getBatchTemplateInserter(executor);
-				
-				batchInserter.startBatch();
 				
 				for(AssociationSource source : batch) {
-					insertAssociationSource(codingSchemeUId, associationPredicateUId, source, batchInserter);
+					insertAssociationSource(codingSchemeUId, associationPredicateUId, source, session);
 				}
-				
-				batchInserter.executeBatch();
-				
-				return null;
+
 			}	
-		});
-	}
+
 	
 	/**
 	 * Insert into transitive closure.
@@ -684,7 +835,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * @param sourceEntityCodeNamespace the source entity code namespace
 	 * @param targetEntityCode the target entity code
 	 * @param targetEntityCodeNamespace the target entity code namespace
-	 * @param executor the executor
+	 * @param session the executor
 	 * 
 	 * @return the string
 	 */
@@ -696,7 +847,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String targetEntityCode,
 			String targetEntityCodeNamespace, 
 			String path,
-			Inserter executor) {
+			SqlSessionTemplate session) {
 		
 		String id = this.createUniqueId();
 		
@@ -710,7 +861,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setTargetEntityCodeNamespace(targetEntityCodeNamespace);
 		bean.setPath(path);
 		
-		executor.insert(INSERT_TRANSITIVE_CLOSURE_SQL, bean);
+		session.insert(INSERT_TRANSITIVE_CLOSURE_SQL, bean);
 		
 		return id;
 		
@@ -734,7 +885,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 				targetEntityCode,
 				targetEntityCodeNamespace,
 				path,
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 	
 
@@ -750,13 +901,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		
 		final String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
+		SqlSessionTemplate session = this.getSqlSessionTemplate();
 
-			public Object doInSqlMapClient(SqlMapExecutor executor)
-					throws SQLException {
-				BatchInserter batchInserter = getBatchTemplateInserter(executor);
-				
-				batchInserter.startBatch();
+
 				
 				for(TransitiveClosureBatchInsertItem item : batch){
 					doInsertIntoTransitiveClosure(
@@ -767,14 +914,10 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 							item.getTargetEntityCode(),
 							item.getTargetEntityCodeNamespace(),
 							item.getPath(),
-							batchInserter);
+							session);
 				}
 
-				batchInserter.executeBatch();
 
-				return null;
-			}
-		});
 	}
 
 
@@ -784,12 +927,12 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	 * @param codingSchemeUId the coding scheme id
 	 * @param associationPredicateUId the association predicate id
 	 * @param source the source
-	 * @param inserter the inserter
+	 * @param session the inserter
 	 */
 	@ClearCache
 	public void insertAssociationSource(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
-			Inserter inserter) {
+			SqlSessionTemplate session) {
 		Assert
 				.isTrue(
 						source.getTarget().length > 0
@@ -799,13 +942,13 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		for (AssociationTarget target : source.getTarget()) {
 
 			associationTargetDao.insertAssociationTarget(codingSchemeUId,
-					associationPredicateUId, source, target, inserter);
+					associationPredicateUId, source, target, session);
 		}
 
 		for (AssociationData data : source.getTargetData()) {
 
 			associationDataDao.insertAssociationData(codingSchemeUId,
-					associationPredicateUId, source, data, inserter);
+					associationPredicateUId, source, data, session);
 		}
 	}
 	
@@ -828,7 +971,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		contextBean.setQualifierName(qualifier.getAssociationQualifier());
 		contextBean.setQualifierValue(qualifier.getQualifierText().getContent());
 		
-		this.getSqlMapClientTemplate().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, 
 				contextBean);
 	}
@@ -845,7 +988,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setPrefix(prefix);
 		bean.setParam1(associationPredicateUid);
 		
-		AssociationPredicate predicate = (AssociationPredicate) this.getSqlMapClientTemplate().queryForObject(
+		AssociationPredicate predicate = (AssociationPredicate) this.getSqlSessionTemplate().selectOne(
 				GET_ASSOCIATION_PREDICATE_FOR_ID_SQL, 
 				bean);
 		
@@ -863,7 +1006,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setParam1(codingSchemeId);
 		bean.setParam2(relationsUid);
 		
-		Relations relations = (Relations) this.getSqlMapClientTemplate().queryForObject(GET_RELATIONS_FOR_UID_SQL, bean);
+		Relations relations = (Relations) this.getSqlSessionTemplate().selectOne(GET_RELATIONS_FOR_UID_SQL, bean);
 	
 		if (getAssocPredicates) {
 			List<String> assocPredicateUIdList = this
@@ -890,7 +1033,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public String getKeyForAssociationInstanceId(String codingSchemeId, String associationInstanceId){
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				
 				GET_ASSOCIATION_UID_SQL_FROM_INSTANCE_ID, 
 				new PrefixedParameter(prefix, associationInstanceId));
@@ -938,24 +1081,24 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String relationUId, Relations relation) {
 
 		return this.doInsertHistoryRelation(codingSchemeUId, relationUId, relation,
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 	
 	protected String doInsertHistoryRelation(String codingSchemeUId, 
 			String relationUId,
 			Relations relation, 
-			Inserter inserter) {
+			SqlSessionTemplate sqlSessionTemplate) {
 		
 		String historyPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 
-		InsertOrUpdateRelationsBean relationData = (InsertOrUpdateRelationsBean) this.getSqlMapClientTemplate()
-				.queryForObject(GET_RELATION_ATTRIBUTES_BY_UID_SQL,
+		InsertOrUpdateRelationsBean relationData = (InsertOrUpdateRelationsBean) this.getSqlSessionTemplate()
+				.selectOne(GET_RELATION_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, relationUId));
 		
 		relationData.setPrefix(historyPrefix);
 		
-		inserter.insert(INSERT_RELATIONS_SQL, relationData);
+		sqlSessionTemplate.insert(INSERT_RELATIONS_SQL, relationData);
 	
 		String historyRelationEntryStateUid = relationData.getEntryStateUId();
 
@@ -984,7 +1127,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setUId(relationUId);
 		bean.setEntryStateUId(entryStateUId);
 		
-		this.getSqlMapClientTemplate().update(UPDATE_RELATION_BY_UID_SQL, bean);
+		this.getSqlSessionTemplate().update(UPDATE_RELATION_BY_UID_SQL, bean);
 		
 		List<String> associationPredicateUids = this.getAssociationPredicateUIdsForRelationsUId(codingSchemeUId, relationUId);
 		
@@ -1014,7 +1157,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		String prefix = 
 			this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().
+		this.getSqlSessionTemplate().
 			delete(DELETE_RELATION_BY_UID_SQL, new PrefixedParameter(prefix, relationUId));	
 	}
 
@@ -1033,7 +1176,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 		bean.setEntryStateUId(entryStateUId);
 		bean.setUId(relationUId);
 		
-		this.getSqlMapClientTemplate().update(UPDATE_RELATION_VERSIONABLE_CHANGES_BY_UID_SQL, bean);
+		this.getSqlSessionTemplate().update(UPDATE_RELATION_VERSIONABLE_CHANGES_BY_UID_SQL, bean);
 		
 		return entryStateUId;
 	}
@@ -1045,7 +1188,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_RELATION_ENTRYSTATE_UID_SQL, 
 				new PrefixedParameterTuple(prefix, relationUId, entryStateUId));
 	}
@@ -1056,11 +1199,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_DATA_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUId, relationUId));
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ENTITY_ASSOCIATION_QUALS_FOR_RELATION_UID_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUId, relationUId));
 	}
@@ -1069,7 +1212,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public String getRelationLatestRevision(String csUId, String relationUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_RELATION_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, relationUId));	
 	}
@@ -1081,11 +1224,11 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String codingSchemeId, String associationPredicateId, int start,
 			int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_ALL_ENTITY_ASSOC_ENTITY_GUID_OF_CODINGSCHEME_SQL, 
 				new PrefixedParameter(prefix, codingSchemeId), 
-				start, 
-				pageSize);
+				new RowBounds(start, 
+				pageSize));
 	}
 	
 	
@@ -1094,7 +1237,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 	public List<InstanceToGuid> getGuidToInstanceMap(String codingSchemeId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		PrefixedTableParameterBean bean = new PrefixedTableParameterBean(prefix);
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_COMPLETE_INSTANCE_TO_GUID_MAP, 
 				bean);
 	}
@@ -1106,7 +1249,7 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String codingSchemeId,List<String> guids) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_GRAPHDB_TRIPLES_OF_CODINGSCHEME_SQL, 
 				new PrefixedParameterCollection(prefix, codingSchemeId, guids));
 	}
@@ -1117,9 +1260,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String codingSchemeId, String associationName, String code, int start, int pagesize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_ANCESTOR_TRIPLES_OF_CODINGSCHEME_SQL, 
-				new PrefixedParameterTriple(prefix, codingSchemeId, code, associationName), start, pagesize);
+				new PrefixedParameterTriple(prefix, codingSchemeId, code, associationName), new RowBounds(start, pagesize));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -1128,9 +1271,9 @@ public class IbatisAssociationDao extends AbstractIbatisDao implements Associati
 			String codingSchemeId, String associationName, String code, int start, int pagesize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeId);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_DESCENDANT_TRIPLES_OF_CODINGSCHEME_SQL, 
-				new PrefixedParameterTriple(prefix, codingSchemeId, code, associationName), start, pagesize);
+				new PrefixedParameterTriple(prefix, codingSchemeId, code, associationName), new RowBounds(start, pagesize));
 	}
 	/**
 	 * @return the propertyDao
