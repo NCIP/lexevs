@@ -756,7 +756,7 @@ java -Xmx6000M -XX:MaxPermSize=256M -Djava.library.path=linux_x86_64/ -cp lbGUI.
 		lgResourceReader, lgValueSets,lbExamples,
 		loader-framework-core, abstract-rrf-loader, 
 		umls-loader, meta-loader, lbGUI, lbTest">
-		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve" zip64Mode="always">
+		<jar jarfile="${pkg-components}/lexbig.jar" filesetmanifest="merge" duplicate="preserve" >
 			<zipgroupfileset dir="${temp.pkg}" includes="*.jar"/>		  
 		</jar>
 		<copy file="${file.dir}/epljar.license.txt" tofile="${pkg-components}/lexbig.license.txt"/>
