@@ -94,7 +94,7 @@
 	<mappers>
 		<mapper resource="ibatis/v20/common.xml"/>
 			<mapper resource="ibatis/v20/entity.xml"/>
-			<mapper resource="ibatis/v20/CodingScheme.xml"/>
+			<mapper resource="ibatis/v20/codingScheme.xml"/>
 			<mapper resource="ibatis/v20/versions.xml"/>
 			<mapper resource="ibatis/v20/tableMetadata.xml"/>
 			<mapper resource="ibatis/v20/property.xml"/>
