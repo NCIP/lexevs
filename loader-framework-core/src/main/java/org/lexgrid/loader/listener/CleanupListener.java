@@ -6,20 +6,19 @@ import java.util.Date;
 import org.LexGrid.LexBIG.DataModel.Core.AbsoluteCodingSchemeVersionReference;
 import org.LexGrid.LexBIG.DataModel.Core.types.CodingSchemeVersionStatus;
 import org.LexGrid.LexBIG.DataModel.InterfaceElements.types.ProcessState;
-import org.lexevs.dao.database.operation.LexEvsDatabaseOperations;
-import org.lexevs.dao.database.service.codingscheme.CodingSchemeService;
 import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.locator.LexEvsServiceLocator;
 import org.lexevs.system.service.SystemResourceService;
 import org.lexgrid.loader.constants.LoaderConstants;
 import org.lexgrid.loader.data.codingScheme.CodingSchemeIdSetter;
 import org.lexgrid.loader.logging.LoggingBean;
-import org.lexgrid.loader.properties.impl.PropertiesFactory;
 import org.lexgrid.loader.setup.JobRepositoryManager;
 import org.lexgrid.loader.staging.StagingManager;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
+
+
 
 /**
  * The listener interface for receiving cleanup events.
@@ -83,10 +82,6 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 		}
 		
 		super.getLogger().getProcessStatus().setEndTime(new Date());
-	}
-	
-	private String getParameterFromJobExecution(String parameter, JobExecution jobExecution){
-		return jobExecution.getJobInstance().getJobParameters().getString(parameter);
 	}
 	
 
@@ -176,4 +171,6 @@ public class CleanupListener extends LoggingBean implements JobExecutionListener
 	public void setCodingSchemeIdSetter(CodingSchemeIdSetter codingSchemeIdSetter) {
 		this.codingSchemeIdSetter = codingSchemeIdSetter;
 	}
+
+
 }

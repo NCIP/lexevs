@@ -12,7 +12,9 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.Statistics;
+import net.sf.ehcache.statistics.StatisticsGateway;
+import net.sf.ehcache.statistics.extended.ExtendedStatistics;
+import net.sf.ehcache.statistics.extended.ExtendedStatisticsImpl;
 import net.sf.ehcache.config.ConfigurationFactory;
 
 import org.lexevs.logging.LoggerFactory;
@@ -45,16 +47,16 @@ private Map<String,CacheWrapper<String,Object>> caches = new HashMap<String,Cach
 		sb.append("\n===============================");
 		sb.append("\n         Cache Statistics      \n");
 		
-		float hits = 0;
+		long hits = 0;
 		float misses = 0;
 		float memoryUsage = 0;
 
 		for(String cacheName : this.cacheManager.getCacheNames()) {
 			Cache cache = this.cacheManager.getCache(cacheName);
 			
-			Statistics stats = cache.getStatistics();
-			hits += stats.getCacheHits();
-			misses += stats.getCacheMisses();
+			StatisticsGateway stats = cache.getStatistics();
+			hits += stats.cacheHitCount();
+			misses += stats.cacheHitCount();
 			
 			sb.append("\n" + cache.getStatistics().toString());
 			float cacheMemory = getMegaBytesFromBytes(cache.calculateInMemorySize());

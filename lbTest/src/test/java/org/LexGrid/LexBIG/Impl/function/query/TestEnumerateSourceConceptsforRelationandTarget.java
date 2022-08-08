@@ -25,7 +25,7 @@ public class TestEnumerateSourceConceptsforRelationandTarget extends LexBIGServi
         CodedNodeGraph cng = ServiceHolder.instance().getLexBIGService().getNodeGraph(THES_SCHEME, null, null);
 
         cng.restrictToAssociations(Constructors.createNameAndValueList("Anatomic_Structure_Has_Location"), null);
-
+        cng.restrictToAnonymous(true);
         ConvenienceMethods cm = new ConvenienceMethods(ServiceHolder.instance().getLexBIGService());
 
         cng = cng.restrictToTargetCodes(cm.createCodedNodeSet(new String[] { "Membranous_Labyrinth" }, THES_SCHEME, null));

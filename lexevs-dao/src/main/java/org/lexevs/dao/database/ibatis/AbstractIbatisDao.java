@@ -2,17 +2,15 @@
 package org.lexevs.dao.database.ibatis;
 
 import org.lexevs.dao.database.access.AbstractBaseDao;
-import org.lexevs.dao.database.ibatis.batch.InOrderOrderingBatchInserterDecorator;
 import org.lexevs.dao.database.ibatis.batch.SqlMapClientTemplateInserter;
-import org.lexevs.dao.database.ibatis.batch.SqlMapExecutorBatchInserter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
-import org.lexevs.dao.database.inserter.BatchInserter;
 import org.lexevs.dao.database.inserter.Inserter;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.orm.ibatis.SqlMapClientTemplate;
+//import org.springframework.orm.ibatis.SqlMapClientTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
+//import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 /**
  * The Class AbstractIbatisDao.
@@ -22,10 +20,13 @@ import com.ibatis.sqlmap.client.SqlMapExecutor;
 public abstract class AbstractIbatisDao extends AbstractBaseDao implements InitializingBean {
 
 	/** The sql map client template. */
-	private SqlMapClientTemplate sqlMapClientTemplate;
+	private SqlSessionTemplate sqlSessionTemplate;
+	
+	/** The sql map client template. */
+	private SqlSessionTemplate sqlSessionBatchTemplate;
 	
 	/** The non batch template inserter. */
-	private Inserter nonBatchTemplateInserter;
+	//private Inserter nonBatchTemplateInserter;
 	
 	/** The VERSION s_ namespace. */
 	public static String VERSIONS_NAMESPACE = "Versions.";
@@ -42,7 +43,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
 	 */
 	public void afterPropertiesSet() throws Exception {
-		setNonBatchTemplateInserter(new SqlMapClientTemplateInserter(this.getSqlMapClientTemplate()));
+		//setNonBatchTemplateInserter(new SqlMapClientTemplateInserter(this.getSqlSessionTemplate()));
 	}
 	
 	
@@ -61,8 +62,8 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 * 
 	 * @param sqlMapClientTemplate the new sql map client template
 	 */
-	public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
-		this.sqlMapClientTemplate = sqlMapClientTemplate;
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlMapClientTemplate) {
+		this.sqlSessionTemplate = sqlMapClientTemplate;
 	}
 
 	/**
@@ -70,32 +71,42 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 * 
 	 * @return the sql map client template
 	 */
-	public SqlMapClientTemplate getSqlMapClientTemplate() {
-		return sqlMapClientTemplate;
+	public SqlSessionTemplate getSqlSessionTemplate() {
+		return sqlSessionTemplate;
 	}
 	
-	public BatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
-		return new InOrderOrderingBatchInserterDecorator(
-					new SqlMapExecutorBatchInserter(executor));
+	public SqlSessionTemplate getSqlSessionBatchTemplate() {
+		return sqlSessionBatchTemplate;
 	}
 
-	/**
-	 * Sets the non batch template inserter.
-	 * 
-	 * @param nonBatchTemplateInserter the new non batch template inserter
-	 */
-	public void setNonBatchTemplateInserter(Inserter nonBatchTemplateInserter) {
-		this.nonBatchTemplateInserter = nonBatchTemplateInserter;
+
+	public void setSqlSessionBatchTemplate(SqlSessionTemplate sqlSessionBatchTemplate) {
+		this.sqlSessionBatchTemplate = sqlSessionBatchTemplate;
 	}
 
-	/**
-	 * Gets the non batch template inserter.
-	 * 
-	 * @return the non batch template inserter
-	 */
-	public Inserter getNonBatchTemplateInserter() {
-		return nonBatchTemplateInserter;
-	}
+
+//	public BatchInserter getBatchTemplateInserter(SqlMapExecutor executor) {
+//		return new InOrderOrderingBatchInserterDecorator(
+//					new SqlMapExecutorBatchInserter(executor));
+//	}
+
+//	/**
+//	 * Sets the non batch template inserter.
+//	 * 
+//	 * @param nonBatchTemplateInserter the new non batch template inserter
+//	 */
+//	public void setNonBatchTemplateInserter(Inserter nonBatchTemplateInserter) {
+//		this.nonBatchTemplateInserter = nonBatchTemplateInserter;
+//	}
+//
+//	/**
+//	 * Gets the non batch template inserter.
+//	 * 
+//	 * @return the non batch template inserter
+//	 */
+//	public Inserter getNonBatchTemplateInserter() {
+//		return nonBatchTemplateInserter;
+//	}
 	
 	/**
 	 * Method finds if the given entryState already exists. 
@@ -106,7 +117,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 */
 	public boolean entryStateExists(String prefix, String entryStateUId) {
 		
-		String count = (String) this.getSqlMapClientTemplate().queryForObject(
+		String count = (String) this.getSqlSessionTemplate().selectOne(
 				CHECK_ENTRYSTATE_EXISTS, 
 				new PrefixedParameter(prefix, entryStateUId));
 		
@@ -125,7 +136,7 @@ public abstract class AbstractIbatisDao extends AbstractBaseDao implements Initi
 	 */
 	public boolean vsEntryStateExists(String prefix, String entryStateUId) {
 		
-		String count = (String) this.getSqlMapClientTemplate().queryForObject(
+		String count = (String) this.getSqlSessionTemplate().selectOne(
 				CHECK_VSENTRYSTATE_EXISTS, 
 				new PrefixedParameter(prefix, entryStateUId));
 		

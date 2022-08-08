@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.orm.hibernate3.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 
 /**
  * Spring Bean Post Processor to set the dynamically determined Dialect.

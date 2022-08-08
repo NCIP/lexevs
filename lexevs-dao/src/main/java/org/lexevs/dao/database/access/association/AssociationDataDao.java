@@ -5,6 +5,7 @@ import org.LexGrid.relations.AssociationData;
 import org.LexGrid.relations.AssociationSource;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.inserter.Inserter;
+import org.mybatis.spring.SqlSessionTemplate;
 
 public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 
@@ -39,7 +40,7 @@ public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 
 	public String insertAssociationData(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
-			AssociationData data, Inserter inserter);
+			AssociationData data, SqlSessionTemplate session);
 
 	public AssociationData getAssociationDataByUid(
 			String codingSchemeUId,
@@ -60,5 +61,8 @@ public interface AssociationDataDao extends LexGridSchemaVersionAwareDao {
 			AssociationData data);
 
 	public AssociationSource getTripleByUid(String codingSchemeUId, String tripleUid);
+
+	String insertMybatisBatchAssociationData(String codingSchemeUId, String associationPredicateUId,
+			AssociationSource source, AssociationData data, SqlSessionTemplate session);
 
 }

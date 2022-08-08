@@ -34,7 +34,7 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 	@Override
 	public String getSystemReleaseUIdByUri(String systemReleaseUri) {
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEM_RELEASE_ID_BY_URI, 
+		return (String) this.getSqlSessionTemplate().selectOne(GET_SYSTEM_RELEASE_ID_BY_URI, 
 			systemReleaseUri);
 	}
 	
@@ -46,13 +46,13 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 
 	@Override
 	public SystemRelease getSystemReleaseMetadataById(String systemReleaseId) {
-		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEM_RELEASE_METADATA_BY_ID, 
+		return (SystemRelease) this.getSqlSessionTemplate().selectOne(GET_SYSTEM_RELEASE_METADATA_BY_ID, 
 				systemReleaseId);
 	}
 
 	@Override
 	public SystemRelease getSystemReleaseMetadataByUri(String systemReleaseUri) {
-		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEM_RELEASE_METADATA_BY_URI, 
+		return (SystemRelease) this.getSqlSessionTemplate().selectOne(GET_SYSTEM_RELEASE_METADATA_BY_URI, 
 				systemReleaseUri);
 	}
 
@@ -77,7 +77,7 @@ public static String VERSIONS_NAMESPACE = "Versions.";
 		insertSysRelBean.setReleaseUId(releaseGuid);
 		insertSysRelBean.setSystemRelease(systemRelease);
 		
-		this.getSqlMapClientTemplate().insert(INSERT_INTO_SYSTEM_RELEASE, 
+		this.getSqlSessionTemplate().insert(INSERT_INTO_SYSTEM_RELEASE, 
 				insertSysRelBean);	
 		
 		return releaseGuid;

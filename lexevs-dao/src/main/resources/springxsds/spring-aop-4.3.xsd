@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <xsd:schema xmlns="http://www.springframework.org/schema/aop"
-		xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-		xmlns:beans="http://www.springframework.org/schema/beans"
-		xmlns:tool="http://www.springframework.org/schema/tool"
-		targetNamespace="http://www.springframework.org/schema/aop"
-		elementFormDefault="qualified"
-		attributeFormDefault="unqualified">
+			xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			xmlns:tool="http://www.springframework.org/schema/tool"
+			targetNamespace="http://www.springframework.org/schema/aop"
+			elementFormDefault="qualified"
+			attributeFormDefault="unqualified">
 
-	<xsd:import namespace="http://www.springframework.org/schema/beans"/>
-	<xsd:import namespace="http://www.springframework.org/schema/tool"/>
+	<xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="https://www.springframework.org/schema/beans/spring-beans-4.3.xsd"/>
+	<xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="https://www.springframework.org/schema/tool/spring-tool-4.3.xsd"/>
 
 	<xsd:annotation>
 		<xsd:documentation><![CDATA[
@@ -56,6 +55,15 @@
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
+			<xsd:attribute name="expose-proxy" type="xsd:boolean" default="false">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+	Indicate that the proxy should be exposed by the AOP framework as a
+	ThreadLocal for retrieval via the AopContext class. Off by default,
+	i.e. no guarantees that AopContext access will work.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 
@@ -63,6 +71,9 @@
 		<xsd:annotation>
 			<xsd:documentation source="java:org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"><![CDATA[
 	Enables the use of the @AspectJ style of Spring AOP.
+
+	See org.springframework.context.annotation.EnableAspectJAutoProxy Javadoc
+	for information on code-based alternatives to this XML element.
 			]]></xsd:documentation>
 		</xsd:annotation>
 		<xsd:complexType>
@@ -84,6 +95,15 @@
 					]]></xsd:documentation>
 				</xsd:annotation>
 			</xsd:attribute>
+			<xsd:attribute name="expose-proxy" type="xsd:boolean" default="false">
+				<xsd:annotation>
+					<xsd:documentation><![CDATA[
+	Indicate that the proxy should be exposed by the AOP framework as a
+	ThreadLocal for retrieval via the AopContext class. Off by default,
+	i.e. no guarantees that AopContext access will work.
+					]]></xsd:documentation>
+				</xsd:annotation>
+			</xsd:attribute>
 		</xsd:complexType>
 	</xsd:element>
 
@@ -91,11 +111,11 @@
 		<xsd:complexType>
 			<xsd:annotation>
 				<xsd:documentation source="java:org.springframework.aop.scope.ScopedProxyFactoryBean"><![CDATA[
-		Marks a bean definition as being a scoped proxy.
+	Marks a bean definition as being a scoped proxy.
 
-		A bean marked as such will be exposed via a proxy, with the 'real'
-		bean instance being retrieved from some other source (such as a
-		HttpSession) as and when required.
+	A bean marked as such will be exposed via a proxy, with the 'real'
+	bean instance being retrieved from some other source (such as a
+	HttpSession) as and when required.
 				]]></xsd:documentation>
 			</xsd:annotation>
 			<xsd:attribute name="proxy-target-class" type="xsd:boolean" default="true">
@@ -107,19 +127,6 @@
 				</xsd:annotation>
 			</xsd:attribute>
 		</xsd:complexType>
-	</xsd:element>
-
-	<xsd:element name="spring-configured">
-		<xsd:annotation>
-			<xsd:documentation source="java:org.springframework.beans.factory.aspectj.AnnotationBeanConfigurerAspect"><![CDATA[
-	Signals the current application context to apply dependency injection
-	to non-managed objects that are instantiated outside of the Spring bean
-	factory (typically classes annotated with the @Configurable annotation).
-			]]></xsd:documentation>
-		</xsd:annotation>
-		<xsd:simpleType>
-			<xsd:restriction base="xsd:string"/>
-		</xsd:simpleType>
 	</xsd:element>
 
 	<xsd:complexType name="aspectType">
@@ -175,7 +182,7 @@
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:choice>
-		<xsd:attribute name="id" type="xsd:ID">
+		<xsd:attribute name="id" type="xsd:string">
 			<xsd:annotation>
 				<xsd:documentation><![CDATA[
 	The unique identifier for an aspect.
@@ -189,7 +196,7 @@
 				]]></xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
-		<xsd:attribute name="order" type="xsd:int">
+		<xsd:attribute name="order" type="xsd:token">
 			<xsd:annotation>
 				<xsd:documentation source="java:org.springframework.core.Ordered"><![CDATA[
 	Controls the ordering of the execution of this aspect when multiple
@@ -219,7 +226,7 @@
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>
-		<xsd:attribute name="id" type="xsd:ID">
+		<xsd:attribute name="id" type="xsd:string" use="required">
 			<xsd:annotation>
 				<xsd:documentation><![CDATA[
 	The unique identifier for a pointcut.
@@ -230,23 +237,10 @@
 			<xsd:annotation>
 				<xsd:documentation><![CDATA[
 	The pointcut expression.
-	
+
 	For example : 'execution(* com.xyz.myapp.service.*.*(..))'
 				]]></xsd:documentation>
 			</xsd:annotation>
-		</xsd:attribute>
-		<xsd:attribute name="type" default="aspectj">
-			<xsd:annotation>
-				<xsd:documentation><![CDATA[
-	The type of pointcut expression (see the associated enumeration).
-				]]></xsd:documentation>
-			</xsd:annotation>
-			<xsd:simpleType>
-				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="aspectj"/>
-					<xsd:enumeration value="regex"/>
-				</xsd:restriction>
-			</xsd:simpleType>
 		</xsd:attribute>
 	</xsd:complexType>
 
@@ -264,16 +258,27 @@
 		<xsd:attribute name="implement-interface" type="xsd:string" use="required">
 			<xsd:annotation>
 				<xsd:documentation source="java:java.lang.Class"><![CDATA[
-	The fully qualified name of the interface that will be introduced. 
+	The fully qualified name of the interface that will be introduced.
 				]]></xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
-		<xsd:attribute name="default-impl" type="xsd:string" use="required">
+		<xsd:attribute name="default-impl" type="xsd:string">
 			<xsd:annotation>
 				<xsd:documentation source="java:java.lang.Class"><![CDATA[
 	The fully qualified name of the class that will be instantiated to serve
-	as the default implementation of the introduced interface. 
+	as the default implementation of the introduced interface.
 				]]></xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="delegate-ref" type="xsd:string">
+			<xsd:annotation>
+				<xsd:documentation><![CDATA[
+	A reference to the bean that will serve
+	as the default implementation of the introduced interface.
+				]]></xsd:documentation>
+				<xsd:appinfo>
+					<tool:annotation kind="ref"/>
+				</xsd:appinfo>
 			</xsd:annotation>
 		</xsd:attribute>
 	</xsd:complexType>
@@ -308,7 +313,7 @@
 		<xsd:attribute name="arg-names" type="xsd:string">
 			<xsd:annotation>
 				<xsd:documentation><![CDATA[
-	The comma-delimited list of advice method argument (parameter) names 
+	The comma-delimited list of advice method argument (parameter) names
 	that will be matched from pointcut parameters.
 				]]></xsd:documentation>
 			</xsd:annotation>
@@ -337,7 +342,7 @@
 					<xsd:annotation>
 						<xsd:documentation><![CDATA[
 	The name of the method parameter to which the thrown exception must
-	be passed.	
+	be passed.
 						]]></xsd:documentation>
 					</xsd:annotation>
 				</xsd:attribute>
@@ -353,8 +358,7 @@
 				</tool:annotation>
 			</xsd:appinfo>
 		</xsd:annotation>
-		<!-- Rick : ID type written explicitly as opposed to being imported (c.f. [SPR-2290] -->
-		<xsd:attribute name="id" type="xsd:ID"/>
+		<xsd:attribute name="id" type="xsd:string"/>
 		<xsd:attribute name="advice-ref" type="xsd:string" use="required">
 			<xsd:annotation>
 				<xsd:documentation><![CDATA[
@@ -362,7 +366,7 @@
 				]]></xsd:documentation>
 				<xsd:appinfo>
 					<tool:annotation kind="ref">
-						<tool:expected-type type="org.springframework.aop.Advisor"/>
+						<tool:expected-type type="org.aopalliance.aop.Advice"/>
 					</tool:annotation>
 				</xsd:appinfo>
 			</xsd:annotation>
@@ -381,7 +385,7 @@
 				]]></xsd:documentation>
 			</xsd:annotation>
 		</xsd:attribute>
-		<xsd:attribute name="order" type="xsd:int">
+		<xsd:attribute name="order" type="xsd:token">
 			<xsd:annotation>
 				<xsd:documentation source="java:org.springframework.core.Ordered"><![CDATA[
 	Controls the ordering of the execution of this advice when multiple

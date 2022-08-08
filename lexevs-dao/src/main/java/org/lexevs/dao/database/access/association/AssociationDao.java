@@ -16,6 +16,7 @@ import org.lexevs.dao.database.access.association.batch.TransitiveClosureBatchIn
 import org.lexevs.dao.database.access.association.model.InstanceToGuid;
 import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.association.model.graphdb.GraphDbTriple;
+import org.lexevs.dao.database.ibatis.association.parameter.BatchAssociationInsertBean;
 
 /**
  * The Interface AssociationDao.
@@ -120,6 +121,8 @@ public interface AssociationDao extends LexGridSchemaVersionAwareDao {
 	public void insertBatchAssociationSources(String codingSchemeUId,
 			String associationPredicateUId, List<AssociationSource> batch);
 
+	public void insertMybatisBatchAssociationSources(final String codingSchemeUId,
+			final List<BatchAssociationInsertBean> list);
 	/**
 	 * Insert relations.
 	 * 

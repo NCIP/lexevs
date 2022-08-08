@@ -1,38 +1,35 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Association">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:22 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Association">
 
-	<resultMap
-		class="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean"
-		id="qualContextResult">
-		<result property="uid" column="entityAssnQualsGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="referenceUId" column="referenceGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="qualifierName" column="qualifierName" />
-		<result property="qualifierValue" column="qualifierValue" />
-		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+	<resultMap id="qualContextResult" type="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean">
+		<result property="uid" column="entityAssnQualsGuid" />
+		<result property="referenceUId" column="referenceGuid" />
+		<result property="qualifierName" column="qualifierName"/>
+		<result property="qualifierValue" column="qualifierValue"/>
+		<result property="entryStateUId" column="esGuid" />
 	</resultMap>
 	
-     <insert id="insertAssociationQualificationOrUsageContext" parameterClass="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean">
-		INSERT INTO $prefix$entityAssnQuals (
+     <insert id="insertAssociationQualificationOrUsageContext" parameterType="org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean">
+		INSERT INTO ${prefix}entityAssnQuals (
 			entityAssnQualsGuid,
 			referenceGuid,
 			qualifierName,
 			qualifierValue,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#referenceUId,handler=variablePrimaryKeyTypeHandler#,
-			#qualifierName#, 
-			#qualifierValue#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+			#{uid}, 
+			#{referenceUId},
+			#{qualifierName}, 
+			#{qualifierValue},
+			#{entryStateUId}
 		)
   </insert>
   
-  <delete id="deleteEntityAssocQualsByCodingSchemeUId" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+  <delete id="deleteEntityAssocQualsByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
   		DELETE FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		WHERE 
   			referenceGuid IN
@@ -41,56 +38,54 @@
   			eate.entityAssnsGuid
   			
   		FROM
-  			$prefix$entityAssnsToEntity eate
+  			${prefix}entityAssnsToEntity eate
 	
   		LEFT JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eate.associationPredicateGuid
   			
   		LEFT JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
   		ON
   			ap.relationGuid =
   			rel.relationGuid
   			
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   		)
   </delete>  
   
-  <delete id="deleteEntityAssocQualsByCodingSchemeUIdUseInnerJoin" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+  <delete id="deleteEntityAssocQualsByCodingSchemeUIdUseInnerJoin" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
   		DELETE 
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   		FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		INNER JOIN
-  			$prefix$entityAssnsToEntity eate
+  			${prefix}entityAssnsToEntity eate
   		ON
-  			$prefix$entityAssnQuals.referenceGuid = eate.entityAssnsGuid
+  			${prefix}entityAssnQuals.referenceGuid = eate.entityAssnsGuid
 	
   		INNER JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eate.associationPredicateGuid
   		INNER JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
  		ON
   			ap.relationGuid =
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   </delete>
   
-  <delete id="deleteDataAssocQualsByCodingSchemeUId" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+  <delete id="deleteDataAssocQualsByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
   		DELETE FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		WHERE 
   			referenceGuid IN
@@ -99,56 +94,54 @@
   			eatd.entityAssnsDataGuid
   			
   		FROM
-  			$prefix$entityAssnsToData eatd
+  			${prefix}entityAssnsToData eatd
 	
   		LEFT JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eatd.associationPredicateGuid
   			
   		LEFT JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
   		ON
   			ap.relationGuid =
   			rel.relationGuid
   			
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   		)
   </delete>
   
-  <delete id="deleteDataAssocQualsByCodingSchemeUIdUseInnerJoin" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+  <delete id="deleteDataAssocQualsByCodingSchemeUIdUseInnerJoin" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
   		DELETE 
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   		FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		INNER JOIN
-  			$prefix$entityAssnsToData eatd
+  			${prefix}entityAssnsToData eatd
   		ON
-  			$prefix$entityAssnQuals.referenceGuid = eatd.entityAssnsDataGuid
+  			${prefix}entityAssnQuals.referenceGuid = eatd.entityAssnsDataGuid
 	
   		INNER JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eatd.associationPredicateGuid
   		INNER JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
  		ON
   			ap.relationGuid =
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   </delete>
   
-  <delete id="deleteEntityAssocQualsByRelationUId" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  <delete id="deleteEntityAssocQualsByRelationUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		DELETE FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		WHERE 
   			referenceGuid IN
@@ -157,59 +150,57 @@
   			eate.entityAssnsGuid
   			
   		FROM
-  			$prefix$entityAssnsToEntity eate
+  			${prefix}entityAssnsToEntity eate
 	
   		LEFT JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eate.associationPredicateGuid
   		LEFT JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
  		ON
   			ap.relationGuid =
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+  			rel.relationGuid = #{param2
   		)
   </delete>  
   
-  <delete id="deleteEntityAssocQualsByRelationUIdUseInnerJoin" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  <delete id="deleteEntityAssocQualsByRelationUIdUseInnerJoin" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		DELETE 
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   		FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		INNER JOIN
-  			$prefix$entityAssnsToEntity eate
+  			${prefix}entityAssnsToEntity eate
   		ON
-  			$prefix$entityAssnQuals.referenceGuid = eate.entityAssnsGuid
+  			${prefix}entityAssnQuals.referenceGuid = eate.entityAssnsGuid
 	
   		INNER JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eate.associationPredicateGuid
   		INNER JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
  		ON
   			ap.relationGuid =
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+  			rel.relationGuid = #{param2
   </delete>
   
-  <delete id="deleteDataAssocQualsByRelationUId" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  <delete id="deleteDataAssocQualsByRelationUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		DELETE FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		WHERE 
   			referenceGuid IN
@@ -218,85 +209,82 @@
   			eatd.entityAssnsDataGuid
   			
   		FROM
-  			$prefix$entityAssnsToData eatd
+  			${prefix}entityAssnsToData eatd
 	
   		LEFT JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eatd.associationPredicateGuid
   			
   		LEFT JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
   		ON
   			ap.relationGuid =
   			rel.relationGuid
   			
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+  			rel.relationGuid = #{param2
   		)
   </delete>
   
   
-  <delete id="deleteDataAssocQualsByRelationUIdUseInnerJoin" 
-  	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+  <delete id="deleteDataAssocQualsByRelationUIdUseInnerJoin" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
   		DELETE
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   		FROM
-  			$prefix$entityAssnQuals
+  			${prefix}entityAssnQuals
   			
   		INNER JOIN
-  			$prefix$entityAssnsToData eatd
+  			${prefix}entityAssnsToData eatd
   		ON
-  			$prefix$entityAssnQuals.referenceGuid = eatd.entityAssnsDataGuid
+  			${prefix}entityAssnQuals.referenceGuid = eatd.entityAssnsDataGuid
 	
   		INNER JOIN
-  			$prefix$associationPredicate ap
+  			${prefix}associationPredicate ap
   		ON
   			ap.associationPredicateGuid =
   			eatd.associationPredicateGuid
   		INNER JOIN
-  			$prefix$relation rel
+  			${prefix}relation rel
  		ON
   			ap.relationGuid =
   			rel.relationGuid
  	
   		WHERE
-  			rel.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+  			rel.codingSchemeGuid = #{param1
   			AND
-  			rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+  			rel.relationGuid = #{param2
   </delete>
 
-	<delete id="deleteAllAssocMultiAttribByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAllAssocMultiAttribByAssocUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$entityAssnQuals
+			${prefix}entityAssnQuals
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1
 	</delete>
 	
-	<delete id="deleteAssocQualsByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAssocQualsByAssocUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$entityAssnQuals
+			${prefix}entityAssnQuals
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1
 		AND
 			qualifierName != 'usageContext'
 	</delete>
 	
-	<delete id="deleteAssocUsageContextByAssocUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAssocUsageContextByAssocUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$entityAssnQuals
+			${prefix}entityAssnQuals
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1
 		AND
 			qualifierName = 'usageContext'
 	</delete>
 
-	<select id="getAssnQualsByReferenceUId" resultMap="qualContextResult"
-		remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+	<select id="getAssnQualsByReferenceUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple" resultMap="qualContextResult">
 		SELECT 
 			assnQual.entityAssnQualsGuid,
 			assnQual.referenceGuid,
@@ -304,32 +292,30 @@
 			assnQual.qualifierValue,
 			assnQual.entryStateGuid esGuid
 		FROM
-			$prefix$entityAssnQuals assnQual
+			${prefix}entityAssnQuals assnQual
 		WHERE
-			assnQual.referenceGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			assnQual.referenceGuid = #{param2
 	</select>
 	
-	<update id="updateAssnQualsEntryStateUId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<update id="updateAssnQualsEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
-			$prefix$entityAssnQuals
+			${prefix}entityAssnQuals
 		SET
-			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param2
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1
 		AND
 			qualifierName != 'usageContext'
 	</update>
 	
-	<update id="updateAssnUsageContextEntryStateUId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<update id="updateAssnUsageContextEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
-			$prefix$entityAssnQuals
+			${prefix}entityAssnQuals
 		SET
-			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param2
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1
 		AND
 			qualifierName = 'usageContext'
 	</update>
-</sqlMap>
+</mapper>

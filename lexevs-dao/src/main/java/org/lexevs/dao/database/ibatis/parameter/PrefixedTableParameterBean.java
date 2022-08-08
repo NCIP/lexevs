@@ -1,6 +1,9 @@
 
 package org.lexevs.dao.database.ibatis.parameter;
 
+import org.lexevs.logging.Logger;
+import org.lexevs.system.constants.SystemVariables;
+
 /**
  * The Class PrefixedTableParameterBean.
  * 
@@ -11,6 +14,8 @@ public class PrefixedTableParameterBean {
 	/** The prefix. */
 	private String prefix;
 	
+	private String defaultPrefix;
+		
 	private String actualTableSetPrefix;
 	
 	/**
@@ -18,6 +23,7 @@ public class PrefixedTableParameterBean {
 	 */
 	public PrefixedTableParameterBean() {
 		super();
+		defaultPrefix = getDefaultPrefix();
 	}
 
 	/**
@@ -58,5 +64,19 @@ public class PrefixedTableParameterBean {
 		} else {
 			return actualTableSetPrefix;
 		}
+	}
+	
+	public String getDefaultPrefix() {
+		
+		try {
+			defaultPrefix = new SystemVariables(new Logger()).getAutoLoadDBPrefix();
+		} catch (Exception e) {
+			throw new RuntimeException("Database prefix resolution from SystemVariables Failed", e);
+		}
+		return defaultPrefix;
+	}
+	
+	public void setDefaultPrefix(String defaultPrefix) {
+		this.defaultPrefix = defaultPrefix;
 	}
 }

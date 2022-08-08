@@ -33,6 +33,7 @@ public class ErrorReportingGraphDbDataSourceManager implements InitializingBean 
 		if (!strictArangoRequirement){
 			logger.info("Skipping graph database connection");
 			System.out.println("Skipping graph database connection");
+			System.out.println("Graph database will not be initialized");
 			return;
 		}
 		

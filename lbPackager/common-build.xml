@@ -80,7 +80,8 @@
   <!-- ====================================================================== -->
 
   <target name="clean" depends="clean:dependencies" description="Clean the output directory">
-    <delete dir="${build.dir}"/>
+<!--    <delete dir="${build.dir}"/>-->
+<!--      <delete dir="${lib.dir}" />-->
   </target>
 
   <!-- ====================================================================== -->

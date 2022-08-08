@@ -1,10 +1,13 @@
 
 package org.lexevs.dao.database.access.association;
 
+import java.util.List;
+
 import org.LexGrid.relations.AssociationSource;
 import org.LexGrid.relations.AssociationTarget;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
-import org.lexevs.dao.database.inserter.Inserter;
+import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
+import org.mybatis.spring.SqlSessionTemplate;
 
 public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 
@@ -38,7 +41,7 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 
 	public String insertAssociationTarget(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
-			AssociationTarget target, Inserter inserter);
+			AssociationTarget target, SqlSessionTemplate session);
 
 	public boolean entryStateExists(String codingSchemeUId, String entryStateUId);
 	
@@ -48,4 +51,12 @@ public interface AssociationTargetDao extends LexGridSchemaVersionAwareDao {
 			String codingSchemeUId, 
 			String tripleUid, 
 			String revisionId);
+	
+	public InsertOrUpdateAssociationTargetBean buildInsertOrUpdateAssociationTargetBean(String prefix,
+			String associationPredicateUId, String associationTargetUId, AssociationSource source,
+			AssociationTarget target, String entryStateUId);
+
+	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> list, String prefix);
+
+	void testNonBatchInsertAssociationTarget(InsertOrUpdateAssociationTargetBean bean);
 }

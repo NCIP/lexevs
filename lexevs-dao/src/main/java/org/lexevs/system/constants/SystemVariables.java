@@ -63,8 +63,9 @@ public class SystemVariables {
     private String autoLoadDBDriver_;
     private String autoLoadDBUsername_;
     private String autoLoadDBPassword_;
-    private String autoLoadStrictArrangoRequirement_;
     private String relativePathStart_;
+
+    private boolean autoLoadStrictArrangoRequirement_;
     
     private String assertedValueSetVersion;
 	private String assertedValueSetHierarchyVSRelation;
@@ -350,7 +351,7 @@ public class SystemVariables {
                 logger.error("INVALID VALUE in config file for GRAPH_DB_CONNECTION_TIMEOUT_LENGTH - defaulting to 60000 ms");
                 graphdbConnectTimeOutLength = 60000;
             }
-        	autoLoadStrictArrangoRequirement_ = getProperty(props, "STRICT_ARANGO_REQUIREMENT");
+        	autoLoadStrictArrangoRequirement_ = Boolean.parseBoolean(getProperty(props, "STRICT_ARANGO_REQUIREMENT"));
             
             mysql_collation= getNullableProperty(props, "MYSQL_COLLATION", DEFAULT_MYSQL_COLLATION);
 
@@ -628,16 +629,23 @@ public class SystemVariables {
     /**
 	 * @return the autoLoadStrictArrangoRequirement_
 	 */
-	public String getAutoLoadStrictArrangoRequirement() {
-		return autoLoadStrictArrangoRequirement_;
-	}
+    public boolean getAutoLoadStrictArrangoRequirement(){
+        return autoLoadStrictArrangoRequirement_;
+    }
+    //	public String getAutoLoadStrictArrangoRequirement() {
+//		return autoLoadStrictArrangoRequirement_;
+//	}
 
-	/**
+
+    /**
 	 * @param autoLoadStrictArrangoRequirement_ the autoLoadStrictArrangoRequirement_ to set
 	 */
-	public void setAutoLoadStrictArrangoRequirement_(String autoLoadStrictArrangoRequirement_) {
-		this.autoLoadStrictArrangoRequirement_ = autoLoadStrictArrangoRequirement_;
-	}
+    public void setAutoLoadStrictArrangoRequirement_(boolean autoLoadStrictArrangoRequirement_) {
+        this.autoLoadStrictArrangoRequirement_ = autoLoadStrictArrangoRequirement_;
+    }
+    //	public void setAutoLoadStrictArrangoRequirement_(String autoLoadStrictArrangoRequirement_) {
+//		this.autoLoadStrictArrangoRequirement_ = autoLoadStrictArrangoRequirement_;
+//	}
 
 	/**
      * @return the logLocation

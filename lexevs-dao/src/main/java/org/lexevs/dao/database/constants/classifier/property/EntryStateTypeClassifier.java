@@ -2,7 +2,7 @@
 package org.lexevs.dao.database.constants.classifier.property;
 
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
-import org.springframework.batch.classify.Classifier;
+import org.springframework.classify.Classifier;
 
 public class EntryStateTypeClassifier implements Classifier<EntryStateType,String>{
 

@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.LexGrid.LexBIG.Exceptions.LBParameterException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
@@ -13,7 +15,8 @@ import org.lexevs.dao.database.access.registry.RegistryDao;
 import org.lexevs.registry.model.Registry;
 import org.lexevs.registry.model.RegistryEntry;
 import org.lexevs.registry.service.Registry.ResourceType;
-import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 /**
@@ -21,7 +24,8 @@ import org.springframework.util.Assert;
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-public class HibernateRegistryDao extends HibernateDaoSupport implements RegistryDao {
+@Transactional(readOnly=false)
+public class HibernateRegistryDao extends org.springframework.orm.hibernate5.support.HibernateDaoSupport implements RegistryDao {
 	
 	/** The Constant REGISTRY_ID. */
 	private static final int REGISTRY_ID = 0;
@@ -64,7 +68,17 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	 */
 	public void deleteRegistryEntry(
 			RegistryEntry entry) {
-		this.getHibernateTemplate().delete(entry);
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.delete(entry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 
 	/* (non-Javadoc)
@@ -85,7 +99,18 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#insertRegistryEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void insertRegistryEntry(RegistryEntry entry) {
-		this.getHibernateTemplate().save(entry);
+
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.save(entry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 	
 	/* (non-Javadoc)
@@ -115,7 +140,7 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		
 		Criterion uriRestriction = Restrictions.eq("resourceUri", uri);
 		
-		List<RegistryEntry> entries = this.getHibernateTemplate().findByCriteria(		
+		List<RegistryEntry> entries = (List<RegistryEntry>) this.getHibernateTemplate().findByCriteria(		
 				criteria.add(Restrictions.and(uriRestriction, typeRestriction)));
 		
 		return entries;
@@ -125,7 +150,18 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	 * @see org.lexevs.dao.database.access.registry.RegistryDao#updateRegistryEntry(org.lexevs.registry.model.RegistryEntry)
 	 */
 	public void updateRegistryEntry(RegistryEntry entry) {
-		this.getHibernateTemplate().merge(entry);
+		
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.merge(entry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 
 	/* (non-Javadoc)
@@ -134,7 +170,17 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 	public void updateLastUsedDbIdentifier(String databaseIdentifier) {
 		Registry registry = this.getRegistryMetadataEntry();
 		registry.setLastUsedDbIdentifer(databaseIdentifier);
-		this.getHibernateTemplate().update(registry);	
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.update(registry);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }	
 	}
 
 	/* (non-Javadoc)
@@ -195,8 +241,17 @@ public class HibernateRegistryDao extends HibernateDaoSupport implements Registr
 		
 		Date now = new Date(); 
 		metadata.setLastUpdateTime(new Timestamp(now.getTime()));
-		
-		this.getHibernateTemplate().save(metadata);
+        Transaction transaction = null;
+        try (Session session = this.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            session.save(metadata);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
 	}
 
 	/**
