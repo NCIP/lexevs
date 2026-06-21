@@ -1,48 +1,46 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Versions">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:23 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Versions">
 
-	<resultMap id="entryStateResult" class="org.LexGrid.versions.EntryState">
-		<result property="containingRevision" column="currentRevisionId" />
-		<result property="relativeOrder" column="relativeOrder" />
-		<result property="changeType" column="changeType" />
-		<result property="prevRevision" column="previousRevisionId" />
+	<resultMap id="entryStateResult" type="org.LexGrid.versions.EntryState">
+		<result property="containingRevision" column="currentRevisionId"/>
+		<result property="relativeOrder" column="relativeOrder"/>
+		<result property="changeType" column="changeType"/>
+		<result property="prevRevision" column="previousRevisionId"/>
 	</resultMap>
 	
-	<resultMap id="systemReleaseMetadataResult" class="org.LexGrid.versions.SystemRelease">
-		<result property="releaseId" column="releaseId" />
-		<result property="releaseURI" column="releaseURI" />
-		<result property="releaseDate" column="releaseDate" />
-		<result property="releaseAgency" column="releaseAgency" />
-		<result property="basedOnRelease" column="basedOnRelease" />
-		<result property="entityDescription.content" column="description" />
+	<resultMap id="systemReleaseMetadataResult" type="org.LexGrid.versions.SystemRelease">
+		<result property="releaseId" column="releaseId"/>
+		<result property="releaseURI" column="releaseURI"/>
+		<result property="releaseDate" column="releaseDate"/>
+		<result property="releaseAgency" column="releaseAgency"/>
+		<result property="basedOnRelease" column="basedOnRelease"/>
+		<result property="entityDescription.content" column="description"/>
 	</resultMap>
 	
-	<select id="getSystemReleaseGuidByUri" parameterClass="string" resultMap="Common.uidResult" remapResults="true" >
+	<select id="getSystemReleaseGuidByUri" parameterType="string" resultMap="Common.uidResult">
 		SELECT
 			sysRel.releaseGuid AS uidKey
 		FROM
 			${defaultPrefix}systemRelease sysRel
 		WHERE
-			sysRel.releaseURI = #param1#	
+			sysRel.releaseURI = #{param1}	
      </select>
      
-    <select id="getPrevRevIdFromGivenRevIdForEntry" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean"
-		resultClass="string">
-	<![CDATA[
+    <select id="getPrevRevIdFromGivenRevIdForEntry" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultType="string">
+	
 	
 			SELECT
 				DISTINCT(r0.revisionId)
 			FROM
-				$prefix$entryState es0
+				${prefix}entryState es0
 			INNER JOIN
 				${defaultPrefix}revision r0		
 			ON
 				es0.revisionGuid = r0.revisionGuid
 			WHERE
-				es0.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#  
+				es0.entryGuid = #{param1}  
 			AND
 				(
 				r0.revAppliedDate = (
@@ -50,33 +48,31 @@
 				SELECT
 					MAX(r1.revAppliedDate)
 				FROM
-					$prefix$entryState es1
+					${prefix}entryState es1
 				LEFT JOIN
 					${defaultPrefix}revision r1		
 				ON
 					es1.revisionGuid = r1.revisionGuid
 				WHERE
-					es1.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+					es1.entryGuid = #{param1}
 				AND
 					es1.changeType!= 'DEPENDENT'	
 				AND 
-	        		r1.revAppliedDate <=
+	        		r1.revAppliedDate &lt;=
 			      		( 
 			      		SELECT
 				      		r2.revAppliedDate
 						FROM
-							$prefix$revision r2
+							${prefix}revision r2
 			      		WHERE
-			        		r2.revisionId = #param2#
+			        		r2.revisionId = #{param2}
 			     		)
 		     	)
 	     	)
-	]]>	
+		
 	</select>	
      
-     <select id="getSystemReleaseMetaDataByUri" 
-     	parameterClass="string" 
-     	resultMap="Versions.systemReleaseMetadataResult">
+     <select id="getSystemReleaseMetaDataByUri" parameterType="string" resultMap="Versions.systemReleaseMetadataResult">
 		SELECT
 			sysRel.releaseURI,
 			sysRel.releaseId,
@@ -87,12 +83,10 @@
 		FROM
 			${defaultPrefix}systemRelease sysRel
 		WHERE
-			sysRel.releaseURI = #param1#	
+			sysRel.releaseURI = #{param1}	
      </select>
      
-     <select id="getSystemReleaseMetaDataById" 
-     	parameterClass="string" 
-     	resultMap="Versions.systemReleaseMetadataResult">
+     <select id="getSystemReleaseMetaDataById" parameterType="string" resultMap="Versions.systemReleaseMetadataResult">
 		SELECT
 			sysRel.releaseURI,
 			sysRel.releaseId,
@@ -103,68 +97,63 @@
 		FROM
 			${defaultPrefix}systemRelease sysRel
 		WHERE
-			sysRel.releaseId = #param1#	
+			sysRel.releaseId = #{param1}	
      </select>
      
-  	<select id="getEntryStateByEntryUidAndRevisionId" 
-  		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-  		resultMap="Versions.entryStateResult">
+  	<select id="getEntryStateByEntryUidAndRevisionId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Versions.entryStateResult">
 		SELECT
 			es.changeType changeType,
 			es.relativeOrder relativeOrder,
 			cr.revisionId currentRevisionId,
 			pr.revisionId previousRevisionId
 		FROM
-			$prefix$entryState es
+			${prefix}entryState es
 		LEFT JOIN ${defaultPrefix}revision cr ON
 			es.revisionGuid = cr.revisionGuid
 		LEFT JOIN ${defaultPrefix}revision pr ON
 			es.prevRevisionGuid = pr.revisionGuid
 		WHERE
-			es.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			es.entryGuid = #{param1}
 		AND
-			cr.revisionId = #param2#		
+			cr.revisionId = #{param2}		
      </select>
 
-	<select id="getPreviousRevisionIdForEntryUid" 
-	parameterClass="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultClass="string">
+	<select id="getPreviousRevisionIdForEntryUid" parameterType="org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean" resultType="string">
 		SELECT
 			rev2.revisionId
 		FROM
 			${defaultPrefix}revision rev
 		INNER JOIN
-			$prefix$entryState es
+			${prefix}entryState es
 			ON es.revisionGuid = rev.revisionGuid
 		INNER JOIN
 			${defaultPrefix}revision rev2
 			ON es.prevRevisionGuid = rev2.revisionGuid
 		WHERE
-			es.entryGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			es.entryGuid = #{param2}
 		AND
-			rev.revisionId = #param1#	
+			rev.revisionId = #{param1}	
      </select>
      
-     <update id="updatePreviousEntryStateUIds" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
-     	UPDATE $prefix$entryState
+     <update id="updatePreviousEntryStateUIds" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+     	UPDATE ${prefix}entryState
 		SET 
-			prevEntryStateGuid = #param3,handler=variablePrimaryKeyTypeHandler#
+			prevEntryStateGuid = #{param3}
 		WHERE
-			prevEntryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			prevEntryStateGuid = #{param2}
 		AND
-			entryGuid = #param1#
+			entryGuid = #{param1}
      </update>
      
-	<update id="updateEntryStateById" parameterClass="map">
+	<update id="updateEntryStateById" parameterType="map">
 		UPDATE entryState
 		SET 
-			changeType = #entryState.changeType#
+			changeType = #{entryState.changeType}
 		where
-			entryStateId = #id#
+			entryStateId = #{id}
  	</update>
  	
- 	<insert id="insertSystemRelease" 
-		parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean">
+ 	<insert id="insertSystemRelease" parameterType="org.lexevs.dao.database.ibatis.versions.parameter.InsertSystemReleaseBean">
 		INSERT INTO ${defaultPrefix}systemRelease (
 			releaseGuid,
 			releaseURI,
@@ -175,18 +164,17 @@
 			description
 			)
 		VALUES (
-			#releaseUId,handler=variablePrimaryKeyTypeHandler#,
-			#systemRelease.releaseURI#,
-			#systemRelease.releaseId#,
-			#systemRelease.releaseDate#,
-			#systemRelease.basedOnRelease#,
-			#systemRelease.releaseAgency#,
-			#systemRelease.entityDescription.content#
+			#{releaseUId},
+			#{systemRelease.releaseURI},
+			#{systemRelease.releaseId},
+			#{systemRelease.releaseDate},
+			#{systemRelease.basedOnRelease},
+			#{systemRelease.releaseAgency},
+			#{systemRelease.entityDescription.content}
 			)
  	</insert>
  	
- 	<insert id="insertRevision" 
- 		parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean">
+ 	<insert id="insertRevision" parameterType="org.lexevs.dao.database.ibatis.versions.parameter.InsertRevisionBean">
 		INSERT INTO ${defaultPrefix}revision (
 			revisionGuid,
 			releaseGuid,			
@@ -199,58 +187,58 @@
 			description
 			)
 		VALUES (
-			#revisionGuid,handler=variablePrimaryKeyTypeHandler#,	
+			#{revisionGuid},	
 					
-			<isNotNull property="releaseGuid">
-				#releaseGuid,handler=variablePrimaryKeyTypeHandler#,
-			</isNotNull>	
-			<isNull property="releaseGuid">
+			<if test="releaseGuid != null">
+				#{releaseGuid},
+			</if>	
+			<if test="releaseGuid == null">
 				null,
-			</isNull>
+			</if>
 					
-			#revision.revisionId#,	
+			#{revision.revisionId},	
 					
-			<isNotNull property="revision.changeAgent">
-				#revision.changeAgent#,
-			</isNotNull>	
-			<isNull property="revision.changeAgent">
+			<if test="revision != null and revision.changeAgent != null">
+				#{revision.changeAgent},
+			</if>	
+			<if test="revision == null or revision.changeAgent == null">
 				null,
-			</isNull>	
+			</if>	
 				
-			<isNotNull property="revision.revisionDate">
-				#revision.revisionDate#, 
-			</isNotNull>	
-			<isNull property="revision.revisionDate">
+			<if test="revision != null and revision.revisionDate != null">
+				#{revision.revisionDate}, 
+			</if>	
+			<if test="revision == null or revision.revisionDate == null">
 				null,
-			</isNull>	
+			</if>	
 				
-			#revAppliedDate#,	
+			#{revAppliedDate},	
 					
-			<isNotNull property="revision.editOrder">
-				#revision.editOrder#, 
-			</isNotNull>
-			<isNull property="revision.editOrder">
+			<if test="revision != null and revision.editOrder != null">
+				#{revision.editOrder}, 
+			</if>
+			<if test="revision == null or revision.editOrder == null">
 				null,
-			</isNull>	
+			</if>	
 						
-			<isNotNull property="revision.changeInstructions">
-				#revision.changeInstructions.content#,
-			</isNotNull>
-			<isNull property="revision.changeInstructions">
+			<if test="revision != null and revision.changeInstructions != null">
+				#{revision.changeInstructions.content},
+			</if>
+			<if test="revision == null or revision.changeInstructions == null">
 				null,
-			</isNull>
+			</if>
 			
-			<isNotNull property="revision.entityDescription">
-				#revision.entityDescription.content#				
-			</isNotNull>
-			<isNull property="revision.entityDescription">
+			<if test="revision != null and revision.entityDescription != null">
+				#{revision.entityDescription.content}				
+			</if>
+			<if test="revision == null or revision.entityDescription == null">
 				null
-			</isNull>
+			</if>
 			)
  	</insert>
  	
- 	<insert id="insertEntryState" parameterClass="org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean">
-		INSERT INTO $prefix$entryState (
+ 	<insert id="insertEntryState" parameterType="org.lexevs.dao.database.ibatis.versions.parameter.InsertEntryStateBean">
+		INSERT INTO ${prefix}entryState (
 			entryStateGuid,
 			entryGuid,
 			entryType,
@@ -261,382 +249,361 @@
 			prevEntryStateGuid
 			)
 		VALUES (
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#,
-			#entryUId,handler=variablePrimaryKeyTypeHandler#,
-			#entryType:VARCHAR#,
-			#entryState.changeType:VARCHAR#,
-			#entryState.relativeOrder:NUMERIC#,
-			#revisionUId,handler=variablePrimaryKeyTypeHandler#,
-			#prevRevisionUId,handler=variablePrimaryKeyTypeHandler#,
-			#previousEntryStateUId,handler=variablePrimaryKeyTypeHandler#
+			#{entryStateUId},
+			#{entryUId},
+			#{entryType,jdbcType=VARCHAR},
+			#{entryState.changeType,jdbcType=VARCHAR},
+			#{entryState.relativeOrder,jdbcType=NUMERIC},
+			#{revisionUId},
+			#{prevRevisionUId},
+			#{previousEntryStateUId}
 			)
  	</insert>
  	
- 	<select id="getRevisionGuidFromId" parameterClass="string" resultClass="string">
+ 	<select id="getRevisionGuidFromId" parameterType="string" resultType="string">
    		SELECT
    			revisionGuid
    		FROM
    			${defaultPrefix}revision
 		WHERE
-			revisionId = #param1#
+			revisionId = #{param1}
    </select>
 
-	<select id="checkEntryStateExists" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="checkEntryStateExists" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			count(1)
 		FROM
-			$prefix$entryState es
+			${prefix}entryState es
 		WHERE
-			es.entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			es.entryStateGuid = #{param1}
      </select>
      
-     <select id="checkRevisionExistsInVSEntryState" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+     <select id="checkRevisionExistsInVSEntryState" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			count(1)
 		FROM
-			$prefix$vsEntryState es
+			${prefix}vsEntryState es
 		WHERE
-			es.revisionGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			es.revisionGuid = #{param1}
      </select>
 
-	<select id="checkRevisionExistsInEntryState" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="checkRevisionExistsInEntryState" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			count(1)
 		FROM
-			$prefix$entryState es
+			${prefix}entryState es
 		WHERE
-			es.revisionGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			es.revisionGuid = #{param1}
      </select>
      
-     <select id="checkSystemReleaseExistsInCodingScheme" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-     	resultClass="string" 
-     	remapResults="true">
+     <select id="checkSystemReleaseExistsInCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			count(1)
 		FROM
-			$prefix$codingScheme
+			${prefix}codingScheme
 		WHERE
-			releaseGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			releaseGuid = #{param1}
      </select>
      
-     <select id="checkSystemReleaseExistsInValueSetDefinition" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-     	resultClass="string" 
-     	remapResults="true">
+     <select id="checkSystemReleaseExistsInValueSetDefinition" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			count(1)
 		FROM
-			$prefix$valueSetDefinition
+			${prefix}valueSetDefinition
 		WHERE
-			releaseGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			releaseGuid = #{param1}
      </select>
      
-     <select id="checkSystemReleaseExistsInPickListDefinition" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-     	resultClass="string" 
-     	remapResults="true">
+     <select id="checkSystemReleaseExistsInPickListDefinition" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			count(1)
 		FROM
-			$prefix$vsPickList
+			${prefix}vsPickList
 		WHERE
-			releaseGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			releaseGuid = #{param1}
      </select>
 
-	<delete id="deleteAllEntrySateEntriesByEntryUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAllEntrySateEntriesByEntryUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			entryGuid = #{param1}
 	</delete>
 	
-	<update id="setPreviousEntryStatesNullByEntryUid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<update id="setPreviousEntryStatesNullByEntryUid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		UPDATE
-			$prefix$entryState
+			${prefix}entryState
 		SET
 			prevEntryStateGuid = NULL
 		WHERE
-			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			entryGuid = #{param1}
 	</update>
 	
-	<delete id="deleteAllCodingSchemeEntrySatesByCodingSchemeUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAllCodingSchemeEntrySatesByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			entryGuid = #{param1}
 	</delete>
 	
-	<delete id="deletaAllCSPropEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletaAllCSPropEntryStateOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				prop.propertyGuid
 			FROM
-				$prefix$codingScheme cs,
-				$prefix$property prop
+				${prefix}codingScheme cs,
+				${prefix}property prop
 			WHERE
 				prop.referenceGuid = cs.codingSchemeGuid 
 			AND
-				cs.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				cs.codingSchemeGuid = #{param2}
 			)
 	</delete>
 	
-    <delete id="deletaAllEntityPropertyEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+    <delete id="deletaAllEntityPropertyEntryStateOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				prop.propertyGuid
 			FROM
-				$prefix$entity ent,
-				$prefix$property prop
+				${prefix}entity ent,
+				${prefix}property prop
 			WHERE
 				prop.referenceGuid = ent.entityGuid
 			AND
-				ent.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				ent.codingSchemeGuid = #{param2}
 			)
 	</delete>
 	
-    <delete id="deletaAllEntityEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+    <delete id="deletaAllEntityEntryStateOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				entityGuid
 			FROM
-				$prefix$entity ent
+				${prefix}entity ent
 			WHERE
-				ent.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				ent.codingSchemeGuid = #{param2}
 			)
 	</delete>
 	
-    <delete id="deletaAllRelationPropertyEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+    <delete id="deletaAllRelationPropertyEntryStateOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				prop.propertyGuid
 			FROM
-				$prefix$relation rel,
-				$prefix$property prop
+				${prefix}relation rel,
+				${prefix}property prop
 			WHERE
 				prop.referenceGuid = rel.relationGuid
 			AND
-				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				rel.codingSchemeGuid = #{param2}
 			)
 	</delete>
 	
-	<delete id="deletaAllRelationEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletaAllRelationEntryStateOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				relationGuid
 			FROM
-				$prefix$relation rel
+				${prefix}relation rel
 			WHERE
-				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				rel.codingSchemeGuid = #{param2}
 			)
 	</delete>
 	
-	<delete id="deletaAllAssnTargetEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletaAllAssnTargetEntryStateOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				assnTarget.entityAssnsGuid
 			FROM
-				$prefix$relation rel,
-				$prefix$associationPredicate assnPred,
-				$prefix$entityAssnsToEntity assnTarget
+				${prefix}relation rel,
+				${prefix}associationPredicate assnPred,
+				${prefix}entityAssnsToEntity assnTarget
 			WHERE
 				assnTarget.associationPredicateGuid = assnPred.associationPredicateGuid
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				rel.codingSchemeGuid = #{param2}
 			)
 	</delete>
 	
-    <delete id="deletaAllAssnDataEntryStateOfCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+    <delete id="deletaAllAssnDataEntryStateOfCodingScheme" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				assnData.entityAssnsDataGuid
 			FROM
-				$prefix$relation rel,
-				$prefix$associationPredicate assnPred,
-				$prefix$entityAssnsToData assnData
+				${prefix}relation rel,
+				${prefix}associationPredicate assnPred,
+				${prefix}entityAssnsToData assnData
 			WHERE
 				assnData.associationPredicateGuid = assnPred.associationPredicateGuid
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.codingSchemeGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				rel.codingSchemeGuid = #{param2}
 			)
 	</delete>
 	
-	<delete id="deletaAllEntityPropEntryStateOfEntity" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletaAllEntityPropEntryStateOfEntity" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				prop.propertyGuid
 			FROM
-				$prefix$entity ent,
-				$prefix$property prop
+				${prefix}entity ent,
+				${prefix}property prop
 			WHERE
-				ent.entityGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				ent.entityGuid = #{param2}
 			AND
 				ent.entityGuid = prop.referenceGuid				
 			)
 	</delete>
 	
-	<delete id="deletaAllAssnTargetEntryStateOfRelation" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletaAllAssnTargetEntryStateOfRelation" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				assnTarget.entityAssnsGuid
 			FROM
-				$prefix$relation rel,
-				$prefix$associationPredicate assnPred,
-				$prefix$entityAssnsToEntity assnTarget
+				${prefix}relation rel,
+				${prefix}associationPredicate assnPred,
+				${prefix}entityAssnsToEntity assnTarget
 			WHERE
 				assnTarget.associationPredicateGuid = assnPred.associationPredicateGuid
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				rel.relationGuid = #{param2}
 			)
 	</delete>
 	
-	<delete id="deletaAllAssnDataEntryStateOfRelation" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletaAllAssnDataEntryStateOfRelation" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				assnData.entityAssnsDataGuid
 			FROM
-				$prefix$relation rel,
-				$prefix$associationPredicate assnPred,
-				$prefix$entityAssnsToData assnData
+				${prefix}relation rel,
+				${prefix}associationPredicate assnPred,
+				${prefix}entityAssnsToData assnData
 			WHERE
 				assnData.associationPredicateGuid = assnPred.associationPredicateGuid
 			AND
 				assnPred.relationGuid = rel.relationGuid
 			AND
-				rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				rel.relationGuid = #{param2}
 			)
 	</delete>
 
-    <delete id="deletaAllRelationPropertyEntryStateOfRelation" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+    <delete id="deletaAllRelationPropertyEntryStateOfRelation" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$entryState
+			${prefix}entryState
 		WHERE
-			entryType = #param1#
+			entryType = #{param1}
 		AND
 			entryGuid 
 		IN	( 
 			SELECT
 				prop.propertyGuid
 			FROM
-				$prefix$relation rel,
-				$prefix$property prop
+				${prefix}relation rel,
+				${prefix}property prop
 			WHERE
 				prop.referenceGuid = rel.relationGuid
 			AND
-				rel.relationGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				rel.relationGuid = #{param2}
 			)
 	</delete>
 	
-	<delete id="deleteRevisionById" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteRevisionById" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			${defaultPrefix}revision
 		WHERE
-			revisionId = #param1#
+			revisionId = #{param1}
 	</delete>		
 	
-	<delete id="deleteSystemReleaseById" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteSystemReleaseById" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			${defaultPrefix}systemRelease
 		WHERE
-			releaseId = #param1#
+			releaseId = #{param1}
 	</delete>
 	
-	<delete id="deleteSystemReleaseByUri" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteSystemReleaseByUri" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
 			${defaultPrefix}systemRelease
 		WHERE
-			releaseURI = #param1#
+			releaseURI = #{param1}
 	</delete>
 	
-	<select id="isValidRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="isValidRevision" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT
 			count(1)
 		FROM
-			$prefix$revision rev
+			${prefix}revision rev
 		WHERE
-			rev.revisionId = #param1#
+			rev.revisionId = #{param1}
      </select>
     
-    <select id="getRevisionIdByDate" remapResults="true"
-		resultClass="string" parameterClass="java.sql.Timestamp">
-		<![CDATA[
+    <select id="getRevisionIdByDate" parameterType="java.sql.Timestamp" resultType="string">
+		
 			SELECT
 				revisionId
 			FROM
@@ -648,8 +615,8 @@
 				FROM
 					${defaultPrefix}revision sub
 				WHERE
-					sub.revAppliedDate <= #param1#
+					sub.revAppliedDate &lt;= #{param1}
 			)
-		]]>	
+			
      </select> 
-</sqlMap>
+</mapper>

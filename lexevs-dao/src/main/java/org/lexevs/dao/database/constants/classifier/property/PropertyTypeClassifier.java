@@ -2,7 +2,7 @@
 package org.lexevs.dao.database.constants.classifier.property;
 
 import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
-import org.springframework.batch.classify.Classifier;
+import org.springframework.classify.Classifier;
 
 /**
  * The Class PropertyTypeClassifier.

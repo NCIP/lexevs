@@ -1,31 +1,31 @@
 
 package org.lexevs.dao.database.ibatis.ncihistory;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.NCIHistory.NCIChangeEvent;
 import org.LexGrid.versions.CodingSchemeVersion;
 import org.LexGrid.versions.SystemRelease;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.lexevs.cache.annotation.ClearCache;
-import org.lexevs.dao.database.access.association.batch.AssociationSourceBatchInsertItem;
 import org.lexevs.dao.database.access.ncihistory.NciHistoryDao;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
+import org.lexevs.dao.database.ibatis.ncihistory.parameter.InsertOrUpdateNciChangeEventBean;
+import org.lexevs.dao.database.ibatis.ncihistory.parameter.InsertOrUpdateNciHistoryBean;
+import org.lexevs.dao.database.ibatis.ncihistory.parameter.NCIHistoryResultSetWrapper;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
+import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
-import org.lexevs.dao.database.inserter.BatchInserter;
-import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.service.ncihistory.NciHistoryService;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.jdbc.UncategorizedSQLException;
-import org.springframework.orm.ibatis.SqlMapClientCallback;
 
-import com.ibatis.sqlmap.client.SqlMapExecutor;
 
 public class IbatisNciHistoryDao extends AbstractIbatisDao implements NciHistoryDao {
 	
@@ -74,7 +74,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 	
 	@Override
 	public void removeNciHistory(String codingSchemeUri) {
-		this.getSqlMapClientTemplate().delete(DELETE_SYSTEMRELEASE_SQL, new SequentialMappedParameterBean(codingSchemeUri));
+		this.getSqlSessionTemplate().delete(DELETE_SYSTEMRELEASE_SQL,
+				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), codingSchemeUri));
 	}
 
 	@Override
@@ -83,52 +84,82 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		String systemReleaseGuid = this.createUniqueId();
 		
-		this.getSqlMapClientTemplate().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_SYSTEM_RELEASE_SQL, 
-				new SequentialMappedParameterBean(systemReleaseGuid,codingSchemeUri, systemRelease));
+				buildInsertNciHistoryParamaterBean(
+						this.getPrefixResolver().resolveDefaultPrefix(),
+						systemReleaseGuid,
+						codingSchemeUri, 
+						systemRelease));
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<NCIChangeEvent> getAncestors(String codingSchemeUri, String conceptCode) {
-		return this.getSqlMapClientTemplate().queryForList(GET_ANCESTORS_SQL, 
-				new SequentialMappedParameterBean(
+		
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_ANCESTORS_SQL, 
+				new PrefixedParameterTuple(
+						this.getPrefixResolver().resolveDefaultPrefix(),
 						codingSchemeUri,
 						conceptCode));
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
+
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<SystemRelease> getBaseLines(String codingSchemeUri, Date releasedAfter,
 			Date releasedBefore) {
 		
-		return this.getSqlMapClientTemplate().queryForList(GET_BASELINES_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						releasedAfter,
-						releasedBefore));
+		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+				codingSchemeUri,
+				releasedAfter,
+				releasedBefore);
+		
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		
+		return this.getSqlSessionTemplate().selectList(GET_BASELINES_SQL, sParam
+				);
 	}
 
 	@Override
 	public CodingSchemeVersion getConceptCreateVersion(String codingSchemeUri, String conceptCode){
-		NCIChangeEvent event = (NCIChangeEvent) this.getSqlMapClientTemplate().queryForObject(GET_CONCEPT_CREATION_VERSION_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						conceptCode));
+		
+		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+				codingSchemeUri,
+				conceptCode);
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		
+		NCIHistoryResultSetWrapper wrapper = (NCIHistoryResultSetWrapper) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectOne(GET_CONCEPT_CREATION_VERSION_SQL, sParam);
 
-		return this.buildCodingSchemeVersion(codingSchemeUri, event);
+		
+
+		return this.buildCodingSchemeVersion(codingSchemeUri, wrapper.buildChangeEvent());
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<CodingSchemeVersion> getConceptChangeVersions(String codingSchemeUri, String conceptCode,
 			Date beginDate, Date endDate) {
-		List<NCIChangeEvent> events = (List<NCIChangeEvent>) this.getSqlMapClientTemplate().queryForList(GET_CONCEPT_CHANGE_VERSIONS_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						conceptCode,
-						beginDate,
-						endDate));
+		
+		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+				codingSchemeUri,
+				conceptCode,
+				beginDate,
+				endDate);
+		
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_CONCEPT_CHANGE_VERSIONS_SQL, 
+				sParam);
+		List<NCIChangeEvent> events = wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 		
 		if(CollectionUtils.isEmpty(events)){return null;}
 		
@@ -158,113 +189,147 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		return result;
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<NCIChangeEvent> getDescendants(String codingSchemeUri, String conceptCode) {
-		return this.getSqlMapClientTemplate().queryForList(GET_DECENDANTS_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						conceptCode));
+
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_DECENDANTS_SQL, new PrefixedParameterTuple(
+				this.getPrefixResolver().resolveDefaultPrefix(),
+				codingSchemeUri,
+				conceptCode));
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
+
 	}
 
 	@Override
 	public SystemRelease getEarliestBaseLine(String codingSchemeUri) {
-		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_EARLIEST_BASELINE_SQL, 
-				new SequentialMappedParameterBean(codingSchemeUri));
+		return (SystemRelease) this.getSqlSessionTemplate().selectOne(GET_EARLIEST_BASELINE_SQL, 
+				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), codingSchemeUri));
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<NCIChangeEvent> getEditActionList(String codingSchemeUri,
 			String conceptCode, Date date) {
-		return (List<NCIChangeEvent>) this.getSqlMapClientTemplate().queryForList(
-				GET_CHANGE_EVENT_FOR_DATE_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri, 
-						conceptCode,
-						date));
+		
+		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+				codingSchemeUri, 
+				conceptCode,
+				date);
+				
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+				
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) this.getSqlSessionTemplate().<NCIHistoryResultSetWrapper>selectList(
+				GET_CHANGE_EVENT_FOR_DATE_SQL, sParam); 
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
+
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<NCIChangeEvent> getEditActionList(String codingSchemeUri,
 			String conceptCode, Date beginDate, Date endDate) {
-		return (List<NCIChangeEvent>) this.getSqlMapClientTemplate().queryForList(
-				GET_CHANGE_EVENT_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri, 
-						conceptCode,
-						beginDate,
-						endDate));
+		
+		SequentialMappedParameterBean sParam = 	new SequentialMappedParameterBean(
+				codingSchemeUri, 
+				conceptCode,
+				beginDate,
+				endDate);
+				
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+				
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(
+						GET_CHANGE_EVENT_SQL, sParam);
+				
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<NCIChangeEvent> getEditActionList(String codingSchemeUri,
 			String conceptCode, String releaseURN) {
 		
-		return (List<NCIChangeEvent>) this.getSqlMapClientTemplate().queryForList(GET_CHANGE_EVENT_FOR_SYSTEM_RELEASE_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						conceptCode,
-						releaseURN));
+		SequentialMappedParameterBean sParam = 	new SequentialMappedParameterBean(
+				codingSchemeUri,
+				conceptCode,
+				releaseURN);
+				
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+		
+		List<NCIHistoryResultSetWrapper> wrappers = (List<NCIHistoryResultSetWrapper>) 
+				this.getSqlSessionTemplate()
+				.<NCIHistoryResultSetWrapper>selectList(GET_CHANGE_EVENT_FOR_SYSTEM_RELEASE_SQL, 
+				sParam);
+		
+		return wrappers.stream().map(x -> x.buildChangeEvent()).collect(Collectors.toList());
 	}
 
 	@Override
 	public SystemRelease getLatestBaseLine(String codingSchemeUri) {
-		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_LATEST_BASELINE_SQL, 
-				new SequentialMappedParameterBean(codingSchemeUri));
+		return (SystemRelease) this.getSqlSessionTemplate().selectOne(GET_LATEST_BASELINE_SQL, 
+			new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(), codingSchemeUri));
 	}
 
 	@Override
 	public SystemRelease getSystemReleaseForReleaseUri(String codingSchemeUri,
 			String releaseURN) {
-		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEMRELEASE_FOR_URI_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						releaseURN));
+		
+		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+				codingSchemeUri,
+				releaseURN);
+				
+				sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+				
+		return (SystemRelease) this.getSqlSessionTemplate().selectOne(GET_SYSTEMRELEASE_FOR_URI_SQL, 
+				sParam);
 	}
 	
 	@Override
 	public SystemRelease getSystemReleaseForReleaseUid(String codingSchemeUri,
 			String releaseUid) {
-		return (SystemRelease) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEMRELEASE_FOR_UID_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						releaseUid));
+		
+		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+				codingSchemeUri,
+				releaseUid);
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+				
+		return (SystemRelease) this.getSqlSessionTemplate().selectOne(GET_SYSTEMRELEASE_FOR_UID_SQL, 
+				sParam);
 	}
 	
 	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent) {
+		
+		this.getSqlSessionTemplate().insert(INSERT_NCI_CHANGEEVENT_SQL,
+				buildInsertNciChangeEventParamaterBean(
+				this.getPrefixResolver().resolveDefaultPrefix(),
+				releaseUid,
+				changeEvent));		
+	}
+	
+	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent, SqlSessionTemplate session) {
 
-		this.getSqlMapClientTemplate().insert(INSERT_NCI_CHANGEEVENT_SQL, 
-				new SequentialMappedParameterBean(
-						this.createUniqueId(),
+		session.insert(INSERT_NCI_CHANGEEVENT_SQL, 
+				buildInsertNciChangeEventParamaterBean(
+						this.getPrefixResolver().resolveDefaultPrefix(),
 						releaseUid,
 						changeEvent));	
 	}
 	
-	public void insertNciChangeEvent(String releaseUid, NCIChangeEvent changeEvent, Inserter inserter) {
 
-		inserter.insert(INSERT_NCI_CHANGEEVENT_SQL, 
-				new SequentialMappedParameterBean(
-						this.createUniqueId(),
-						releaseUid,
-						changeEvent));	
-	}
-	
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@ClearCache 
 	@Override
-	public void insertNciChangeEventBatch(String codingSchemeUri, List<NCIChangeEvent> changeEvents) {
+	public void insertNciChangeEventBatch(String codingSchemeUri, List<NCIChangeEvent> changeEvents){
 				
-				this.getSqlMapClientTemplate().execute(new SqlMapClientCallback(){
-				
-					public Object doInSqlMapClient(SqlMapExecutor executor)
-							throws SQLException {
-						BatchInserter batchInserter = getBatchTemplateInserter(executor);
+				SqlSessionTemplate session = this.getSqlSessionTemplate();
 						String systemReleaseUid = null;
-						batchInserter.startBatch();
+
 						
 						for(NCIChangeEvent item : changeEvents){
 							Assert.assertNotNull(item);
@@ -285,29 +350,28 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 						+ item.getEditDate();
 							System.out.println(sqlError);
 							//e.printStackTrace();
-							throw new SQLException(sqlError, e);}
-
+							}
+							
 							insertNciChangeEvent(
 									systemReleaseUid,
 									item,
-									batchInserter);
+									session);
 						}
-						
-						batchInserter.executeBatch();
-						
-						return null;
-					}	
-				});
+
 	}
 
 
 	@Override
 	public String getSystemReleaseUidForDate(String codingSchemeUri,
 			Date editDate) {
-		return (String) this.getSqlMapClientTemplate().queryForObject(GET_SYSTEMRELEASE_UID_FOR_DATE_SQL, 
-				new SequentialMappedParameterBean(
-						codingSchemeUri,
-						editDate));	
+		SequentialMappedParameterBean sParam = new SequentialMappedParameterBean(
+				codingSchemeUri,
+				editDate);
+				
+		sParam.setDefaultPrefix(this.getPrefixResolver().resolveDefaultPrefix());
+				
+		return (String) this.getSqlSessionTemplate().selectOne(GET_SYSTEMRELEASE_UID_FOR_DATE_SQL, 
+				sParam);	
 	}
 
 	@Override
@@ -315,27 +379,58 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		return DaoUtility.createNonTypedList(supportedDatebaseVersion);
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<String> getCodeListForVersion(String currentVersion) {
-		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_REFERENCE_LIST_FOR_VERSION, 
-				new SequentialMappedParameterBean(
+		return (List<String>) this.getSqlSessionTemplate().<String>selectList(GET_REFERENCE_LIST_FOR_VERSION, 
+				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(),
 						currentVersion));	
 	}
 	
 	@Override
 	public Date getDateForVersion(String currentVersion) {
-		return (Date) this.getSqlMapClientTemplate().queryForObject(GET_DATE_FOR_VERSION, 
-				new SequentialMappedParameterBean(
+		return (Date) this.getSqlSessionTemplate().selectOne(GET_DATE_FOR_VERSION, 
+				new PrefixedParameter(this.getPrefixResolver().resolveDefaultPrefix(),
 						currentVersion));	
 	}
 	
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public List<String> getVersionsForDateRange(String previousDate, String currentDate) {
-		return (List<String>) this.getSqlMapClientTemplate().queryForList(GET_VERSIONS_FOR_DATE_RANGE, 
-				new SequentialMappedParameterBean(
+		return (List<String>) this.getSqlSessionTemplate().<String>selectList(GET_VERSIONS_FOR_DATE_RANGE, 
+				new PrefixedParameterTuple(this.getPrefixResolver().resolveDefaultPrefix(),
 						previousDate, currentDate));	
+	}
+	
+	protected InsertOrUpdateNciHistoryBean buildInsertNciHistoryParamaterBean( String prefix,
+			String systemReleaseGuid, String codingSchemeUri, SystemRelease release) {
+		InsertOrUpdateNciHistoryBean bean = new InsertOrUpdateNciHistoryBean();
+		bean.setDefaultPrefix(prefix);
+		bean.setCodingSchemeUri(codingSchemeUri);
+		bean.setReleaseGuid(systemReleaseGuid);
+		bean.setReleaseURI(release.getReleaseURI());
+		bean.setReleaseId(release.getReleaseId());
+		bean.setReleaseDate(release.getReleaseDate());
+		bean.setBasedOnRelease(release.getBasedOnRelease());
+		bean.setReleaseAgency(release.getReleaseAgency());
+		bean.setDescription(release.getEntityDescription()==null? null: release.getEntityDescription().getContent());
+
+		return bean;
+	}
+	
+	protected InsertOrUpdateNciChangeEventBean buildInsertNciChangeEventParamaterBean(String prefix,
+			String releaseGuid, NCIChangeEvent event) {
+		InsertOrUpdateNciChangeEventBean bean = new InsertOrUpdateNciChangeEventBean();
+		bean.setDefaultPrefix(prefix);
+		bean.setNcitHistGuid(this.createUniqueId());
+		bean.setReleaseGuid(releaseGuid);
+		bean.setEntityCode(event.getConceptcode());
+		bean.setConceptName(event.getConceptName());
+		bean.setEditAction(event.getEditaction());
+		bean.setEditDate(event.getEditDate());
+		bean.setReferenceCode(event.getReferencecode());
+		bean.setReferenceCode(event.getReferencename());
+		return bean;
 	}
 	
 

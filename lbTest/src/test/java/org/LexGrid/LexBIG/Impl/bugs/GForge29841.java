@@ -34,13 +34,16 @@ public void testDuplicateInfoWithAnonymousClass() throws Throwable {
     	LexBIGService lbs = ServiceHolder.instance().getLexBIGService();
     	CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(PIZZA_SCHEME_VERSION);
     	CodedNodeGraph cng = lbs.getNodeGraph(PIZZA_SCHEME_NAME, csvt, null);
-    	
+    	CodedNodeGraph cng2 = lbs.getNodeGraph(PIZZA_SCHEME_NAME, csvt, null);
+    	cng = cng.restrictToAnonymous(true);
+    	cng2 = cng2.restrictToAnonymous(false);
+    	CodedNodeGraph cng3 = cng.union(cng2);
     	AssociatedConcept focus = new AssociatedConcept();
         focus.setCode("VegetarianPizza");
         focus.setCodeNamespace("pizza");
 
         int counter = 0; 
-        ResolvedConceptReferenceList list = cng.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
+        ResolvedConceptReferenceList list = cng3.resolveAsList(focus, true, false, 1, -1, null, null, null, null, -1);
         ResolvedConceptReference conRef = list.getResolvedConceptReference()[0];
         AssociationList assnList = conRef.getSourceOf();
         for (Association assn : assnList.getAssociation()) {

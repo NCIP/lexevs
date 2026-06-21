@@ -9,6 +9,7 @@ import org.LexGrid.relations.AssociationTarget;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
 import org.LexGrid.versions.EntryState;
 import org.LexGrid.versions.types.ChangeType;
+import org.apache.ibatis.session.SqlSession;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.versions.VersionsDao;
 import org.lexevs.dao.database.access.versions.VersionsDao.EntryStateType;
@@ -16,17 +17,25 @@ import org.lexevs.dao.database.constants.DatabaseConstants;
 import org.lexevs.dao.database.ibatis.AbstractIbatisDao;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertAssociationQualificationOrUsageContextBean;
 import org.lexevs.dao.database.ibatis.association.parameter.InsertOrUpdateAssociationTargetBean;
+import org.lexevs.dao.database.ibatis.mybatis.association.batch.BatchAssociationPrefixedTableNameSupplier;
+import org.lexevs.dao.database.ibatis.mybatis.association.batch.InsertAssociationTargetDynamicBatch.EntityAssnsToEntity;
+import org.lexevs.dao.database.ibatis.mybatis.association.batch.MybatisAssociationBatchInsertDao;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameter;
 import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.dynamic.sql.insert.render.BatchInsert;
+import org.mybatis.dynamic.sql.util.mybatis3.MyBatis3Utils;
+import org.mybatis.spring.SqlSessionTemplate;
 
 public class IbatisAssociationTargetDao extends AbstractIbatisDao implements
 		AssociationTargetDao {
 
 /** The versions dao. */
 private VersionsDao versionsDao;
+
+private  MybatisAssociationBatchInsertDao assnsBatchInsertDao;
 	/** */
 	private static String ASSOCIATION_NAMESPACE = "Association.";
 	/** */
@@ -44,7 +53,7 @@ private VersionsDao versionsDao;
 			+ "getAssnQualsByReferenceUId";
 
 	/** The INSER t_ associatio n_ qua l_ o r_ contex t_ sql. */
-	private static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE
+	protected static String INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL = ASSOCIATION_NAMESPACE
 			+ "insertAssociationQualificationOrUsageContext";
 
 	private static String UPDATE_ENTITY_ASSN_TO_ENTITY_BY_UID_SQL = ASSOCIATION_NAMESPACE
@@ -82,6 +91,8 @@ private VersionsDao versionsDao;
 	
 	private static String GET_ENTRYSTATE_UID_BY_ASSOCIATION_TARGET_UID_SQL = ASSOCIATION_NAMESPACE
 			+ "getEntryStateUidByAssociationTarget";
+	
+//	private static String INSERT_ENTITY_ASSOC_ENTITY_BATCH = ASSOCIATION_NAMESPACE  + "insertEntityAssnsToEntityBatch";
 
 	/** The supported datebase version. */
 	private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
@@ -105,7 +116,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		return 
-			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+			(AssociationSource) this.getSqlSessionTemplate().selectOne(
 					GET_TRIPLE_BY_UID, 
 					new PrefixedParameter(prefix, tripleUid));
 	}
@@ -123,7 +134,7 @@ private VersionsDao versionsDao;
 		bean.setParam2(revisionId);
 		
 		return 
-			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+			(AssociationSource) this.getSqlSessionTemplate().selectOne(
 					GET_HISTORY_TRIPLE_BY_UID_AND_REVISION_ID, 
 					bean);
 	}
@@ -133,7 +144,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTRYSTATE_UID_BY_ASSOCIATION_TARGET_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUid));
 	}
@@ -147,8 +158,22 @@ private VersionsDao versionsDao;
 				associationPredicateUId, 
 				source, 
 				target, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	} 
+	
+	@Override
+	public void insertMybatisBatchAssociationTarget(List<InsertOrUpdateAssociationTargetBean> list, String prefix) {
+		
+		BatchAssociationPrefixedTableNameSupplier.setPrefixedTable(prefix);
+
+		assnsBatchInsertDao.insertMybatisBatchAssociationTarget(list);
+	}
+	
+	@Override
+	public void testNonBatchInsertAssociationTarget(InsertOrUpdateAssociationTargetBean bean) {
+
+		this.getSqlSessionTemplate().insert(INSERT_ENTITY_ASSN_ENTITY_SQL, bean);
+	}
 
 	@Override
 	public String insertAssociationTarget(
@@ -181,14 +206,14 @@ private VersionsDao versionsDao;
 		bean.setUId(associationTargetUId);
 		bean.setEntryStateUId(entryStateUId);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_ENTITY_BY_UID_SQL, bean);
 		
 		AssociationQualification[] assocQual = target.getAssociationQualification();
 		
 		if (assocQual.length != 0) {
 			
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL,
 					new PrefixedParameter(prefix, associationTargetUId));
 			
@@ -205,10 +230,10 @@ private VersionsDao versionsDao;
 				}
 				qualBean.setEntryStateUId(entryStateUId);
 				
-				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				this.getSqlSessionTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
 		} else {
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
 					new PrefixedParameterTuple(prefix, associationTargetUId,
 							entryStateUId));
@@ -218,7 +243,7 @@ private VersionsDao versionsDao;
 		
 		if (usageContext.length != 0) {
 			
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ASSOC_USAGE_CONTEXT_BY_ASSOC_UID_SQL,
 					new PrefixedParameter(prefix, associationTargetUId));
 			
@@ -235,10 +260,10 @@ private VersionsDao versionsDao;
 				}
 				qualBean.setEntryStateUId(entryStateUId);
 				
-				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				this.getSqlSessionTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
 		} else {
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_ASSN_USAGECONTEXT_ENTRYSTATE_UID_BY_ID_SQL,
 					new PrefixedParameterTuple(prefix, associationTargetUId,
 							entryStateUId));
@@ -250,7 +275,7 @@ private VersionsDao versionsDao;
 	@Override
 	public String insertAssociationTarget(String codingSchemeUId,
 			String associationPredicateUId, AssociationSource source,
-			AssociationTarget target, Inserter inserter) {
+			AssociationTarget target, SqlSessionTemplate session) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
@@ -263,7 +288,7 @@ private VersionsDao versionsDao;
 				associationTargetUId, 
 				source, 
 				target,
-				inserter);
+				session);
 
 		this.versionsDao.insertEntryState(
 				codingSchemeUId,
@@ -272,7 +297,7 @@ private VersionsDao versionsDao;
 				EntryStateType.ENTITYASSNSTOENTITY, 
 				null,
 				target.getEntryState(), 
-				inserter);
+				session);
 
 		return associationTargetUId;
 	}
@@ -280,25 +305,15 @@ private VersionsDao versionsDao;
 	protected String doInsertAssociationTarget(String prefix, String associationPredicateUId,
 			String associationTargetUId, 
 			AssociationSource source, AssociationTarget target,
-			Inserter inserter) {
+			SqlSessionTemplate session) {
 
 		String entryStateUId = this.createUniqueId();
 
-		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
-
-		if (target.getAssociationInstanceId() == null
-				|| target.getAssociationInstanceId().trim().equals("")) {
-			target.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX + this.createRandomIdentifier());
-		}
+		InsertOrUpdateAssociationTargetBean bean = buildInsertOrUpdateAssociationTargetBean(
+				prefix,associationPredicateUId,associationTargetUId,source,target,entryStateUId );
 		
-		bean.setPrefix(prefix);
-		bean.setUId(associationTargetUId);
-		bean.setAssociationPredicateUId(associationPredicateUId);
-		bean.setEntryStateUId(entryStateUId);
-		bean.setAssociationSource(source);
-		bean.setAssociationTarget(target);
 
-		inserter.insert(INSERT_ENTITY_ASSN_ENTITY_SQL, bean);
+		session.insert(INSERT_ENTITY_ASSN_ENTITY_SQL, bean);
 
 		for (AssociationQualification qual : target
 				.getAssociationQualification()) {
@@ -316,7 +331,7 @@ private VersionsDao versionsDao;
 						.setQualifierValue(qual.getQualifierText().getContent());
 			}
 
-			inserter.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			session.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 		}
 
 		for (String context : target.getUsageContext()) {
@@ -331,11 +346,44 @@ private VersionsDao versionsDao;
 			contextBean.setQualifierValue(context);
 			contextBean.setEntryStateUId(entryStateUId);
 
-			inserter
+			session
 					.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, contextBean);
 		}
 		
 		return entryStateUId;
+	}
+
+	public InsertOrUpdateAssociationTargetBean buildInsertOrUpdateAssociationTargetBean(String prefix,
+			String associationPredicateUId, String associationTargetUId, AssociationSource source,
+			AssociationTarget target, String entryStateUId) {
+		InsertOrUpdateAssociationTargetBean bean = new InsertOrUpdateAssociationTargetBean();
+
+		if (target.getAssociationInstanceId() == null
+				|| target.getAssociationInstanceId().trim().equals("")) {
+			bean.setAssociationInstanceId(DatabaseConstants.GENERATED_ID_PREFIX + this.createRandomIdentifier());
+		}
+		
+		bean.setPrefix(prefix);
+		bean.setUId(associationTargetUId);
+		bean.setAssociationPredicateUId(associationPredicateUId);
+		bean.setEntryStateUId(entryStateUId);
+		bean.setAssociationSource(source);
+		bean.setAssociationTarget(target);
+		bean.setEntityAssnsGuid(associationTargetUId);
+		bean.setSourceEntityCode(source.getSourceEntityCode());
+		bean.setSourceEntityCodeNamespace(source.getSourceEntityCodeNamespace());
+		bean.setTargetEntityCode(target.getTargetEntityCode());
+		bean.setTargetEntityCodeNamespace(target.getTargetEntityCodeNamespace());
+		bean.setAssociationInstanceId(target.getAssociationInstanceId());
+		bean.setIsDefining(target.getIsDefining());
+		bean.setIsInferred(target.getIsInferred());
+		bean.setIsActive(target.getIsActive());
+		bean.setOwner(target.getOwner());
+		bean.setStatus(target.getStatus());
+		bean.setEffectiveDate(target.getEffectiveDate());
+		bean.setExpirationDate(target.getExpirationDate());
+
+		return bean;
 	}
 
 	/**
@@ -353,6 +401,14 @@ private VersionsDao versionsDao;
 		this.versionsDao = versionsDao;
 	}
 
+	public MybatisAssociationBatchInsertDao getAssnsBatchInsertDao() {
+		return assnsBatchInsertDao;
+	}
+
+	public void setAssnsBatchInsertDao(MybatisAssociationBatchInsertDao assnsBatchInsertDao) {
+		this.assnsBatchInsertDao = assnsBatchInsertDao;
+	}
+
 	@Override
 	public String getAssociationTargetUId(String codingSchemeUId,
 			String associationInstanceId) {
@@ -360,7 +416,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_ASSN_TO_ENTITY_UID_BY_INSTANCE_ID_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUId,
 						associationInstanceId));
@@ -377,13 +433,13 @@ private VersionsDao versionsDao;
 				codingSchemeUId);
 
 		InsertOrUpdateAssociationTargetBean assnTargetBean = (InsertOrUpdateAssociationTargetBean) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_ASSN_TARGET_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, associationTargetUId));
 
 		assnTargetBean.setPrefix(historyPrefix);
 
-		this.getNonBatchTemplateInserter().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_ENTITY_ASSN_ENTITY_SQL, assnTargetBean);
 
 		if (assnTargetBean.getAssnQualsAndUsageContext() != null) {
@@ -394,7 +450,7 @@ private VersionsDao versionsDao;
 
 				assocMultiAttrib.setPrefix(historyPrefix);
 
-				this.getSqlMapClientTemplate().insert(
+				this.getSqlSessionTemplate().insert(
 						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL,
 						assocMultiAttrib);
 			}
@@ -426,7 +482,7 @@ private VersionsDao versionsDao;
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(DELETE_ASSOC_TARGET_BY_UID_SQL,
+		this.getSqlSessionTemplate().delete(DELETE_ASSOC_TARGET_BY_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUId));
 	}
 
@@ -446,15 +502,15 @@ private VersionsDao versionsDao;
 		bean.setUId(associationTargetUId);
 		bean.setEntryStateUId(entryStateUId);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_ENTITY_VER_ATTRIB_BY_UID_SQL, bean);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
 				new PrefixedParameterTuple(prefix, associationTargetUId,
 						entryStateUId));
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ASSN_USAGECONTEXT_ENTRYSTATE_UID_BY_ID_SQL,
 				new PrefixedParameterTuple(prefix, associationTargetUId,
 						entryStateUId));
@@ -467,7 +523,7 @@ private VersionsDao versionsDao;
 
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ASSOC_TARGET_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, targetUId));	
 	}
@@ -481,11 +537,11 @@ private VersionsDao versionsDao;
 		
 		String histPrefix = this.getPrefixResolver().resolvePrefixForHistoryCodingScheme(codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(prefix, associationTargetUId));
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(histPrefix, associationTargetUId));
 	}

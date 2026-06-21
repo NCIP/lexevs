@@ -1,21 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="Entity">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:22 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Entity">
 
      
-     <insert id="insertEntityType" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
-     	INSERT INTO $prefix$entityType (
+     <insert id="insertEntityType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+     	INSERT INTO ${prefix}entityType (
      		entityGuid,
      		entityType
      	) VALUES (
-     		#param1,handler=variablePrimaryKeyTypeHandler#,
-     		#param2#
+     		#{param1},
+     		#{param2}
      	)
      </insert>
      
-     <resultMap id="entityTypeResult" class="string" groupBy="type">
-		<result property="type" column="entityType" />
+     <resultMap id="entityTypeResult" type="string">
+		<result property="type" column="entityType"/>
 	</resultMap>
 
-</sqlMap>
+</mapper>

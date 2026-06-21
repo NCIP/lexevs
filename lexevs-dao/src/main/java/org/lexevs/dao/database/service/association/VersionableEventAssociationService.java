@@ -1,6 +1,7 @@
 
 package org.lexevs.dao.database.service.association;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.LexGrid.relations.AssociationPredicate;
@@ -11,6 +12,7 @@ import org.lexevs.dao.database.access.association.AssociationDao;
 import org.lexevs.dao.database.access.association.AssociationDataDao;
 import org.lexevs.dao.database.access.association.AssociationTargetDao;
 import org.lexevs.dao.database.access.codingscheme.CodingSchemeDao;
+import org.lexevs.dao.database.ibatis.association.parameter.BatchAssociationInsertBean;
 import org.lexevs.dao.database.service.AbstractDatabaseService;
 import org.lexevs.dao.database.service.error.DatabaseErrorIdentifier;
 import org.lexevs.dao.database.service.event.association.AssociationBatchInsertEvent;
@@ -102,6 +104,49 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 				DaoUtility.createNonTypedList(source));
 	}
 	
+	public void insertAssociationSourceBatch(String codingSchemeUri, 
+			String version, 
+			List<BatchAssociationInsertBean> sources){
+		CodingSchemeDao codingSchemeDao = this.getDaoManager().getCodingSchemeDao(codingSchemeUri, version);
+		
+		String codingSchemeUId = codingSchemeDao.
+			getCodingSchemeUIdByUriAndVersion(codingSchemeUri, version);
+		
+		AssociationDao assocDao = this.getDaoManager().getAssociationDao(codingSchemeUri, version);
+		List<BatchAssociationInsertBean> temp = new ArrayList<BatchAssociationInsertBean>();
+		for(int i = 0; i < sources.size(); i++) {
+		String relationsUId = assocDao.getRelationUId(codingSchemeUId, sources.get(i).getRelationsContainer());
+		
+		String associationPredicateUId = assocDao.
+			getAssociationPredicateUIdByContainerName(
+					codingSchemeUId, 
+					sources.get(i).getRelationsContainer(), 
+					sources.get(i).getAssociationPredicateId());
+		
+		Relations relations = assocDao.getRelationsByUId(codingSchemeUId, relationsUId, false);
+		
+		this.runPreInsertionListeners(codingSchemeUri, version, codingSchemeUId, relations, associationPredicateUId, 
+				DaoUtility.createNonTypedList(sources.get(i).getSource()));
+		temp.add(sources.get(i));
+		if(temp.size() >= 50) {
+			assocDao.insertMybatisBatchAssociationSources(codingSchemeUId,temp);
+			temp.clear();
+		}
+		}
+		if(temp.size() > 0) {
+			assocDao.insertMybatisBatchAssociationSources(codingSchemeUId,temp);
+			temp.clear();
+		}
+	}
+	
+	private void runPreInsertionListeners(String codingSchemeUri, String version, String codingSchemeUId,
+			Relations relations, String associationPredicateUId, List<AssociationSource> sources) {
+		
+		this.firePreBatchAssociationInsertEvent(new AssociationBatchInsertEvent(
+				codingSchemeUri, version, relations,sources));
+
+	}
+
 	/**
 	 * Insert association predicate.
 	 * 
@@ -161,8 +206,7 @@ public class VersionableEventAssociationService extends AbstractDatabaseService 
 						codingSchemeUri, codingSchemeVersion, relations,
 						sources));
 
-		associationDao.insertBatchAssociationSources(codingSchemeId,
-				predicateId, sources);
+		associationDao.insertBatchAssociationSources(codingSchemeId,predicateId, sources);
 	}
 
 	/**

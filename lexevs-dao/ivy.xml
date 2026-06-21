@@ -22,61 +22,71 @@
 		<dependency org="lexevs" name="lexbig-model" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexbig-interfaces" rev="${vBuild}" conf="default"/>
 		<dependency org="lexevs" name="lexgrid-util" rev="${vBuild}" conf="default"/>
-		<dependency org="net.sf.ehcache" name="ehcache-core" rev="2.0.1" conf="default">
+		<dependency org="net.sf.ehcache" name="ehcache" rev="2.10.9.2" conf="default">
 			<exclude org="log4j" name="log4j"/>
    			<exclude org="slf4j" name="slf4j-lg4j12"/>
 		</dependency>
+		<dependency org="org.ehcache.modules" name="ehcache-107" rev="3.10.0" conf="default"/>
 		<dependency org="org.codehaus.castor" name="castor-core" rev="1.3.1" conf="default"/>
 		<dependency org="org.codehaus.castor" name="castor-xml" rev="1.3.1" conf="default"/>
-		<dependency org="org.easymock" name="easymock" rev="2.4" conf="default"/> 
-		<dependency org="org.easymock" name="easymockclassextension" rev="2.4" conf="default"/> 
-		<dependency org="asm" name="asm" rev="3.1" conf="default"/>
+		<dependency org="org.easymock" name="easymock" rev="4.3" conf="default"/> 
+		<dependency org="org.easymock" name="easymockclassextension" rev="3.2" conf="default"/> 
+		<dependency org="org.ow2.asm" name="asm" rev="9.3" conf="default"/> 
 		<dependency org="cglib" name="cglib" rev="2.2" conf="default" />
 		<dependency org="org.aspectj" name="aspectjrt" rev="1.7.2" conf="default"/>
 		<dependency org="org.aspectj" name="aspectjweaver" rev="1.7.2" conf="default"/>
 		<dependency org="aopalliance" name="aopalliance" rev="1.0" conf="default->*"/>
-		<dependency org="org.springframework" name="spring-aspects" rev="3.1.0.RELEASE" conf="default"/>
-		<dependency org="org.springframework" name="spring-aop" rev="3.1.0.RELEASE" conf="default"/>
-		<dependency org="org.springframework" name="spring-context" rev="3.1.0.RELEASE" conf="default"/>
-		<dependency org="org.springframework" name="spring-core" rev="3.1.0.RELEASE" conf="default">
+		<dependency org="org.springframework" name="spring-aspects" rev="5.3.19" conf="default"/>
+		<dependency org="org.springframework" name="spring-aop" rev="5.3.19" conf="default"/>
+		<dependency org="org.springframework" name="spring-context" rev="5.3.19" conf="default"/>
+		<dependency org="org.springframework" name="spring-core" rev="5.3.19" conf="default">
 		  <exclude org="commons-logging" name="commons-logging"/>
 		</dependency>
-		<dependency org="org.springframework" name="spring-test" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-beans" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-jdbc" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-orm" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-tx" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-asm" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-expression" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-context-support" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework.batch" name="spring-batch-core" rev="2.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework.batch" name="spring-batch-infrastructure" rev="2.1.0.RELEASE" conf="default" />
-		<dependency org="org.springframework" name="spring-web" rev="3.1.0.RELEASE" conf="default" />
-		<dependency org="org.hibernate" name="hibernate-core" rev="3.6.10.Final" conf="default" />
-		<dependency org="org.hibernate.common" name="hibernate-commons-annotations" rev="4.0.0.Final" conf="default" />
-		<dependency org="org.jboss.logging" name="jboss-logging" rev="3.1.2.GA" conf="default" />
-		<dependency org="org.hibernate.javax.persistence" name="hibernate-jpa-2.0-api" rev="1.0.1.Final" conf="default" />
+		<dependency org="org.springframework" name="spring-test" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-beans" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-jdbc" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-orm" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-orm" rev="5.3.19" conf="default"/>
+		<dependency org="org.springframework.retry" name="spring-retry" rev="1.3.2" conf="default" />
+		<dependency org="org.springframework" name="spring-tx" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-asm" rev="3.1.4.RELEASE" conf="default" />
+		<dependency org="org.springframework" name="spring-expression" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework" name="spring-context-support" rev="5.3.19" conf="default" />
+		<dependency org="org.springframework.batch" name="spring-batch-core" rev="4.3.5" conf="default" />
+		<dependency org="org.springframework.batch" name="spring-batch-infrastructure" rev="4.3.5" conf="default" />
+		<dependency org="org.springframework" name="spring-web" rev="5.3.19" conf="default" />
+		<dependency org="org.mybatis" name="mybatis-spring" rev="2.0.7" conf="default" />
+		<dependency org="org.mybatis" name="mybatis" rev="3.5.9" conf="default" />
+		<dependency org="org.mybatis.dynamic-sql" name="mybatis-dynamic-sql" rev="1.4.0" conf="default" />
+		<dependency org="org.mybatis" name="mybatis-typehandlers-jsr310" rev="1.0.2" conf="default" />
+		<dependency org="org.hibernate" name="hibernate-core" rev="5.6.8.Final" conf="default" />
+		<dependency org="net.bytebuddy" name="byte-buddy-dep" rev="1.12.9" conf="default" />
+		<dependency org="org.hibernate.common" name="hibernate-commons-annotations" rev="5.1.2.Final" conf="default" />
+		<dependency org="org.jboss.logging" name="jboss-logging" rev="3.4.3.Final" conf="default" />
+		<dependency org="org.hibernate.javax.persistence" name="hibernate-jpa-2.1-api" rev="1.0.2.Final" conf="default" />
+		<dependency org="org.hibernate" name="hibernate-ehcache" rev="5.6.8.Final" conf="default" />
 		<dependency org="javax.annotation" name="jsr250-api" rev="1.0" conf="default" />
 		<dependency org="org.apache.logging.log4j" name="log4j-api" rev="2.17.1" conf="default" />
   		<dependency org="org.apache.logging.log4j" name="log4j-core" rev="2.17.1" conf="default" />  
   		<dependency org="org.apache.logging.log4j" name="log4j-jcl" rev="2.17.1" conf="default" />  
 		<dependency org="dom4j" name="dom4j" rev="1.6.1" transitive="false" conf="default->*"/>
+		<dependency org="io.micrometer" name="micrometer-core" rev="1.9.0" conf="default" />  
 		<dependency org="org.slf4j" name="slf4j-api" rev="1.8.0-beta4" conf="default" />
         <dependency org="org.apache.logging.log4j" name="log4j-slf4j-impl" rev="2.17.1" conf="default" />
 		<dependency org="javax.transaction" name="jta" rev="1.1" conf="default" />
 		<dependency org="javassist" name="javassist" rev="3.8.0.GA" conf="default" />
-		<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.3.1" conf="default" />
+		<dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.9" conf="default" />
 		<dependency org="org.codehaus.jettison" name="jettison" rev="1.1" conf="default" />
 		<dependency org="stax" name="stax-api" rev="1.0.1" conf="default" />
 		<dependency org="org.hsqldb" name="hsqldb" rev="2.0.0" conf="default" />
-		<dependency org="junit" name="junit" rev="4.8.2" force="true" conf="default" /> 
-		<dependency org="org.apache.ibatis" name="ibatis-sqlmap" rev="2.3.4.726" conf="default"/>
+		<dependency org="junit" name="junit" rev="4.13.2" force="true" conf="default" /> 
+		<!--<dependency org="org.apache.ibatis" name="ibatis-sqlmap" rev="2.3.4.726" conf="default"/>-->
    		<dependency org="antlr" name="antlr" rev="2.7.7" conf="default"/>
    		<dependency org="org.dbunit" name="dbunit" rev="2.4.7" conf="default"/>
    		<dependency org="commons-io" name="commons-io" rev="2.6" conf="default" />
    	    <dependency org="commons-dbcp" name="commons-dbcp" rev="1.4" conf="default" />
    	    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="default"/>	
-   	    <dependency org="javax.persistence" name="persistence-api" rev="1.0" conf="default->*"/>  
+   	   	<dependency org="javax.persistence" name="javax.persistence-api" rev="2.2" conf="default->*"/>  
    	    <dependency org="org.mockito" name="mockito-all" rev="1.10.8" conf="default"/>
    	    <dependency org="org.jdom" name="jdom" rev="1.1" conf="default->*"/>
   		<dependency org="commons-codec" name="commons-codec" rev="1.10" conf="default"/>
@@ -93,13 +103,16 @@
 		<!-- https://mvnrepository.com/artifact/com.arangodb/velocypack -->
 		<dependency org="com.arangodb" name="velocypack" rev="1.4.2" conf="default"/>
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-		<dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.10.0.pr2" conf="default"/>
+		<dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.13.2" conf="default"/>
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.10.0.pr2" conf="default"/>
+		<dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.13.2.2" conf="default"/>
+		<dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.13.3" conf="default"/>
 		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl -->
 		<dependency org="org.codehaus.jackson" name="jackson-core-asl" rev="1.9.13" conf="default"/>
 		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
 		<dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.9.13" conf="default"/>
+		<dependency org="com.fasterxml" name="classmate" rev="1.5.1" conf="default"/>
+		<dependency org="commons-cli" name="commons-cli" rev="1.2" conf="default"/>
 		
    	 </dependencies>
 </ivy-module>

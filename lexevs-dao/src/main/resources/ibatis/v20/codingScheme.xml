@@ -1,66 +1,64 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="CodingScheme">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Mon Apr 18 08:46:16 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-	<typeAlias alias="codingScheme" type="org.LexGrid.codingSchemes.CodingScheme" />
-	<typeAlias alias="codingSchemeSummary" type="org.LexGrid.LexBIG.DataModel.Core.CodingSchemeSummary" />
-	<typeAlias alias="codingSchemeBean" type="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean" />
 
-	<resultMap id="codingSchemeResult" class="codingScheme" groupBy="codingSchemeName,representsVersion">
-		<result property="codingSchemeName" column="codingSchemeName" />
-		<result property="codingSchemeURI" column="codingSchemeUri" />
-		<result property="representsVersion" column="representsVersion" />
-		<result property="formalName" column="formalName" />
-		<result property="defaultLanguage" column="defaultLanguage" />
-		<result property="approxNumConcepts" column="approxNumConcepts" />
-		<result property="entityDescription.content" column="description" />
-		<result property="copyright.content" column="copyright" />
-		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="entryState" resultMap="Versions.entryStateResult" />
-		<result property="_effectiveDate" column="effectiveDate" typeHandler="dateTypeHandler"/>
-		<result property="_sourceList" resultMap="CodingScheme.sourceResult"/>
-		<result property="_localNameList" resultMap="CodingScheme.localNameResult"/>
+<mapper namespace="CodingScheme">
+
+	<resultMap id="codingSchemeResult" type="codingScheme">
+		<result property="codingSchemeName" column="codingSchemeName"/>
+		<result property="codingSchemeURI" column="codingSchemeUri"/>
+		<result property="representsVersion" column="representsVersion"/>
+		<result property="formalName" column="formalName"/>
+		<result property="defaultLanguage" column="defaultLanguage"/>
+		<result property="approxNumConcepts" column="approxNumConcepts"/>
+		<result property="entityDescription.content" column="description"/>
+		<result property="copyright.content" column="copyright"/>
+		<result property="isActive" column="isActive" />
+		<result property="_effectiveDate" column="effectiveDate" />
+		<collection property="entryState" resultMap="Versions.entryStateResult"/>
+		<collection property="_sourceList" resultMap="CodingScheme.sourceResult"/>
+		<collection property="_localNameList" resultMap="CodingScheme.localNameResult"/>
 	</resultMap>
 
-	<resultMap id="codingSchemeSummaryResult" class="codingSchemeSummary">
-		<result property="localName" column="codingSchemeName" />
-		<result property="codingSchemeURI" column="codingSchemeUri" />
-		<result property="representsVersion" column="representsVersion" />
-		<result property="formalName" column="formalName" />
-		<result property="codingSchemeDescription.content" column="description" />
+	<resultMap id="codingSchemeSummaryResult" type="codingSchemeSummary">
+		<result property="localName" column="codingSchemeName"/>
+		<result property="codingSchemeURI" column="codingSchemeUri"/>
+		<result property="representsVersion" column="representsVersion"/>
+		<result property="formalName" column="formalName"/>
+		<result property="codingSchemeDescription.content" column="description"/>
 	</resultMap>
 	
-	<resultMap id="codingSchemeMetaDataResult" class="codingSchemeBean" groupBy="uid">
-		<result property="uid" column="codingSchemeGuid" typeHandler="variablePrimaryKeyTypeHandler" />
-		<result property="codingScheme.codingSchemeName" column="codingSchemeName" />
-		<result property="codingScheme.codingSchemeURI" column="codingSchemeURI" />
-		<result property="codingScheme.representsVersion" column="representsVersion" />
-		<result property="codingScheme.formalName" column="formalName" />
-		<result property="codingScheme.defaultLanguage" column="defaultLanguage" />
-		<result property="codingScheme.approxNumConcepts" column="approxNumConcepts" />
-		<result property="codingScheme.entityDescription.content" column="description" />
-		<result property="codingScheme.copyright.content" column="copyright" />	
-		<result property="codingScheme.isActive" column="isActive" />
-		<result property="codingScheme.owner" column="owner" />
-		<result property="codingScheme.status" column="status" />
-		<result property="codingScheme.effectiveDate" column="effectiveDate" />
-		<result property="codingScheme.expirationDate" column="expirationDate" />
-		<result property="releaseUId" column="releaseGuid" />
-		<result property="entryStateUId" column="entryStateGuid" />
-		<result property="csMultiAttribList" resultMap="CodingScheme.csMultiAttribResultBean"/>
+	<resultMap id="codingSchemeMetaDataResult" type="codingSchemeBean">
+		<result property="uid" column="codingSchemeGuid"/>
+		<result property="codingSchemeName" column="codingSchemeName"/>
+		<result property="codingSchemeURI" column="codingSchemeURI"/>
+		<result property="representsVersion" column="representsVersion"/>
+		<result property="formalName" column="formalName"/>
+		<result property="defaultLanguage" column="defaultLanguage"/>
+		<result property="approxNumConcepts" column="approxNumConcepts"/>
+		<result property="description" column="description"/>
+		<result property="copyright" column="copyright"/>	
+		<result property="isActive" column="isActive"/>
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
+		<result property="releaseUId" column="releaseGuid"/>
+		<result property="entryStateUId" column="entryStateGuid"/>
+		<collection property="csMultiAttribList" resultMap="CodingScheme.csMultiAttribResultBean"/>
 	</resultMap>
 	
-	<resultMap id="propertyNameAndTypeResult" class="org.LexGrid.LexBIG.DataModel.Core.NameAndValue">
+	<resultMap id="propertyNameAndTypeResult" type="org.LexGrid.LexBIG.DataModel.Core.NameAndValue">
 		<result property="name" column="propertyName"/>
 		<result property="content" column="propertyType"/>
 	</resultMap>
 	
-	<delete id="deleteCodingSchemeByUId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteCodingSchemeByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$codingScheme
+			${prefix}codingScheme
 		WHERE
-			codingSchemeGuid = #param1#
+			codingSchemeGuid = #{param1}
 	</delete>
 	
 	
@@ -88,10 +86,10 @@
 			csmaSource.*,
 			csmaLocalName.attributeValue AS localNameValue
 		FROM
-			$prefix$codingScheme cs
+			${prefix}codingScheme cs
 			
 		LEFT JOIN
-			$actualTableSetPrefix$entryState es
+			${prefix}entryState es
 		ON
 			cs.entryStateGuid = es.entryStateGuid
 			
@@ -108,14 +106,14 @@
 			
 	<sql id="getCodingSchemeMultiAttribsFragment">
 		LEFT JOIN
-			$prefix$csMultiAttrib csmaSource
+			${prefix}csMultiAttrib csmaSource
 		ON (
 			csmaSource.codingSchemeGuid = cs.codingSchemeGuid
 		AND
 			csmaSource.attributeType = 'source'
 			)
 		LEFT JOIN
-			$prefix$csMultiAttrib csmaLocalName
+			${prefix}csMultiAttrib csmaLocalName
 		ON (
 			csmaLocalName.codingSchemeGuid = cs.codingSchemeGuid
 		AND
@@ -125,7 +123,7 @@
 	
 	<sql id="getHistoryCodingSchemeMultiAttribsFragment">
 		LEFT JOIN
-			$prefix$csMultiAttrib csmaSource
+			${prefix}csMultiAttrib csmaSource
 		ON (
 			csmaSource.codingSchemeGuid = cs.codingSchemeGuid
 		AND
@@ -135,7 +133,7 @@
 			)
 			
 		LEFT JOIN
-			$prefix$csMultiAttrib csmaLocalName
+			${prefix}csMultiAttrib csmaLocalName
 		ON (
 			csmaLocalName.codingSchemeGuid = cs.codingSchemeGuid
 		AND
@@ -146,21 +144,15 @@
 	</sql>
 	
 	
-	<select id="getCodingSchemeByUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-		resultMap="CodingScheme.codingSchemeResult"
-		remapResults="true">
+	<select id="getCodingSchemeByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="CodingScheme.codingSchemeResult">
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			cs.codingSchemeGuid = #{param1}
 
      </select>
      
-     <select id="getCodingSchemeMetaDataByUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="CodingScheme.codingSchemeMetaDataResult"
-		remapResults="true">
+     <select id="getCodingSchemeMetaDataByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="CodingScheme.codingSchemeMetaDataResult">
 		SELECT 
 			cs.codingSchemeGuid,
 			cs.codingSchemeName,
@@ -186,23 +178,20 @@
 			csMulti.role,	
 			csMulti.entryStateGuid AS esGuid		
 		FROM
-			$prefix$codingScheme cs
+			${prefix}codingScheme cs
 		LEFT JOIN
-			$prefix$csMultiAttrib csMulti
+			${prefix}csMultiAttrib csMulti
 		ON
 			cs.codingSchemeGuid = csMulti.codingSchemeGuid
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			cs.codingSchemeGuid = #{param1}
      </select>
      
-     <select id="test" resultClass="java.util.HashMap">
+     <select id="test" resultType="java.util.HashMap">
      	SELECT * from codingScheme
      </select>
      
-    <select id="getCodingSchemeSummaryByUriAndVersion" 
-    	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-    	resultMap="codingSchemeSummaryResult"
-     	remapResults="true">
+    <select id="getCodingSchemeSummaryByUriAndVersion" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeSummaryResult">
 		SELECT
 			codingSchemeName,
 			codingSchemeURI,
@@ -210,166 +199,142 @@
 			formalName,
 			description
 		FROM 
-			$prefix$codingScheme
+			${prefix}codingScheme
 		WHERE
 			codingSchemeURI =
-			#param1#
+			#{param1}
 		AND
 			representsVersion =
-			#param2#
+			#{param2}
 	</select>
 	
-	<select id="getCodingSchemeByNameAndVersion" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-		resultMap="codingSchemeResult"
-		remapResults="true">
+	<select id="getCodingSchemeByNameAndVersion" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getCodingSchemeMultiAttribsFragment"/>
 		WHERE
-			cs.codingSchemeName = #param1#
+			cs.codingSchemeName = #{param1}
 		AND
-			cs.representsVersion = #param2#
+			cs.representsVersion = #{param2}
      </select>
      
-     <select id="getCodingSchemeByIdAndRevisionId" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
+     <select id="getCodingSchemeByIdAndRevisionId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="codingSchemeResult">
 		<include refid="getCodingSchemeFragment"/>
 		<include refid="getHistoryCodingSchemeMultiAttribsFragment"/>
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			cs.codingSchemeGuid = #{param1}
 		AND
-			currentRevision.revisionId = #param2#	
+			currentRevision.revisionId = #{param2}	
      </select>
      
-     <select id="getCodingSchemeIdByNameAndVersion" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-     	resultMap="Common.uidResult"
-     	remapResults="true">
+     <select id="getCodingSchemeIdByNameAndVersion" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
 		SELECT
 			codingSchemeGuid AS uidKey
 		FROM
-			$prefix$codingScheme
+			${prefix}codingScheme
 		WHERE
-			codingSchemeName = #param1#
+			codingSchemeName = #{param1}
 		AND
-			representsVersion = #param2#
+			representsVersion = #{param2}
      </select>
      
-     <select id="getCodingSchemeIdByUriAndVersion" 
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-     	resultMap="Common.uidResult"
-     	remapResults="true">
+     <select id="getCodingSchemeIdByUriAndVersion" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
 		SELECT
 			codingSchemeGuid AS uidKey
 		FROM
-			$prefix$codingScheme
+			${prefix}codingScheme
 		WHERE
-			codingSchemeUri = #param1#
+			codingSchemeUri = #{param1}
 		AND
-			representsVersion = #param2#
+			representsVersion = #{param2}
      </select>
      
-     <select id="getEntryStateId" parameterClass="map" remapResults="true" resultClass="string">
+     <select id="getEntryStateId" parameterType="map" resultType="string">
 		SELECT
 			entryStateId
 		FROM
 			codingScheme
 		WHERE
-			codingSchemeName = #codingSchemeName#
+			codingSchemeName = #{codingSchemeName}
 		AND
-			representsVersion = #representsVersion#
+			representsVersion = #{representsVersion}
 		AND
-			isCurrentRelease = #isCurrentRelease,handler=numericBooleanTypeHandler#
+			isCurrentRelease = #{isCurrentRelease}
      </select>
    
-	<update id="updateCodingSchemeByUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
+	<update id="updateCodingSchemeByUId" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
 		UPDATE 
-			$prefix$codingScheme
-		SET 
-		
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="codingScheme.codingSchemeName">
-				codingSchemeName = #codingScheme.codingSchemeName#
-			</isNotNull>
-			<!--
-			<isNotNull prepend="," property="codingScheme.codingSchemeURI">
-				codingSchemeUri = #codingScheme.codingSchemeURI#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.representsVersion">
-				representsVersion = #codingScheme.representsVersion#
-			</isNotNull>
-			-->
-			<isNotNull prepend="," property="codingScheme.formalName">
-				formalName = #codingScheme.formalName#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.approxNumConcepts">
-				approxNumConcepts = #codingScheme.approxNumConcepts#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.defaultLanguage">
-				defaultLanguage = #codingScheme.defaultLanguage#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.entityDescription.content">
-				description = #codingScheme.entityDescription.content#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.copyright.content">
-				copyright = #codingScheme.copyright.content#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}codingScheme
+		<set>
+			<if test="codingSchemeName != null">
+				codingSchemeName = #{codingSchemeName},
+			</if>
+			<if test="formalName != null">
+				formalName = #{formalName},
+			</if>
+			<if test="approxNumConcepts != null">
+				approxNumConcepts = #{approxNumConcepts},
+			</if>
+			<if test="defaultLanguage != null">
+				defaultLanguage = #{defaultLanguage},
+			</if>
+			<if test="description != null">
+				description = #{description},
+			</if>
+			<if test="copyright != null">
+				copyright = #{copyright},
+			</if>
+			<if test="entryStateUId != null">
+				entryStateGuid = #{entryStateUId}
+			</if>
+		</set>
 
 		WHERE 
-			codingSchemeGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{uid}
  	</update>
  	
- 	<update id="updateCodingSchemeVerAttribByUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
+ 	<update id="updateCodingSchemeVerAttribByUId" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
 		UPDATE 
-			$prefix$codingScheme
-		SET 
-			
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="codingScheme.isActive">
-				isActive = #codingScheme.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.owner">
-				owner = #codingScheme.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.status">
-				status = #codingScheme.status#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.effectiveDate">
-				effectiveDate = #codingScheme.effectiveDate#
-			</isNotNull>
-			<isNotNull prepend="," property="codingScheme.expirationDate">
-				expirationDate = #codingScheme.expirationDate#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>			
-		</dynamic>
+			${prefix}codingScheme
+		<set>
+			<if test="codingScheme.copyright.isActive != null">
+				isActive = #{codingScheme.isActive},
+			</if>
+			<if test="codingScheme.owner != null">
+				owner = #{codingScheme.owner,
+			</if>
+			<if test="codingScheme.status != null">
+				status = #{codingScheme.status},
+			</if>
+			<if test="codingScheme.effectiveDate != null">
+				effectiveDate = #{codingScheme.effectiveDate},
+			</if>
+			<if test="codingScheme.expirationDate != null">
+				expirationDate = #{codingScheme.expirationDate},
+			</if>
+			<if test="entryStateUId != null">
+				entryStateGuid = #{entryStateUId}
+			</if>
+		</set>
 
 		WHERE 
-			codingSchemeGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{uid}
  	</update>
 
- 	<update id="updateCodingSchemeEntryStateUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+ 	<update id="updateCodingSchemeEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
-			$prefix$codingScheme
+			${prefix}codingScheme
 		SET
-			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param2}
 		WHERE 
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{param1}
  	</update>
 
-	<insert id="insertCodingScheme" parameterClass="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
+	<insert id="insertCodingScheme" parameterType="org.lexevs.dao.database.ibatis.codingscheme.parameter.InsertOrUpdateCodingSchemeBean">
 		
-		INSERT INTO $prefix$codingScheme (
+		INSERT INTO ${prefix}codingScheme (
 			codingSchemeGuid,
 			codingSchemeName,
-			codingSchemeUri,
+			codingSchemeURI,
 			representsVersion,
 			formalName,
 			defaultLanguage,
@@ -384,131 +349,121 @@
 			releaseGuid,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#, 
-			#codingScheme.codingSchemeName#, 
-			#codingScheme.codingSchemeURI#, 
-			#codingScheme.representsVersion#,
-			#codingScheme.formalName:VARCHAR#,
-			#codingScheme.defaultLanguage:VARCHAR#,
-			#codingScheme.approxNumConcepts:NUMERIC#,
-			#codingScheme.entityDescription.content:VARCHAR#,
-			#codingScheme.copyright.content:VARCHAR#,
-			#codingScheme.isActive,handler=numericBooleanTypeHandler#,
-			#codingScheme.owner:VARCHAR#,
-			#codingScheme.status:VARCHAR#,
-			#codingScheme.effectiveDate:TIMESTAMP#,
-			#codingScheme.expirationDate:TIMESTAMP#,
-			#releaseUId,handler=variablePrimaryKeyTypeHandler#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+			#{uid}, 
+			#{codingSchemeName}, 
+			#{codingSchemeURI}, 
+			#{representsVersion},
+			#{formalName,jdbcType=VARCHAR},
+			#{defaultLanguage,jdbcType=VARCHAR},
+			#{approxNumConcepts,jdbcType=NUMERIC},
+			#{description,jdbcType=VARCHAR},
+			#{copyright,jdbcType=VARCHAR},
+			#{isActive},
+			#{owner,jdbcType=VARCHAR},
+			#{status,jdbcType=VARCHAR},
+			#{effectiveDate,jdbcType=TIMESTAMP},
+			#{expirationDate,jdbcType=TIMESTAMP},
+			#{releaseUId},
+			#{entryStateUId}
 		)
   </insert>
   
   
   	
-	<select id="getDistinctPropertyNames" 
-		remapResults="true"
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-     	resultClass="string">
+	<select id="getDistinctPropertyNames" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
      SELECT DISTINCT
      	prop.propertyName
      FROM
-     	$prefix$property prop
+     	${prefix}property prop
 	 INNER JOIN 
-	 	$prefix$entity entity
+	 	${prefix}entity entity
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingScheme cs
+		${prefix}codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		cs.codingSchemeGuid = #{param1}
      </select>
      
-     <select id="getDistinctPropertyNamdAndType" 
-		remapResults="true"
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" 
-     	resultMap="propertyNameAndTypeResult">
+     <select id="getDistinctPropertyNamdAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="propertyNameAndTypeResult">
      SELECT DISTINCT
      	prop.propertyName, prop.propertyType
      FROM
-     	$prefix$property prop
+     	${prefix}property prop
 	 INNER JOIN 
-	 	$prefix$entity entity
+	 	${prefix}entity entity
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingScheme cs
+		${prefix}codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		cs.codingSchemeGuid = #{param1}
      </select>
      
-     	<select id="getDistinctEntityTypes" remapResults="true"
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+     	<select id="getDistinctEntityTypes" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
      SELECT DISTINCT
      	type.entityType
      FROM
-     	$prefix$entityType type
+     	${prefix}entityType type
 	 INNER JOIN 
-	 	$prefix$entity entity
+	 	${prefix}entity entity
 	 ON 
 	 	type.entityGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingScheme cs
+		${prefix}codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		cs.codingSchemeGuid = #{param1}
      </select>
      
-      <select id="getDistinctNamespaces" remapResults="true"
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+      <select id="getDistinctNamespaces" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
      SELECT DISTINCT
      	entity.entityCodeNamespace
      FROM
-     	$prefix$entity entity
+     	${prefix}entity entity
 	 WHERE
-		entity.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		entity.codingSchemeGuid = #{param1}
      </select>
      
-      <select id="getDistinctFormats" remapResults="true"
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+      <select id="getDistinctFormats" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
         SELECT DISTINCT
      	prop.format
      FROM
-     	$prefix$property prop
+     	${prefix}property prop
 	 INNER JOIN 
-	 	$prefix$entity entity
+	 	${prefix}entity entity
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingScheme cs
+		${prefix}codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		cs.codingSchemeGuid = #{param1}
 	 AND
 	 	prop.format IS NOT NULL
      </select>
      
-      <select id="getDistinctLanguages" remapResults="true"
-     	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultClass="string">
+      <select id="getDistinctLanguages" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
         SELECT DISTINCT
      	prop.language
      FROM
-     	$prefix$property prop
+     	${prefix}property prop
 	 INNER JOIN 
-	 	$prefix$entity entity
+	 	${prefix}entity entity
 	 ON 
 	 	prop.referenceGuid = entity.entityGuid
 	 INNER JOIN
-		$prefix$codingScheme cs
+		${prefix}codingScheme cs
 	 ON 
 	 	entity.codingSchemeGuid = cs.codingSchemeGuid
 	 WHERE
-		cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+		cs.codingSchemeGuid = #{param1}
 	 AND
 	 	prop.language IS NOT NULL
 			
@@ -517,129 +472,114 @@
 		SELECT
 			cs.defaultLanguage
 		FROM
-			$prefix$codingScheme cs
+			${prefix}codingScheme cs
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			cs.codingSchemeGuid = #{param1}
           AND cs.defaultLanguage IS NOT NULL
      </select>
 
 
 	<sql id="distinctPropQualFragment">
 		FROM
-			$prefix$propertyMultiAttrib propQual
+			${prefix}propertyMultiAttrib propQual
 		INNER JOIN
-			$prefix$property prop
+			${prefix}property prop
 		ON
 			prop.propertyGuid = propQual.propertyGuid
 		INNER JOIN
-			$prefix$entity entity
+			${prefix}entity entity
 		ON
 			prop.referenceGuid = entity.entityGuid
 		INNER JOIN
-			$prefix$codingScheme cs
+			${prefix}codingScheme cs
 		ON
 			entity.codingSchemeGuid = cs.codingSchemeGuid
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			cs.codingSchemeGuid = #{param1}
 	</sql>
 
-	<select id="getDistinctPropertyQualifierTypes" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getDistinctPropertyQualifierTypes" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT DISTINCT
 			propQual.attributeType
 		<include refid="distinctPropQualFragment"/>
      </select>
      
-     <select id="getDistinctPropertyQualifierNames" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+     <select id="getDistinctPropertyQualifierNames" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT DISTINCT
 			propQual.attributeId
 		<include refid="distinctPropQualFragment"/>
      </select>
      
-	<select id="getEntryStateUIdByCodingSchemeUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getEntryStateUIdByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			entryStateGuid
 		FROM
-			$prefix$codingScheme cs
+			${prefix}codingScheme cs
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			cs.codingSchemeGuid = #{param1}	
 	</select>
 
-	<select id="getCodingSchemeLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getCodingSchemeLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$codingScheme cs,
-			$prefix$entryState es,
+			${prefix}codingScheme cs,
+			${prefix}entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			cs.codingSchemeGuid = #{param1}	
 		AND
 			cs.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
 	</select>
 	
-	<select id="getCodingSchemeRevisionIdWhenNewByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getCodingSchemeRevisionIdWhenNewByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$entryState es
+			${prefix}entryState es
 		INNER JOIN
 			${defaultPrefix}revision rev
 		ON
 			es.revisionGuid = rev.revisionGuid
 		WHERE
-			es.entryGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			es.entryGuid = #{param1}	
 		AND
 			es.changeType = 'NEW'
 	</select>
 
-	<delete id="deleteAllCodingSchemeSourceByCodingSchemeUId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAllCodingSchemeSourceByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$csMultiAttrib
+			${prefix}csMultiAttrib
 		WHERE
 			attributeType = 'source'
 		AND
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{param1}
 	</delete>
 	
-	<delete id="deleteAllCodingSchemeLocalNamesByCodingSchemeUId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<delete id="deleteAllCodingSchemeLocalNamesByCodingSchemeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
 		DELETE FROM
-			$prefix$csMultiAttrib
+			${prefix}csMultiAttrib
 		WHERE
 			attributeType = 'localName'
 		AND
-			codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			codingSchemeGuid = #{param1}
 	</delete>
 	
-	<select id="getAllCodingSchemeRevisionsByUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string"
-		remapResults="true">
+	<select id="getAllCodingSchemeRevisionsByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$codingScheme cs,
-			$prefix$entryState es,
+			${prefix}codingScheme cs,
+			${prefix}entryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			cs.codingSchemeGuid = #param1,handler=variablePrimaryKeyTypeHandler# 
+			cs.codingSchemeGuid = #{param1} 
 		AND
 			cs.entryStateGuid = es.entryStateGuid
 		AND
 			es.revisionGuid = rev.revisionGuid
 	</select>
 	
-</sqlMap>
+</mapper>

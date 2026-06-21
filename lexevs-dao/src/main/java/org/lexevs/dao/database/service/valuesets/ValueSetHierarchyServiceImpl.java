@@ -84,8 +84,11 @@ private static final long serialVersionUID = 2755261228867112212L;
 
 	protected List<String> getExternallyDefinedValueSetsForAssertedSource(String root) {
 		List<String> uris = new ArrayList<String>();
-		 this.getRootCodes(root).stream().forEachOrdered(rootCode -> uris.
-				 addAll(vsDef.getVSURIsForContextURI(rootCode)));
+		 this.getRootCodes(root)
+		 .stream()
+		 .forEachOrdered(rootCode -> uris.
+				 addAll(
+						 vsDef.getVSURIsForContextURI(rootCode)));
 		 return uris;
 	}
 	

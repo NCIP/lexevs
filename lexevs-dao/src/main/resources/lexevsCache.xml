@@ -14,8 +14,9 @@
 
 	<bean id="cacheConfigLocationFactory" class="org.lexevs.cache.CacheConfigLocationFactory"/>
 	
-	 <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+	 <bean id="ehCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean" >
     	<property name="configLocation" ref="cacheConfigLocationFactory"/>
+		<property name="shared" value="true"/>
     </bean>
 	
 	<bean id="methodCachingProxyAspect" 

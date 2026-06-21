@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
+import javax.persistence.SecondaryTable;
+import javax.persistence.criteria.CriteriaBuilder;
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.custom.relations.TerminologyMapBean;
 import org.LexGrid.relations.Relations;
+import org.apache.ibatis.session.RowBounds;
 import org.lexevs.cache.annotation.CacheMethod;
 import org.lexevs.cache.annotation.Cacheable;
 import org.lexevs.dao.database.access.association.model.Node;
@@ -32,6 +36,7 @@ import org.lexevs.dao.database.ibatis.parameter.SequentialMappedParameterBean;
 import org.lexevs.dao.database.ibatis.parameter.SourceAndTargetMappingPrefixedParameter;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
+import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.QualifierSort;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
 import org.lexevs.dao.database.service.codednodegraph.model.CountConceptReference;
 import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.CodeNamespacePair;
@@ -42,7 +47,7 @@ import org.springframework.util.CollectionUtils;
 @Cacheable(cacheName = "IbatisCodedNodeGraphDaoCache")
 public class IbatisCodedNodeGraphDao extends AbstractIbatisDao implements CodedNodeGraphDao {
 
-/** The supported datebase version. */
+/** The supported database version. */
 private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.parseStringToVersion("2.0");
 	
 	private static String GET_ENTITY_ASSNSTOENTITY_UID_SQL = IbatisAssociationDao.ASSOCIATION_NAMESPACE + "getEntityAssnsToEntityUids";
@@ -85,7 +90,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		PrefixedParameter bean = new PrefixedParameter(prefix, codingSchemeUid);
 		
 		return (Integer) 
-			this.getSqlMapClientTemplate().queryForObject(GET_TRANSITIVE_TABLE_COUNT_SQL, bean);
+			this.getSqlSessionTemplate().selectOne(GET_TRANSITIVE_TABLE_COUNT_SQL, bean);
 	}
 	
 	@Override
@@ -96,7 +101,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		PrefixedParameter bean = new PrefixedParameter(prefix, codingSchemeUid);
 		
 		return (Integer) 
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_FROM_TRANSITIVE_TABLE_BY_CODINGSCHEME_UID_SQL, bean);
 	}
 	
@@ -192,7 +197,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
 		
-		return this.getSqlMapClientTemplate().queryForList(GET_CONCEPTREFERENCES_SQL, bean, start, pageSize);
+		return this.getSqlSessionTemplate().selectList(GET_CONCEPTREFERENCES_SQL, bean, new RowBounds(start, pageSize));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -232,7 +237,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setUseTransitive(useTransitive);
 		
-		return this.getSqlMapClientTemplate().queryForList(GET_CODE_RELATIONSHIPS_SQL, bean);
+		return this.getSqlSessionTemplate().selectList(GET_CODE_RELATIONSHIPS_SQL, bean);
 	}
 
 	@Override
@@ -317,9 +322,23 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setMustHaveEntityTypes(mustHaveEntityType);
 		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
-		
-		return (Map<String,Integer> ) this.getSqlMapClientTemplate().
-			queryForMap(GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL, bean, "key", "value");
+
+		List<HashMap<String, Integer> > testList =  this.getSqlSessionTemplate().
+				selectList(GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL, bean);
+//TODO This is an ugly patch
+		HashMap<String, Integer> returnMap = new HashMap<String, Integer>();
+		for(HashMap<String,Integer> map: testList){
+
+			Object ko = map.get("key");
+			Object vo = map.get("value");
+			returnMap.put((String) ko,(Integer) vo);
+		}
+
+		return returnMap;
+//		return (Map<String,Integer> ) this.getSqlSessionTemplate().
+//			<String,Integer>selectMap(GET_ENTITY_ASSNSTOENTITY_UID_COUNT_SQL, bean, "key");
+
+
 	}
 	
 	@Override
@@ -422,8 +441,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		if(pageSize < 0) {
 			pageSize = Integer.MAX_VALUE;
 		}
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_ENTITY_ASSNSTOENTITY_UID_SQL, bean, start, pageSize);
+		return this.getSqlSessionTemplate().
+			selectList(GET_ENTITY_ASSNSTOENTITY_UID_SQL, bean, new RowBounds(start, pageSize));
 	}
 	
 	@Override
@@ -443,12 +462,18 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			return new ArrayList<ConceptReference>();
 		}
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
-		
+		String tripleNodeString=null;
+		if (tripleNode != null) {
+			tripleNodeString = tripleNode.toString();
+		} else
+		{
+			tripleNodeString = "SUBJECT";
+		}
 		SequentialMappedParameterBean bean = 
-			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids, sorts);
+			new SequentialMappedParameterBean(tripleNodeString, tripleUids, sorts);
 		bean.setPrefix(prefix);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_CONCEPTREFERENCE_FROM_ASSNSTOENTITY_UID_SQL, bean);
 	}
 
@@ -468,7 +493,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			new SequentialMappedParameterBean(tripleNode.toString(), tripleUids, sorts, codingSchemeUid);
 		bean.setPrefix(prefix);
 		
-		return this.getSqlMapClientTemplate().queryForList(
+		return this.getSqlSessionTemplate().selectList(
 				GET_ASSOCIATEDCONCEPT_FROM_ASSNSTOENTITY_UID_SQL, bean);
 	}
 
@@ -485,8 +510,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setParam1(codingSchemeUid);
 		bean.setParam2(relationContainerName);
 		
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_ASSOCIATION_PREDICATE_NAMES_SQL, 
+		return this.getSqlSessionTemplate().
+			selectList(GET_ASSOCIATION_PREDICATE_NAMES_SQL, 
 					bean);
 	}
 
@@ -501,8 +526,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setPrefix(prefix);
 		bean.setParam1(associationPredicateUid);
 		
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_DISTINCT_SOURCE_NODES_SQL, 
+		return this.getSqlSessionTemplate().
+			selectList(GET_DISTINCT_SOURCE_NODES_SQL, 
 				bean);
 	}
 	
@@ -517,8 +542,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setPrefix(prefix);
 		bean.setParam1(associationPredicateUid);
 		
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_DISTINCT_TARGET_NODES_SQL, 
+		return this.getSqlSessionTemplate().
+			selectList(GET_DISTINCT_TARGET_NODES_SQL, 
 				bean);
 	}
 
@@ -536,8 +561,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setParam2(sourceEntityCode);
 		bean.setParam3(sourceEntityCodeNamespace);
 		
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_TARGET_NODES_OF_SOURCE_SQL, 
+		return this.getSqlSessionTemplate().
+			selectList(GET_TARGET_NODES_OF_SOURCE_SQL, 
 				bean);
 	}
 	
@@ -555,8 +580,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setParam2(targetEntityCode);
 		bean.setParam3(targetEntityCodeNamespace);
 		
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_SOURCE_NODES_OF_TARGET_SQL, 
+		return this.getSqlSessionTemplate().
+			selectList(GET_SOURCE_NODES_OF_TARGET_SQL, 
 				bean);
 	}
 
@@ -574,7 +599,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			int start, 
 			int pageSize) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUid);
-		
+		if (traverse == null){
+			traverse = TraverseAssociations.TOGETHER;
+		}
+
 		SequentialMappedParameterBean bean = new SequentialMappedParameterBean(
 				traverse.toString(), 
 				associationPredicateUids, 
@@ -588,8 +616,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			pageSize = Integer.MAX_VALUE;
 		}
 	
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean, start, pageSize);
+		return this.getSqlSessionTemplate().
+			selectList(GET_ROOT_ENTITY_ASSNSTOENTITY_UID_SQL, bean, new RowBounds(start, pageSize));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -620,8 +648,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 			pageSize = Integer.MAX_VALUE;
 		}
 		
-		return this.getSqlMapClientTemplate().
-			queryForList(GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL, bean, start, pageSize);
+		return this.getSqlSessionTemplate().
+			selectList(GET_TAIL_ENTITY_ASSNSTOENTITY_UID_SQL, bean, new RowBounds(start, pageSize));
 	}
 
 	@Override
@@ -695,7 +723,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setRestrictToAnonymous(restrictToAnonymous);
 		bean.setTripleNode(tripleNode);
 		
-		return this.getSqlMapClientTemplate().queryForList(GET_COUNT_CONCEPTREFERENCES_SQL, bean);
+		return this.getSqlSessionTemplate().selectList(GET_COUNT_CONCEPTREFERENCES_SQL, bean);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -736,7 +764,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				relationsContainerName,
 				sortList);
 
-		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL, bean, start, pageSize);
+		return this.getSqlSessionTemplate().selectList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_SQL, bean, new RowBounds(start, pageSize));
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -758,7 +786,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 
 
 		List<TripleUidReferencingResolvedConceptReference> list = 
-			this.getSqlMapClientTemplate().queryForList(GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL, bean);
+			this.getSqlSessionTemplate().selectList(GET_TRIPLES_FOR_MAPPING_CONTAINER_SQL, bean);
 		
 		return sortList(list, tripleUids);
 	}
@@ -811,7 +839,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		return 
 			(Integer) 
-				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL, bean);
+				this.getSqlSessionTemplate().selectOne(GET_TRIPLES_FOR_MAPPING_CONTAINER_COUNT_SQL, bean);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -853,7 +881,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				sourceOrTargetConceptReferences,
 				sortList);
 
-		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_WITH_SORT_SQL, bean, start, pageSize);	
+		return this.getSqlSessionTemplate().selectList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_WITH_SORT_SQL, bean, new RowBounds(start, pageSize));	
 	}
 
 	@SuppressWarnings("unchecked")
@@ -876,7 +904,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		bean.setPrefix(mappingSchemePrefix);
 
-		return this.getSqlMapClientTemplate().queryForList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_NO_SORT_SQL, bean);
+		return this.getSqlSessionTemplate().selectList(GET_TRIPLE_UIDS_FOR_MAPPING_CONTAINER_AND_CODES_NO_SORT_SQL, bean);
 	}
 
 	@Override
@@ -899,7 +927,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		return 
 			(Integer) 
-				this.getSqlMapClientTemplate().queryForObject(GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL, bean);
+				this.getSqlSessionTemplate().selectOne(GET_TRIPLES_FOR_MAPPING_CONTAINER_AND_CODES_COUNT_SQL, bean);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -928,8 +956,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				qualifierName);
 
 				return (List<TerminologyMapBean>) 
-						this.getSqlMapClientTemplate().
-						queryForList(
+						this.getSqlSessionTemplate().<TerminologyMapBean>
+						selectList(
 								GET_MAP_AND_TERMS_FOR_MAPPING_CONTAINER_AND_REFERENCES,
 								bean);
 		
@@ -947,8 +975,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 //		bean.setParam1(mappingCodingSchemeUid);
 		bean.setParam1(relationsContainerName);
 		return (List<Triple>) 
-				this.getSqlMapClientTemplate().
-				queryForList(
+				this.getSqlSessionTemplate().<Triple>
+				selectList(
 						GET_MINIMAL_TRIPLES_FOR_MAPPING_CONTAINER_SQL,
 						bean);
 	}
@@ -971,7 +999,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		
 		return 
 			(Integer) 
-				this.getSqlMapClientTemplate().queryForObject(GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL, bean) > 0;
+				this.getSqlSessionTemplate().selectOne(GET_CODE_MAPPING_PARTICIPATION_COUNT_SQL, bean) > 0;
 	}
 	
 
@@ -984,23 +1012,23 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setPrefix(codingSchemePrefix);
 		bean.setParam1(assocUid);
 		return (List<Triple>) 
-				this.getSqlMapClientTemplate().
-				queryForList(
+				this.getSqlSessionTemplate().<Triple>
+				selectList(
 						GET_VALID_TRIPLES_FOR_ASSOCIATION_UID_SQL,
 						bean);
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Sextuple> getValidSexTuplesOfAssociation(String codingSchemeUid, String assocUid) {
+	public List<Sextuple> getValidSexTuplesOfAssociation(String codingSchemeUid, String assocPredicateUid) {
 		String codingSchemePrefix = this.getPrefixResolver().
 				resolvePrefixForCodingScheme(codingSchemeUid);
 		PrefixedParameter bean = new PrefixedParameter();
 		bean.setPrefix(codingSchemePrefix);
-		bean.setParam1(assocUid);
+		bean.setParam1(assocPredicateUid);
 		return (List<Sextuple>) 
-				this.getSqlMapClientTemplate().
-				queryForList(
+				this.getSqlSessionTemplate().<Sextuple>
+				selectList(
 						GET_VALID_SEXTUPLES_FOR_ASSOCIATION_UID_SQL,
 						bean);
 	}
@@ -1014,7 +1042,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setParam1(assocUid);
 		bean.setParam2(entityCode);
 		return  
-			(Integer) this.getSqlMapClientTemplate().queryForObject(VALIDATE_NODE_FOR_ASSOCIATION, bean);
+			(Integer) this.getSqlSessionTemplate().selectOne(VALIDATE_NODE_FOR_ASSOCIATION, bean);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -1026,7 +1054,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		bean.setPrefix(codingSchemePrefix);
 		bean.setParam1(entityCode);
 		return  
-			(List<String>) this.getSqlMapClientTemplate().queryForList(GET_VALID_PREDICATES_FOR_TARGET_AND_SOURCEOF, bean);
+			(List<String>) this.getSqlSessionTemplate().<String>selectList(GET_VALID_PREDICATES_FOR_TARGET_AND_SOURCEOF, bean);
 	}
 
 	private List<? extends ResolvedConceptReference> sortList(List<TripleUidReferencingResolvedConceptReference> list, List<String> tripleUids){
@@ -1060,7 +1088,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				List<ConceptReference> sourceConceptReferences,
 				List<ConceptReference> targetConceptReferences,
 				List<ConceptReference> sourceOrTargetConceptReferences,
-				List<Sort> sortList){
+				List<? extends Sort> sortList){
 			super(  prefix,
 					mappingCodingSchemeUid,
 					sourceCodingSchemeUid, 
@@ -1113,7 +1141,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		String targetCodingSchemeUid;
 		String targetSchemePrefix;
 		String relationsContainerName;
-		List<Sort> sortList;
+		List<? extends Sort> sortList;
 
 		public MappingTripleParameterBean(
 				String prefix,
@@ -1123,7 +1151,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 				String targetCodingSchemeUid, 
 				String targetSchemePrefix,
 				String relationsContainerName, 
-				List<Sort> sortList) {
+				List<? extends Sort> sortList) {
 			super(prefix);
 			this.mappingCodingSchemeUid = mappingCodingSchemeUid;
 			this.sourceCodingSchemeUid = sourceCodingSchemeUid;
@@ -1169,10 +1197,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion.par
 		public void setRelationsContainerName(String relationsContainerName) {
 			this.relationsContainerName = relationsContainerName;
 		}
-		public List<Sort> getSortList() {
+		public List<? extends Sort> getSortList() {
 			return sortList;
 		}
-		public void setSortList(List<Sort> sortList) {
+		public void setSortList(List<? extends Sort> sortList) {
 			this.sortList = sortList;
 		}
 	}

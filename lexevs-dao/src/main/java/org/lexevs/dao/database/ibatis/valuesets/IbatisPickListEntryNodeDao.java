@@ -94,7 +94,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_PICKLIST_ENTRYNODE_UID_BY_PICKLISTID_AND_ENTRYNODEID_SQL,
 				new PrefixedParameterTuple(prefix, pickListId,
 						pickListEntryNodeId));
@@ -171,7 +171,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 			}
 			
 			// insert into plEntry table
-			this.getSqlMapClientTemplate().insert(INSERT_PICKLIST_ENTRY_SQL, plEntryBean);
+			this.getSqlSessionTemplate().insert(INSERT_PICKLIST_ENTRY_SQL, plEntryBean);
 			
 			// insert pickListEntryNode properties
 			if (entryNode.getProperties() != null)
@@ -187,7 +187,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 			{
 				for (InsertOrUpdateValueSetsMultiAttribBean pickContextMultiAttrib : contextList)
 				{
-					this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, pickContextMultiAttrib);
+					this.getSqlSessionTemplate().insert(INSERT_MULTI_ATTRIB_SQL, pickContextMultiAttrib);
 				}
 			}
 		
@@ -201,12 +201,12 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL,
 				new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
 						ReferenceType.PICKLISTENTRY.name()));
 		
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_SOURCE_BY_PARENT_GUID_AND_TYPE_SQL,
 				new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
 						ReferenceType.PICKLISTENTRY.name()));
@@ -247,20 +247,20 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String histPrefix = this.getPrefixResolver().resolveHistoryPrefix();
 		
 		InsertOrUpdatePickListEntryBean plEntryNodeBean = (InsertOrUpdatePickListEntryBean) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_PICKLIST_ENTRYNODE_METADATA_BY_PLENTRY_GUID_SQL,
 						new PrefixedParameter(prefix, pickListEntryNodeUId));
 	
 		plEntryNodeBean.setPrefix(histPrefix);
 		
-		this.getSqlMapClientTemplate().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_PICKLIST_ENTRY_SQL, plEntryNodeBean);
 		
 		for (InsertOrUpdateValueSetsMultiAttribBean vsMultiAttrib : plEntryNodeBean.getVsMultiAttribList())
 		{
 			vsMultiAttrib.setPrefix(histPrefix);
 			
-			this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, vsMultiAttrib);
+			this.getSqlSessionTemplate().insert(INSERT_MULTI_ATTRIB_SQL, vsMultiAttrib);
 		}
 		
 		if (!vsEntryStateExists(prefix, plEntryNodeBean.getEntryStateUId())) {
@@ -286,7 +286,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		InsertOrUpdatePickListEntryBean bean = buildInsertOrUpdatePickListEntryBean(
 				pickListEntryNodeUId, pickListEntryNode);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_PICKLIST_ENTRYNODE_BY_UID_SQL, bean);
 		
 		PickListEntry pickListEntry = pickListEntryNode
@@ -298,7 +298,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 			
 			if( pickListEntry.getPickContextCount() != 0 ) {
 				
-				this.getSqlMapClientTemplate().delete(
+				this.getSqlSessionTemplate().delete(
 						DELETE_CONTEXT_BY_PARENT_GUID_AND_TYPE_SQL,
 						new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
 								ReferenceType.PICKLISTDEFINITION.name()));
@@ -317,12 +317,12 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 					insertOrUpdateValueSetsMultiAttribBean.setEntryStateUId(bean.getEntryStateUId());
 					insertOrUpdateValueSetsMultiAttribBean.setPrefix(prefix);
 					
-					this.getSqlMapClientTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
+					this.getSqlSessionTemplate().insert(INSERT_MULTI_ATTRIB_SQL, insertOrUpdateValueSetsMultiAttribBean);
 				}
 			}
 		} else {
 			
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 					new PrefixedParameterTriple(prefix, pickListEntryNodeUId,
 							SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
@@ -346,10 +346,10 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		bean.setPrefix(prefix);
 		bean.setPickListEntryNode(pickListEntryNode);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_PICKLIST_ENTRYNODE_VER_ATTRIB_BY_UID_SQL, bean);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 				new PrefixedParameterTriple(prefix, pickListEntryNodeUId,
 						SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
@@ -404,7 +404,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTRYSTATE_UID_BY_PICKLISTENTRYNODE_UID_SQL,
 				new PrefixedParameter(prefix, pickListEntryNodeUId));
 	}
@@ -415,11 +415,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_PICKLIST_ENTRYNODE_ENTRYSTATE_UID_SQL, 
 				new PrefixedParameterTuple(prefix, pickListEntryNodeUId, entryStateUId));
 		
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_MULTI_ATTRIB_ENTRYSTATE_UID_BY_ID_AND_TYPE_SQL,
 				new PrefixedParameterTriple(prefix, pickListEntryNodeUId,
 						SQLTableConstants.TBLCOLVAL_SUPPTAG_CONTEXT,
@@ -448,7 +448,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_PICKLIST_ENTRYNODE_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, pickListEntryNodeUId));	
 	}
@@ -476,7 +476,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		this.vsEntryStateDao.deleteAllEntryStateByEntryUIdAndType(pickListEntryNodeUId, ReferenceType.PICKLISTENTRY.name());
 		
 		// delete pick list entry node
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_PL_ENTRY_NODE_BY_UID_SQL,
 				new PrefixedParameterTuple(prefix, pickListEntryNodeUId,
 						ReferenceType.PICKLISTENTRY.name()));
@@ -516,11 +516,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		// 2. Get the earliest revisionId on which change was applied on given 
 		// PLEntry with reference given revisionId.
 		
-		HashMap revisionIdMap = (HashMap) this.getSqlMapClientTemplate()
-				.queryForMap(
+		HashMap<String,String> revisionIdMap = (HashMap) this.getSqlSessionTemplate()
+				.<String,String>selectMap(
 						GET_PREV_REV_ID_FROM_GIVEN_REV_ID_FOR_PLENTRY_SQL,
 						new PrefixedParameterTuple(prefix, vsPLEntryUId,
-								revisionId), "revId", "revAppliedDate");
+								revisionId), "revId");
 		
 		if( revisionIdMap.isEmpty() ) {
 			revisionId = null;
@@ -538,7 +538,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		InsertOrUpdatePickListEntryBean plEntryBean = null;
 			
 		plEntryBean = (InsertOrUpdatePickListEntryBean) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_PICKLIST_ENTRY_METADATA_FROM_HISTORY_BY_REVISION_SQL,
 						new PrefixedParameterTuple(prefix, vsPLEntryUId,
 								revisionId));
@@ -554,8 +554,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 
 				if (entryNodeChoice.getInclusionEntry() != null) {
 					List<String> contextList = this
-							.getSqlMapClientTemplate()
-							.queryForList(
+							.getSqlSessionTemplate()
+							.<String>selectList(
 									GET_CONTEXT_LIST_FROM_HISTORY_BY_PARENT_ENTRYSTATEGUID_AND_TYPE_SQL,
 									new PrefixedParameterTuple(prefix,
 											plEntryBean.getEntryStateUId(),
@@ -571,7 +571,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		if (pickListEntryNode == null && revisionId != null) {
 
 			InsertOrUpdatePickListEntryBean plEntryNodeBean = (InsertOrUpdatePickListEntryBean) this
-					.getSqlMapClientTemplate().queryForObject(
+					.getSqlSessionTemplate().selectOne(
 							GET_PICKLIST_ENTRYNODE_METADATA_BY_PLENTRY_GUID_SQL,
 							new PrefixedParameter(prefix, vsPLEntryUId));
 
@@ -584,8 +584,8 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		// 5. Get all pick list entry node property.
 		if (pickListEntryNode != null) {
 			List<String> propertyIdList = this
-					.getSqlMapClientTemplate()
-					.queryForList(
+					.getSqlSessionTemplate()
+					.<String>selectList(
 							GET_ENTRYNODE_PROPERTY_IDS_LIST_BY_ENTRYNODE_UID_SQL,
 							new PrefixedParameterTuple(prefix, vsPLEntryUId,
 									ReferenceType.PICKLISTENTRY.name()));
@@ -619,7 +619,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String prefix = this.getPrefixResolver().resolveDefaultPrefix();
 
 		InsertOrUpdatePickListEntryBean plEntryNodeBean = (InsertOrUpdatePickListEntryBean) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_PICKLIST_ENTRYNODE_METADATA_BY_PLENTRY_GUID_SQL,
 						new PrefixedParameter(prefix, vsPLEntryUId));
 

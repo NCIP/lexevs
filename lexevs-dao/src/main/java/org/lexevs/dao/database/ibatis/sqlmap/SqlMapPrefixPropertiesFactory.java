@@ -3,26 +3,25 @@ package org.lexevs.dao.database.ibatis.sqlmap;
 
 import java.util.Properties;
 
-import org.lexevs.dao.database.prefix.PrefixResolver;
 import org.lexevs.system.constants.SystemVariables;
 import org.springframework.beans.factory.FactoryBean;
 
 
-public class SqlMapPrefixPropertiesFactory implements FactoryBean {
+public class SqlMapPrefixPropertiesFactory implements FactoryBean<Properties> {
 
 	private SystemVariables systemVariables;
 	
 	private String prefixKey = "defaultPrefix";
 	
 	@Override
-	public Object getObject() throws Exception {
+	public Properties getObject() throws Exception {
 		Properties props = new Properties();
 		props.setProperty(prefixKey, systemVariables.getAutoLoadDBPrefix());
 		return props;
 	}
 
 	@Override
-	public Class getObjectType() {
+	public Class<Properties> getObjectType() {
 		return Properties.class;
 	}
 

@@ -158,19 +158,19 @@
 	<target name="compile" depends="init" description="compile the source ">
 		<mkdir dir="${CastorFull}/${CastorClass}"/>
 		<!-- We need to compile the annotations first   -->
-		<javac source="1.6" target="1.6" srcdir="${src}" includes="org/LexGrid/annotations/**"
+		<javac source="1.8" target="1.8" srcdir="${src}" includes="org/LexGrid/annotations/**"
                     destdir="${CastorFull}/${CastorClass}" debug="yes">
 					<classpath refid="classpath"/>
 		</javac>
-		<javac source="1.6" target="1.6" srcdir="${src}" includes="org/mayo/edu/lgModel/**"
+		<javac source="1.8" target="1.8" srcdir="${src}" includes="org/mayo/edu/lgModel/**"
                     destdir="${CastorFull}/${CastorClass}" debug="yes">
 					<classpath refid="classpath"/>
 		</javac>
-		<javac source="1.6" target="1.6" srcdir="${CastorFull}/${CastorGen}" destdir="${CastorFull}/${CastorClass}" debug="yes">
+		<javac source="1.8" target="1.8" srcdir="${CastorFull}/${CastorGen}" destdir="${CastorFull}/${CastorClass}" debug="yes">
 			<classpath refid="classpath"/>
 		</javac>
 		<!-- We need to compile the src last as this uses the Castor generated code   -->
-		<javac source="1.6" target="1.6" srcdir="${src}" destdir="${CastorFull}/${CastorClass}" debug="yes">
+		<javac source="1.8" target="1.8" srcdir="${src}" destdir="${CastorFull}/${CastorClass}" debug="yes">
 			<classpath refid="classpath"/>
 		</javac>
 	</target>

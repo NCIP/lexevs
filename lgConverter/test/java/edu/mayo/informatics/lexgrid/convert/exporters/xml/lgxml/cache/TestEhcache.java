@@ -98,7 +98,7 @@ public class TestEhcache {
         // System.out.println(cache.toString());
         cache.flush();
         
-        System.out.println("TestEhcache: DiskStorePath=" + cache.getCacheConfiguration().getDiskStorePath());
+        //System.out.println("TestEhcache: DiskStorePath=" + cache.getCacheConfiguration().dis.getDiskStorePath());
         
         element = cache.get("key18");
         value = (String)element.getObjectValue();        

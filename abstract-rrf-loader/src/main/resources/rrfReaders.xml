@@ -6,12 +6,12 @@
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
-		http://www.springframework.org/schema/beans classpath:springxsds/spring-beans-2.0.xsd
-		http://www.springframework.org/schema/batch classpath:springxsds/spring-batch-2.1.xsd
-		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-2.0.xsd
-		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-2.0.xsd">
+		http://www.springframework.org/schema/beans classpath:springxsds/spring-beans-4.3.xsd
+		http://www.springframework.org/schema/batch classpath:springxsds/spring-batch-3.0.xsd
+		http://www.springframework.org/schema/aop classpath:springxsds/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx classpath:springxsds/spring-tx-4.3.xsd">
 		
-	<beans:import resource="repositories.xml"/>
+	<beans:import resource="classpath*:repositories.xml"/>
 	
 	<beans:bean class="org.springframework.batch.core.scope.StepScope"/>
 		
@@ -20,7 +20,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrconsoFieldSetMapper"/>
@@ -36,7 +36,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrhierFieldSetMapper"/>
@@ -53,7 +53,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrstyFieldSetMapper"/>
@@ -69,7 +69,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrsabFieldSetMapper"/>
@@ -85,7 +85,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrdefFieldSetMapper"/>
@@ -111,7 +111,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrdocFieldSetMapper"/>
@@ -126,7 +126,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrsatFieldSetMapper"/>
@@ -141,7 +141,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrrankFieldSetMapper"/>
@@ -212,7 +212,7 @@
 		<beans:property name="lineMapper">
 			<beans:bean class="org.springframework.batch.item.file.mapping.DefaultLineMapper">
 				<beans:property name="lineTokenizer">
-					<beans:ref local="pipeTokenizer"/>
+					<beans:ref bean="pipeTokenizer"/>
 				</beans:property>
 				<beans:property name="fieldSetMapper">
 					<beans:bean class="org.lexgrid.loader.rrf.fieldmapper.MrrelFieldSetMapper"/>
@@ -224,7 +224,7 @@
 	
 	<beans:bean id="mrdocAssociationGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader">
 		<beans:property name="delegate">
-			<beans:ref local="onlyAssociationsSkippingMrdocReader"/>
+			<beans:ref bean="onlyAssociationsSkippingMrdocReader"/>
 		</beans:property>
 		<beans:property name="groupDiscriminator">
 			<beans:bean class="org.lexgrid.loader.rrf.reader.support.MrdocDiscriminator"/>
@@ -238,7 +238,7 @@
 				class="org.lexgrid.loader.rrf.reader.support.MrdocOnlyAssociationsSkipPolicy" />
 		</beans:property>
 		<beans:property name="delegate">
-			<beans:ref local="mrdocReader" />
+			<beans:ref bean="mrdocReader" />
 		</beans:property>
 	</beans:bean>
 	
@@ -247,20 +247,20 @@
 				<beans:bean class="org.lexgrid.loader.rrf.reader.support.MrdocRelationNameSkipPolicy"/>
 		</beans:property>
 		<beans:property name="delegate">
-			<beans:ref local="mrdocReader"/>
+			<beans:ref bean="mrdocReader"/>
 		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="mrrelGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
 		abstract="true">
 		<beans:property name="delegate">
-			<beans:ref local="mrrelReader"/>
+			<beans:ref bean="mrrelReader"/>
 		</beans:property>
 	</beans:bean>
 	
 	<beans:bean id="mrstyGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader">
 		<beans:property name="delegate">
-			<beans:ref local="mrstyReader"/>
+			<beans:ref bean="mrstyReader"/>
 		</beans:property>
 		<beans:property name="groupDiscriminator">
 			<beans:bean class="org.lexgrid.loader.rrf.reader.support.MrstyGroupDiscriminator"/>
@@ -270,35 +270,35 @@
 	 <beans:bean id="mrconsoGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
 	 	abstract="true">
 		<beans:property name="delegate">
-			<beans:ref local="mrconsoReader"/>
+			<beans:ref bean="mrconsoReader"/>
 		</beans:property>	
 	</beans:bean>
 	
 	<beans:bean id="partitionedMrconsoGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
 	 	abstract="true">
 		<beans:property name="delegate">
-			<beans:ref local="partitionedMrconsoReader"/>
+			<beans:ref bean="partitionedMrconsoReader"/>
 		</beans:property>	
 	</beans:bean>
 	
 	<beans:bean id="partitionedMrsatGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
 	 	abstract="true">
 		<beans:property name="delegate">
-			<beans:ref local="partitionedMrsatReader"/>
+			<beans:ref bean="partitionedMrsatReader"/>
 		</beans:property>	
 	</beans:bean>
 	
 	<beans:bean id="partitionedMrstyGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
 	 	abstract="true">
 		<beans:property name="delegate">
-			<beans:ref local="partitionedMrstyReader"/>
+			<beans:ref bean="partitionedMrstyReader"/>
 		</beans:property>	
 	</beans:bean>
 	
 	<beans:bean id="partitionedMrdefGroupReader" class="org.lexgrid.loader.reader.BufferedGroupItemReader" 
 	 	abstract="true">
 		<beans:property name="delegate">
-			<beans:ref local="partitionedMrdefReader"/>
+			<beans:ref bean="partitionedMrdefReader"/>
 		</beans:property>	
 	</beans:bean>
 

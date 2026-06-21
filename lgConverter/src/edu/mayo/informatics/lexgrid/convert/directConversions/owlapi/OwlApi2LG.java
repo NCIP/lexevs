@@ -56,6 +56,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.lexevs.dao.database.access.DaoManager;
+import org.lexevs.dao.database.ibatis.association.parameter.BatchAssociationInsertBean;
 import org.lexevs.dao.database.service.DatabaseServiceManager;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService;
 import org.lexevs.dao.database.service.daocallback.DaoCallbackService.DaoCallback;
@@ -189,6 +190,8 @@ public class OwlApi2LG {
     private Map<String, String> owlAnnotationPropertiesTocode_  = null;
     private Map<IRI, Boolean> owlIRIToIsAnyUIRDataType_  = new HashMap<IRI, Boolean>();
     
+    private List<BatchAssociationInsertBean> sources = new ArrayList<BatchAssociationInsertBean>();
+    
     //this Map provides us with a set of values that can be used to determine punned individuals
 //    private Map<String, String> owlPunnedClassesToCode_ = new HashMap<String, String>();
 
@@ -207,7 +210,17 @@ public class OwlApi2LG {
 
      OWLOntologyManager manager = null;
      OWLDataFactory factory = null;
+
+    private boolean isAssociationAndOtherProcessingComplete = false;
      
+    public boolean isAssociationAndOtherProcessingComplete() {
+        return isAssociationAndOtherProcessingComplete;
+    }
+
+    public void setAssociationAndOtherProcessingComplete(boolean isAssociationAndOtherProcessingComplete) {
+        this.isAssociationAndOtherProcessingComplete = isAssociationAndOtherProcessingComplete;
+    }
+
     /**
      * Create a new instance for conversion.
      * 
@@ -373,7 +386,11 @@ public class OwlApi2LG {
 
         messages_.info("Processing OWL Datatype Properties.....");
         processOWLDataProperties(snap);
-
+        
+        setAssociationAndOtherProcessingComplete(true);
+        String uri = lgScheme_.getCodingSchemeURI();
+        String version = lgScheme_.getRepresentsVersion();
+        databaseServiceManager.getAssociationService().insertAssociationSourceBatch(uri, version, sources);
     }
 
     /**
@@ -3498,8 +3515,16 @@ public class OwlApi2LG {
             String uri = lgScheme_.getCodingSchemeURI();
             String version = lgScheme_.getRepresentsVersion();
 
-            databaseServiceManager.getAssociationService().insertAssociationSource(uri, version,
-                    aw.getRelationsContainerName(), aw.getAssociationPredicate().getAssociationName(), source);
+//            databaseServiceManager.getAssociationService().insertAssociationSource(uri, version,
+//                    aw.getRelationsContainerName(), aw.getAssociationPredicate().getAssociationName(), source);
+            
+            sources.add(new BatchAssociationInsertBean(aw.getRelationsContainerName(),
+                    aw.getAssociationPredicate().getAssociationName(),
+                    source,
+                    target));
+//            if(isAssociationAndOtherProcessingComplete()) {
+//                databaseServiceManager.getAssociationService().insertAssociationSourceBatch(uri, version, sources);
+//            }
 
         } catch (Exception e) {
             this.messages_.warn("Error Inserting AssociationSource.", e);

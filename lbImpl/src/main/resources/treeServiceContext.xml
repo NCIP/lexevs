@@ -22,9 +22,7 @@
    <bean id="lexEvsTreeDaoImpl"
 		class="org.LexGrid.LexBIG.Impl.Extensions.tree.dao.ProxyWrappedJdbcLexEvsTreeDao">
 		<qualifier value="impl" type="org.springframework.beans.factory.annotation.Qualifier"/>
-		<property name="dataSource">
-			<ref local="dataSource" />
-		</property>
+		<property name="dataSource" ref="dataSource"/>
 		<property name="getChildrenSqlBuilder" ref ="getChildrenSqlBuilder" />
 		<property name="getNodeSqlBuilder" ref ="getNodeSqlBuilder" />
 	</bean>
@@ -66,12 +64,8 @@
 	<bean id="lexEvsDao"
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<qualifier value="proxy" type="org.springframework.beans.factory.annotation.Qualifier"/>
-		<property name="transactionManager">
-			<ref local="transactionManager" />
-		</property>
-		<property name="target">
-			<ref local="lexEvsTreeDaoImpl" />
-		</property>
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="target" ref="lexEvsTreeDaoImpl" />
 		<property name="transactionAttributeSource">
     		<bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
   		</property>

@@ -1,89 +1,85 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="PickListEntryNode">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:22 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PickListEntryNode">
 
-	<typeAlias alias="pickListEntryNodeBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.PickListEntryNodeBean" />
-	<typeAlias alias="insertOrUpdatePickListEntryNodeBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean" />
-	<typeAlias alias="pickListEntryExclusion" type="org.LexGrid.valueSets.PickListEntryExclusion" />
-	<typeAlias alias="pickListEntry" type="org.LexGrid.valueSets.PickListEntry" />	
 
-	<resultMap  id="pickListEntryNodeBeanResult" class="pickListEntryNodeBean">
-		<result property="vsPLEntryGuid" column="vsPLEntryGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+
+	<resultMap id="pickListEntryNodeBeanResult" type="pickListEntryNodeBean">
+		<result property="vsPLEntryGuid" column="vsPLEntryGuid" />
 		<result property="pickListEntryId" column="plEntryId"/>
-		<result property="include" column="include" typeHandler="numericBooleanTypeHandler"/>
-		<result property="isActive" column="isActive" typeHandler="numericBooleanTypeHandler"/>
-		<result property="owner" column="owner" />
-		<result property="status" column="status" />
-		<result property="effectiveDate" column="effectiveDate" />
-		<result property="expirationDate" column="expirationDate" />
-		<result property="pickListEntry" resultMap="PickListEntryNode.pickListEntryResult"/>		
-		<result property="pickListEntryExclusion" resultMap="PickListEntryNode.pickListExclusionResult"/>
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="include" column="include" />
+		<result property="isActive" column="isActive" />
+		<result property="owner" column="owner"/>
+		<result property="status" column="status"/>
+		<result property="effectiveDate" column="effectiveDate"/>
+		<result property="expirationDate" column="expirationDate"/>
+		<result property="entryStateUId" column="entryStateGuid" />
+		<collection property="pickListEntry" resultMap="PickListEntryNode.pickListEntryResult"/>		
+		<collection property="pickListEntryExclusion" resultMap="PickListEntryNode.pickListExclusionResult"/>
 	</resultMap>
 	
-	<resultMap  id="pickListEntryNodeMetaDataWithMultiAttrib" class="insertOrUpdatePickListEntryNodeBean" groupBy="uid">
-		<result property="uid" column="vsPLEntryGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="pickListUId" column="vsPickListGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+	<resultMap id="pickListEntryNodeMetaDataWithMultiAttrib" type="insertOrUpdatePickListEntryNodeBean">
+		<result property="uid" column="vsPLEntryGuid" />
+		<result property="pickListUId" column="vsPickListGuid" />
 		<result property="pickListEntryNode.pickListEntryId" column="plEntryId"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 		<result property="entityCode" column="entityCode"/>
 		<result property="entryOrder" column="entryOrder"/>
-		<result property="isDefault" column="isDefault" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isDefault" column="isDefault" />
 		<result property="matchIfNoContext" column="matchIfNoContext"/>
 		<result property="propertyId" column="propertyId"/>
 		<result property="langauage" column="language"/>
-		<result property="include" column="include" typeHandler="numericBooleanTypeHandler"/>
+		<result property="include" column="include" />
 		<result property="pickText" column="pickText"/>
-		<result property="pickListEntryNode.isActive" column="isActive" />
-		<result property="pickListEntryNode.owner" column="owner" />
-		<result property="pickListEntryNode.status" column="status" />
-		<result property="pickListEntryNode.effectiveDate" column="effectiveDate" />
-		<result property="pickListEntryNode.expirationDate" column="expirationDate" />
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
+		<result property="pickListEntryNode.isActive" column="isActive"/>
+		<result property="pickListEntryNode.owner" column="owner"/>
+		<result property="pickListEntryNode.status" column="status"/>
+		<result property="pickListEntryNode.effectiveDate" column="effectiveDate"/>
+		<result property="pickListEntryNode.expirationDate" column="expirationDate"/>
+		<result property="entryStateUId" column="entryStateGuid" />
+		<collection property="vsMultiAttribList" resultMap="VSMultiAttrib.vsMultiAttribResultBean"/>
 	</resultMap>
 
-	<resultMap  id="pickListEntryNodeMetaData" class="insertOrUpdatePickListEntryNodeBean" groupBy="uid">
-		<result property="uid" column="vsPLEntryGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="pickListUId" column="vsPickListGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+	<resultMap id="pickListEntryNodeMetaData" type="insertOrUpdatePickListEntryNodeBean">
+		<result property="uid" column="vsPLEntryGuid" />
+		<result property="pickListUId" column="vsPickListGuid" />
 		<result property="pickListEntryNode.pickListEntryId" column="plEntryId"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 		<result property="entityCode" column="entityCode"/>
 		<result property="entryOrder" column="entryOrder"/>
-		<result property="isDefault" column="isDefault" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isDefault" column="isDefault" />
 		<result property="matchIfNoContext" column="matchIfNoContext"/>
 		<result property="propertyId" column="propertyId"/>
 		<result property="langauage" column="language"/>
-		<result property="include" column="include" typeHandler="numericBooleanTypeHandler"/>
+		<result property="include" column="include" />
 		<result property="pickText" column="pickText"/>
-		<result property="pickListEntryNode.isActive" column="isActive" />
-		<result property="pickListEntryNode.owner" column="owner" />
-		<result property="pickListEntryNode.status" column="status" />
-		<result property="pickListEntryNode.effectiveDate" column="effectiveDate" />
-		<result property="pickListEntryNode.expirationDate" column="expirationDate" />
-		<result property="entryStateUId" column="entryStateGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+		<result property="pickListEntryNode.isActive" column="isActive"/>
+		<result property="pickListEntryNode.owner" column="owner"/>
+		<result property="pickListEntryNode.status" column="status"/>
+		<result property="pickListEntryNode.effectiveDate" column="effectiveDate"/>
+		<result property="pickListEntryNode.expirationDate" column="expirationDate"/>
+		<result property="entryStateUId" column="entryStateGuid" />
 	</resultMap>
 		
-	<resultMap  id="pickListEntryResult" class="pickListEntry">
+	<resultMap id="pickListEntryResult" type="pickListEntry">
 		<result property="entityCode" column="entityCode"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 		<result property="entryOrder" column="entryOrder"/>
 		<result property="propertyId" column="propertyId"/>
-		<result property="isDefault" column="isDefault" typeHandler="numericBooleanTypeHandler"/>
+		<result property="isDefault" column="isDefault" />
 		<result property="matchIfNoContext" column="matchIfNoContext"/>
 		<result property="language" column="language"/>
 		<result property="pickText" column="pickText"/>
 	</resultMap>
 	
-	<resultMap  id="pickListExclusionResult" class="pickListEntryExclusion">
+	<resultMap id="pickListExclusionResult" type="pickListEntryExclusion">
 		<result property="entityCode" column="entityCode"/>
 		<result property="entityCodeNamespace" column="entityCodeNamespace"/>
 	</resultMap>
 	
-    <insert id="insertPickListEntry" 
-	parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
-	INSERT INTO $prefix$vsPLEntry
+    <insert id="insertPickListEntry" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
+	INSERT INTO ${prefix}vsPLEntry
 	(
 			vsPLEntryGuid,
 			vsPickListGuid,
@@ -103,72 +99,68 @@
 			expirationDate,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#,
-			#pickListUId,handler=variablePrimaryKeyTypeHandler#,
-			#pickListEntryNode.pickListEntryId#,
-			#entityCodeNamespace#,
-			#entityCode#,
-			#entryOrder#,
-			
-			<isPropertyAvailable property="isDefault">
-				#isDefault,handler=numericBooleanTypeHandler#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="isDefault">
+			#{uid},
+			#{pickListUId},
+			#{pickListEntryNode.pickListEntryId},
+			#{entityCodeNamespace},
+			#{entityCode},
+			#{entryOrder},
+
+		    <if test="isDefault !=null">
+				#{isDefault},
+			</if>
+		    <if test="isDefault == null">
 				null,
-			</isNotPropertyAvailable>
-			
-			<isPropertyAvailable property="matchIfNoContext">
-				#matchIfNoContext,handler=numericBooleanTypeHandler#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="matchIfNoContext">
+			</if>
+			<if test="matchIfNoContext !=null">
+				#{matchIfNoContext},
+			</if>
+			<if test="matchIfNoContext == null">
 				null,
-			</isNotPropertyAvailable>
+			</if>
 			
-			#propertyId#,
+			#{propertyId},
+
+		<if test="include !=null">
+			#{include},
+		</if>
+		<if test="include == null">
+			null,
+		</if>
 			
-			<isPropertyAvailable property="include">
-				#include,handler=numericBooleanTypeHandler#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="include">
-				null,
-			</isNotPropertyAvailable>
+			#{pickText},
+
+		<if test="pickListEntryNode.isActive !=null">
+			#{pickListEntryNode.isActive},
+		</if>
+		<if test="pickListEntryNode.isActive == null">
+			null,
+		</if>
+
 			
-			#pickText#,
-			
-			<isPropertyAvailable property="pickListEntryNode.isActive">
-				#pickListEntryNode.isActive,handler=numericBooleanTypeHandler#,
-			</isPropertyAvailable>
-			<isNotPropertyAvailable property="pickListEntryNode.isActive">
-				null,
-			</isNotPropertyAvailable>
-			
-			#pickListEntryNode.owner#,
-			#pickListEntryNode.status#,
-			#pickListEntryNode.effectiveDate#,
-			#pickListEntryNode.expirationDate#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#	
+			#{pickListEntryNode.owner},
+			#{pickListEntryNode.status},
+			#{pickListEntryNode.effectiveDate},
+			#{pickListEntryNode.expirationDate},
+			#{entryStateUId}	
 		)
     </insert>
      
-	<select id="getPickListEntryNodeUIdByPickListIdAndEntryNodeId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" 
-		resultMap="Common.uidResult">
+	<select id="getPickListEntryNodeUIdByPickListIdAndEntryNodeId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="Common.uidResult">
 		SELECT
 			plEntry.vsPLEntryGuid AS uidKey
 		FROM
-			$prefix$vsPickList pickList,
-			$prefix$vsPLEntry plEntry
+			${prefix}vsPickList pickList,
+			${prefix}vsPLEntry plEntry
 		WHERE
-			pickList.pickListId = #param1#
+			pickList.pickListId = #{param1}
 		AND	
 			pickList.vsPickListGuid = plEntry.vsPickListGuid
 		AND
-			plEntry.plEntryId = #param2#	
+			plEntry.plEntryId = #{param2}	
 	</select>
 	
-	<select id="getPickListEntryNodeBeanByPickListGuid" 
-		resultMap="pickListEntryNodeBeanResult" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getPickListEntryNodeBeanByPickListGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="pickListEntryNodeBeanResult">
 		SELECT
 			vsPLEntryGuid,
 			plEntryId,
@@ -188,15 +180,13 @@
 			expirationDate,
 			entryStateGuid
 		FROM
-			$prefix$vsPLEntry
+			${prefix}vsPLEntry
 		WHERE
-			vsPickListGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			vsPickListGuid = #{param1}
 		ORDER BY entryOrder
      </select>
 
-	<select id="getPickListEntryNodeMeatDataByPLEntryGuid" 
-	resultMap="pickListEntryNodeMetaDataWithMultiAttrib" 
-	parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter">
+	<select id="getPickListEntryNodeMeatDataByPLEntryGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="pickListEntryNodeMetaDataWithMultiAttrib">
 		SELECT
 			plEntry.vsPLEntryGuid,
 			plEntry.vsPickListGuid,
@@ -225,152 +215,142 @@
 			vsMulti.role,
 			vsMulti.entryStateGuid esGuid				
 		FROM
-			$prefix$vsPLEntry plEntry
+			${prefix}vsPLEntry plEntry
 		LEFT JOIN
-			$prefix$vsMultiAttrib vsMulti
+			${prefix}vsMultiAttrib vsMulti
 		ON
 			vsMulti.referenceGuid = plEntry.vsPLEntryGuid
 		WHERE
-			plEntry.vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			plEntry.vsPLEntryGuid = #{param1}
     </select>
 
-	<update id="updatePickListEntryNodeByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
+	<update id="updatePickListEntryNodeByUId" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
 		UPDATE 
-			$prefix$vsPLEntry plEntry
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="entityCode">
-				entityCode = #entityCode#
-			</isNotNull>
-			<isNotNull prepend="," property="entityCodeNamespace">
-				entityCodeNamespace = #entityCodeNamespace#
-			</isNotNull>
-			<isNotNull prepend="," property="entryOrder">
-				entryOrder = #entryOrder#
-			</isNotNull>
-			<isNotNull prepend="," property="isDefault">
-				isDefault = #isDefault,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="matchIfNoContext">
-				matchIfNoContext = #matchIfNoContext,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="propertyId">
-				propertyId = #propertyId#
-			</isNotNull>
-			<isNotNull prepend="," property="langauage">
-				language = #langauage#
-			</isNotNull>
-			<isNotNull prepend="," property="include">
-				include = #include,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="pickText">
-				pickText = #pickText#
-			</isNotNull>												
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}vsPLEntry plEntry
+		<set>
+			<if test="entityCode !=null">
+				entityCode=#{entityCode},
+			</if>
+			<if test="entityCodeNamespace !=null">
+				entityCodeNamespace=#{entityCodeNamespace},
+			</if>
+			<if test="entryOrder !=null">
+				entryOrder=#{entryOrder},
+			</if>
+			<if test="isDefault !=null">
+				isDefault=#{isDefault},
+			</if>
+			<if test="matchIfNoContext !=null">
+				matchIfNoContext=#{matchIfNoContext},
+			</if>
+			<if test="propertyId !=null">
+				propertyId=#{propertyId},
+			</if>
+			<if test="langauage !=null">
+				language=#{langauage},
+			</if>
+			<if test="include !=null">
+				include=#{include},
+			</if>
+		    <if test="pickText !=null">
+				pickText=#{pickText},
+			</if>
+			<if test="entryStateUId !=null">
+				entryStateGuid=#{entryStateUId}
+			</if>
+		</set>
 
 		WHERE 
-			plEntry.vsPLEntryGuid = #uid#
+			plEntry.vsPLEntryGuid = #{uid}
  	</update>
 
-	<update id="updatePickListEntryNodeVerAttribByUId" parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
+	<update id="updatePickListEntryNodeVerAttribByUId" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdatePickListEntryBean">
 		UPDATE 
-			$prefix$vsPLEntry plEntry
-		SET 
-   		  <dynamic prepend=" ">
-			<isNotNull prepend="," property="pickListEntryNode.isActive">
-				isActive = #pickListEntryNode.isActive,handler=numericBooleanTypeHandler#
-			</isNotNull>
-			<isNotNull prepend="," property="pickListEntryNode.owner">
-				owner = #pickListEntryNode.owner#
-			</isNotNull>
-			<isNotNull prepend="," property="pickListEntryNode.status">
-				status = #pickListEntryNode.status#
-			</isNotNull>
-			<isNotNull prepend="," property="pickListEntryNode.effectiveDate">
-				effectiveDate = #pickListEntryNode.effectiveDate#
-			</isNotNull>
-			<isNotNull prepend="," property="pickListEntryNode.expirationDate">
-				expirationDate = #pickListEntryNode.expirationDate#
-			</isNotNull>
-			<isNotNull prepend="," property="entryStateUId">
-				entryStateGuid = #entryStateUId,handler=variablePrimaryKeyTypeHandler#
-			</isNotNull>
-		</dynamic>
+			${prefix}vsPLEntry plEntry
+		<set>
+			<if test="pickListEntryNode.isActive !=null">
+				isActive=#{pickListEntryNode.isActive},
+			</if>
+			<if test="pickListEntryNode.owner !=null">
+				owner=#{pickListEntryNode.owner},
+			</if>
+			<if test="pickListEntryNode.status !=null">
+				status=#{pickListEntryNode.status},
+			</if>
+			<if test="pickListEntryNode.effectiveDate !=null">
+				effectiveDate=#{pickListEntryNode.effectiveDate},
+			</if>
+			<if test="pickListEntryNode.expirationDate !=null">
+				expirationDate=#{pickListEntryNode.expirationDate},
+			</if>
+			<if test="entryStateUId !=null">
+				entryStateGuid=#{entryStateUId}
+			</if>
+		</set>
 
 		WHERE 
-			plEntry.vsPLEntryGuid = #uid,handler=variablePrimaryKeyTypeHandler#
+			plEntry.vsPLEntryGuid = #{uid}
  	</update>
 
-	<select id="getEntryStateUIdByPickListEntryNodeUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultMap="Common.uidResult">
+	<select id="getEntryStateUIdByPickListEntryNodeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultMap="Common.uidResult">
 		SELECT 
 			entryStateGuid AS uidKey
 		FROM
-			$prefix$vsPLEntry plEntry
+			${prefix}vsPLEntry plEntry
 		WHERE
-			plEntry.vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			plEntry.vsPLEntryGuid = #{param1}	
 	</select>
 	
-	<update id="updateEntryStateUIdByPickListEntryUId" 
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<update id="updateEntryStateUIdByPickListEntryUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		UPDATE
-			$prefix$vsPLEntry
+			${prefix}vsPLEntry
 		SET
-			entryStateGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param2}
 		WHERE 
-			vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			vsPLEntryGuid = #{param1}
  	</update>
 
-	<select id="getPickListEntryNodeLatestRevisionIdByUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter"
-		resultClass="string">
+	<select id="getPickListEntryNodeLatestRevisionIdByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameter" resultType="string">
 		SELECT 
 			rev.revisionId
 		FROM
-			$prefix$vsPLEntry plEntry,
-			$prefix$vsEntryState es,
+			${prefix}vsPLEntry plEntry,
+			${prefix}vsEntryState es,
 			${defaultPrefix}revision rev
 		WHERE
-			plEntry.vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler#	
+			plEntry.vsPLEntryGuid = #{param1}	
 		AND
 			plEntry.entryStateGuid = es.entryStateGuid	
 		AND
 			es.revisionGuid = rev.revisionGuid	
 	</select>
 
-	<delete id="deletePickListEntryNodeByUId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletePickListEntryNodeByUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsPLEntry
+			${prefix}vsPLEntry
 		WHERE
-			vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			vsPLEntryGuid = #{param1}
 	</delete>
 
-	<select id="getPrevRevIdFromGivenRevIdForPLEntry" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="java.util.TreeMap">
-		<![CDATA[
+	<select id="getPrevRevIdFromGivenRevIdForPLEntry" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="java.util.TreeMap">
+		
 			SELECT DISTINCT
 				r1.revisionId AS revId,
 				r1.revAppliedDate AS revAppliedDate
 			FROM
-				$prefix$vsPLEntry plEntry,
-				$prefix$vsEntryState es,
+				${prefix}vsPLEntry plEntry,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1, 
 				${defaultPrefix}revision r2			
 			WHERE
-				plEntry.vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler# AND
+				plEntry.vsPLEntryGuid = #{param1} AND
 				(
 					NOT EXISTS 
 					(
 						SELECT 
 							es1.entryStateGuid 
 						FROM 
-							$prefix$vsEntryState es1 
+							${prefix}vsEntryState es1 
 						WHERE 
 							plEntry.entryStateGuid = es1.entryStateGuid
 					)
@@ -378,19 +358,17 @@
 					(
 						plEntry.vsPLEntryGuid = es.entryGuid AND 
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
+						r1.revAppliedDate &lt;= r2.revAppliedDate AND
+						r2.revisionID = #{param2}
 					)
 				)
 			ORDER BY
 				revAppliedDate DESC			
-		]]>			
+					
 	</select>	
 	
-	<select id="getPickListEntryMetaDataByRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="pickListEntryNodeMetaData">
-		<![CDATA[
+	<select id="getPickListEntryMetaDataByRevision" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="pickListEntryNodeMetaData">
+		
 			SELECT 
 				plEntry.vsPLEntryGuid,
 				plEntry.vsPickListGuid,
@@ -412,25 +390,23 @@
 				plEntry.entryStateGuid,
 				r1.revAppliedDate revAppliedDate
 			FROM
-				$prefix$vsPLEntry plEntry,
-				$prefix$vsEntryState es,
+				${prefix}vsPLEntry plEntry,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1,			
 				${defaultPrefix}revision r2		
 			WHERE
-				plEntry.vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler# AND
+				plEntry.vsPLEntryGuid = #{param1} AND
 				plEntry.entryStateGuid = es.entryStateGuid AND
 				es.revisionGuid = r1.revisionGuid AND
-				r1.revAppliedDate <= r2.revAppliedDate AND
-				r2.revisionID = #param2#
+				r1.revAppliedDate &lt;= r2.revAppliedDate AND
+				r2.revisionID = #{param2}
 			ORDER BY
 				revAppliedDate DESC		
-		]]>			
+					
 	</select>
 	
-	<select id="getPickListEntryMetaDataHistoryByRevision" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultMap="pickListEntryNodeMetaData">
-		<![CDATA[
+	<select id="getPickListEntryMetaDataHistoryByRevision" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="pickListEntryNodeMetaData">
+		
 			SELECT 
 				plEntry.vsPLEntryGuid,
 				plEntry.vsPickListGuid,
@@ -452,12 +428,12 @@
 				plEntry.entryStateGuid,
 				r1.revAppliedDate revAppliedDate
 			FROM
-				$prefix$h_vsPLEntry plEntry,
-				$prefix$vsEntryState es,
+				${prefix}h_vsPLEntry plEntry,
+				${prefix}vsEntryState es,
 				${defaultPrefix}revision r1,			
 				${defaultPrefix}revision r2		
 			WHERE
-				plEntry.vsPLEntryGuid = #param1,handler=variablePrimaryKeyTypeHandler# AND
+				plEntry.vsPLEntryGuid = #{param1} AND
 				plEntry.entryStateGuid = es.entryStateGuid AND
 				(
 					(
@@ -466,26 +442,24 @@
 					OR
 					(
 						es.revisionGuid = r1.revisionGuid AND
-						r1.revAppliedDate <= r2.revAppliedDate AND
-						r2.revisionID = #param2#
+						r1.revAppliedDate &lt;= r2.revAppliedDate AND
+						r2.revisionID = #{param2}
 					)
 				)
 			ORDER BY
 				revAppliedDate DESC		
-		]]>			
+					
 	</select>
 	
-	<select id="getEntryNodePropertyIdsListByEntryNodeUId" remapResults="true"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-		resultClass="string">
+	<select id="getEntryNodePropertyIdsListByEntryNodeUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="string">
 			SELECT
 				propertyId
 			FROM
-				$prefix$vsProperty
+				${prefix}vsProperty
 			WHERE
-				referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+				referenceGuid = #{param1}
 			AND
-				referenceType = #param2#
+				referenceType = #{param2}
 	</select>
 	
-</sqlMap>
+</mapper>

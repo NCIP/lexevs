@@ -1,29 +1,12 @@
 
 package org.lexevs.dao.database.ibatis.revision;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.List;
 
-import org.LexGrid.commonTypes.Property;
-import org.LexGrid.commonTypes.PropertyQualifier;
-import org.LexGrid.commonTypes.Source;
-import org.LexGrid.commonTypes.Text;
-import org.LexGrid.concepts.Presentation;
-import org.LexGrid.concepts.PropertyLink;
-import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.LexGrid.versions.EntryState;
-import org.LexGrid.versions.types.ChangeType;
 import org.junit.Test;
-import org.lexevs.dao.database.access.property.PropertyDao.PropertyType;
-import org.lexevs.dao.database.utility.DaoUtility;
 import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.test.context.transaction.TransactionConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * The Class IbatisPropertyDaoTest.

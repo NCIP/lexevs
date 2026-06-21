@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.LexGrid.naming.*;
 import org.LexGrid.util.sql.lgTables.SQLTableConstants;
-import org.springframework.batch.classify.Classifier;
+import org.springframework.classify.Classifier;
 
 /**
  * The Class AbstractMappingClassifier.

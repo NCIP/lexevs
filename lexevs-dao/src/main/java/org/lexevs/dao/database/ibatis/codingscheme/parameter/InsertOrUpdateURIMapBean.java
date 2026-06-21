@@ -1,6 +1,7 @@
 
 package org.lexevs.dao.database.ibatis.codingscheme.parameter;
 
+
 import org.LexGrid.naming.URIMap;
 import org.lexevs.dao.database.ibatis.parameter.IdableParameterBean;
 
@@ -24,6 +25,20 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	private String referenceType;
 	
 	private String associationNames;
+	private String csSuppAttribGuid;
+	private String codingSchemeGuid;
+	private String id;
+	private String uri;
+	private String idValue;
+	private String rootCode;
+	private Boolean isForwardNavigable;
+	private Boolean isImported;
+	private String equivalentCodingScheme;
+	private String assemblyRule;
+	private String assnCodingScheme;
+	private String assnNamespace;
+	private String assnEntityCode;
+	private String propertyType;
 	
 	/**
 	 * Sets the supported attribute tag.
@@ -42,7 +57,8 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	public String getSupportedAttributeTag() {
 		return supportedAttributeTag;
 	}
-
+	
+	
 	/**
 	 * Sets the uri map.
 	 * 
@@ -105,5 +121,117 @@ public class InsertOrUpdateURIMapBean extends IdableParameterBean{
 	 */
 	public void setAssociationNames(String associationNames) {
 		this.associationNames = associationNames;
+	}
+
+	public String getCsSuppAttribGuid() {
+		return csSuppAttribGuid;
+	}
+
+	public void setCsSuppAttribGuid(String csSuppAttribGuid) {
+		this.csSuppAttribGuid = csSuppAttribGuid;
+	}
+
+	public String getCodingSchemeGuid() {
+		return codingSchemeGuid;
+	}
+
+	public void setCodingSchemeGuid(String codingSchemeGuid) {
+		this.codingSchemeGuid = codingSchemeGuid;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	public String getIdValue() {
+		return idValue;
+	}
+
+	public void setIdValue(String idValue) {
+		this.idValue = idValue;
+	}
+
+	public String getRootCode() {
+		return rootCode;
+	}
+
+	public void setRootCode(String rootCode) {
+		this.rootCode = rootCode;
+	}
+
+	public Boolean getIsForwardNavigable() {
+		return isForwardNavigable;
+	}
+
+	public void setIsForwardNavigable(Boolean boolean1) {
+		this.isForwardNavigable = boolean1;
+	}
+
+	public Boolean getIsImported() {
+		return isImported;
+	}
+
+	public void setIsImported(Boolean isImported) {
+		this.isImported = isImported;
+	}
+
+	public String getEquivalentCodingScheme() {
+		return equivalentCodingScheme;
+	}
+
+	public void setEquivalentCodingScheme(String equivalentCodingScheme) {
+		this.equivalentCodingScheme = equivalentCodingScheme;
+	}
+
+	public String getAssemblyRule() {
+		return assemblyRule;
+	}
+
+	public void setAssemblyRule(String assemblyRule) {
+		this.assemblyRule = assemblyRule;
+	}
+
+	public String getAssnCodingScheme() {
+		return assnCodingScheme;
+	}
+
+	public void setAssnCodingScheme(String assnCodingScheme) {
+		this.assnCodingScheme = assnCodingScheme;
+	}
+
+	public String getAssnNamespace() {
+		return assnNamespace;
+	}
+
+	public void setAssnNamespace(String assnNamespace) {
+		this.assnNamespace = assnNamespace;
+	}
+
+	public String getAssnEntityCode() {
+		return assnEntityCode;
+	}
+
+	public void setAssnEntityCode(String assnEntityCode) {
+		this.assnEntityCode = assnEntityCode;
+	}
+
+	public String getPropertyType() {
+		return propertyType;
+	}
+
+	public void setPropertyType(String propertyType) {
+		this.propertyType = propertyType;
 	}
 }

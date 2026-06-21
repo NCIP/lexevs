@@ -37,6 +37,7 @@ public void testAnonymousClassOfAnonymousClass() throws Throwable {
         
         CodingSchemeVersionOrTag csvt = Constructors.createCodingSchemeVersionOrTagFromVersion(PIZZA_SCHEME_VERSION);   
         CodedNodeGraph cng = lbs.getNodeGraph(PIZZA_SCHEME_NAME, csvt, null);
+        cng = cng.restrictToAnonymous(true);
         
         AssociatedConcept focus = new AssociatedConcept();
         focus.setCode("American");

@@ -19,6 +19,7 @@ import org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple;
 import org.lexevs.dao.database.inserter.Inserter;
 import org.lexevs.dao.database.schemaversion.LexGridSchemaVersion;
 import org.lexevs.dao.database.utility.DaoUtility;
+import org.mybatis.spring.SqlSessionTemplate;
 
 public class IbatisAssociationDataDao extends AbstractIbatisDao implements
 		AssociationDataDao {
@@ -106,7 +107,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 				associationPredicateUId, 
 				source, 
 				data, 
-				this.getNonBatchTemplateInserter());
+				this.getSqlSessionTemplate());
 	}
 	
 	@Override
@@ -129,7 +130,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 			String associationPredicateUId, 
 			AssociationSource source,
 			AssociationData data, 
-			Inserter inserter) {
+			SqlSessionTemplate session) {
 		
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
@@ -142,7 +143,40 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 				associationDataUId, 
 				source, 
 				data,
-				inserter);
+				session);
+
+		this.versionsDao
+				.insertEntryState(
+						codingSchemeUId, 
+						entryStateUId, 
+						associationDataUId,
+						EntryStateType.ENTITYASSNSTODATA,
+						null, 
+						data.getEntryState());
+
+		return associationDataUId;
+	}
+	
+	@Override
+	public String insertMybatisBatchAssociationData(
+			String codingSchemeUId,
+			String associationPredicateUId, 
+			AssociationSource source,
+			AssociationData data, 
+			SqlSessionTemplate session) {
+		
+		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
+				codingSchemeUId);
+
+		String associationDataUId = this.createUniqueId();
+
+		String entryStateUId = this.doInsertAssociationData(
+				prefix,
+				associationPredicateUId, 
+				associationDataUId, 
+				source, 
+				data,
+				session);
 
 		this.versionsDao
 				.insertEntryState(
@@ -161,13 +195,13 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(codingSchemeUId);
 		
 		return 
-			(AssociationSource) this.getSqlMapClientTemplate().queryForObject(
+			(AssociationSource) this.getSqlSessionTemplate().selectOne(
 					GET_TRIPLE_BY_UID, 
 					new PrefixedParameter(prefix, tripleUid));
 	}
 
 	protected String doInsertAssociationData(String prefix, String associationPredicateUId,
-			String associationDataUId, AssociationSource source, AssociationData data, Inserter inserter) {
+			String associationDataUId, AssociationSource source, AssociationData data, SqlSessionTemplate session) {
 
 		String entryStateUId = this.createUniqueId();
 
@@ -184,8 +218,20 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		bean.setEntryStateUId(entryStateUId);
 		bean.setAssociationSource(source);
 		bean.setAssociationData(data);
+		
+		bean.setSourceEntityCode(source.getSourceEntityCode());
+		bean.setSourceEntityCodeNamespace(source.getSourceEntityCodeNamespace());
+		bean.setAssociationInstanceId(data.getAssociationInstanceId());
+		bean.setIsDefining(data.getIsDefining());
+		bean.setIsInferred(data.getIsInferred());
+		bean.setDataValue(data.getAssociationDataText().getContent());
+		bean.setIsActive(data.getIsActive());
+		bean.setOwner(data.getOwner());
+		bean.setStatus(data.getStatus());
+		bean.setEffectiveDate(data.getEffectiveDate());
+		bean.setExpirationDate(data.getExpirationDate());
 
-		inserter.insert(INSERT_ENTITY_ASSN_DATA_SQL, bean);
+		session.insert(INSERT_ENTITY_ASSN_DATA_SQL, bean);
 
 		for (AssociationQualification qual : data.getAssociationQualification()) {
 			String qualUId = this.createUniqueId();
@@ -202,7 +248,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 						.setQualifierValue(qual.getQualifierText().getContent());
 			}
 
-			inserter.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+			session.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 		}
 
 		for (String context : data.getUsageContext()) {
@@ -217,7 +263,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 					.setQualifierName(SQLTableConstants.TBLCOLVAL_USAGECONTEXT);
 			contextBean.setQualifierValue(context);
 
-			inserter
+			session
 					.insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, contextBean);
 		}
 		
@@ -247,7 +293,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (AssociationData) this.getSqlMapClientTemplate().queryForObject(
+		return (AssociationData) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_ASSN_TO_DATA_BY_UID_SQL,
 				new PrefixedParameter(prefix,
 						associationDataUid));
@@ -270,7 +316,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		bean.setParam1(associationDataUid);
 		bean.setParam2(revisionId);
 
-		return (AssociationData) this.getSqlMapClientTemplate().queryForObject(
+		return (AssociationData) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_ASSN_TO_DATA_BY_UID_AND_REVISION_ID_SQL,
 				bean
 				);
@@ -283,7 +329,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTITY_ASSN_TO_DATA_UID_BY_INSTANCE_ID_SQL,
 				new PrefixedParameterTuple(prefix, codingSchemeUId,
 						associationInstanceId));
@@ -300,13 +346,13 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 				codingSchemeUId);
 
 		InsertOrUpdateAssociationDataBean assnDataBean = (InsertOrUpdateAssociationDataBean) this
-				.getSqlMapClientTemplate().queryForObject(
+				.getSqlSessionTemplate().selectOne(
 						GET_ASSN_DATA_ATTRIBUTES_BY_UID_SQL,
 						new PrefixedParameter(prefix, associationDataUId));
 
 		assnDataBean.setPrefix(historyPrefix);
 
-		this.getNonBatchTemplateInserter().insert(
+		this.getSqlSessionTemplate().insert(
 				INSERT_ENTITY_ASSN_DATA_SQL, assnDataBean);
 
 		if (assnDataBean.getAssnQualsAndUsageContext() != null) {
@@ -317,7 +363,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 
 				assocMultiAttrib.setPrefix(historyPrefix);
 
-				this.getSqlMapClientTemplate().insert(
+				this.getSqlSessionTemplate().insert(
 						INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL,
 						assocMultiAttrib);
 			}
@@ -342,14 +388,14 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		bean.setUId(associationDataUId);
 		bean.setEntryStateUId(entryStateUId);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_DATA_BY_UID_SQL, bean);
 
 		AssociationQualification[] assocQual = data.getAssociationQualification();
 		
 		if (assocQual.length != 0) {
 			
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ASSOC_QUALS_BY_ASSOC_UID_SQL,
 					new PrefixedParameter(prefix, associationDataUId));
 			
@@ -366,11 +412,11 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 				}
 				qualBean.setEntryStateUId(entryStateUId);
 				
-				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				this.getSqlSessionTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
 		} else {
 			
-			this.getSqlMapClientTemplate().update(
+			this.getSqlSessionTemplate().update(
 					UPDATE_ASSN_QUALS_ENTRYSTATE_UID_BY_ID_SQL,
 					new PrefixedParameterTuple(prefix, associationDataUId,
 							entryStateUId));
@@ -380,7 +426,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		
 		if (usageContext.length != 0) {
 			
-			this.getSqlMapClientTemplate().delete(
+			this.getSqlSessionTemplate().delete(
 					DELETE_ASSOC_USAGE_CONTEXT_BY_ASSOC_UID_SQL,
 					new PrefixedParameter(prefix, associationDataUId));
 			
@@ -397,7 +443,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 				}
 				qualBean.setEntryStateUId(entryStateUId);
 				
-				this.getSqlMapClientTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
+				this.getSqlSessionTemplate().insert(INSERT_ASSOCIATION_QUAL_OR_CONTEXT_SQL, qualBean);
 			}
 		}
 		
@@ -411,7 +457,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(
+		this.getSqlSessionTemplate().delete(
 				DELETE_ALL_ASSOC_MULTI_ATTRIBS_BY_ASSOC_UID_SQL,
 				new PrefixedParameter(prefix, associationDataUId));
 	}
@@ -423,7 +469,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		this.getSqlMapClientTemplate().delete(DELETE_ASSOC_DATA_BY_UID_SQL,
+		this.getSqlSessionTemplate().delete(DELETE_ASSOC_DATA_BY_UID_SQL,
 				new PrefixedParameter(prefix, associationDataUId));
 	}
 	
@@ -443,7 +489,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		bean.setUId(associationDataUId);
 		bean.setEntryStateUId(entryStateUId);
 
-		this.getSqlMapClientTemplate().update(
+		this.getSqlSessionTemplate().update(
 				UPDATE_ENTITY_ASSN_TO_DATA_VER_ATTRIB_BY_UID_SQL, bean);
 
 		return entryStateUId;
@@ -453,7 +499,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 	public String getLatestRevision(String csUId, String assocDataUId) {
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(csUId);
 		
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ASSOC_DATA_LATEST_REVISION_ID_BY_UID, 
 				new PrefixedParameter(prefix, assocDataUId));		
 	}
@@ -472,7 +518,7 @@ private LexGridSchemaVersion supportedDatebaseVersion = LexGridSchemaVersion
 		String prefix = this.getPrefixResolver().resolvePrefixForCodingScheme(
 				codingSchemeUId);
 
-		return (String) this.getSqlMapClientTemplate().queryForObject(
+		return (String) this.getSqlSessionTemplate().selectOne(
 				GET_ENTRYSTATE_UID_BY_ASSOCIATION_DATA_UID_SQL,
 				new PrefixedParameter(prefix, associationDataUId));
 	}

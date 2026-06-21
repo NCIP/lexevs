@@ -3,9 +3,9 @@ package org.lexgrid.loader.writer.classifier;
 
 import java.util.List;
 
-import org.springframework.batch.classify.Classifier;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.BeansException;
+import org.springframework.classify.Classifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 

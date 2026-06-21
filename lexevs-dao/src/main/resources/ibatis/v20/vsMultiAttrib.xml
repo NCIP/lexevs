@@ -1,101 +1,91 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL MAP 2.0//EN" 
-	"http://www.ibatis.com/dtd/sql-map-2.dtd">
-<sqlMap namespace="VSMultiAttrib">
+<?xml version="1.0" encoding="UTF-8"?><!--Converted at: Fri Apr 15 16:47:24 EDT 2022-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="VSMultiAttrib">
 
-	<resultMap id="sourceResult" class="org.LexGrid.commonTypes.Source">
-		<result property="content" column="attributeValue" />
-		<result property="subRef" column="subRef" />
-		<result property="role" column="role" />
+	<resultMap id="sourceResult" type="org.LexGrid.commonTypes.Source">
+		<result property="content" column="attributeValue"/>
+		<result property="subRef" column="subRef"/>
+		<result property="role" column="role"/>
 	</resultMap>
 
-	<resultMap id="vsMultiAttribResultBean"
-		class="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
-		<result property="uid" column="vsMultiAttribGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="referenceUId" column="referenceGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
-		<result property="referenceType" column="referenceType" />
-		<result property="attributeType" column="attributeType" />
-		<result property="attributeValue" column="attributeValue" />
-		<result property="subRef" column="subRef" />
-		<result property="role" column="role" />
-		<result property="entryStateUId" column="esGuid" typeHandler="variablePrimaryKeyTypeHandler"/>
+	<resultMap id="vsMultiAttribResultBean" type="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
+		<result property="uid" column="vsMultiAttribGuid"/>
+		<result property="referenceUId" column="referenceGuid"/>
+		<result property="referenceType" column="referenceType"/>
+		<result property="attributeType" column="attributeType"/>
+		<result property="attributeValue" column="attributeValue"/>
+		<result property="subRef" column="subRef"/>
+		<result property="role" column="role"/>
+		<result property="entryStateUId" column="esGuid"/>
 	</resultMap>
 
-	<resultMap id="localNameResult" class="string">
-		<result property="java.lang.String" column="localNameValue" />
+	<resultMap id="localNameResult" type="string">
+		<result property="java.lang.String" column="localNameValue"/>
 	</resultMap>
 	
-	<select id="getSourceListByParentGuidandType" remapResults="true"
-			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-			resultMap="sourceResult">
+	<select id="getSourceListByParentGuidandType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="sourceResult">
 		SELECT 
 			attributeValue,
 			subRef,
 			role
 		FROM 
-			$prefix$vsMultiAttrib
+			${prefix}vsMultiAttrib
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1}
 		AND
-			referenceType = #param2#
+			referenceType = #{param2}
 		AND
 			attributeType = 'Source'
 			
 	</select>
 	
-	<select id="getSourceListFromHistoryByParentEntryStateGuidandType" remapResults="true"
-			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-			resultMap="sourceResult">
+	<select id="getSourceListFromHistoryByParentEntryStateGuidandType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultMap="sourceResult">
 		SELECT 
 			attributeValue,
 			subRef,
 			role
 		FROM 
-			$prefix$h_vsMultiAttrib
+			${prefix}h_vsMultiAttrib
 		WHERE
-			entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param1}
 		AND
-			referenceType = #param2#
+			referenceType = #{param2}
 		AND
 			attributeType = 'Source'
 			
 	</select>
 		
-	<select id="getContextListByParentGuidandType" remapResults="true"
-			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-			resultClass="string">
+	<select id="getContextListByParentGuidandType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="string">
 		SELECT 
 			attributeValue
 		FROM 
-			$prefix$vsMultiAttrib
+			${prefix}vsMultiAttrib
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1}
 		AND
-			referenceType = #param2#
+			referenceType = #{param2}
 		AND
 			attributeType = 'Context'
 			
 	</select>
 
-	<select id="getContextListFromHistoryByParentEntryStateGuidandType" remapResults="true"
-			parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple"
-			resultClass="string">
+	<select id="getContextListFromHistoryByParentEntryStateGuidandType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple" resultType="string">
 		SELECT 
 			attributeValue
 		FROM 
-			$prefix$h_vsMultiAttrib
+			${prefix}h_vsMultiAttrib
 		WHERE
-			entryStateGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param1}
 		AND
-			referenceType = #param2#
+			referenceType = #{param2}
 		AND
 			attributeType = 'Context'
 			
 	</select>	
 	
-	<insert id="insertMultiAttrib" 
-		parameterClass="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
-		INSERT INTO $prefix$vsMultiAttrib (
+	<insert id="insertMultiAttrib" parameterType="org.lexevs.dao.database.ibatis.valuesets.parameter.InsertOrUpdateValueSetsMultiAttribBean">
+		INSERT INTO ${prefix}vsMultiAttrib (
 			vsMultiAttribGuid,
 			referenceGuid,
 			referenceType,
@@ -105,46 +95,44 @@
 			role,
 			entryStateGuid
 		) VALUES (
-			#uid,handler=variablePrimaryKeyTypeHandler#,
-			#referenceUId,handler=variablePrimaryKeyTypeHandler#,
-			#referenceType#,
-			#attributeType#,
-			#attributeValue#,
-			#subRef#,
-			#role#,
-			#entryStateUId,handler=variablePrimaryKeyTypeHandler#
+			#{uid},
+			#{referenceUId},
+			#{referenceType},
+			#{attributeType},
+			#{attributeValue},
+			#{subRef},
+			#{role},
+			#{entryStateUId}
 		)
 	</insert>
 
-	<delete id="deleteSourceByParentGuidAndType"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deleteSourceByParentGuidAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsMultiAttrib
+			${prefix}vsMultiAttrib
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1}
 		AND
-			referenceType = #param2#
+			referenceType = #{param2}
 		AND 
 			attributeType = 'Source'
 	</delete>
 	
-	<delete id="deleteContextByParentGuidAndType"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deleteContextByParentGuidAndType" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsMultiAttrib
+			${prefix}vsMultiAttrib
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1}
 		AND
-			referenceType = #param2#
+			referenceType = #{param2}
 		AND 
 			attributeType = 'Context'
 	</delete>
 	
-	<delete id="deletePickListEntryContextByPickListGuid" parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
+	<delete id="deletePickListEntryContextByPickListGuid" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTuple">
 		DELETE FROM
-			$prefix$vsMultiAttrib
+			${prefix}vsMultiAttrib
 		WHERE
-			referenceType = #param1#
+			referenceType = #{param1}
 		AND 
 			attributeType = 'Context'
 		AND 
@@ -153,22 +141,21 @@
 			SELECT 
 				vsPLEntryGuid
 			FROM
-				$prefix$vsPLEntry
+				${prefix}vsPLEntry
 			WHERE
-				vsPickListGuid = #param2,handler=variablePrimaryKeyTypeHandler#
+				vsPickListGuid = #{param2}
 			)
 	</delete>
 	
-	<update id="updateMultiAttribEntryStateUId"
-		parameterClass="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
+	<update id="updateMultiAttribEntryStateUId" parameterType="org.lexevs.dao.database.ibatis.parameter.PrefixedParameterTriple">
 		UPDATE
-			$prefix$vsMultiAttrib
+			${prefix}vsMultiAttrib
 		SET
-			entryStateGuid = #param3,handler=variablePrimaryKeyTypeHandler#
+			entryStateGuid = #{param3}
 		WHERE
-			referenceGuid = #param1,handler=variablePrimaryKeyTypeHandler#
+			referenceGuid = #{param1}
 		AND
-			attributeType = #param2#
+			attributeType = #{param2}
 	</update>
 	
-</sqlMap>
+</mapper>

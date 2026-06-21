@@ -143,7 +143,7 @@ public class JdbcLexEvsTreeDao extends JdbcDaoSupport implements LexEvsTreeDao {
 		
 		setDataSource();
 		
-		return this.getJdbcTemplate().queryForInt(
+		return this.getJdbcTemplate().queryForObject(
 				getChildrenSqlBuilder.buildSql(
 						codingScheme, 
 						versionOrTag, 
@@ -154,7 +154,7 @@ public class JdbcLexEvsTreeDao extends JdbcDaoSupport implements LexEvsTreeDao {
 						null,
 						0,
 						0,
-						true));
+						true), Integer.class).intValue();
 	}
 	
 

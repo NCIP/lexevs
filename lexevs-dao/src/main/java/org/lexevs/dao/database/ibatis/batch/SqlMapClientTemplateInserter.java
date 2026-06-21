@@ -2,7 +2,8 @@
 package org.lexevs.dao.database.ibatis.batch;
 
 import org.lexevs.dao.database.inserter.Inserter;
-import org.springframework.orm.ibatis.SqlMapClientTemplate;
+import org.mybatis.spring.SqlSessionTemplate;
+
 
 /**
  * The Class SqlMapClientTemplateInserter.
@@ -12,14 +13,14 @@ import org.springframework.orm.ibatis.SqlMapClientTemplate;
 public class SqlMapClientTemplateInserter implements Inserter{
 
 	/** The sql map client template. */
-	private SqlMapClientTemplate sqlMapClientTemplate;
+	private SqlSessionTemplate sqlMapClientTemplate;
 	
 	/**
 	 * Instantiates a new sql map client template inserter.
 	 * 
 	 * @param sqlMapClientTemplate the sql map client template
 	 */
-	public SqlMapClientTemplateInserter(SqlMapClientTemplate sqlMapClientTemplate){
+	public SqlMapClientTemplateInserter(SqlSessionTemplate sqlMapClientTemplate){
 		this.sqlMapClientTemplate = sqlMapClientTemplate;
 	}
 	
@@ -35,7 +36,7 @@ public class SqlMapClientTemplateInserter implements Inserter{
 	 * 
 	 * @param sqlMapClientTemplate the new sql map client template
 	 */
-	public void setSqlMapClientTemplate(SqlMapClientTemplate sqlMapClientTemplate) {
+	public void setSqlSessionTemplate(SqlSessionTemplate sqlMapClientTemplate) {
 		this.sqlMapClientTemplate = sqlMapClientTemplate;
 	}
 
@@ -44,7 +45,7 @@ public class SqlMapClientTemplateInserter implements Inserter{
 	 * 
 	 * @return the sql map client template
 	 */
-	public SqlMapClientTemplate getSqlMapClientTemplate() {
+	public SqlSessionTemplate getSqlMapClientTemplate() {
 		return sqlMapClientTemplate;
 	}
 

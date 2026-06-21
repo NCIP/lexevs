@@ -244,7 +244,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 		
 		defaultTransitivityBuilder.computeTransitivityTable("csuri", "csversion");
 		
-		int count = template.queryForInt("select count(*) from entityassnstoentitytr");
+		int count = template.queryForObject("select count(*) from entityassnstoentitytr", Integer.class).intValue();
 		
 		assertEquals(1, count);
 		
@@ -308,7 +308,7 @@ public class DefaultTransitivityBuilderTest extends LexEvsDbUnitTestBase {
 	
 		defaultTransitivityBuilder.computeTransitivityTable("csuri", "csversion");
 		
-		int count = template.queryForInt("select count(*) from entityassnstoentitytr");
+		int count = template.queryForObject("select count(*) from entityassnstoentitytr", Integer.class).intValue();
 		
 		assertEquals(3, count);
 	}

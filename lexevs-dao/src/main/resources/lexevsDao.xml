@@ -9,20 +9,8 @@
    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
 	
-	<import resource="classpath:lexevsCache.xml"/>
+	<import resource="classpath:lexevsCache.xml"/> 
 
-	 <bean id="sqlMap"
-          class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
-       		 <property name="configLocation" value="classpath:ibatis/v20/v20SqlMaps.xml"/>
-        <property name="dataSource" ref="dataSource" />
-        <property name="sqlMapClientProperties">
-        	<map>
-        		<entry key="defaultPrefix">
-        			<ref bean="dbPrefix"/>
-        		</entry>
-        	</map>
-        </property>
-    </bean>   
 
 	<bean id="defaultRootBuilder" class="org.lexevs.dao.database.operation.root.DefaultRootBuilder">
 		<property name="databaseServiceManager" ref="databaseServiceManager"/>
@@ -38,7 +26,8 @@
 	</bean>
     
     <bean id="abstractIbatisDao" abstract="true">
-    	<property name="sqlMapClientTemplate" ref="sqlMapClientTemplate"/>
+    	<property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+		<property name="sqlSessionBatchTemplate" ref="sqlSessionBatchTemplate"/>
 		<property name="prefixResolver" ref="defaultPrefixResolver"/>
 		<property name="primaryKeyIncrementer" ref="primaryKeyIncrementer"/>
     </bean>
@@ -243,6 +232,12 @@
 		class="org.lexevs.dao.database.ibatis.association.IbatisAssociationTargetDao"
 		parent="abstractIbatisDao">
 		<property name="versionsDao" ref="ibatisVersionsDao" />
+		<property name="assnsBatchInsertDao" ref="myBatisAssnsBatchInsertDao"/>
+	</bean>
+	<bean id="myBatisAssnsBatchInsertDao"
+		class="org.lexevs.dao.database.ibatis.mybatis.association.batch.MybatisAssociationBatchInsertDao"
+		parent="abstractIbatisDao">
+		<property name="sqlSessionFactory" ref="sqlSessionFactory" />
 	</bean>
 	
     <bean id="ibatisAssociationDataDao"
@@ -457,21 +452,36 @@
 			<ref bean="dataSource" />
 		</property>
 	</bean>
-	
-	<bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
-		<property name="dataSource" ref="dataSource"/>
-		<property name="sqlMapClient" ref="sqlMap"/>
+
+	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+   		<constructor-arg ref="sqlSessionFactory" />
+ 	</bean>
+
+	<bean id="sqlSessionBatchTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+   		  <constructor-arg index="0" ref="sqlSessionFactory" />
+  		  <constructor-arg index="1" value="BATCH" />
+ 	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+  		<property name="configLocation" value="classpath:ibatis/v20/v20SqlMaps.xml" />
+  		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:resources/ibatis.v20/**/*.xml" />
 	</bean>
-    
+
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    	<property name="basePackage" value="org.lexevs.dao.database.ibatis.mybatis.association.batch" />
+	    <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+
     <bean id="abstractResourceManagerVariableFactory" 
      	class="org.lexevs.system.constants.IndividualVariableFactory"
      	abstract="true">
      	<property name="bean" ref="resourceManager"/>
      </bean>
     
-     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">  
-   		<property name="sessionFactory">
-    		<ref local="registrySessionFactory"/>
+     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">  
+   		<property name="sessionFactory" >
+    		<ref bean="registrySessionFactory"/>
  		 </property>
 	</bean>
 	
@@ -482,6 +492,10 @@
 	</bean>
 	
 	<bean id="hibernateRegistryDao" class="org.lexevs.dao.database.hibernate.registry.HibernateRegistryDao">
+		<property name="hibernateTemplate" ref="hibernateTemplate"/>
+	</bean>
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate5.HibernateTemplate">
 		<property name="sessionFactory" ref="registrySessionFactory"/>
 	</bean>
 	
@@ -572,7 +586,7 @@
         <constructor-arg><ref bean="pool"/></constructor-arg>
     </bean>
     
-    <bean id="dataSource" 
+    <bean id="dataSource"
     	class="org.lexevs.dao.database.datasource.ErrorReportingDataSourceDecorator">
     	<constructor-arg ref="dbcpDataSource"/>
     	<property name="systemVariables" ref="systemVariables"/>
@@ -699,13 +713,12 @@
 		<property name="xmlRegistry" ref="xmlRegistry"/>
 	</bean>
 	
-	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+	<bean id="registrySessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
 		<property name="dataSource">
 			<ref bean="dataSource" />
 		</property>
 		<property name="entityInterceptor" ref="prefixInterceptor"/>
 		<property name="configLocations" value="classpath:hibernate/registry/hibernate.cfg.xml"/>
-		<property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>	
 	</bean>
 
 	<bean id="prefixInterceptor" class="org.lexevs.dao.database.hibernate.prefix.PrefixInterceptor">
@@ -774,7 +787,7 @@
 	
 	<bean id="lexGridSchemaCheckFactory"
 		class="org.lexevs.dao.database.setup.schemacheck.LexGridSchemaCheckFactory">
-		<property name="dataSource" ref="dataSource"/>  
+		<property name="dataSource" ref="dataSource"/>
 		<property name="databaseType" ref="databaseTypeFactory"/>  
 		<property name="systemVariables" ref="systemVariables"/>
 	</bean>
@@ -782,7 +795,7 @@
 	<tx:annotation-driven proxy-target-class="true" transaction-manager="transactionManager"/>
 	
 	<bean id="databaseTypeFactory" class="org.lexevs.dao.database.type.DatabaseTypeFactory">
-		<property name="dataSource" ref="dataSource"/> 
+		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	
 	<bean id="lexEvsServiceLocator" 

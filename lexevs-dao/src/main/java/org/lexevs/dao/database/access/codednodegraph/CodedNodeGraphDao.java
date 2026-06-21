@@ -3,15 +3,14 @@ package org.lexevs.dao.database.access.codednodegraph;
 
 import java.util.List;
 import java.util.Map;
-
 import org.LexGrid.LexBIG.DataModel.Core.ConceptReference;
 import org.LexGrid.LexBIG.DataModel.Core.ResolvedConceptReference;
 import org.LexGrid.custom.relations.TerminologyMapBean;
 import org.LexGrid.relations.Relations;
 import org.lexevs.dao.database.access.LexGridSchemaVersionAwareDao;
 import org.lexevs.dao.database.access.association.model.Node;
-import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.access.association.model.Sextuple;
+import org.lexevs.dao.database.access.association.model.Triple;
 import org.lexevs.dao.database.ibatis.codednodegraph.model.EntityReferencingAssociatedConcept;
 import org.lexevs.dao.database.operation.LexEvsDatabaseOperations.TraverseAssociations;
 import org.lexevs.dao.database.service.codednodegraph.CodedNodeGraphService.Sort;
@@ -25,8 +24,21 @@ import org.lexevs.dao.database.service.codednodegraph.model.GraphQuery.Qualifier
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
 public interface CodedNodeGraphDao extends LexGridSchemaVersionAwareDao {
-	
-	public enum TripleNode {SUBJECT, OBJECT}
+
+	public enum TripleNode {
+		SUBJECT {
+			@Override
+			public String toString() {
+				return "SUBJECT";
+			}
+		},
+		OBJECT {
+			@Override
+			public String toString() {
+				return "OBJECT";
+			}
+		}
+	}
 	
 	public List<String> listCodeRelationships(
 			String codingSchemeUid,

@@ -12,14 +12,14 @@ import org.lexevs.dao.test.LexEvsDbUnitTestBase;
 import org.lexevs.registry.service.Registry;
 import org.lexevs.registry.utility.RegistryUtility;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.transaction.TransactionConfiguration;
+//import org.springframework.test.context.transaction.TransactionConfiguration;
 
 /**
  * The Class IbatisAssociationDaoTest.
  * 
  * @author <a href="mailto:kevin.peterson@mayo.edu">Kevin Peterson</a>
  */
-@TransactionConfiguration
+//@TransactionConfiguration
 public class TripleUidIteratorTest extends LexEvsDbUnitTestBase {
 	
 	@Resource

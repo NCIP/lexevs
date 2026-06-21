@@ -9,6 +9,7 @@ import org.springframework.core.annotation.Order;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * JUnit TestRunner to allow for ordering of methods using Springs {@link Order} annotation.
@@ -61,7 +62,8 @@ public class OrderingTestRunner extends BlockJUnit4ClassRunner {
 
     @Override
     protected List<FrameworkMethod> computeTestMethods() {
-        List<FrameworkMethod> tests = super.computeTestMethods();
+        List<FrameworkMethod> temp = super.computeTestMethods();
+        List<FrameworkMethod> tests = temp.stream().collect(Collectors.toList());
 
         Collections.sort(tests, new Comparator<FrameworkMethod>() {
 
